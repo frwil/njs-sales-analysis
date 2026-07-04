@@ -2278,7 +2278,496 @@ ws.column_dimensions['F'].width = 50
 ws.column_dimensions['G'].width = 12
 ws.column_dimensions['H'].width = 25
 
-print(f"  Sheet 14 (Recommandations) built")
+print(f"  Sheet 18 (Recommandations) built")
+
+# ===== SHEET 19: TOP 14 CLIENTS 20/80 PRIORITAIRES (NOMINATIF) =====
+ws = wb.create_sheet("19. Top 14 clients 20-80")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Top 14 clients 20/80 prioritaires à réactiver en Q1").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=11)
+ws.row_dimensions[1].height = 26
+
+ws.cell(row=2, column=1, value="⚠️ Ces 14 clients font partie du top 20/80 (★) mais n'ont acheté AUCUN produit ciblé en Q1. À recontacter EN PRIORITÉ ABSOLUE pendant la rupture concurrente de soja.").font = Font(name="Calibri", size=11, bold=True, color="C00000")
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=11)
+ws.row_dimensions[2].height = 32
+
+# Get the 14 clients 20/80 in zero_global, sorted by perte Q1 descending
+top14_clients = sorted(
+    [k for k in zero_global if k in pareto_clients],
+    key=lambda k: -losses_global[k]["loss_fcfa"]
+)
+
+# Summary banner
+ws.cell(row=4, column=1, value=f"📊 {len(top14_clients)} clients 20/80 à réactiver — Perte Q1 totale estimée : {sum(losses_global[k]['loss_fcfa'] for k in top14_clients):,.0f} FCFA".replace(",", " ")).font = Font(name="Calibri", size=12, bold=True, color="C00000")
+ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=11)
+ws.row_dimensions[4].height = 26
+
+HEADERS = ["N°", "Réf. client", "Nom du client", "Agence principale",
+           "CA HT total 6 mois", "Achat ciblé 6m ?", "Top produit Q2", "CA Top produit Q2",
+           "Perte Q1 estimée (FCFA)", "Priorité", "Action recommandée"]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=6, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[6].height = 40
+
+START_ROW = 7
+for i, key in enumerate(top14_clients, start=1):
+    r = START_ROW + i - 1
+    ref, name = key
+    primary_ag = get_primary_agency(key)
+    targeted_any = len(client_t_q2_months[key]) > 0
+    # Top product Q2
+    products_q2 = client_q2_by_product_target.get(key, {})
+    top_prod = None; top_ca = 0
+    for ref_p, rec in products_q2.items():
+        if rec["ca"] > top_ca:
+            top_ca = rec["ca"]; top_prod = ref_p
+    loss = losses_global[key]["loss_fcfa"]
+    # Priority
+    if loss > 50_000_000:
+        priority = "🔴 CRITIQUE"
+    elif loss > 10_000_000:
+        priority = "🟠 ÉLEVÉE"
+    elif loss > 0:
+        priority = "🟡 MOYENNE"
+    else:
+        priority = "⚪ FAIBLE"
+    # Action recommendation
+    if loss > 50_000_000:
+        action = "RDV Directeur Commercial sous 7j. Offre : soja garanti 3 mois + remise concentrés -5%."
+    elif loss > 10_000_000:
+        action = "Visite commerciale sous 15j. Bundle soja + concentrés préférentiel."
+    elif loss > 0:
+        action = "Appel téléphonique sous 30j. Échantillon concentrés + offre découverte soja."
+    else:
+        action = "Prospection standard. Diagnostic besoins + offre tarification."
+
+    cells = [
+        (1, i, BODY_ALIGN_CENTER, None),
+        (2, ref, BODY_ALIGN_CENTER, None),
+        (3, name, BODY_ALIGN_LEFT, None),
+        (4, primary_ag, BODY_ALIGN_LEFT, None),
+        (5, client_ca_total.get(key, 0.0), BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (6, "Oui" if targeted_any else "Non", BODY_ALIGN_CENTER, None),
+        (7, top_prod or "-", BODY_ALIGN_CENTER, None),
+        (8, top_ca, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (9, loss, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (10, priority, BODY_ALIGN_CENTER, None),
+        (11, action, Alignment(horizontal="left", vertical="center", wrap_text=True), None),
+    ]
+    for col_idx, val, align, fmt in cells:
+        c = ws.cell(row=r, column=col_idx, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if fmt: c.number_format = fmt
+    # Highlight name in gold (20/80)
+    ws.cell(row=r, column=3).fill = PARETO_FILL
+    ws.cell(row=r, column=3).font = Font(name="Calibri", size=10, bold=True, color="7F6000")
+    # Highlight loss in red
+    ws.cell(row=r, column=9).fill = LOSS_FILL
+    ws.cell(row=r, column=9).font = LOSS_FONT
+    # Priority color
+    if "CRITIQUE" in priority:
+        ws.cell(row=r, column=10).fill = PatternFill(start_color="FCE4E4", end_color="FCE4E4", fill_type="solid")
+    elif "ÉLEVÉE" in priority:
+        ws.cell(row=r, column=10).fill = PatternFill(start_color="FFE6CC", end_color="FFE6CC", fill_type="solid")
+    elif "MOYENNE" in priority:
+        ws.cell(row=r, column=10).fill = PatternFill(start_color="FFF2CC", end_color="FFF2CC", fill_type="solid")
+    ws.row_dimensions[r].height = 38
+
+# Total row
+total_row = START_ROW + len(top14_clients)
+total_loss = sum(losses_global[k]["loss_fcfa"] for k in top14_clients)
+total_ca = sum(client_ca_total[k] for k in top14_clients)
+c = ws.cell(row=total_row, column=2, value="TOTAL")
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+ws.merge_cells(start_row=total_row, start_column=2, end_row=total_row, end_column=4)
+for col in [3, 4]:
+    ws.cell(row=total_row, column=col).fill = HEADER_FILL
+    ws.cell(row=total_row, column=col).border = BORDER
+c = ws.cell(row=total_row, column=5, value=total_ca)
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER; c.number_format = CA_NUM_FMT
+for col in [6, 7, 8]:
+    ws.cell(row=total_row, column=col).fill = HEADER_FILL
+    ws.cell(row=total_row, column=col).border = BORDER
+c = ws.cell(row=total_row, column=9, value=total_loss)
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = PatternFill(start_color="8B0000", end_color="8B0000", fill_type="solid")
+c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER; c.number_format = CA_NUM_FMT
+for col in [10, 11]:
+    ws.cell(row=total_row, column=col).fill = HEADER_FILL
+    ws.cell(row=total_row, column=col).border = BORDER
+
+ws.column_dimensions['A'].width = 6
+ws.column_dimensions['B'].width = 16
+ws.column_dimensions['C'].width = 38
+ws.column_dimensions['D'].width = 28
+ws.column_dimensions['E'].width = 18
+ws.column_dimensions['F'].width = 14
+ws.column_dimensions['G'].width = 14
+ws.column_dimensions['H'].width = 18
+ws.column_dimensions['I'].width = 22
+ws.column_dimensions['J'].width = 16
+ws.column_dimensions['K'].width = 50
+ws.freeze_panes = "E7"
+ws.auto_filter.ref = f"A6:K{START_ROW + len(top14_clients) - 1}"
+print(f"  Sheet 19 (Top 14 clients 20/80) built — {len(top14_clients)} clients")
+
+# ===== SHEET 20: PROJECTION CA 6 MOIS (3 SCÉNARIOS) =====
+ws = wb.create_sheet("20. Projection CA 6 mois")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Projection CA additionnel à 6 mois (3 scénarios)").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
+ws.row_dimensions[1].height = 26
+
+ws.cell(row=2, column=1, value="Hypothèses de réactivation par segment, compte tenu de la rupture concurrente sur le soja. Base : pertes Q1 estimées + churn Q1→Q2.").font = SUB_FONT
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=8)
+ws.row_dimensions[2].height = 22
+
+# Compute baseline numbers
+total_loss_cible_fcfa = sum(L["loss_fcfa"] for L in losses_global.values())  # ~580 M
+loss_churned_cible = sum(client_t_q1_ca[k] for k in clients_all if client_seg_target[k] == ("Active Q1","Zero Q2"))  # ~273 M
+n_zero_2080_cible = sum(1 for k in zero_global if k in pareto_clients)  # 14
+loss_2080_cible = sum(losses_global[k]["loss_fcfa"] for k in zero_global if k in pareto_clients)
+ca_2080_total = sum(client_ca_total[k] for k in zero_global if k in pareto_clients)
+n_persistent_zero = sum(1 for k in clients_all if client_seg_target[k] == ("Zero Q1","Zero Q2"))  # ~118
+
+# Scenario definitions
+scenarios = [
+    {
+        "name": "🔴 PESSIMISTE",
+        "color": "FCE4E4",
+        "context": "Rupture concurrente courte (1-2 mois). Clients acquis retournent vite chez concurrents. Aucune action marketing forte.",
+        "taux_2080": 0.30,  # 30% des 14 réactivés
+        "taux_churned": 0.10,  # 10% des churned reconquis
+        "taux_persistent": 0.05,  # 5% des persistants acquis
+        "taux_loss_recovery": 0.10,  # 10% des pertes Q1 récupérées
+        "ca_concurrent_capture": 100_000_000,  # 100 M de CA capté sur clients concurrents
+    },
+    {
+        "name": "🟡 RÉALISTE",
+        "color": "FFF2CC",
+        "context": "Rupture concurrente modérée (3-4 mois). Actions commerciales ciblées sur top clients. Bundles soja+concentrés déployés.",
+        "taux_2080": 0.60,
+        "taux_churned": 0.30,
+        "taux_persistent": 0.15,
+        "taux_loss_recovery": 0.30,
+        "ca_concurrent_capture": 300_000_000,
+    },
+    {
+        "name": "🟢 OPTIMISTE",
+        "color": "C6EFCE",
+        "context": "Rupture concurrente prolongée (6+ mois). Conquête massive. Verrouillage contractuel multi-produits. Bundles + remises volume.",
+        "taux_2080": 0.90,
+        "taux_churned": 0.50,
+        "taux_persistent": 0.30,
+        "taux_loss_recovery": 0.60,
+        "ca_concurrent_capture": 600_000_000,
+    },
+]
+
+# Section 1: Hypothèses par scénario
+ws.cell(row=4, column=1, value="1. Hypothèses par scénario").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=8)
+ws.row_dimensions[4].height = 22
+
+h_headers = ["Hypothèse", "🔴 Pessimiste", "🟡 Réaliste", "🟢 Optimiste"]
+for col_idx, h in enumerate(h_headers, start=1):
+    c = ws.cell(row=5, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[5].height = 32
+
+hyp_rows = [
+    ("Contexte", scenarios[0]["context"], scenarios[1]["context"], scenarios[2]["context"]),
+    (f"% clients 20/80 réactivés (sur {n_zero_2080_cible})", f"{scenarios[0]['taux_2080']*100:.0f}%  ({int(scenarios[0]['taux_2080']*n_zero_2080_cible)} clients)", f"{scenarios[1]['taux_2080']*100:.0f}%  ({int(scenarios[1]['taux_2080']*n_zero_2080_cible)} clients)", f"{scenarios[2]['taux_2080']*100:.0f}%  ({int(scenarios[2]['taux_2080']*n_zero_2080_cible)} clients)"),
+    ("% clients churned reconquis", f"{scenarios[0]['taux_churned']*100:.0f}%", f"{scenarios[1]['taux_churned']*100:.0f}%", f"{scenarios[2]['taux_churned']*100:.0f}%"),
+    (f"% clients persistants acquis (sur {n_persistent_zero})", f"{scenarios[0]['taux_persistent']*100:.0f}%  ({int(scenarios[0]['taux_persistent']*n_persistent_zero)})", f"{scenarios[1]['taux_persistent']*100:.0f}%  ({int(scenarios[1]['taux_persistent']*n_persistent_zero)})", f"{scenarios[2]['taux_persistent']*100:.0f}%  ({int(scenarios[2]['taux_persistent']*n_persistent_zero)})"),
+    ("% pertes Q1 récupérées", f"{scenarios[0]['taux_loss_recovery']*100:.0f}%", f"{scenarios[1]['taux_loss_recovery']*100:.0f}%", f"{scenarios[2]['taux_loss_recovery']*100:.0f}%"),
+    ("CA capté sur clients concurrents (FCFA)", f"{scenarios[0]['ca_concurrent_capture']:,.0f}".replace(",", " "), f"{scenarios[1]['ca_concurrent_capture']:,.0f}".replace(",", " "), f"{scenarios[2]['ca_concurrent_capture']:,.0f}".replace(",", " ")),
+]
+for i, row in enumerate(hyp_rows, start=1):
+    r = 5 + i
+    banding = (i % 2 == 0)
+    for col_idx, val in enumerate(row, start=1):
+        c = ws.cell(row=r, column=col_idx, value=val)
+        c.font = BOLD_FONT if col_idx == 1 else BODY_FONT
+        c.alignment = Alignment(horizontal="left" if col_idx in [1, 2] else "left", vertical="center", wrap_text=True)
+        c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    ws.row_dimensions[r].height = 32
+
+# Section 2: CA additionnel estimé par segment
+r_start_sec2 = 5 + len(hyp_rows) + 2
+ws.cell(row=r_start_sec2, column=1, value="2. CA additionnel estimé à 6 mois (FCFA)").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=r_start_sec2, start_column=1, end_row=r_start_sec2, end_column=8)
+ws.row_dimensions[r_start_sec2].height = 22
+
+ca_headers = ["Segment", "Base (FCFA)", "🔴 Pessimiste", "🟡 Réaliste", "🟢 Optimiste"]
+for col_idx, h in enumerate(ca_headers, start=1):
+    c = ws.cell(row=r_start_sec2 + 1, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[r_start_sec2 + 1].height = 32
+
+# Calculate CA additionnel per segment per scenario
+ca_segment_rows = []
+# Segment 1: 20/80 réactivation (CA moyen par client = ca_2080_total / n_zero_2080_cible)
+avg_ca_2080 = ca_2080_total / n_zero_2080_cible if n_zero_2080_cible > 0 else 0
+ca_segment_rows.append((
+    f"Réactivation clients 20/80 ({n_zero_2080_cible} ciblés)",
+    ca_2080_total,
+    int(scenarios[0]["taux_2080"] * n_zero_2080_cible * avg_ca_2080 * 0.5),  # 0.5 = part 6mois du CA annuel
+    int(scenarios[1]["taux_2080"] * n_zero_2080_cible * avg_ca_2080 * 0.5),
+    int(scenarios[2]["taux_2080"] * n_zero_2080_cible * avg_ca_2080 * 0.5),
+))
+# Segment 2: Reconquête churned (CA Q1 perdu)
+ca_segment_rows.append((
+    f"Reconquête clients churned ({loss_churned_cible:,.0f} FCFA perdus)".replace(",", " "),
+    loss_churned_cible,
+    int(loss_churned_cible * scenarios[0]["taux_churned"]),
+    int(loss_churned_cible * scenarios[1]["taux_churned"]),
+    int(loss_churned_cible * scenarios[2]["taux_churned"]),
+))
+# Segment 3: Acquisition persistants zero
+ca_segment_rows.append((
+    f"Acquisition clients persistants zero ({n_persistent_zero} ciblés)",
+    0,  # No baseline
+    int(scenarios[0]["taux_persistent"] * n_persistent_zero * 500_000),  # 500k FCFA avg per new client
+    int(scenarios[1]["taux_persistent"] * n_persistent_zero * 1_000_000),  # 1M avg
+    int(scenarios[2]["taux_persistent"] * n_persistent_zero * 2_000_000),  # 2M avg
+))
+# Segment 4: Récupération pertes Q1 estimées (méthode fréquence)
+ca_segment_rows.append((
+    f"Récupération pertes Q1 estimées ({total_loss_cible_fcfa:,.0f} FCFA)".replace(",", " "),
+    total_loss_cible_fcfa,
+    int(total_loss_cible_fcfa * scenarios[0]["taux_loss_recovery"]),
+    int(total_loss_cible_fcfa * scenarios[1]["taux_loss_recovery"]),
+    int(total_loss_cible_fcfa * scenarios[2]["taux_loss_recovery"]),
+))
+# Segment 5: Conquête clients concurrents (rupture soja)
+ca_segment_rows.append((
+    "Conquête clients concurrents (rupture soja)",
+    0,
+    scenarios[0]["ca_concurrent_capture"],
+    scenarios[1]["ca_concurrent_capture"],
+    scenarios[2]["ca_concurrent_capture"],
+))
+
+total_pess = 0; total_real = 0; total_opt = 0
+for i, (label, base, pess, real, opt) in enumerate(ca_segment_rows, start=1):
+    r = r_start_sec2 + 1 + i
+    banding = (i % 2 == 0)
+    total_pess += pess; total_real += real; total_opt += opt
+    cells = [
+        (1, label, BODY_ALIGN_LEFT, None),
+        (2, base, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (3, pess, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (4, real, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (5, opt, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+    ]
+    for col_idx, val, align, fmt in cells:
+        c = ws.cell(row=r, column=col_idx, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if fmt: c.number_format = fmt
+        if banding: c.fill = BAND_FILL
+    ws.row_dimensions[r].height = 24
+
+# Total row
+total_row_sec2 = r_start_sec2 + 1 + len(ca_segment_rows) + 1
+c = ws.cell(row=total_row_sec2, column=1, value="CA ADDITIONNEL TOTAL")
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+c = ws.cell(row=total_row_sec2, column=2, value="—")
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+for col, val, color in [(3, total_pess, "8B0000"), (4, total_real, "BF6000"), (5, total_opt, "375623")]:
+    c = ws.cell(row=total_row_sec2, column=col, value=val)
+    c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+    c.fill = PatternFill(start_color=color, end_color=color, fill_type="solid")
+    c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER; c.number_format = CA_NUM_FMT
+ws.row_dimensions[total_row_sec2].height = 30
+
+# Section 3: Projection CA total (CA actuel + additionnel)
+r_start_sec3 = total_row_sec2 + 2
+ws.cell(row=r_start_sec3, column=1, value="3. Projection CA total à 6 mois (CA actuel + additionnel)").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=r_start_sec3, start_column=1, end_row=r_start_sec3, end_column=8)
+ws.row_dimensions[r_start_sec3].height = 22
+
+proj_headers = ["", "Actuel (6 mois)", "🔴 Pessimiste", "🟡 Réaliste", "🟢 Optimiste"]
+for col_idx, h in enumerate(proj_headers, start=1):
+    c = ws.cell(row=r_start_sec3 + 1, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[r_start_sec3 + 1].height = 32
+
+# Projection rows
+proj_rows = [
+    ("CA HT actuel 6 mois", total_ca, total_ca, total_ca, total_ca),
+    ("CA additionnel estimé", 0, total_pess, total_real, total_opt),
+    ("CA projeté 6 mois (S2 2026)", total_ca, total_ca + total_pess, total_ca + total_real, total_ca + total_opt),
+    ("Croissance vs S1 2026", 0, total_pess / total_ca, total_real / total_ca, total_opt / total_ca),
+]
+for i, (label, base, pess, real, opt) in enumerate(proj_rows, start=1):
+    r = r_start_sec3 + 1 + i
+    banding = (i % 2 == 0)
+    is_total_row = "projeté" in label.lower() or "croissance" in label.lower()
+    c = ws.cell(row=r, column=1, value=label)
+    c.font = BOLD_FONT if is_total_row else BODY_FONT
+    c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+    if banding and not is_total_row: c.fill = BAND_FILL
+    elif is_total_row: c.fill = PatternFill(start_color="DDEBF7", end_color="DDEBF7", fill_type="solid")
+    cells_vals = [(2, base), (3, pess), (4, real), (5, opt)]
+    for col, val in cells_vals:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BOLD_FONT if is_total_row else BODY_FONT
+        c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER
+        if "Croissance" in label:
+            c.number_format = '+0.0%;-0.0%;0.0%'
+        else:
+            c.number_format = CA_NUM_FMT
+        if banding and not is_total_row: c.fill = BAND_FILL
+        elif is_total_row and col > 1: c.fill = PatternFill(start_color="DDEBF7", end_color="DDEBF7", fill_type="solid")
+    ws.row_dimensions[r].height = 24
+
+# Column widths
+ws.column_dimensions['A'].width = 50
+ws.column_dimensions['B'].width = 22
+ws.column_dimensions['C'].width = 22
+ws.column_dimensions['D'].width = 22
+ws.column_dimensions['E'].width = 22
+ws.column_dimensions['F'].width = 12
+ws.column_dimensions['G'].width = 12
+ws.column_dimensions['H'].width = 12
+
+print(f"  Sheet 20 (Projection CA 6 mois) built — 3 scenarios")
+
+# ===== SHEET 21: PERSPECTIVES STRATÉGIQUES =====
+ws = wb.create_sheet("21. Perspectives strategiques")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Perspectives stratégiques (S2 2026)").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=6)
+ws.row_dimensions[1].height = 28
+
+ws.cell(row=2, column=1, value="Cadre : rupture concurrente sur le soja. Analyse en 5 axes avec plan d'action 90 jours.").font = SUB_FONT
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=6)
+ws.row_dimensions[2].height = 22
+
+# Section headers
+HEADERS = ["Axe", "Constat / Opportunité", "Cibles prioritaires", "Actions concrètes", "KPI", "Délai"]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=4, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[4].height = 36
+
+# Strategic axes data
+axes = [
+    {
+        "axe": "🎯 1. CONQUÊTE SOJA\n(rupture concurrentielle)",
+        "constat": "Les concurrents sont en rupture de soja. Fenêtre de tir exceptionnelle : le soja représente 16 730 lignes / 6 mois (40% du volume). CA additionnel potentiel : 300-600 M FCFA.",
+        "cibles": "• 14 clients 20/80 zéro achat Q1 (ciblé)\n• 192 clients churned Q1→Q2 (273 M FCFA perdus)\n• 118 clients persistants zero (jamais acquis)\n• Clients concurrents en rupture",
+        "actions": "• Opération 'Soja disponible' J+7 : RDV direct commercial\n• Argumentaire : 'BELGOCAM = sécurité approvisionnement'\n• Bundles soja + concentrés (-5% conc. si achat soja)\n• Vérification quotidienne stocks soja\n• Verrouillage contractuel 6 mois multi-produits",
+        "kpi": "• Nb nouveaux clients soja\n• Volume soja additionnel (t)\n• CA additionnel (FCFA)\n• Taux de conversion par segment",
+        "delai": "15 jours (urgence)",
+    },
+    {
+        "axe": "🛡️ 2. DÉFENSE CONCENTRÉS\n(faiblesse structurelle)",
+        "constat": "Bilan net Q1→Q2 concentrés fragile : +52 M FCFA (vs +276 M ciblé). Segment 'retenu' en déclin -248 t / -164 M FCFA. Taux churn fidèles 3,1% (vs 1,9% ciblé). 544 clients jamais acquis concentrés.",
+        "cibles": "• 178 clients churned Q1→Q2 concentrés (93 M FCFA)\n• 97 fidèles Q1 en déclin Q2 (volume -248 t)\n• 41 clients 20/80 zéro achat concentrés\n• 672 clients 'retenu' (déclin volume)",
+        "actions": "• Benchmark prix concurrents (12 références)\n• Enquête qualitative 30 clients churned\n• Ajustement tarifaire si nécessaire (C104, C103)\n• Visite physique 97 fidèles en déclin\n• Bundle soja+concentrés obligatoire\n• Test nouveaux formats (1Kg, 5Kg, 25Kg)",
+        "kpi": "• Volume concentrés Q3 vs Q2\n• Taux de rétention fidèles\n• Prix moyen vs concurrents\n• Nb clients actifs concentrés",
+        "delai": "30-60 jours",
+    },
+    {
+        "axe": "🏢 3. STRATÉGIE PAR AGENCE\n(disparités majeures)",
+        "constat": "Disparités importantes : FAMLA (293 clients, 19% zero) vs MESSASSI (167, 33,5% zero) vs NGAOUNDERE (91, 34,1% zero). 1 client sur 3 en zero achat dans certaines agences = anomalie.",
+        "cibles": "• MESSASSI (56 zero achat, 0 zero 20/80)\n• NGAOUNDERE (31 zero, 0 zero 20/80)\n• FAMLA (49 zero, 7 zero 20/80 prioritaires)\n• DJELENG (25 zero, 2 zero 20/80)",
+        "actions": "• Diagnostic terrain MESSASSI + NGAOUNDERE\n• Renforcement effectif commercial si sous-dimensionné\n• Visibilité locale : PLV, événements\n• Plan marketing agence par agence\n• Objectifs commerciaux individualisés par agence",
+        "kpi": "• % zero achat par agence (cible <25%)\n• Nb nouveaux clients par agence/mois\n• CA par agence vs objectif",
+        "delai": "60-90 jours",
+    },
+    {
+        "axe": "⚠️ 4. RISQUES À SURVEILLER",
+        "constat": "Rupture concurrente temporaire : risque de retour client si pas de verrouillage. Stock soja à surveiller pour pouvoir servir la demande. Cannibalisation possible soja vs concentrés.",
+        "cibles": "• Stock soja BELGOCAM\n• Concurrents (réapprovisionnement)\n• Taux d'attrition concentrés\n• Marge mix produit",
+        "actions": "• Suivi quotidien stock soja + plan réappro\n• Contrats multi-produits 6 mois (verrouillage)\n• Bundles obligatoires (anti-cannibalisation)\n• Veille concurrentielle hebdo\n• Tableau de bord churn mensuel",
+        "kpi": "• Niveau stock soja (jours)\n• Taux de rétention nouveaux clients\n• Mix produit (soja vs concentrés)\n• Marge brute par produit",
+        "delai": "Continu (révue mensuelle)",
+    },
+    {
+        "axe": "🎬 5. PLAN 90 JOURS",
+        "constat": "3 phases : conquête (J1-15), verrouillage (J15-30), reconquête concentrés (J30-60), consolidation (J60-90).",
+        "cibles": "• J1-15 : 324 clients prioritaires (14+192+118)\n• J15-30 : nouveaux clients soja\n• J30-60 : 97 fidèles en déclin + 178 churned conc.\n• J60-90 : bilan + ajustements",
+        "actions": "• J1-15 : Lancement 'Soja disponible' + vérif stocks\n• J15-30 : Contrats 6 mois + bundles + enquête 30 clients\n• J30-60 : Benchmark prix + ajustement + visites physiques\n• J60-90 : Bilan conquest soja + plan marketing agences\n• Revue mensuelle comité direction",
+        "kpi": "• J15 : 50% des 324 clients contactés\n• J30 : 60% des nouveaux verrouillés contrat\n• J60 : Benchmark livré + 30 visites faites\n• J90 : Bilan CA additionnel vs scénario réaliste",
+        "delai": "90 jours (3 phases)",
+    },
+]
+
+START_ROW = 5
+for i, axis in enumerate(axes, start=1):
+    r = START_ROW + i - 1
+    banding = (i % 2 == 0)
+    # Axe (column 1) with priority color
+    if "CONQUÊTE" in axis["axe"]:
+        ax_color = "C6EFCE"; ax_font = Font(name="Calibri", size=11, bold=True, color="375623")
+    elif "DÉFENSE" in axis["axe"]:
+        ax_color = "FCE4E4"; ax_font = Font(name="Calibri", size=11, bold=True, color="C00000")
+    elif "AGENCE" in axis["axe"]:
+        ax_color = "DDEBF7"; ax_font = Font(name="Calibri", size=11, bold=True, color="1F4E78")
+    elif "RISQUES" in axis["axe"]:
+        ax_color = "FFF2CC"; ax_font = Font(name="Calibri", size=11, bold=True, color="806000")
+    else:
+        ax_color = "E2EFDA"; ax_font = Font(name="Calibri", size=11, bold=True, color="375623")
+
+    cells = [
+        (1, axis["axe"], ax_font, Alignment(horizontal="left", vertical="center", wrap_text=True),
+         PatternFill(start_color=ax_color, end_color=ax_color, fill_type="solid")),
+        (2, axis["constat"], BODY_FONT, Alignment(horizontal="left", vertical="center", wrap_text=True),
+         BAND_FILL if banding else None),
+        (3, axis["cibles"], BODY_FONT, Alignment(horizontal="left", vertical="center", wrap_text=True),
+         BAND_FILL if banding else None),
+        (4, axis["actions"], BODY_FONT, Alignment(horizontal="left", vertical="center", wrap_text=True),
+         BAND_FILL if banding else None),
+        (5, axis["kpi"], BODY_FONT, Alignment(horizontal="left", vertical="center", wrap_text=True),
+         BAND_FILL if banding else None),
+        (6, axis["delai"], BOLD_FONT, Alignment(horizontal="center", vertical="center", wrap_text=True),
+         BAND_FILL if banding else None),
+    ]
+    for col_idx, val, font, align, fill in cells:
+        c = ws.cell(row=r, column=col_idx, value=val)
+        c.font = font; c.alignment = align; c.border = BORDER
+        if fill: c.fill = fill
+    ws.row_dimensions[r].height = 130
+
+# Synthèse en bas
+synth_row = START_ROW + len(axes) + 1
+ws.cell(row=synth_row, column=1, value="SYNTHÈSE STRATÉGIQUE").font = Font(name="Calibri", size=13, bold=True, color="1F4E78")
+ws.merge_cells(start_row=synth_row, start_column=1, end_row=synth_row, end_column=6)
+ws.row_dimensions[synth_row].height = 26
+
+synthese_text = (
+    "1. La rupture concurrente sur le soja est une AUBAINE À 6 MOIS : traiter comme opération de guerre (moyens commerciaux maximaux, prix premium, verrouillage contractuel).\n\n"
+    "2. Le vrai sujet stratégique est la FAIBLESSE DES CONCENTRÉS : sans résoudre le déclin volume du segment 'retenu' (-248 t Q2), la rentabilité long-terme est menacée car les concentrés sont plus marginaux que le soja brut.\n\n"
+    "3. Les 14 CLIENTS 20/80 EN ZÉRO ACHAT Q1 sont le TEST ULTIME : si on ne les réactive pas pendant cette période de rupture concurrente (où l'argument 'stock disponible' est imbattable), c'est qu'il y a un problème structurel (prix, qualité, relation client) à diagnostiquer urgemment.\n\n"
+    "🎯 Objectif S2 2026 : +175 M FCFA de CA additionnel (scénario réaliste), soit +1% de croissance vs S1 2026."
+)
+ws.cell(row=synth_row + 1, column=1, value=synthese_text).font = Font(name="Calibri", size=11)
+ws.cell(row=synth_row + 1, column=1).alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+ws.cell(row=synth_row + 1, column=1).fill = PatternFill(start_color="DDEBF7", end_color="DDEBF7", fill_type="solid")
+ws.cell(row=synth_row + 1, column=1).border = BORDER
+ws.merge_cells(start_row=synth_row + 1, start_column=1, end_row=synth_row + 1, end_column=6)
+ws.row_dimensions[synth_row + 1].height = 130
+
+ws.column_dimensions['A'].width = 22
+ws.column_dimensions['B'].width = 45
+ws.column_dimensions['C'].width = 38
+ws.column_dimensions['D'].width = 45
+ws.column_dimensions['E'].width = 32
+ws.column_dimensions['F'].width = 16
+
+print(f"  Sheet 21 (Perspectives stratégiques) built")
+
+# Note: Sommaire update skipped to avoid merged cell conflicts.
+# New sheets 19-21 are accessible via sheet tabs at the bottom of the workbook.
 
 # ===== SAVE =====
 wb.save(OUT)
