@@ -1,20 +1,25 @@
 Fichiers générés - BELGOCAM SA (Janvier - Juin 2026)
 
 1. ventes_livrees.xlsx
-   Source nettoyee : uniquement les lignes dont l'etat = "Livree".
+   Source nettoyée : uniquement les lignes dont l'état = "Livrée".
    6 feuilles (une par mois), 61 242 lignes au total.
 
-2. check_mensuel.xlsx
-   Liste de 1 394 clients uniques sur les 6 mois.
-   Colonnes : N° / Ref. client / Nom / Janvier-Juin (check vert si achat) /
-              Nb mois d'achat / CA Total HT (6 mois) / Categorie 20/80 (etoile doree).
+2. analyse_complete_belgocam.xlsx
+   FICHIER CONSOLIDÉ MULTI-FEUILLES (14 feuilles, 798 Ko).
+   Exclut les 15 clients internes/filiales (SPC, PDC filiale NJS, soldes compta).
 
-3. zero_achat.xlsx
-   352 clients n'ayant achete AUCUN produit cible (tourteaux de soja +
-   BELGO 10% + BELGO 5%, 16 produits) en janvier, fevrier ou mars 2026.
-
-4. zero_achat_concentres.xlsx
-   544 clients n'ayant achete AUCUN concentre (BELGO 10% + BELGO 5%,
-   12 produits, sans soja) en janvier, fevrier ou mars 2026.
-   Colonne supplementaire 'Achat soja Q1 ?' pour distinguer les clients
-   qui ont quand meme achete du soja de ceux qui n'ont rien achete de cible.
+   Feuilles :
+   1.  Sommaire — table des matières + chiffres clés
+   2.  Clients uniques (1 379 clients, check mensuel + CA + 20/80)
+   3.  Zero achat global Q1 (16 produits ciblés)
+   4.  Zero achat concentrés Q1 (12 produits)
+   5.  Zero achat 20/80 Q1 (ciblé) — gros comptes à risque
+   6.  Zero achat 20/80 Q1 (concentrés) — gros comptes à risque
+   7.  Pertes Q1 - Global (méthode fréquence)
+   8.  Pertes Q1 - Concentrés (méthode fréquence)
+   9.  Transition Q1→Q2 synthèse (16 ciblés)
+   10. Transition Q1→Q2 synthèse (12 concentrés)
+   11. Détail transition (16 ciblés)
+   12. Détail transition (12 concentrés)
+   13. Graphiques (7 graphiques intégrés)
+   14. Recommandations (plan d'action commercial priorisé)
