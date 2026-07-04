@@ -84,11 +84,11 @@ BULLET_BOLD = ParagraphStyle('BulletB', parent=BULLET, fontName='NotoSerifSC-Bol
 
 # ===== PAGE SETUP =====
 PAGE_W, PAGE_H = A4
-MARGIN_L = 2*cm
-MARGIN_R = 2*cm
+MARGIN_L = 1.5*cm
+MARGIN_R = 1.5*cm
 MARGIN_T = 2.2*cm
-MARGIN_B = 2*cm
-CONTENT_W = PAGE_W - MARGIN_L - MARGIN_R
+MARGIN_B = 1.8*cm
+CONTENT_W = PAGE_W - MARGIN_L - MARGIN_R  # ~17.8 cm (vs 16.8 before)
 
 # ===== COVER PAGE FUNCTION =====
 def draw_cover(canv, doc):
@@ -328,7 +328,7 @@ def build_story():
         ["", "Synthèse exécutive", "3"],
         ["1", "État des lieux et méthodologie", "4"],
         ["2", "Chiffres clés et segmentation clients", "5"],
-        ["3", "Analyse Zero Achat Q1", "6"],
+        ["3", "Analyse Zéro Achat Q1", "6"],
         ["4", "Pertes Q1 estimées (méthode fréquence)", "8"],
         ["5", "Transition Q1→Q2 et dynamique mensuelle", "10"],
         ["6", "Analyse Chick Booster & Piglet Booster", "12"],
@@ -446,7 +446,7 @@ def build_story():
         ["BELGO 5%", "2", "C103 Chair 50Kg, C101 Ponte 50Kg", "7 645 lignes"],
         ["TOTAL CIBLÉ", "16", "—", "39 315 lignes (≈ 64% des lignes Livrées)"],
     ]
-    story.append(make_table(prod_data, col_widths=[3*cm, 1.5*cm, 7*cm, 5.5*cm]))
+    story.append(make_table(prod_data, col_widths=[3.2*cm, 1.5*cm, 7.5*cm, 5.6*cm]))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "Une analyse complémentaire est également conduite sur les 12 concentrés seuls (BELGO 10% + BELGO 5%, sans le soja) car ils représentent <b>la plus grosse partie de la marge</b>. "
@@ -468,8 +468,8 @@ def build_story():
         BODY
     ))
     story.append(Paragraph(
-        "<b>Transition Q1→Q2</b> : chaque client est classé selon son statut d'achat sur produits ciblés en Q1 (Zero/Active) et Q2 (Zero/Active), "
-        "ce qui donne 4 segments : Persistant (Zero→Zero), Réactivé (Zero→Active, GAIN), Retenu (Active→Active), Churned (Active→Zero, PERTE).",
+        "<b>Transition Q1→Q2</b> : chaque client est classé selon son statut d'achat sur produits ciblés en Q1 (Zéro achat/Active) et Q2 (Zéro achat/Active), "
+        "ce qui donne 4 segments : Persistant (Zéro achat→Zéro achat), Réactivé (Zéro achat→Active, GAIN), Retenu (Active→Active), Churned (Active→Zéro achat, PERTE).",
         BODY
     ))
 
@@ -506,10 +506,15 @@ def build_story():
         "ce qui représente un potentiel important de réactivation. La fréquence moyenne est de 3,5 mois d'achat par client.",
         BODY
     ))
+    # Chart: Distribution fréquence
+    story.append(Spacer(1, 0.3*cm))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chart8_frequence.png', width=14*cm, height=7.9*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 1 — Distribution de la fréquence d'achat (6 mois)", CAPTION))
 
     story.append(Paragraph("2.3 Top 5 agences par nombre de clients", H2))
     ag_data = [
-        ["Agence", "Clients", "CA HT 6 mois (FCFA)", "CA moyen/client", "% Zero achat Q1"],
+        ["Agence", "Clients", "CA HT 6 mois (FCFA)", "CA moyen/client", "% Clients zéro achat Q1"],
         ["AGENCE FAMLA", "293", "4 359 027 250", "14,87 M", "19,1%"],
         ["AGENCE MESSASSI", "167", "1 633 657 768", "9,78 M", "33,5%"],
         ["AGENCE NDOBO", "154", "1 782 721 571", "11,58 M", "29,2%"],
@@ -528,14 +533,14 @@ def build_story():
     story.append(PageBreak())
 
     # ---------- PAGE 6: SECTION 3 - ZERO ACHAT ----------
-    story.append(Paragraph("3. Analyse Zero Achat Q1", H1))
+    story.append(Paragraph("3. Analyse Zéro Achat Q1", H1))
     story.append(section_divider())
 
     story.append(Paragraph("3.1 Vue d'ensemble", H2))
     cards3 = [
-        kpi_card("Zero achat global Q1", "338", "clients (16 produits)"),
-        kpi_card("Zero achat concentrés Q1", "526", "clients (12 concentrés)"),
-        kpi_card("20/80 en zero achat Q1", "14", "clients prioritaires"),
+        kpi_card("Zéro achat global Q1", "338", "clients (16 produits)"),
+        kpi_card("Zéro achat concentrés Q1", "526", "clients (12 concentrés)"),
+        kpi_card("20/80 en clients zéro achat Q1", "14", "clients prioritaires"),
         kpi_card("Jamais acquis (6 mois)", "118", "clients persistants"),
     ]
     story.append(kpi_row(cards3))
@@ -563,7 +568,7 @@ def build_story():
         ["13", "MAKUETE Epse MANFOUO EDITH", "NDOBO", "15 400 000", "—", "FAIBLE"],
         ["14", "TChouabe siakam therese", "AHALA", "13 183 000", "—", "FAIBLE"],
     ]
-    story.append(make_table(top14_data, col_widths=[0.8*cm, 5*cm, 2*cm, 3*cm, 3*cm, 2.4*cm], font_size=8))
+    story.append(make_table(top14_data, col_widths=[0.8*cm, 5.5*cm, 2.5*cm, 3.2*cm, 3.2*cm, 2.6*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Concentration géographique :</b> FAMLA (6 clients), NDOBO (4 clients), DJELENG (2 clients), AHALA (1), NDOBO (1). "
@@ -574,13 +579,13 @@ def build_story():
     story.append(PageBreak())
 
     # ---------- PAGE 7: SECTION 3 SUITE ----------
-    story.append(Paragraph("3.3 Zero achat par agence", H2))
+    story.append(Paragraph("3.3 Zéro achat par agence", H2))
     story.append(Paragraph(
-        "Répartition des clients zero achat Q1 (ciblé) par agence principale, avec décomposition 20/80 vs autres.",
+        "Répartition des clients zéro achat Q1 (ciblé) par agence principale, avec décomposition 20/80 vs autres.",
         BODY
     ))
     ag_za_data = [
-        ["Agence", "Total clients", "Actifs Q1", "Zero 20/80", "Zero autres", "Total Zero", "% Zero"],
+        ["Agence", "Total clients", "Actifs Q1", "Zéro achat 20/80", "Zéro achat autres", "Total zéro achat", "% zéro achat"],
         ["FAMLA", "293", "237", "7", "49", "56", "19,1%"],
         ["MESSASSI", "167", "111", "0", "56", "56", "33,5%"],
         ["NDOBO", "154", "109", "4", "41", "45", "29,2%"],
@@ -589,16 +594,21 @@ def build_story():
         ["Autres agences", "647", "525", "1", "121", "122", "18,9%"],
         ["TOTAL", "1 359", "1 022", "14", "324", "338", "24,9%"],
     ]
-    story.append(make_table(ag_za_data, col_widths=[3.5*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2*cm, 2*cm, 1.6*cm]))
+    story.append(make_table(ag_za_data, col_widths=[3.2*cm, 1.8*cm, 1.6*cm, 2.2*cm, 2*cm, 2.2*cm, 1.6*cm]))
     story.append(Spacer(1, 0.3*cm))
+    # Chart: Zero achat par agence
+    img = Image('/home/z/my-project/scripts/pdf_charts/chart4_zero_agence.png', width=15*cm, height=8.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 2 — Répartition zéro achat Q1 (ciblé) par agence", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "<b>Constat :</b> MESSASSI et NGAOUNDERE affichent un taux de zero achat critique (≥33%), alors qu'aucun client 20/80 n'est en zero achat dans ces agences. "
+        "<b>Constat :</b> MESSASSI et NGAOUNDERE affichent un taux de zéro achat critique (≥33%), alors qu'aucun client 20/80 n'est en zéro achat dans ces agences. "
         "Cela suggère un problème de couverture commerciale sur les clients moyens — potentiellement un sous-dimensionnement de l'effectif commercial ou un manque de visibilité locale. "
-        "FAMLA concentre la moitié des clients 20/80 en zero achat (7 sur 14), ce qui en fait l'agence prioritaire pour l'action de sauvetage.",
+        "FAMLA concentre la moitié des clients 20/80 en zéro achat (7 sur 14), ce qui en fait l'agence prioritaire pour l'action de sauvetage.",
         BODY
     ))
 
-    story.append(Paragraph("3.4 Zero achat concentrés (analyse distincte)", H2))
+    story.append(Paragraph("3.4 Zéro achat concentrés (analyse distincte)", H2))
     story.append(Paragraph(
         "526 clients n'ont acheté aucun concentré en Q1 (vs 338 sur le ciblé global). La différence (188 clients) correspond aux clients qui ont acheté du soja en Q1 mais pas de concentrés — "
         "ce sont les cibles idéales pour une action de cross-sell vers les concentrés.",
@@ -606,8 +616,8 @@ def build_story():
     ))
     za_c_data = [
         ["Catégorie", "Nb clients", "Dont 20/80", "Action"],
-        ["Zero achat ciblé Q1 (16 produits)", "338", "14", "Réactivation complète (soja + concentrés)"],
-        ["Zero achat concentrés Q1 (12 produits)", "526", "41", "Cross-sell concentrés (soja déjà acheté pour 188)"],
+        ["Zéro achat ciblé Q1 (16 produits)", "338", "14", "Réactivation complète (soja + concentrés)"],
+        ["Zéro achat concentrés Q1 (12 produits)", "526", "41", "Cross-sell concentrés (soja déjà acheté pour 188)"],
         ["Jamais acheté de concentrés en 6 mois", "≈ 380", "—", "Prospection longue — offre découverte"],
     ]
     story.append(make_table(za_c_data, col_widths=[6*cm, 2.5*cm, 2.5*cm, 6.5*cm]))
@@ -651,7 +661,7 @@ def build_story():
         ["Catégorie", "Clients concernés", "Volume perdu (t)", "CA perdu (FCFA)"],
         ["Zero achat global (16 produits)", "338", "1 598,66", "580 819 762"],
         ["Zero achat concentrés (12 produits)", "526", "296,20", "199 660 105"],
-        ["Dont clients 20/80 (zero global)", "14", "≈ 600", "≈ 175 000 000"],
+        ["Dont clients 20/80 (zéro achat global)", "14", "≈ 600", "≈ 175 000 000"],
     ]
     story.append(make_table(pertes_data, col_widths=[6*cm, 3.5*cm, 3*cm, 4*cm]))
     story.append(Spacer(1, 0.3*cm))
@@ -675,7 +685,12 @@ def build_story():
         ["9", "STE IPACAM & FILS", "1,00 (3 mois)", "12,25", "36,75", "14 754 000"],
         ["10", "BAHO", "0,33 (1 mois)", "35,00", "35,00", "10 920 000"],
     ]
-    story.append(make_table(top10_data, col_widths=[0.8*cm, 4.5*cm, 3*cm, 2.8*cm, 2.5*cm, 3.4*cm], font_size=8))
+    story.append(make_table(top10_data, col_widths=[0.8*cm, 5*cm, 3.2*cm, 3*cm, 2.7*cm, 3.6*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    # Chart: Top 10 pertes
+    img = Image('/home/z/my-project/scripts/pdf_charts/chart3_top10_pertes.png', width=15*cm, height=8.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 3 — Top 10 pertes Q1 (clients zéro achat global, en millions FCFA)", CAPTION))
 
     story.append(PageBreak())
 
@@ -733,13 +748,18 @@ def build_story():
 
     story.append(Paragraph("5.1 Matrice de transition Q1→Q2 (16 produits ciblés)", H2))
     matrice = [
-        ["", "Q2 : Zero", "Q2 : Active", "Total Q1"],
-        ["Q1 : Zero", "118 (persistants)", "234 (réactivés) ★", "352"],
+        ["", "Q2 : Zéro achat", "Q2 : Active", "Total Q1"],
+        ["Q1 : Zéro achat", "118 (persistants)", "234 (réactivés) ★", "352"],
         ["Q1 : Active", "192 (churned) ⚠", "850 (retenus)", "1 042"],
         ["Total Q2", "310", "1 084", "1 359"],
     ]
     story.append(make_table(matrice, col_widths=[3.5*cm, 4*cm, 4.5*cm, 3*cm]))
     story.append(Spacer(1, 0.3*cm))
+    # Chart: Segments de transition
+    img = Image('/home/z/my-project/scripts/pdf_charts/chart2_segments.png', width=14*cm, height=7.9*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 4 — Segments de transition Q1 → Q2 (16 produits ciblés)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Quatre segments :</b><br/>"
         "• <b>Persistants (118)</b> : clients qui n'ont jamais acheté de ciblé sur 6 mois — opportunité non exploitée, à prospecter.<br/>"
@@ -758,13 +778,13 @@ def build_story():
         ["Churned", "192", "758,01", "0", "-758,01", "273,3 M", "0"],
         ["TOTAL", "1 359", "17 478,87", "20 657,97", "+3 179,10", "17,3 Md", "17,9 Md"],
     ]
-    story.append(make_table(seg_data, col_widths=[2.5*cm, 1.5*cm, 2.2*cm, 2.2*cm, 2*cm, 2.5*cm, 2.5*cm], font_size=8))
+    story.append(make_table(seg_data, col_widths=[2.8*cm, 1.6*cm, 2.5*cm, 2.5*cm, 2.2*cm, 2.9*cm, 2.9*cm], font_size=8))
 
     story.append(Paragraph("5.3 Bilan net Q1→Q2", H2))
     bilan_data = [
         ["", "Clients", "Volume (t)", "CA (FCFA)"],
-        ["GAIN — Réactivés (Q1 Zero → Q2 Active)", "234", "+1 524,74", "+549 689 847"],
-        ["PERTE — Churned (Q1 Active → Q2 Zero)", "192", "-758,01", "-273 296 995"],
+        ["GAIN — Réactivés (Q1 Zéro achat → Q2 Active)", "234", "+1 524,74", "+549 689 847"],
+        ["PERTE — Churned (Q1 Active → Q2 Zéro achat)", "192", "-758,01", "-273 296 995"],
         ["BILAN NET", "+42", "+766,73", "+276 392 852"],
     ]
     story.append(make_table(bilan_data, col_widths=[7*cm, 2.5*cm, 3*cm, 3.5*cm]))
@@ -782,7 +802,7 @@ def build_story():
     story.append(Paragraph("5.4 Comparatif Ciblé (16) vs Concentrés (12)", H2))
     comp_data = [
         ["Indicateur", "Ciblé (16 produits)", "Concentrés (12 produits)", "Écart"],
-        ["Clients Zero Q1", "352", "544", "+192 (ceux qui ont acheté soja mais pas conc.)"],
+        ["Clients zéro achat Q1", "352", "544", "+192 (ceux qui ont acheté soja mais pas conc.)"],
         ["Clients Active Q1", "1 042", "850", "-192"],
         ["Réactivés Q2", "234", "184", "-50"],
         ["Churned Q2", "192", "178", "-14"],
@@ -792,6 +812,11 @@ def build_story():
     ]
     story.append(make_table(comp_data, col_widths=[5*cm, 3.5*cm, 3.5*cm, 4.5*cm]))
     story.append(Spacer(1, 0.3*cm))
+    # Chart: Bilan net Ciblé vs Concentrés
+    img = Image('/home/z/my-project/scripts/pdf_charts/chart5_bilan_net.png', width=14*cm, height=7.9*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 6 — Bilan net Q1 → Q2 : Ciblé vs Concentrés (millions FCFA)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Insight clé :</b> le bilan net sur les concentrés (+52 M) est <b>5 fois plus faible</b> que sur le ciblé global (+276 M). "
         "La dynamique positive Q1→Q2 est donc portée principalement par les tourteaux de soja, pas par les concentrés. "
@@ -808,7 +833,7 @@ def build_story():
         ["Statut Q2", "Nb clients", "% des Q1 Fidèles", "Commentaire"],
         ["Q2 Fidèle (3 mois)", "420", "79,7%", "Maintenus — cœur de clientèle stable"],
         ["Q2 Semi-fidèle (1-2 mois)", "97", "18,4%", "Déclin de fréquence — à surveiller (risque churn)"],
-        ["Q2 Zero (churned)", "10", "1,9%", "Perte sèche — anciens fidèles devenus inactifs"],
+        ["Q2 Zéro achat (churned)", "10", "1,9%", "Perte sèche — anciens fidèles devenus inactifs"],
     ]
     story.append(make_table(fidel_data, col_widths=[5*cm, 2.5*cm, 3*cm, 6*cm]))
     story.append(Spacer(1, 0.3*cm))
@@ -832,8 +857,13 @@ def build_story():
         ["Mai", "853", "738", "573"],
         ["Juin", "958", "856", "672"],
     ]
-    story.append(make_table(monthly_data, col_widths=[2.5*cm, 4.5*cm, 4.5*cm, 4.5*cm]))
+    story.append(make_table(monthly_data, col_widths=[2.8*cm, 4.9*cm, 4.9*cm, 4.9*cm]))
     story.append(Spacer(1, 0.3*cm))
+    # Chart: Évolution mensuelle
+    img = Image('/home/z/my-project/scripts/pdf_charts/chart1_evolution.png', width=15*cm, height=8.4*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 5 — Évolution mensuelle du nombre de clients actifs", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Tendance :</b> juin 2026 marque un rebond net (+118 clients actifs ciblé vs mai), possiblement lié au début de la rupture concurrente sur le soja. "
         "À confirmer sur les mois suivants.",
@@ -925,6 +955,11 @@ def build_story():
     ]
     story.append(make_table(syn_glob, col_widths=[5*cm, 3.5*cm, 4*cm, 4*cm]))
     story.append(Spacer(1, 0.3*cm))
+    # Chart: Synergie Booster
+    img = Image('/home/z/my-project/scripts/pdf_charts/chart6_synergie_booster.png', width=16*cm, height=7.2*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 7 — Synergie Chick/Piglet Booster × Concentrés", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Conclusion stratégique :</b> les Booster sont des produits d'entrée qui amènent naturellement 75% de leurs acheteurs vers les concentrés. "
         "Tout effort sur les Booster (promotion, échantillon) a un <b>effet multiplicateur</b> sur les ventes de concentrés (cœur de marge). "
@@ -948,7 +983,7 @@ def build_story():
         "<b>Cibles prioritaires :</b><br/>"
         "• 14 clients 20/80 zéro achat Q1 (ciblé) — RDV direct commercial<br/>"
         "• 192 clients churned Q1→Q2 (273 M FCFA perdus) — appel téléphonique<br/>"
-        "• 118 clients persistants zero (jamais acquis) — offre découverte<br/>"
+        "• 118 clients persistants zéro achat (jamais acquis) — offre découverte<br/>"
         "• Clients concurrents en rupture — conquête pure",
         BODY
     ))
@@ -974,8 +1009,8 @@ def build_story():
 
     story.append(Paragraph("7.3 Axe 3 — Stratégie par agence (disparités majeures)", H2))
     story.append(Paragraph(
-        "<b>Constat :</b> disparités importantes — FAMLA (293 clients, 19% zero) vs MESSASSI (167, 33,5% zero) vs NGAOUNDERE (91, 34,1% zero). "
-        "1 client sur 3 en zero achat dans certaines agences = anomalie.",
+        "<b>Constat :</b> disparités importantes — FAMLA (293 clients, 19% zéro achat) vs MESSASSI (167, 33,5% zéro achat) vs NGAOUNDERE (91, 34,1% zéro achat). "
+        "1 client sur 3 en zéro achat dans certaines agences = anomalie.",
         BODY_BOLD
     ))
     story.append(Paragraph(
@@ -983,7 +1018,7 @@ def build_story():
         "plan marketing agence par agence ; objectifs commerciaux individualisés.",
         BODY
     ))
-    story.append(Paragraph("<b>KPI :</b> % zero achat par agence (cible <25%), Nb nouveaux clients par agence/mois. <b>Délai :</b> 60-90 jours.", BODY))
+    story.append(Paragraph("<b>KPI :</b> % zéro achat par agence (cible <25%), Nb nouveaux clients par agence/mois. <b>Délai :</b> 60-90 jours.", BODY))
 
     story.append(PageBreak())
 
@@ -1062,13 +1097,17 @@ def build_story():
         ["Segment", "🔴 Pessimiste", "🟡 Réaliste", "🟢 Optimiste"],
         ["Réactivation 14 clients 20/80", "34 M", "68 M", "103 M"],
         ["Reconquête 192 churned", "27 M", "81 M", "135 M"],
-        ["Acquisition 118 persistants zero", "3 M", "16 M", "63 M"],
+        ["Acquisition 118 persistants zéro achat", "3 M", "16 M", "63 M"],
         ["Récupération pertes Q1", "58 M", "174 M", "348 M"],
         ["Conquête clients concurrents", "100 M", "300 M", "600 M"],
         ["CA ADDITIONNEL TOTAL", "222 M", "640 M", "1 249 M"],
     ]
     story.append(make_table(ca_data, col_widths=[6*cm, 3.3*cm, 3.3*cm, 3.3*cm]))
     story.append(Spacer(1, 0.3*cm))
+    # Chart: Projection CA additionnel
+    img = Image('/home/z/my-project/scripts/pdf_charts/chart7_projection.png', width=15*cm, height=7.5*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 8 — Projection CA additionnel à 6 mois par scénario (millions FCFA)", CAPTION))
 
     story.append(Paragraph("8.3 Projection CA total S2 2026", H2))
     proj_data = [
@@ -1094,14 +1133,14 @@ def build_story():
 
     rec_data = [
         ["Priorité", "Axe d'action", "Nb clients", "Délai", "Pilote"],
-        ["🔴 CRITIQUE", "Sauvetage des 14 clients 20/80 en zero achat Q1 (ciblé + concentrés)", "14", "30 j", "Directeur Commercial + Responsables agences"],
-        ["🟠 ÉLEVÉE", "Recontact des 192 clients churned (actifs Q1 → Zero Q2)", "192", "15 j", "Commerciaux terrain"],
+        ["🔴 CRITIQUE", "Sauvetage des 14 clients 20/80 en clients zéro achat Q1 (ciblé + concentrés)", "14", "30 j", "Directeur Commercial + Responsables agences"],
+        ["🟠 ÉLEVÉE", "Recontact des 192 clients churned (actifs Q1 → Zéro achat Q2)", "192", "15 j", "Commerciaux terrain"],
         ["🟠 ÉLEVÉE", "Sauvetage des 97 anciens fidèles Q1 en déclin Q2", "97", "30 j", "Commerciaux + Service client"],
-        ["🟡 MOYENNE", "Prospection des 118 clients jamais acquis (persistants zero)", "118", "60 j", "Marketing + Commerciaux"],
+        ["🟡 MOYENNE", "Prospection des 118 clients jamais acquis (persistants zéro achat)", "118", "60 j", "Marketing + Commerciaux"],
         ["🟡 MOYENNE", "Capitalisation sur les 234 clients réactivés Q2 (étude qualitative)", "234", "45 j", "Marketing + Direction commerciale"],
         ["🟢 STRUCTURANTE", "Analyse du déclin volume concentrés (segment retenu -248 t)", "672", "90 j", "Direction Produit + Direction Commerciale"],
     ]
-    story.append(make_table(rec_data, col_widths=[2.5*cm, 5.5*cm, 1.5*cm, 1.5*cm, 5.5*cm], font_size=8))
+    story.append(make_table(rec_data, col_widths=[2.5*cm, 6.5*cm, 1.5*cm, 1.5*cm, 5.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
 
     story.append(Paragraph("9.1 Actions concrètes par recommandation", H2))
@@ -1124,7 +1163,7 @@ def build_story():
         BODY
     ))
     story.append(Paragraph(
-        "<b>4. Prospection des 118 persistants zero (MOYENNE) :</b> campagne d'échantillonnage + invitation à une démonstration produit. "
+        "<b>4. Prospection des 118 persistants zéro achat (MOYENNE) :</b> campagne d'échantillonnage + invitation à une démonstration produit. "
         "Tarif découverte sur première commande. Identifier ceux qui achètent chez les concurrents (analyse de marché locale).",
         BODY
     ))
@@ -1148,7 +1187,7 @@ def build_story():
     synth_pa = [
         ["Indicateur", "Valeur"],
         ["Enjeu total identifié (pertes Q1 + risques churn)", "≈ 854 M FCFA"],
-        ["Gain potentiel (si réactivation complète des 20/80 zero achat)", "≈ 175 M FCFA"],
+        ["Gain potentiel (si réactivation complète des 20/80 zéro achat)", "≈ 175 M FCFA"],
         ["Nb total de clients concernés par une action prioritaire", "≈ 524 clients"],
         ["Horizon de mise en œuvre", "30-90 jours (priorités CRITIQUE et ÉLEVÉE sous 30 jours)"],
         ["Pilotage", "Revue mensuelle du CA ciblé/concentrés par segment + tableau de bord des actions"],
@@ -1167,7 +1206,7 @@ def build_story():
         ["J+60", "Benchmark prix concentrés concurrents", "Rapport benchmark + recommandations tarifaires"],
         ["J+90", "Bilan conquest soja + plan marketing agences", "Bilan CA additionnel vs scénario réaliste"],
     ]
-    story.append(make_table(cal_data, col_widths=[2*cm, 7*cm, 8*cm]))
+    story.append(make_table(cal_data, col_widths=[2.2*cm, 7.5*cm, 8*cm]))
 
     story.append(PageBreak())
 
@@ -1219,7 +1258,7 @@ def build_story():
     story.append(Paragraph(
         "<b>3. Suivi mensuel des KPI :</b> tableau de bord mensuel retraçant le CA additionnel par segment (réactivés, reconquis, nouveaux), "
         "le taux de verrouillage contractuel, le taux de cross-sell Booster → Concentrés, "
-        "et l'évolution du % de zero achat par agence. Revue en comité de direction le 1er lundi de chaque mois.",
+        "et l'évolution du % de zéro achat par agence. Revue en comité de direction le 1er lundi de chaque mois.",
         BODY
     ))
 
