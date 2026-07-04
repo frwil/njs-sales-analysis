@@ -91,12 +91,15 @@ client_q2_active_months_target = defaultdict(set)
 client_q2_active_months_concentre = defaultdict(set)
 
 # NEW: per-month Q2 aggregates (months 4, 5, 6 = April, May, June)
-# For tracking month-by-month evolution in the new sheet
-client_t_month_kg = {m: defaultdict(float) for m in [1,2,3,4,5,6]}  # targeted vol per month
+client_t_month_kg = {m: defaultdict(float) for m in [1,2,3,4,5,6]}
 client_t_month_ca = {m: defaultdict(float) for m in [1,2,3,4,5,6]}
-client_t_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}  # bought targeted in month m
-client_c_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}  # bought concentré in month m
-client_any_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}  # bought anything in month m
+client_t_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}
+client_c_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}
+client_any_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}
+
+# NEW: agency aggregation per client
+# client_agencies_ca[key][agence] = CA HT total in this agency
+client_agencies_ca = defaultdict(lambda: defaultdict(float))
 
 for sheet_name in wb_src.sheetnames:
     ws = wb_src[sheet_name]
@@ -113,6 +116,7 @@ for sheet_name in wb_src.sheetnames:
         desc = row[1] if len(row)>1 else None
         qte = row[2] if len(row)>2 else 0
         ca_ht = row[8] if len(row)>8 else 0
+        agence = row[17] if len(row)>17 else None  # column R = agence
         ref_c, name_c = split_tiers(tiers)
         key = (ref_c, name_c)
         ref_prod_str = str(ref_prod).strip() if ref_prod is not None else ""
@@ -123,6 +127,11 @@ for sheet_name in wb_src.sheetnames:
         except: qte_f = 0.0
         try: ca_f = float(ca_ht) if ca_ht is not None else 0.0
         except: ca_f = 0.0
+
+        # Aggregate agency CA
+        agence_str = str(agence).strip() if agence is not None else "(vide)"
+        client_agencies_ca[key][agence_str] += ca_f
+
         client_ca_total[key] += ca_f
         client_months_any[key].add(month_num)
         client_any_month_active[month_num][key] = True
@@ -174,6 +183,31 @@ for k in sorted_by_ca:
 
 zero_global = [k for k in clients_all if not client_t_q1_months[k]]
 zero_concentre = [k for k in clients_all if not client_c_q1_months[k]]
+
+# Helper: format client agency list with primary agency marked
+def format_agencies(key):
+    """Return a string like '★AGENCE FAMLA, AGENCE NDOBO' where ★ marks the primary (highest CA) agency."""
+    agencies = client_agencies_ca.get(key, {})
+    if not agencies:
+        return "-"
+    # Sort by CA desc
+    sorted_ag = sorted(agencies.items(), key=lambda x: -x[1])
+    # Primary agency marked with ★
+    parts = []
+    for i, (ag, ca) in enumerate(sorted_ag):
+        if i == 0:
+            parts.append(f"★ {ag}")
+        else:
+            parts.append(ag)
+    return ", ".join(parts)
+
+def get_primary_agency(key):
+    """Return the agency where the client has the highest CA (or '-' if none)."""
+    agencies = client_agencies_ca.get(key, {})
+    if not agencies:
+        return "-"
+    sorted_ag = sorted(agencies.items(), key=lambda x: -x[1])
+    return sorted_ag[0][0]
 
 # Losses
 def compute_loss(client_key, category_refs, products_dict, active_months_dict):
@@ -290,10 +324,12 @@ sommaire = [
     ("10", "10. Transition Q1-Q2 (conc.)", "Synthèse : matrice de transition Q1→Q2 sur 12 concentrés uniquement.", "Synthèse"),
     ("11", "11. Détail transition (cible)", f"Détail par client des {len(clients_all)} clients sur 16 produits ciblés. Triés par segment (churned en premier).", f"{len(clients_all)} clients"),
     ("12", "12. Détail transition (conc.)", f"Détail par client des {len(clients_all)} clients sur 12 concentrés.", f"{len(clients_all)} clients"),
-    ("13", "13. Evolution mensuelle (cible)", "NOUVEAU — Analyse mois par mois (Jan→Juin) sur 16 produits ciblés. Volume (t) et statut actif ✓ pour chaque mois, Q2 détaillé Avril/Mai/Juin séparément.", f"{len(clients_all)} clients"),
-    ("14", "14. Evolution mensuelle (conc.)", "NOUVEAU — Analyse mois par mois (Jan→Juin) sur 12 concentrés. Q2 détaillé Avril/Mai/Juin séparément.", f"{len(clients_all)} clients"),
-    ("15", "15. Graphiques", "7 graphiques natifs Excel (modifiables) : évolution mensuelle, segments de transition, top 10 pertes, répartition 20/80, bilan net.", "7 graphiques"),
-    ("16", "16. Recommandations", "Plan d'action commercial priorisé en 6 axes avec clients cibles, montants et actions concrètes.", "Plan d'action"),
+    ("13", "13. Evolution mensuelle (cible)", "Analyse mois par mois (Jan→Juin) sur 16 produits ciblés. Volume (t) et statut actif ✓ pour chaque mois, Q2 détaillé Avril/Mai/Juin séparément.", f"{len(clients_all)} clients"),
+    ("14", "14. Evolution mensuelle (conc.)", "Analyse mois par mois (Jan→Juin) sur 12 concentrés. Q2 détaillé Avril/Mai/Juin séparément.", f"{len(clients_all)} clients"),
+    ("15", "15. Zero achat par agence (cibl)", "NOUVEAU — Par agence : proportion de zero achat Q1 (ciblé) avec décomposition 20/80 vs autres + graphique natif.", "Par agence"),
+    ("16", "16. Zero achat par agence (conc)", "NOUVEAU — Par agence : proportion de zero achat Q1 (concentrés) avec décomposition 20/80 vs autres + graphique natif.", "Par agence"),
+    ("17", "17. Graphiques", "7 graphiques natifs Excel (modifiables) : évolution mensuelle, segments de transition, top 10 pertes, répartition 20/80, bilan net.", "7 graphiques"),
+    ("18", "18. Recommandations", "Plan d'action commercial priorisé en 6 axes avec clients cibles, montants et actions concrètes.", "Plan d'action"),
 ]
 
 for i, (num, sheet, content, lignes) in enumerate(sommaire, start=1):
@@ -346,11 +382,11 @@ print(f"  Sheet 1 (Sommaire) built")
 ws = wb.create_sheet("2. Clients uniques")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Clients uniques (Janvier-Juin 2026) — Check mensuel d'achats").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
-ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=12)
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=13)
 ws.row_dimensions[1].height = 26
 
 HEADERS = ["N°", "Réf. client", "Nom du client", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
-           "Nb mois d'achat", "CA Total HT (6 mois)", "Catégorie 20/80"]
+           "Nb mois d'achat", "CA Total HT (6 mois)", "Agence(s) [★ = principale]", "Catégorie 20/80"]
 for col_idx, h in enumerate(HEADERS, start=1):
     c = ws.cell(row=3, column=col_idx, value=h)
     c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
@@ -382,7 +418,10 @@ for i, key in enumerate(clients_all, start=1):
     c = ws.cell(row=r, column=11, value=client_ca_total.get(key, 0.0)); c.font = BODY_FONT
     c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER; c.number_format = CA_NUM_FMT
     if banding: c.fill = BAND_FILL
-    c = ws.cell(row=r, column=12); c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    c = ws.cell(row=r, column=12, value=format_agencies(key)); c.font = BODY_FONT
+    c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=13); c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
     if key in pareto_clients:
         c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
     else:
@@ -395,23 +434,24 @@ ws.column_dimensions['C'].width = 42
 for cl in ['D','E','F','G','H','I']: ws.column_dimensions[cl].width = 11
 ws.column_dimensions['J'].width = 16
 ws.column_dimensions['K'].width = 22
-ws.column_dimensions['L'].width = 14
+ws.column_dimensions['L'].width = 38
+ws.column_dimensions['M'].width = 14
 ws.freeze_panes = "D4"
-ws.auto_filter.ref = f"A3:L{START_ROW + len(clients_all) - 1}"
+ws.auto_filter.ref = f"A3:M{START_ROW + len(clients_all) - 1}"
 print(f"  Sheet 2 (Clients uniques) built")
 
 # ===== SHEET 3: ZERO ACHAT GLOBAL Q1 =====
 ws = wb.create_sheet("3. Zero achat global Q1")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Clients 'zéro achat global' Janvier-Mars 2026 (16 produits ciblés)").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
-ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=9)
 ws.row_dimensions[1].height = 26
 ws.cell(row=2, column=1, value="Critère : client n'ayant acheté AUCUN des 16 produits ciblés en Jan-Mar 2026.").font = SUB_FONT
-ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=8)
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=9)
 ws.row_dimensions[2].height = 22
 
 HEADERS = ["N°", "Réf. client", "Nom du client", "Achat ciblé Q1 ?", "CA HT Q1 (tous produits)",
-           "Achat ciblé 6 mois ?", "CA HT total 6 mois", "Catégorie 20/80"]
+           "Achat ciblé 6 mois ?", "CA HT total 6 mois", "Agence(s) [★ = principale]", "Catégorie 20/80"]
 for col_idx, h in enumerate(HEADERS, start=1):
     c = ws.cell(row=3, column=col_idx, value=h)
     c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
@@ -446,7 +486,10 @@ for i, key in enumerate(zero_global_sorted, start=1):
     c = ws.cell(row=r, column=7, value=client_ca_total.get(key, 0.0)); c.font = BODY_FONT
     c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER; c.number_format = CA_NUM_FMT
     if banding: c.fill = BAND_FILL
-    c = ws.cell(row=r, column=8); c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    c = ws.cell(row=r, column=8, value=format_agencies(key)); c.font = BODY_FONT
+    c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=9); c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
     if key in pareto_clients:
         c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
     else:
@@ -460,23 +503,24 @@ ws.column_dimensions['D'].width = 16
 ws.column_dimensions['E'].width = 22
 ws.column_dimensions['F'].width = 18
 ws.column_dimensions['G'].width = 22
-ws.column_dimensions['H'].width = 14
+ws.column_dimensions['H'].width = 38
+ws.column_dimensions['I'].width = 14
 ws.freeze_panes = "D4"
-ws.auto_filter.ref = f"A3:H{START_ROW + len(zero_global_sorted) - 1}"
+ws.auto_filter.ref = f"A3:I{START_ROW + len(zero_global_sorted) - 1}"
 print(f"  Sheet 3 (Zero achat global) built")
 
 # ===== SHEET 4: ZERO ACHAT CONCENTRÉS Q1 =====
 ws = wb.create_sheet("4. Zero achat concentrés Q1")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Clients 'zéro achat concentrés' Janvier-Mars 2026 (12 produits)").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
-ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=9)
 ws.row_dimensions[1].height = 26
 ws.cell(row=2, column=1, value="Critère : client n'ayant acheté AUCUN concentré en Jan-Mar 2026. La colonne 'Achat soja Q1 ?' distingue les clients qui ont quand même acheté du soja.").font = SUB_FONT
-ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=8)
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=9)
 ws.row_dimensions[2].height = 22
 
 HEADERS = ["N°", "Réf. client", "Nom du client", "Achat concentrés Q1 ?", "Achat soja Q1 ?",
-           "Achat concentrés 6 mois ?", "CA HT total 6 mois", "Catégorie 20/80"]
+           "Achat concentrés 6 mois ?", "CA HT total 6 mois", "Agence(s) [★ = principale]", "Catégorie 20/80"]
 for col_idx, h in enumerate(HEADERS, start=1):
     c = ws.cell(row=3, column=col_idx, value=h)
     c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
@@ -516,7 +560,10 @@ for i, key in enumerate(zero_concentre_sorted, start=1):
     c = ws.cell(row=r, column=7, value=client_ca_total.get(key, 0.0)); c.font = BODY_FONT
     c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER; c.number_format = CA_NUM_FMT
     if banding: c.fill = BAND_FILL
-    c = ws.cell(row=r, column=8); c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    c = ws.cell(row=r, column=8, value=format_agencies(key)); c.font = BODY_FONT
+    c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=9); c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
     if key in pareto_clients:
         c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
     else:
@@ -530,9 +577,10 @@ ws.column_dimensions['D'].width = 18
 ws.column_dimensions['E'].width = 15
 ws.column_dimensions['F'].width = 20
 ws.column_dimensions['G'].width = 22
-ws.column_dimensions['H'].width = 14
+ws.column_dimensions['H'].width = 38
+ws.column_dimensions['I'].width = 14
 ws.freeze_panes = "D4"
-ws.auto_filter.ref = f"A3:H{START_ROW + len(zero_concentre_sorted) - 1}"
+ws.auto_filter.ref = f"A3:I{START_ROW + len(zero_concentre_sorted) - 1}"
 print(f"  Sheet 4 (Zero achat concentrés) built")
 
 # ===== SHEETS 5 & 6: ZERO ACHAT 20/80 Q1 (NEW) =====
@@ -540,10 +588,10 @@ def build_zero_2080_sheet(ws, title_text, sub_text, zero_list, category_label):
     """Build a sheet listing only the 20/80 clients who are zero-achat."""
     ws.cell(row=1, column=1, value=title_text).font = TITLE_FONT
     ws.cell(row=1, column=1).alignment = TITLE_ALIGN
-    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=9)
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=10)
     ws.row_dimensions[1].height = 26
     ws.cell(row=2, column=1, value=sub_text).font = SUB_FONT
-    ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=9)
+    ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=10)
     ws.row_dimensions[2].height = 32
 
     # Filter to 20/80 only
@@ -555,12 +603,12 @@ def build_zero_2080_sheet(ws, title_text, sub_text, zero_list, category_label):
     n_2080_zero = len(za_2080)
     pct = (n_2080_zero / n_2080_total * 100) if n_2080_total > 0 else 0
     ws.cell(row=4, column=1, value=f"📊 {n_2080_zero} client(s) 20/80 sur {n_2080_total} ({pct:.1f}%) sont en zéro achat Q1").font = Font(name="Calibri", size=12, bold=True, color="C00000")
-    ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=9)
+    ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=10)
     ws.row_dimensions[4].height = 28
 
     HEADERS = ["N°", "Réf. client", "Nom du client", "CA HT total 6 mois",
                "Achat ciblé 6 mois ?", "Top produit Q2", "CA Top produit Q2",
-               "Perte Q1 estimée (FCFA)", "Priorité"]
+               "Perte Q1 estimée (FCFA)", "Agence(s) [★ = principale]", "Priorité"]
     for col_idx, h in enumerate(HEADERS, start=1):
         c = ws.cell(row=6, column=col_idx, value=h)
         c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
@@ -614,7 +662,10 @@ def build_zero_2080_sheet(ws, title_text, sub_text, zero_list, category_label):
         if banding: c.fill = BAND_FILL
         c = ws.cell(row=r, column=8, value=loss); c.font = LOSS_FONT; c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER
         c.number_format = CA_NUM_FMT; c.fill = LOSS_FILL
-        c = ws.cell(row=r, column=9, value=priority); c.font = BOLD_FONT; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+        c = ws.cell(row=r, column=9, value=format_agencies(key)); c.font = BODY_FONT
+        c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+        c = ws.cell(row=r, column=10, value=priority); c.font = BOLD_FONT; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
         if banding: c.fill = BAND_FILL
 
     ws.column_dimensions['A'].width = 6
@@ -625,10 +676,11 @@ def build_zero_2080_sheet(ws, title_text, sub_text, zero_list, category_label):
     ws.column_dimensions['F'].width = 14
     ws.column_dimensions['G'].width = 22
     ws.column_dimensions['H'].width = 22
-    ws.column_dimensions['I'].width = 16
+    ws.column_dimensions['I'].width = 38
+    ws.column_dimensions['J'].width = 16
     ws.freeze_panes = "D7"
     if za_2080_sorted:
-        ws.auto_filter.ref = f"A6:I{START_ROW + len(za_2080_sorted) - 1}"
+        ws.auto_filter.ref = f"A6:J{START_ROW + len(za_2080_sorted) - 1}"
     return len(za_2080_sorted)
 
 ws = wb.create_sheet("5. Zero achat 20-80 Q1 (cible)")
@@ -655,10 +707,10 @@ print(f"  Sheet 6 (Zero achat 20/80 concentrés) built — {n6} clients")
 def build_pertes_sheet(ws, title_text, sub_text, zero_list, losses_dict):
     ws.cell(row=1, column=1, value=title_text).font = TITLE_FONT
     ws.cell(row=1, column=1).alignment = TITLE_ALIGN
-    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=11)
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=12)
     ws.row_dimensions[1].height = 26
     ws.cell(row=2, column=1, value=sub_text).font = SUB_FONT
-    ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=11)
+    ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=12)
     ws.row_dimensions[2].height = 56
 
     ws.merge_cells(start_row=3, start_column=4, end_row=3, end_column=7)
@@ -675,7 +727,7 @@ def build_pertes_sheet(ws, title_text, sub_text, zero_list, losses_dict):
 
     HEADERS = ["N°", "Réf. client", "Nom du client", "Nb produits (Q2)", "Nb mois actifs (Q2)",
                "Fréquence", "Σ moyennes (t)", "Perte Volume (t)", "Perte CA (FCFA)",
-               "CA HT total 6 mois", "20/80"]
+               "CA HT total 6 mois", "Agence(s) [★ = principale]", "20/80"]
     for col_idx, h in enumerate(HEADERS, start=1):
         c = ws.cell(row=4, column=col_idx, value=h)
         c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
@@ -711,7 +763,10 @@ def build_pertes_sheet(ws, title_text, sub_text, zero_list, losses_dict):
         c = ws.cell(row=r, column=10, value=client_ca_total.get(key, 0.0)); c.font = BODY_FONT; c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER
         c.number_format = CA_NUM_FMT
         if banding: c.fill = BAND_FILL
-        c = ws.cell(row=r, column=11); c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+        c = ws.cell(row=r, column=11, value=format_agencies(key)); c.font = BODY_FONT
+        c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+        c = ws.cell(row=r, column=12); c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
         if key in pareto_clients:
             c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
         else:
@@ -743,6 +798,7 @@ def build_pertes_sheet(ws, title_text, sub_text, zero_list, losses_dict):
     c = ws.cell(row=total_row, column=10, value=total_ca); c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
     c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_RIGHT; c.border = BORDER; c.number_format = CA_NUM_FMT
     c = ws.cell(row=total_row, column=11); c.fill = HEADER_FILL; c.border = BORDER
+    c = ws.cell(row=total_row, column=12); c.fill = HEADER_FILL; c.border = BORDER
 
     ws.column_dimensions['A'].width = 6
     ws.column_dimensions['B'].width = 16
@@ -750,9 +806,10 @@ def build_pertes_sheet(ws, title_text, sub_text, zero_list, losses_dict):
     for cl in ['D','E','F','G','H']: ws.column_dimensions[cl].width = 14
     ws.column_dimensions['I'].width = 22
     ws.column_dimensions['J'].width = 22
-    ws.column_dimensions['K'].width = 9
+    ws.column_dimensions['K'].width = 38
+    ws.column_dimensions['L'].width = 9
     ws.freeze_panes = "D5"
-    ws.auto_filter.ref = f"A4:K{START_ROW + len(sorted_list) - 1}"
+    ws.auto_filter.ref = f"A4:L{START_ROW + len(sorted_list) - 1}"
 
 ws = wb.create_sheet("7. Pertes Q1 - Global")
 build_pertes_sheet(
@@ -1068,12 +1125,13 @@ print(f"  Sheet 10 (Transition synthèse concentrés) built")
 def build_detail_transition(ws, title_text, q1_kg_dict, q2_kg_dict, q1_ca_dict, q2_ca_dict, q1_months_dict, q2_months_dict, segment_dict):
     ws.cell(row=1, column=1, value=title_text).font = TITLE_FONT
     ws.cell(row=1, column=1).alignment = TITLE_ALIGN
-    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=13)
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=14)
     ws.row_dimensions[1].height = 26
 
     HEADERS = ["N°", "Réf. client", "Nom du client", "Segment Q1→Q2",
                "Mois actifs Q1", "Fréquence Q1", "Mois actifs Q2", "Fréquence Q2",
-               "Vol Q1 (t)", "CA Q1 (FCFA)", "Vol Q2 (t)", "CA Q2 (FCFA)", "20/80"]
+               "Vol Q1 (t)", "CA Q1 (FCFA)", "Vol Q2 (t)", "CA Q2 (FCFA)",
+               "Agence(s) [★ = principale]", "20/80"]
     for col_idx, h in enumerate(HEADERS, start=1):
         c = ws.cell(row=3, column=col_idx, value=h)
         c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
@@ -1121,24 +1179,25 @@ def build_detail_transition(ws, title_text, q1_kg_dict, q2_kg_dict, q1_ca_dict, 
             (10, q1_ca, BODY_ALIGN_RIGHT, CA_NUM_FMT),
             (11, q2_vol_t, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
             (12, q2_ca, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+            (13, format_agencies(key), BODY_ALIGN_LEFT, None),
         ]
         for col_idx, val, align, fmt in cells:
             c = ws.cell(row=r, column=col_idx, value=val)
             c.font = font; c.alignment = align; c.border = BORDER
             if fmt: c.number_format = fmt
             c.fill = fill
-        c = ws.cell(row=r, column=13)
+        c = ws.cell(row=r, column=14)
         c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
         if key in pareto_clients:
             c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
         else:
             c.fill = fill; c.font = font
 
-    widths = [6, 16, 38, 38, 14, 14, 14, 14, 12, 18, 12, 18, 9]
+    widths = [6, 16, 38, 38, 14, 14, 14, 14, 12, 18, 12, 18, 38, 9]
     for i, w in enumerate(widths, start=1):
         ws.column_dimensions[get_column_letter(i)].width = w
     ws.freeze_panes = "E4"
-    ws.auto_filter.ref = f"A3:M{START_ROW + len(sorted_clients) - 1}"
+    ws.auto_filter.ref = f"A3:N{START_ROW + len(sorted_clients) - 1}"
 
 ws = wb.create_sheet("11. Détail transition (cible)")
 build_detail_transition(
@@ -1169,13 +1228,13 @@ print(f"  Sheet 12 (Détail transition concentrés) built")
 ws = wb.create_sheet("13. Evolution mensuelle (cible)")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Évolution mensuelle (Janvier → Juin) sur 16 produits ciblés").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
-ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=20)
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=21)
 ws.row_dimensions[1].height = 26
 
 ws.cell(row=2, column=1, value=("Pour chaque client : statut actif (✓) et volume (t) sur produits ciblés, mois par mois. "
                                   "Permet de voir la dynamique mensuelle (Avril / Mai / Juin) et le moment exact de la (ré)activation ou du churn.")
 ).font = SUB_FONT
-ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=20)
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=21)
 ws.row_dimensions[2].height = 30
 
 # Group headers (row 3)
@@ -1192,11 +1251,11 @@ c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
 for col in [11, 12, 13, 14, 15]:
     cc = ws.cell(row=3, column=col); cc.fill = PatternFill(start_color="C00000", end_color="C00000", fill_type="solid"); cc.border = BORDER
 
-ws.merge_cells(start_row=3, start_column=16, end_row=3, end_column=18)
+ws.merge_cells(start_row=3, start_column=16, end_row=3, end_column=19)
 c = ws.cell(row=3, column=16, value="Synthèse")
 c.fill = PatternFill(start_color="375623", end_color="375623", fill_type="solid")
 c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
-for col in [17, 18]:
+for col in [17, 18, 19]:
     cc = ws.cell(row=3, column=col); cc.fill = PatternFill(start_color="375623", end_color="375623", fill_type="solid"); cc.border = BORDER
 ws.row_dimensions[3].height = 22
 
@@ -1205,7 +1264,7 @@ HEADERS = [
     "N°", "Réf. client", "Nom du client",
     "Jan (t)", "Jan ✓", "Fév (t)", "Fév ✓", "Mar (t)", "Mar ✓",
     "Avr (t)", "Avr ✓", "Mai (t)", "Mai ✓", "Juin (t)", "Juin ✓",
-    "Segment Q1→Q2", "Vol 6m (t)", "CA 6m (FCFA)",
+    "Segment Q1→Q2", "Vol 6m (t)", "CA 6m (FCFA)", "Agence(s) [★ = principale]",
     "20/80", "Statut détaillé"
 ]
 for col_idx, h in enumerate(HEADERS, start=1):
@@ -1281,6 +1340,7 @@ for i, key in enumerate(sorted_clients, start=1):
         (16, seg_label, Alignment(horizontal="left", vertical="center", wrap_text=True), None),
         (17, vol_6m_t, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
         (18, ca_6m, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (19, format_agencies(key), BODY_ALIGN_LEFT, None),
     ]
     for col_idx, val, align, fmt in cells:
         c = ws.cell(row=r, column=col_idx, value=val)
@@ -1294,14 +1354,14 @@ for i, key in enumerate(sorted_clients, start=1):
             ws.cell(row=r, column=col_idx).fill = GREEN_FILL
             ws.cell(row=r, column=col_idx).font = GREEN_FONT
     # 20/80 marker
-    c = ws.cell(row=r, column=19)
+    c = ws.cell(row=r, column=20)
     c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
     if key in pareto_clients:
         c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
     else:
         c.fill = fill; c.font = font
     # Status detail
-    c = ws.cell(row=r, column=20, value=status_detail)
+    c = ws.cell(row=r, column=21, value=status_detail)
     c.font = font; c.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True); c.border = BORDER
     c.fill = fill
 
@@ -1309,11 +1369,11 @@ for i, key in enumerate(sorted_clients, start=1):
 widths_13 = [6, 16, 38,
              10, 7, 10, 7, 10, 7,
              10, 7, 10, 7, 10, 7,
-             38, 12, 18, 9, 40]
+             38, 12, 18, 38, 9, 40]
 for i, w in enumerate(widths_13, start=1):
     ws.column_dimensions[get_column_letter(i)].width = w
 ws.freeze_panes = "D5"
-ws.auto_filter.ref = f"A4:T{START_ROW + len(sorted_clients) - 1}"
+ws.auto_filter.ref = f"A4:U{START_ROW + len(sorted_clients) - 1}"
 
 print(f"  Sheet 13 (Évolution mensuelle) built — {len(sorted_clients)} rows")
 
@@ -1321,11 +1381,11 @@ print(f"  Sheet 13 (Évolution mensuelle) built — {len(sorted_clients)} rows")
 ws = wb.create_sheet("14. Evolution mensuelle (conc.)")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Évolution mensuelle (Janvier → Juin) sur 12 concentrés").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
-ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=20)
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=21)
 ws.row_dimensions[1].height = 26
 
 ws.cell(row=2, column=1, value="Pour chaque client : statut actif (✓) sur concentrés, mois par mois. Permet de voir la dynamique mensuelle Q2.").font = SUB_FONT
-ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=20)
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=21)
 ws.row_dimensions[2].height = 30
 
 # Group headers
@@ -1340,11 +1400,11 @@ c.fill = PatternFill(start_color="C00000", end_color="C00000", fill_type="solid"
 c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
 for col in [11, 12, 13, 14, 15]:
     cc = ws.cell(row=3, column=col); cc.fill = PatternFill(start_color="C00000", end_color="C00000", fill_type="solid"); cc.border = BORDER
-ws.merge_cells(start_row=3, start_column=16, end_row=3, end_column=18)
+ws.merge_cells(start_row=3, start_column=16, end_row=3, end_column=19)
 c = ws.cell(row=3, column=16, value="Synthèse")
 c.fill = PatternFill(start_color="375623", end_color="375623", fill_type="solid")
 c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
-for col in [17, 18]:
+for col in [17, 18, 19]:
     cc = ws.cell(row=3, column=col); cc.fill = PatternFill(start_color="375623", end_color="375623", fill_type="solid"); cc.border = BORDER
 ws.row_dimensions[3].height = 22
 
@@ -1353,7 +1413,7 @@ HEADERS = [
     "Jan ✓", "Fév ✓", "Mar ✓", "Avr ✓", "Mai ✓", "Juin ✓",
     "Vol Q1 conc (t)", "CA Q1 conc", "Vol Q2 conc (t)", "CA Q2 conc",
     "Vol 6m conc (t)", "CA 6m conc",
-    "Segment Q1→Q2", "Vol 6m (t)", "CA 6m (FCFA)",
+    "Segment Q1→Q2", "Vol 6m (t)", "CA 6m (FCFA)", "Agence(s) [★ = principale]",
     "20/80", "Statut détaillé"
 ]
 for col_idx, h in enumerate(HEADERS, start=1):
@@ -1430,6 +1490,7 @@ for i, key in enumerate(sorted_clients_c, start=1):
         (16, seg_label, Alignment(horizontal="left", vertical="center", wrap_text=True), None),
         (17, vol_6m_t, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
         (18, ca_6m, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (19, format_agencies(key), BODY_ALIGN_LEFT, None),
     ]
     for col_idx, val, align, fmt in cells:
         c = ws.cell(row=r, column=col_idx, value=val)
@@ -1441,28 +1502,304 @@ for i, key in enumerate(sorted_clients_c, start=1):
         if v == "✓":
             ws.cell(row=r, column=col_idx).fill = GREEN_FILL
             ws.cell(row=r, column=col_idx).font = GREEN_FONT
-    c = ws.cell(row=r, column=19)
+    c = ws.cell(row=r, column=20)
     c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
     if key in pareto_clients:
         c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
     else:
         c.fill = fill; c.font = font
-    c = ws.cell(row=r, column=20, value=status_detail)
+    c = ws.cell(row=r, column=21, value=status_detail)
     c.font = font; c.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True); c.border = BORDER
     c.fill = fill
 
 widths_14 = [6, 16, 38,
              8, 8, 8, 8, 8, 8,
              14, 16, 14, 16, 14, 16,
-             38, 12, 18, 9, 40]
+             38, 12, 18, 38, 9, 40]
 for i, w in enumerate(widths_14, start=1):
     ws.column_dimensions[get_column_letter(i)].width = w
 ws.freeze_panes = "D5"
-ws.auto_filter.ref = f"A4:T{START_ROW + len(sorted_clients_c) - 1}"
+ws.auto_filter.ref = f"A4:U{START_ROW + len(sorted_clients_c) - 1}"
 
 print(f"  Sheet 14 (Évolution mensuelle concentrés) built — {len(sorted_clients_c)} rows")
 
-# ===== SHEET 15: GRAPHIQUES (NATIVE EXCEL CHARTS) =====
+# ===== SHEET 15 (NEW): ZERO ACHAT PAR AGENCE (CIBLÉ) =====
+# By agency: count of zero-achat clients (ciblé) broken down by 20/80 vs others, with native charts
+from openpyxl.chart import BarChart, LineChart, PieChart, Reference, BarChart3D
+from openpyxl.chart.label import DataLabelList
+from openpyxl.chart.shapes import GraphicalProperties
+from openpyxl.chart.series import DataPoint
+
+# Compute agency-level stats for zero-achat ciblé
+agency_zero_cible_stats = defaultdict(lambda: {"total_clients": 0, "zero_2080": 0, "zero_others": 0, "active_clients": 0})
+for k in clients_all:
+    primary_ag = get_primary_agency(k)
+    is_zero = k in zero_global
+    is_2080 = k in pareto_clients
+    agency_zero_cible_stats[primary_ag]["total_clients"] += 1
+    if is_zero:
+        if is_2080:
+            agency_zero_cible_stats[primary_ag]["zero_2080"] += 1
+        else:
+            agency_zero_cible_stats[primary_ag]["zero_others"] += 1
+    else:
+        agency_zero_cible_stats[primary_ag]["active_clients"] += 1
+
+# Sort agencies by total clients desc
+sorted_agencies_cible = sorted(agency_zero_cible_stats.items(), key=lambda x: -x[1]["total_clients"])
+
+ws = wb.create_sheet("15. Zero achat par agence (cibl)")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Zero achat par agence (16 produits ciblés)").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
+ws.row_dimensions[1].height = 26
+
+ws.cell(row=2, column=1, value="Répartition des clients zero achat Q1 par agence (agence principale du client). 20/80 = clients Pareto.").font = SUB_FONT
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=8)
+ws.row_dimensions[2].height = 22
+
+HEADERS = ["N°", "Agence", "Total clients", "Clients actifs Q1 (ciblé)", "Zero achat 20/80 ★", "Zero achat autres", "Total zero achat", "% zero achat"]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=4, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[4].height = 36
+
+START_ROW = 5
+for i, (ag, stats) in enumerate(sorted_agencies_cible, start=1):
+    r = START_ROW + i - 1
+    banding = (i % 2 == 0)
+    total_z = stats["zero_2080"] + stats["zero_others"]
+    pct = (total_z / stats["total_clients"] * 100) if stats["total_clients"] > 0 else 0
+    cells = [
+        (1, i, BODY_ALIGN_CENTER),
+        (2, ag, BODY_ALIGN_LEFT),
+        (3, stats["total_clients"], BODY_ALIGN_CENTER),
+        (4, stats["active_clients"], BODY_ALIGN_CENTER),
+        (5, stats["zero_2080"], BODY_ALIGN_CENTER),
+        (6, stats["zero_others"], BODY_ALIGN_CENTER),
+        (7, total_z, BODY_ALIGN_CENTER),
+    ]
+    for col, val, align in cells:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    # Highlight 20/80 zero in gold
+    c = ws.cell(row=r, column=5)
+    if stats["zero_2080"] > 0:
+        c.fill = PARETO_FILL; c.font = PARETO_FONT
+    # Highlight % zero in red if high
+    c = ws.cell(row=r, column=8, value=pct/100)
+    c.font = BOLD_FONT; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+    c.number_format = '0.0%'
+    if pct >= 40:
+        c.fill = PatternFill(start_color="FCE4E4", end_color="FCE4E4", fill_type="solid")
+        c.font = Font(name="Calibri", size=10, bold=True, color="C00000")
+    elif banding:
+        c.fill = BAND_FILL
+
+# Total row
+total_row = START_ROW + len(sorted_agencies_cible)
+total_all = sum(s["total_clients"] for s in agency_zero_cible_stats.values())
+total_active = sum(s["active_clients"] for s in agency_zero_cible_stats.values())
+total_2080 = sum(s["zero_2080"] for s in agency_zero_cible_stats.values())
+total_others = sum(s["zero_others"] for s in agency_zero_cible_stats.values())
+total_zero = total_2080 + total_others
+ws.cell(row=total_row, column=2, value="TOTAL").font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=2).fill = HEADER_FILL
+ws.cell(row=total_row, column=2).alignment = BODY_ALIGN_CENTER
+ws.cell(row=total_row, column=2).border = BORDER
+for col, val in [(3, total_all), (4, total_active), (5, total_2080), (6, total_others), (7, total_zero)]:
+    c = ws.cell(row=total_row, column=col, value=val)
+    c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+    c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+c = ws.cell(row=total_row, column=8, value=total_zero/total_all if total_all > 0 else 0)
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER; c.number_format = '0.0%'
+
+# Column widths
+ws.column_dimensions['A'].width = 6
+ws.column_dimensions['B'].width = 32
+ws.column_dimensions['C'].width = 14
+ws.column_dimensions['D'].width = 18
+ws.column_dimensions['E'].width = 18
+ws.column_dimensions['F'].width = 18
+ws.column_dimensions['G'].width = 18
+ws.column_dimensions['H'].width = 14
+
+# Add 2 native charts (stacked bar 20/80 vs others, and pie total zero vs active)
+# Stacked bar chart data is in columns J/K starting at row 4 (hidden)
+DATA_COL = 10  # column J
+# Headers
+ws.cell(row=4, column=DATA_COL, value="Agence").font = BOLD_FONT
+ws.cell(row=4, column=DATA_COL+1, value="Zero 20/80").font = BOLD_FONT
+ws.cell(row=4, column=DATA_COL+2, value="Zero autres").font = BOLD_FONT
+ws.cell(row=4, column=DATA_COL+3, value="Actifs Q1").font = BOLD_FONT
+for i, (ag, stats) in enumerate(sorted_agencies_cible, start=1):
+    ws.cell(row=4+i, column=DATA_COL, value=ag)
+    ws.cell(row=4+i, column=DATA_COL+1, value=stats["zero_2080"])
+    ws.cell(row=4+i, column=DATA_COL+2, value=stats["zero_others"])
+    ws.cell(row=4+i, column=DATA_COL+3, value=stats["active_clients"])
+# Hide the data columns
+for col_idx in range(DATA_COL, DATA_COL+4):
+    ws.column_dimensions[get_column_letter(col_idx)].hidden = True
+
+# Stacked Bar Chart
+chart1 = BarChart()
+chart1.type = "bar"
+chart1.style = 10
+chart1.grouping = "stacked"
+chart1.overlap = 100
+chart1.title = "Répartition Zero achat (ciblé) par agence — 20/80 vs Autres"
+chart1.x_axis.title = "Nombre de clients"
+chart1.y_axis.title = "Agence"
+chart1.x_axis.delete = False
+chart1.y_axis.delete = False
+chart1.height = 14
+chart1.width = 22
+n_agencies = len(sorted_agencies_cible)
+data = Reference(ws, min_col=DATA_COL+1, min_row=4, max_col=DATA_COL+3, max_row=4+n_agencies)
+cats = Reference(ws, min_col=DATA_COL, min_row=5, max_row=4+n_agencies)
+chart1.add_data(data, titles_from_data=True)
+chart1.set_categories(cats)
+chart1.legend.position = 'b'
+# Color series: 20/80 = gold, others = gray, actifs = blue
+series_colors = ["FFC000", "A6A6A6", "2E75B6"]
+for i, s in enumerate(chart1.series):
+    s.graphicalProperties = GraphicalProperties(solidFill=series_colors[i])
+ws.add_chart(chart1, f"A{total_row + 3}")
+
+print(f"  Sheet 15 (Zero achat par agence - ciblé) built — {len(sorted_agencies_cible)} agencies")
+
+# ===== SHEET 16 (NEW): ZERO ACHAT PAR AGENCE (CONCENTRÉS) =====
+agency_zero_conc_stats = defaultdict(lambda: {"total_clients": 0, "zero_2080": 0, "zero_others": 0, "active_clients": 0})
+for k in clients_all:
+    primary_ag = get_primary_agency(k)
+    is_zero = k in zero_concentre
+    is_2080 = k in pareto_clients
+    agency_zero_conc_stats[primary_ag]["total_clients"] += 1
+    if is_zero:
+        if is_2080:
+            agency_zero_conc_stats[primary_ag]["zero_2080"] += 1
+        else:
+            agency_zero_conc_stats[primary_ag]["zero_others"] += 1
+    else:
+        agency_zero_conc_stats[primary_ag]["active_clients"] += 1
+
+sorted_agencies_conc = sorted(agency_zero_conc_stats.items(), key=lambda x: -x[1]["total_clients"])
+
+ws = wb.create_sheet("16. Zero achat par agence (conc)")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Zero achat par agence (12 concentrés)").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
+ws.row_dimensions[1].height = 26
+
+ws.cell(row=2, column=1, value="Répartition des clients zero achat Q1 (concentrés) par agence (agence principale du client). 20/80 = clients Pareto.").font = SUB_FONT
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=8)
+ws.row_dimensions[2].height = 22
+
+HEADERS = ["N°", "Agence", "Total clients", "Clients actifs Q1 (conc.)", "Zero achat 20/80 ★", "Zero achat autres", "Total zero achat", "% zero achat"]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=4, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[4].height = 36
+
+START_ROW = 5
+for i, (ag, stats) in enumerate(sorted_agencies_conc, start=1):
+    r = START_ROW + i - 1
+    banding = (i % 2 == 0)
+    total_z = stats["zero_2080"] + stats["zero_others"]
+    pct = (total_z / stats["total_clients"] * 100) if stats["total_clients"] > 0 else 0
+    cells = [
+        (1, i, BODY_ALIGN_CENTER),
+        (2, ag, BODY_ALIGN_LEFT),
+        (3, stats["total_clients"], BODY_ALIGN_CENTER),
+        (4, stats["active_clients"], BODY_ALIGN_CENTER),
+        (5, stats["zero_2080"], BODY_ALIGN_CENTER),
+        (6, stats["zero_others"], BODY_ALIGN_CENTER),
+        (7, total_z, BODY_ALIGN_CENTER),
+    ]
+    for col, val, align in cells:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=5)
+    if stats["zero_2080"] > 0:
+        c.fill = PARETO_FILL; c.font = PARETO_FONT
+    c = ws.cell(row=r, column=8, value=pct/100)
+    c.font = BOLD_FONT; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+    c.number_format = '0.0%'
+    if pct >= 50:
+        c.fill = PatternFill(start_color="FCE4E4", end_color="FCE4E4", fill_type="solid")
+        c.font = Font(name="Calibri", size=10, bold=True, color="C00000")
+    elif banding:
+        c.fill = BAND_FILL
+
+total_row = START_ROW + len(sorted_agencies_conc)
+total_all = sum(s["total_clients"] for s in agency_zero_conc_stats.values())
+total_active = sum(s["active_clients"] for s in agency_zero_conc_stats.values())
+total_2080 = sum(s["zero_2080"] for s in agency_zero_conc_stats.values())
+total_others = sum(s["zero_others"] for s in agency_zero_conc_stats.values())
+total_zero = total_2080 + total_others
+ws.cell(row=total_row, column=2, value="TOTAL").font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=2).fill = HEADER_FILL
+ws.cell(row=total_row, column=2).alignment = BODY_ALIGN_CENTER
+ws.cell(row=total_row, column=2).border = BORDER
+for col, val in [(3, total_all), (4, total_active), (5, total_2080), (6, total_others), (7, total_zero)]:
+    c = ws.cell(row=total_row, column=col, value=val)
+    c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+    c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+c = ws.cell(row=total_row, column=8, value=total_zero/total_all if total_all > 0 else 0)
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER; c.number_format = '0.0%'
+
+ws.column_dimensions['A'].width = 6
+ws.column_dimensions['B'].width = 32
+ws.column_dimensions['C'].width = 14
+ws.column_dimensions['D'].width = 18
+ws.column_dimensions['E'].width = 18
+ws.column_dimensions['F'].width = 18
+ws.column_dimensions['G'].width = 18
+ws.column_dimensions['H'].width = 14
+
+# Data for chart
+DATA_COL = 10
+ws.cell(row=4, column=DATA_COL, value="Agence").font = BOLD_FONT
+ws.cell(row=4, column=DATA_COL+1, value="Zero 20/80").font = BOLD_FONT
+ws.cell(row=4, column=DATA_COL+2, value="Zero autres").font = BOLD_FONT
+ws.cell(row=4, column=DATA_COL+3, value="Actifs Q1").font = BOLD_FONT
+for i, (ag, stats) in enumerate(sorted_agencies_conc, start=1):
+    ws.cell(row=4+i, column=DATA_COL, value=ag)
+    ws.cell(row=4+i, column=DATA_COL+1, value=stats["zero_2080"])
+    ws.cell(row=4+i, column=DATA_COL+2, value=stats["zero_others"])
+    ws.cell(row=4+i, column=DATA_COL+3, value=stats["active_clients"])
+for col_idx in range(DATA_COL, DATA_COL+4):
+    ws.column_dimensions[get_column_letter(col_idx)].hidden = True
+
+chart2 = BarChart()
+chart2.type = "bar"
+chart2.style = 10
+chart2.grouping = "stacked"
+chart2.overlap = 100
+chart2.title = "Répartition Zero achat (concentrés) par agence — 20/80 vs Autres"
+chart2.x_axis.title = "Nombre de clients"
+chart2.y_axis.title = "Agence"
+chart2.x_axis.delete = False
+chart2.y_axis.delete = False
+chart2.height = 14
+chart2.width = 22
+n_agencies = len(sorted_agencies_conc)
+data = Reference(ws, min_col=DATA_COL+1, min_row=4, max_col=DATA_COL+3, max_row=4+n_agencies)
+cats = Reference(ws, min_col=DATA_COL, min_row=5, max_row=4+n_agencies)
+chart2.add_data(data, titles_from_data=True)
+chart2.set_categories(cats)
+chart2.legend.position = 'b'
+for i, s in enumerate(chart2.series):
+    s.graphicalProperties = GraphicalProperties(solidFill=series_colors[i])
+ws.add_chart(chart2, f"A{total_row + 3}")
+
+print(f"  Sheet 16 (Zero achat par agence - conc.) built — {len(sorted_agencies_conc)} agencies")
+
+# ===== SHEET 17: GRAPHIQUES (NATIVE EXCEL CHARTS) =====
 from openpyxl.chart import BarChart, LineChart, PieChart, Reference, BarChart3D
 from openpyxl.chart.label import DataLabelList
 from openpyxl.chart.layout import Layout, ManualLayout
@@ -1471,7 +1808,7 @@ from openpyxl.drawing.line import LineProperties
 from openpyxl.drawing.fill import ColorChoice
 from openpyxl.chart.series import DataPoint
 
-ws = wb.create_sheet("15. Graphiques")
+ws = wb.create_sheet("17. Graphiques")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Graphiques d'analyse (graphiques natifs Excel)").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
 ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=12)
@@ -1782,10 +2119,10 @@ for i, s in enumerate(chart7.series):
 ws.add_chart(chart7, "A152")
 
 ws.column_dimensions['A'].width = 12
-print(f"  Sheet 15 (Graphiques) built — 7 native Excel charts")
+print(f"  Sheet 17 (Graphiques) built — 7 native Excel charts")
 
-# ===== SHEET 16: RECOMMANDATIONS =====
-ws = wb.create_sheet("16. Recommandations")
+# ===== SHEET 18: RECOMMANDATIONS =====
+ws = wb.create_sheet("18. Recommandations")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Plan d'action commercial priorisé").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
 ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
