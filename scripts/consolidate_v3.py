@@ -2769,6 +2769,823 @@ print(f"  Sheet 21 (Perspectives stratégiques) built")
 # Note: Sommaire update skipped to avoid merged cell conflicts.
 # New sheets 19-21 are accessible via sheet tabs at the bottom of the workbook.
 
+# ===== SHEETS 22-26: CHICK BOOSTER & PIGLET BOOSTER ANALYSIS =====
+# Products:
+#   Chick Booster: CB100, CB101
+#   Piglet Booster: CB200, CB201
+#   Concentrés Chair (10% + 5%): C104, C1042, C1043, C1044, C103
+#   Concentrés Ponte (10% + 5%): C102, C1022, C101
+#   Concentrés Porc (10%): C105, C1053, C1054, C1055
+
+CHICK_REFS = {"CB100", "CB101"}
+PIGLET_REFS = {"CB200", "CB201"}
+CHAIR_REFS = {"C104", "C1042", "C1043", "C1044", "C103"}  # 10% + 5% Chair
+PONTE_REFS = {"C102", "C1022", "C101"}  # 10% + 5% Ponte
+PORC_REFS = {"C105", "C1053", "C1054", "C1055"}  # 10% Porc
+
+# Re-read source to compute per-product aggregates for Chick/Piglet
+print("\nReading source again for Chick/Piglet analysis...")
+wb_src2 = load_workbook(SRC, read_only=True, data_only=True)
+
+# Per-product aggregates (over 6 months)
+product_aggregates = defaultdict(lambda: {"vol_kg": 0.0, "ca": 0.0, "qte": 0, "rows": 0})
+# Per-client per-product-group (Chick / Piglet / Chair / Ponte / Porc)
+client_chick = defaultdict(lambda: {"vol_kg": 0.0, "ca": 0.0, "qte": 0})
+client_piglet = defaultdict(lambda: {"vol_kg": 0.0, "ca": 0.0, "qte": 0})
+client_chair = defaultdict(lambda: {"vol_kg": 0.0, "ca": 0.0, "qte": 0})
+client_ponte = defaultdict(lambda: {"vol_kg": 0.0, "ca": 0.0, "qte": 0})
+client_porc = defaultdict(lambda: {"vol_kg": 0.0, "ca": 0.0, "qte": 0})
+
+for sheet_name in wb_src2.sheetnames:
+    ws = wb_src2[sheet_name]
+    for row in ws.iter_rows(min_row=3, values_only=True):
+        tiers = row[5] if len(row) > 5 else None
+        if tiers is None or str(tiers).strip() == "":
+            continue
+        if tiers in excluded_tiers:
+            continue
+        ref_prod = row[0] if len(row) > 0 else None
+        desc = row[1] if len(row) > 1 else None
+        qte = row[2] if len(row) > 2 else 0
+        ca_ht = row[8] if len(row) > 8 else 0
+
+        ref_c, name_c = split_tiers(tiers)
+        key = (ref_c, name_c)
+        ref_prod_str = str(ref_prod).strip() if ref_prod is not None else ""
+        if not ref_prod_str:
+            continue
+
+        if ref_prod_str not in product_weight:
+            product_weight[ref_prod_str] = parse_weight_kg(desc)
+        weight_kg = product_weight.get(ref_prod_str, 0.0)
+        try:
+            qte_f = float(qte) if qte is not None else 0.0
+        except:
+            qte_f = 0.0
+        try:
+            ca_f = float(ca_ht) if ca_ht is not None else 0.0
+        except:
+            ca_f = 0.0
+        vol_kg = qte_f * weight_kg
+
+        # Aggregate per-product (for sheet 22)
+        if ref_prod_str in CHICK_REFS or ref_prod_str in PIGLET_REFS:
+            p = product_aggregates[ref_prod_str]
+            p["vol_kg"] += vol_kg
+            p["ca"] += ca_f
+            p["qte"] += qte_f
+            p["rows"] += 1
+
+        # Aggregate per-client per-category
+        if ref_prod_str in CHICK_REFS:
+            client_chick[key]["vol_kg"] += vol_kg
+            client_chick[key]["ca"] += ca_f
+            client_chick[key]["qte"] += qte_f
+        if ref_prod_str in PIGLET_REFS:
+            client_piglet[key]["vol_kg"] += vol_kg
+            client_piglet[key]["ca"] += ca_f
+            client_piglet[key]["qte"] += qte_f
+        if ref_prod_str in CHAIR_REFS:
+            client_chair[key]["vol_kg"] += vol_kg
+            client_chair[key]["ca"] += ca_f
+            client_chair[key]["qte"] += qte_f
+        if ref_prod_str in PONTE_REFS:
+            client_ponte[key]["vol_kg"] += vol_kg
+            client_ponte[key]["ca"] += ca_f
+            client_ponte[key]["qte"] += qte_f
+        if ref_prod_str in PORC_REFS:
+            client_porc[key]["vol_kg"] += vol_kg
+            client_porc[key]["ca"] += ca_f
+            client_porc[key]["qte"] += qte_f
+
+wb_src2.close()
+print(f"  Chick Booster clients: {len(client_chick)}")
+print(f"  Piglet Booster clients: {len(client_piglet)}")
+print(f"  Concentrés Chair clients: {len(client_chair)}")
+print(f"  Concentrés Ponte clients: {len(client_ponte)}")
+print(f"  Concentrés Porc clients: {len(client_porc)}")
+
+# ===== SHEET 22: VENTES CHICK BOOSTER & PIGLET BOOSTER (6 MOIS) =====
+ws = wb.create_sheet("22. Ventes Chick & Piglet")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Ventes Chick Booster & Piglet Booster (Janvier-Juin 2026)").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=10)
+ws.row_dimensions[1].height = 26
+
+ws.cell(row=2, column=1, value="Synthèse des ventes sur 6 mois par référence produit + agrégats par gamme.").font = SUB_FONT
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=10)
+ws.row_dimensions[2].height = 22
+
+# Section 1: Détail par référence
+ws.cell(row=4, column=1, value="1. Ventes par référence produit (6 mois)").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=10)
+ws.row_dimensions[4].height = 22
+
+HEADERS = ["Réf. produit", "Description", "Poids unitaire (kg)", "Quantité totale (sacs)",
+           "Volume total (t)", "CA HT total (FCFA)", "Prix moyen (/t)", "Nb lignes", "Gamme", ""]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=5, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[5].height = 36
+
+# Build rows for each product
+products_detail = []
+for ref in sorted(CHICK_REFS) + sorted(PIGLET_REFS):
+    p = product_aggregates.get(ref, {"vol_kg": 0, "ca": 0, "qte": 0, "rows": 0})
+    weight = product_weight.get(ref, 0)
+    # Get description
+    desc = ""
+    if ref == "CB100": desc = "CHICK BOOSTER 25 Kg"
+    elif ref == "CB101": desc = "CHICK BOOSTER 5Kg"
+    elif ref == "CB200": desc = "PIGLET BOOSTER 25Kg"
+    elif ref == "CB201": desc = "PIGLET BOOSTER 5Kg"
+    gamme = "Chick Booster" if ref in CHICK_REFS else "Piglet Booster"
+    vol_t = p["vol_kg"] / 1000.0
+    price_per_t = (p["ca"] / vol_t) if vol_t > 0 else 0
+    products_detail.append((ref, desc, weight, p["qte"], vol_t, p["ca"], price_per_t, p["rows"], gamme))
+
+START_ROW = 6
+for i, (ref, desc, weight, qte, vol_t, ca, price, rows, gamme) in enumerate(products_detail, start=1):
+    r = START_ROW + i - 1
+    banding = (i % 2 == 0)
+    cells = [
+        (1, ref, BODY_ALIGN_CENTER),
+        (2, desc, BODY_ALIGN_LEFT),
+        (3, weight, BODY_ALIGN_CENTER),
+        (4, qte, BODY_ALIGN_RIGHT),
+        (5, vol_t, BODY_ALIGN_RIGHT),
+        (6, ca, BODY_ALIGN_RIGHT),
+        (7, price, BODY_ALIGN_RIGHT),
+        (8, rows, BODY_ALIGN_CENTER),
+        (9, gamme, BODY_ALIGN_CENTER),
+    ]
+    for col, val, align in cells:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    ws.cell(row=r, column=3).number_format = '0.00'
+    ws.cell(row=r, column=4).number_format = '#,##0'
+    ws.cell(row=r, column=5).number_format = VOL_NUM_FMT
+    ws.cell(row=r, column=6).number_format = CA_NUM_FMT
+    ws.cell(row=r, column=7).number_format = '#,##0" FCFA/t"'
+    # Color gamme
+    if "Chick" in gamme:
+        ws.cell(row=r, column=9).fill = PatternFill(start_color="FFC000", end_color="FFC000", fill_type="solid")
+        ws.cell(row=r, column=9).font = Font(name="Calibri", size=10, bold=True, color="7F6000")
+    else:
+        ws.cell(row=r, column=9).fill = PatternFill(start_color="ED7D31", end_color="ED7D31", fill_type="solid")
+        ws.cell(row=r, column=9).font = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
+
+# Subtotals by gamme
+r_subtotal = START_ROW + len(products_detail) + 1
+# Chick subtotal
+chick_total_vol = sum(p[4] for p in products_detail if p[8] == "Chick Booster")
+chick_total_ca = sum(p[5] for p in products_detail if p[8] == "Chick Booster")
+chick_total_qte = sum(p[3] for p in products_detail if p[8] == "Chick Booster")
+c = ws.cell(row=r_subtotal, column=1, value="SOUS-TOTAL CHICK BOOSTER")
+c.font = Font(name="Calibri", size=11, bold=True, color="7F6000")
+c.fill = PatternFill(start_color="FFD966", end_color="FFD966", fill_type="solid")
+c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+ws.merge_cells(start_row=r_subtotal, start_column=1, end_row=r_subtotal, end_column=3)
+for col in [2, 3]:
+    ws.cell(row=r_subtotal, column=col).fill = PatternFill(start_color="FFD966", end_color="FFD966", fill_type="solid")
+    ws.cell(row=r_subtotal, column=col).border = BORDER
+ws.cell(row=r_subtotal, column=4, value=chick_total_qte).font = Font(name="Calibri", size=11, bold=True, color="7F6000")
+ws.cell(row=r_subtotal, column=4).fill = PatternFill(start_color="FFD966", end_color="FFD966", fill_type="solid")
+ws.cell(row=r_subtotal, column=4).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_subtotal, column=4).border = BORDER
+ws.cell(row=r_subtotal, column=4).number_format = '#,##0'
+ws.cell(row=r_subtotal, column=5, value=chick_total_vol).font = Font(name="Calibri", size=11, bold=True, color="7F6000")
+ws.cell(row=r_subtotal, column=5).fill = PatternFill(start_color="FFD966", end_color="FFD966", fill_type="solid")
+ws.cell(row=r_subtotal, column=5).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_subtotal, column=5).border = BORDER
+ws.cell(row=r_subtotal, column=5).number_format = VOL_NUM_FMT
+ws.cell(row=r_subtotal, column=6, value=chick_total_ca).font = Font(name="Calibri", size=11, bold=True, color="7F6000")
+ws.cell(row=r_subtotal, column=6).fill = PatternFill(start_color="FFD966", end_color="FFD966", fill_type="solid")
+ws.cell(row=r_subtotal, column=6).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_subtotal, column=6).border = BORDER
+ws.cell(row=r_subtotal, column=6).number_format = CA_NUM_FMT
+for col in [7, 8, 9]:
+    ws.cell(row=r_subtotal, column=col).fill = PatternFill(start_color="FFD966", end_color="FFD966", fill_type="solid")
+    ws.cell(row=r_subtotal, column=col).border = BORDER
+
+# Piglet subtotal
+r_subtotal2 = r_subtotal + 1
+piglet_total_vol = sum(p[4] for p in products_detail if p[8] == "Piglet Booster")
+piglet_total_ca = sum(p[5] for p in products_detail if p[8] == "Piglet Booster")
+piglet_total_qte = sum(p[3] for p in products_detail if p[8] == "Piglet Booster")
+c = ws.cell(row=r_subtotal2, column=1, value="SOUS-TOTAL PIGLET BOOSTER")
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = PatternFill(start_color="ED7D31", end_color="ED7D31", fill_type="solid")
+c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+ws.merge_cells(start_row=r_subtotal2, start_column=1, end_row=r_subtotal2, end_column=3)
+for col in [2, 3]:
+    ws.cell(row=r_subtotal2, column=col).fill = PatternFill(start_color="ED7D31", end_color="ED7D31", fill_type="solid")
+    ws.cell(row=r_subtotal2, column=col).border = BORDER
+ws.cell(row=r_subtotal2, column=4, value=piglet_total_qte).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=r_subtotal2, column=4).fill = PatternFill(start_color="ED7D31", end_color="ED7D31", fill_type="solid")
+ws.cell(row=r_subtotal2, column=4).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_subtotal2, column=4).border = BORDER
+ws.cell(row=r_subtotal2, column=4).number_format = '#,##0'
+ws.cell(row=r_subtotal2, column=5, value=piglet_total_vol).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=r_subtotal2, column=5).fill = PatternFill(start_color="ED7D31", end_color="ED7D31", fill_type="solid")
+ws.cell(row=r_subtotal2, column=5).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_subtotal2, column=5).border = BORDER
+ws.cell(row=r_subtotal2, column=5).number_format = VOL_NUM_FMT
+ws.cell(row=r_subtotal2, column=6, value=piglet_total_ca).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=r_subtotal2, column=6).fill = PatternFill(start_color="ED7D31", end_color="ED7D31", fill_type="solid")
+ws.cell(row=r_subtotal2, column=6).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_subtotal2, column=6).border = BORDER
+ws.cell(row=r_subtotal2, column=6).number_format = CA_NUM_FMT
+for col in [7, 8, 9]:
+    ws.cell(row=r_subtotal2, column=col).fill = PatternFill(start_color="ED7D31", end_color="ED7D31", fill_type="solid")
+    ws.cell(row=r_subtotal2, column=col).border = BORDER
+
+# Grand total
+r_grand = r_subtotal2 + 1
+c = ws.cell(row=r_grand, column=1, value="TOTAL CHICK + PIGLET")
+c.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+c.fill = HEADER_FILL; c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+ws.merge_cells(start_row=r_grand, start_column=1, end_row=r_grand, end_column=3)
+for col in [2, 3]:
+    ws.cell(row=r_grand, column=col).fill = HEADER_FILL; ws.cell(row=r_grand, column=col).border = BORDER
+ws.cell(row=r_grand, column=4, value=chick_total_qte + piglet_total_qte).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=r_grand, column=4).fill = HEADER_FILL; ws.cell(row=r_grand, column=4).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_grand, column=4).border = BORDER
+ws.cell(row=r_grand, column=4).number_format = '#,##0'
+ws.cell(row=r_grand, column=5, value=chick_total_vol + piglet_total_vol).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=r_grand, column=5).fill = HEADER_FILL; ws.cell(row=r_grand, column=5).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_grand, column=5).border = BORDER
+ws.cell(row=r_grand, column=5).number_format = VOL_NUM_FMT
+ws.cell(row=r_grand, column=6, value=chick_total_ca + piglet_total_ca).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=r_grand, column=6).fill = HEADER_FILL; ws.cell(row=r_grand, column=6).alignment = BODY_ALIGN_RIGHT; ws.cell(row=r_grand, column=6).border = BORDER
+ws.cell(row=r_grand, column=6).number_format = CA_NUM_FMT
+for col in [7, 8, 9]:
+    ws.cell(row=r_grand, column=col).fill = HEADER_FILL; ws.cell(row=r_grand, column=col).border = BORDER
+
+# Section 2: Synthèse par gamme
+r_synth = r_grand + 2
+ws.cell(row=r_synth, column=1, value="2. Synthèse par gamme").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=r_synth, start_column=1, end_row=r_synth, end_column=10)
+ws.row_dimensions[r_synth].height = 22
+
+synth_headers = ["Gamme", "Nb produits", "Nb clients acheteurs", "Volume total (t)", "CA HT total (FCFA)", "% CA Booster", "Prix moyen (/t)", "", "", ""]
+for col_idx, h in enumerate(synth_headers, start=1):
+    c = ws.cell(row=r_synth + 1, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[r_synth + 1].height = 36
+
+total_booster_ca = chick_total_ca + piglet_total_ca
+gamme_rows = [
+    ("Chick Booster", 2, len(client_chick), chick_total_vol, chick_total_ca, chick_total_ca / total_booster_ca if total_booster_ca > 0 else 0,
+     (chick_total_ca / chick_total_vol) if chick_total_vol > 0 else 0),
+    ("Piglet Booster", 2, len(client_piglet), piglet_total_vol, piglet_total_ca, piglet_total_ca / total_booster_ca if total_booster_ca > 0 else 0,
+     (piglet_total_ca / piglet_total_vol) if piglet_total_vol > 0 else 0),
+]
+for i, (gamme, n_prod, n_clients, vol, ca, pct, price) in enumerate(gamme_rows, start=1):
+    r = r_synth + 1 + i
+    banding = (i % 2 == 0)
+    cells = [(1, gamme), (2, n_prod), (3, n_clients), (4, vol), (5, ca), (6, pct), (7, price)]
+    for col, val in cells:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BODY_FONT; c.alignment = BODY_ALIGN_CENTER if col <= 3 else BODY_ALIGN_RIGHT; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    ws.cell(row=r, column=4).number_format = VOL_NUM_FMT
+    ws.cell(row=r, column=5).number_format = CA_NUM_FMT
+    ws.cell(row=r, column=6).number_format = '0.0%'
+    ws.cell(row=r, column=7).number_format = '#,##0" FCFA/t"'
+
+# Column widths
+ws.column_dimensions['A'].width = 22
+ws.column_dimensions['B'].width = 28
+ws.column_dimensions['C'].width = 16
+ws.column_dimensions['D'].width = 18
+ws.column_dimensions['E'].width = 16
+ws.column_dimensions['F'].width = 22
+ws.column_dimensions['G'].width = 18
+ws.column_dimensions['H'].width = 12
+ws.column_dimensions['I'].width = 16
+ws.column_dimensions['J'].width = 10
+
+print(f"  Sheet 22 (Ventes Chick & Piglet) built")
+
+# ===== SHEET 23: LISTE CLIENTS CHICK BOOSTER =====
+ws = wb.create_sheet("23. Clients Chick Booster")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Clients acheteurs Chick Booster (Janvier-Juin 2026)").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=10)
+ws.row_dimensions[1].height = 26
+
+n_chick = len(client_chick)
+ws.cell(row=2, column=1, value=f"📊 {n_chick} client(s) ont acheté du Chick Booster (CB100 25Kg ou CB101 5Kg) sur 6 mois.").font = Font(name="Calibri", size=11, bold=True, color="7F6000")
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=10)
+ws.row_dimensions[2].height = 22
+
+HEADERS = ["N°", "Réf. client", "Nom du client", "Agence principale", "CA HT 6 mois (tous produits)",
+           "Vol Chick (t)", "CA Chick (FCFA)", "Qté Chick (sacs)", "% Chick dans CA total", "20/80"]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=4, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[4].height = 36
+
+chick_sorted = sorted(client_chick.keys(), key=lambda k: -client_chick[k]["ca"])
+START_ROW = 5
+for i, key in enumerate(chick_sorted, start=1):
+    r = START_ROW + i - 1
+    ref, name = key
+    banding = (i % 2 == 0)
+    chick_data = client_chick[key]
+    ca_total = client_ca_total.get(key, 0)
+    pct = (chick_data["ca"] / ca_total) if ca_total > 0 else 0
+    cells = [
+        (1, i, BODY_ALIGN_CENTER),
+        (2, ref, BODY_ALIGN_CENTER),
+        (3, name, BODY_ALIGN_LEFT),
+        (4, get_primary_agency(key), BODY_ALIGN_LEFT),
+        (5, ca_total, BODY_ALIGN_RIGHT),
+        (6, chick_data["vol_kg"] / 1000.0, BODY_ALIGN_RIGHT),
+        (7, chick_data["ca"], BODY_ALIGN_RIGHT),
+        (8, chick_data["qte"], BODY_ALIGN_RIGHT),
+        (9, pct, BODY_ALIGN_CENTER),
+    ]
+    for col, val, align in cells:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    ws.cell(row=r, column=5).number_format = CA_NUM_FMT
+    ws.cell(row=r, column=6).number_format = VOL_NUM_FMT
+    ws.cell(row=r, column=7).number_format = CA_NUM_FMT
+    ws.cell(row=r, column=8).number_format = '#,##0'
+    ws.cell(row=r, column=9).number_format = '0.0%'
+    # 20/80 marker
+    c = ws.cell(row=r, column=10)
+    c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    if key in pareto_clients:
+        c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
+    else:
+        if banding: c.fill = BAND_FILL
+
+# Total row
+total_row = START_ROW + len(chick_sorted)
+total_ca_chick = sum(client_chick[k]["ca"] for k in chick_sorted)
+total_vol_chick = sum(client_chick[k]["vol_kg"] for k in chick_sorted) / 1000.0
+total_qte_chick = sum(client_chick[k]["qte"] for k in chick_sorted)
+ws.cell(row=total_row, column=2, value="TOTAL").font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=2).fill = HEADER_FILL
+ws.cell(row=total_row, column=2).alignment = BODY_ALIGN_CENTER; ws.cell(row=total_row, column=2).border = BORDER
+ws.merge_cells(start_row=total_row, start_column=2, end_row=total_row, end_column=4)
+for col in [3, 4]:
+    ws.cell(row=total_row, column=col).fill = HEADER_FILL; ws.cell(row=total_row, column=col).border = BORDER
+for col in [5]:
+    ws.cell(row=total_row, column=col).fill = HEADER_FILL; ws.cell(row=total_row, column=col).border = BORDER
+ws.cell(row=total_row, column=6, value=total_vol_chick).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=6).fill = PatternFill(start_color="BF6000", end_color="BF6000", fill_type="solid")
+ws.cell(row=total_row, column=6).alignment = BODY_ALIGN_RIGHT; ws.cell(row=total_row, column=6).border = BORDER
+ws.cell(row=total_row, column=6).number_format = VOL_NUM_FMT
+ws.cell(row=total_row, column=7, value=total_ca_chick).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=7).fill = PatternFill(start_color="BF6000", end_color="BF6000", fill_type="solid")
+ws.cell(row=total_row, column=7).alignment = BODY_ALIGN_RIGHT; ws.cell(row=total_row, column=7).border = BORDER
+ws.cell(row=total_row, column=7).number_format = CA_NUM_FMT
+ws.cell(row=total_row, column=8, value=total_qte_chick).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=8).fill = PatternFill(start_color="BF6000", end_color="BF6000", fill_type="solid")
+ws.cell(row=total_row, column=8).alignment = BODY_ALIGN_RIGHT; ws.cell(row=total_row, column=8).border = BORDER
+ws.cell(row=total_row, column=8).number_format = '#,##0'
+for col in [9, 10]:
+    ws.cell(row=total_row, column=col).fill = HEADER_FILL; ws.cell(row=total_row, column=col).border = BORDER
+
+ws.column_dimensions['A'].width = 6
+ws.column_dimensions['B'].width = 16
+ws.column_dimensions['C'].width = 42
+ws.column_dimensions['D'].width = 25
+ws.column_dimensions['E'].width = 22
+ws.column_dimensions['F'].width = 14
+ws.column_dimensions['G'].width = 22
+ws.column_dimensions['H'].width = 16
+ws.column_dimensions['I'].width = 16
+ws.column_dimensions['J'].width = 9
+ws.freeze_panes = "E5"
+ws.auto_filter.ref = f"A4:J{START_ROW + len(chick_sorted) - 1}"
+print(f"  Sheet 23 (Clients Chick Booster) built — {n_chick} clients")
+
+# ===== SHEET 24: LISTE CLIENTS PIGLET BOOSTER =====
+ws = wb.create_sheet("24. Clients Piglet Booster")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Clients acheteurs Piglet Booster (Janvier-Juin 2026)").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=10)
+ws.row_dimensions[1].height = 26
+
+n_piglet = len(client_piglet)
+ws.cell(row=2, column=1, value=f"📊 {n_piglet} client(s) ont acheté du Piglet Booster (CB200 25Kg ou CB201 5Kg) sur 6 mois.").font = Font(name="Calibri", size=11, bold=True, color="833C00")
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=10)
+ws.row_dimensions[2].height = 22
+
+HEADERS = ["N°", "Réf. client", "Nom du client", "Agence principale", "CA HT 6 mois (tous produits)",
+           "Vol Piglet (t)", "CA Piglet (FCFA)", "Qté Piglet (sacs)", "% Piglet dans CA total", "20/80"]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=4, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[4].height = 36
+
+piglet_sorted = sorted(client_piglet.keys(), key=lambda k: -client_piglet[k]["ca"])
+START_ROW = 5
+for i, key in enumerate(piglet_sorted, start=1):
+    r = START_ROW + i - 1
+    ref, name = key
+    banding = (i % 2 == 0)
+    piglet_data = client_piglet[key]
+    ca_total = client_ca_total.get(key, 0)
+    pct = (piglet_data["ca"] / ca_total) if ca_total > 0 else 0
+    cells = [
+        (1, i, BODY_ALIGN_CENTER),
+        (2, ref, BODY_ALIGN_CENTER),
+        (3, name, BODY_ALIGN_LEFT),
+        (4, get_primary_agency(key), BODY_ALIGN_LEFT),
+        (5, ca_total, BODY_ALIGN_RIGHT),
+        (6, piglet_data["vol_kg"] / 1000.0, BODY_ALIGN_RIGHT),
+        (7, piglet_data["ca"], BODY_ALIGN_RIGHT),
+        (8, piglet_data["qte"], BODY_ALIGN_RIGHT),
+        (9, pct, BODY_ALIGN_CENTER),
+    ]
+    for col, val, align in cells:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    ws.cell(row=r, column=5).number_format = CA_NUM_FMT
+    ws.cell(row=r, column=6).number_format = VOL_NUM_FMT
+    ws.cell(row=r, column=7).number_format = CA_NUM_FMT
+    ws.cell(row=r, column=8).number_format = '#,##0'
+    ws.cell(row=r, column=9).number_format = '0.0%'
+    c = ws.cell(row=r, column=10)
+    c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    if key in pareto_clients:
+        c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
+    else:
+        if banding: c.fill = BAND_FILL
+
+total_row = START_ROW + len(piglet_sorted)
+total_ca_piglet = sum(client_piglet[k]["ca"] for k in piglet_sorted)
+total_vol_piglet = sum(client_piglet[k]["vol_kg"] for k in piglet_sorted) / 1000.0
+total_qte_piglet = sum(client_piglet[k]["qte"] for k in piglet_sorted)
+ws.cell(row=total_row, column=2, value="TOTAL").font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=2).fill = HEADER_FILL
+ws.cell(row=total_row, column=2).alignment = BODY_ALIGN_CENTER; ws.cell(row=total_row, column=2).border = BORDER
+ws.merge_cells(start_row=total_row, start_column=2, end_row=total_row, end_column=4)
+for col in [3, 4, 5]:
+    ws.cell(row=total_row, column=col).fill = HEADER_FILL; ws.cell(row=total_row, column=col).border = BORDER
+ws.cell(row=total_row, column=6, value=total_vol_piglet).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=6).fill = PatternFill(start_color="833C00", end_color="833C00", fill_type="solid")
+ws.cell(row=total_row, column=6).alignment = BODY_ALIGN_RIGHT; ws.cell(row=total_row, column=6).border = BORDER
+ws.cell(row=total_row, column=6).number_format = VOL_NUM_FMT
+ws.cell(row=total_row, column=7, value=total_ca_piglet).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=7).fill = PatternFill(start_color="833C00", end_color="833C00", fill_type="solid")
+ws.cell(row=total_row, column=7).alignment = BODY_ALIGN_RIGHT; ws.cell(row=total_row, column=7).border = BORDER
+ws.cell(row=total_row, column=7).number_format = CA_NUM_FMT
+ws.cell(row=total_row, column=8, value=total_qte_piglet).font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+ws.cell(row=total_row, column=8).fill = PatternFill(start_color="833C00", end_color="833C00", fill_type="solid")
+ws.cell(row=total_row, column=8).alignment = BODY_ALIGN_RIGHT; ws.cell(row=total_row, column=8).border = BORDER
+ws.cell(row=total_row, column=8).number_format = '#,##0'
+for col in [9, 10]:
+    ws.cell(row=total_row, column=col).fill = HEADER_FILL; ws.cell(row=total_row, column=col).border = BORDER
+
+ws.column_dimensions['A'].width = 6
+ws.column_dimensions['B'].width = 16
+ws.column_dimensions['C'].width = 42
+ws.column_dimensions['D'].width = 25
+ws.column_dimensions['E'].width = 22
+ws.column_dimensions['F'].width = 14
+ws.column_dimensions['G'].width = 22
+ws.column_dimensions['H'].width = 16
+ws.column_dimensions['I'].width = 16
+ws.column_dimensions['J'].width = 9
+ws.freeze_panes = "E5"
+ws.auto_filter.ref = f"A4:J{START_ROW + len(piglet_sorted) - 1}"
+print(f"  Sheet 24 (Clients Piglet Booster) built — {n_piglet} clients")
+
+# ===== SHEET 25: SYNERGIE CHICK BOOSTER × CONCENTRÉS CHAIR/PONTE =====
+ws = wb.create_sheet("25. Synergie Chick x Conc Chair-Ponte")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Synergie Chick Booster × Concentrés Chair/Ponte").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=10)
+ws.row_dimensions[1].height = 26
+
+# Compute synergy stats
+chick_clients_set = set(client_chick.keys())
+chair_clients_set = set(client_chair.keys())
+ponte_clients_set = set(client_ponte.keys())
+chair_or_ponte_clients = chair_clients_set | ponte_clients_set
+
+# Venn diagram: Chick buyers who also buy Chair or Ponte
+chick_and_chair = chick_clients_set & chair_clients_set
+chick_and_ponte = chick_clients_set & ponte_clients_set
+chick_and_chair_or_ponte = chick_clients_set & chair_or_ponte_clients
+chick_only = chick_clients_set - chair_or_ponte_clients
+
+n_chick_and_chair_or_ponte = len(chick_and_chair_or_ponte)
+pct_synergy_chick = (n_chick_and_chair_or_ponte / n_chick * 100) if n_chick > 0 else 0
+
+ws.cell(row=2, column=1, value=f"📊 Sur {n_chick} clients Chick Booster, {n_chick_and_chair_or_ponte} ({pct_synergy_chick:.1f}%) achètent AUSSI des concentrés Chair ou Ponte. {len(chick_only)} ({100-pct_synergy_chick:.1f}%) n'achètent QUE du Chick (opportunité cross-sell).").font = Font(name="Calibri", size=11, bold=True, color="1F4E78")
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=10)
+ws.row_dimensions[2].height = 36
+
+# Section 1: Venn / cross-tab summary
+ws.cell(row=4, column=1, value="1. Synthèse de la synergie").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=10)
+ws.row_dimensions[4].height = 22
+
+synth_headers = ["Catégorie", "Nb clients", "% des clients Chick", "Commentaire", "", "", "", "", "", ""]
+for col_idx, h in enumerate(synth_headers, start=1):
+    c = ws.cell(row=5, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[5].height = 32
+
+synth_rows = [
+    (f"Total clients Chick Booster", n_chick, 1.0, "Base 100%"),
+    (f"Clients Chick + Concentrés Chair (C104, C1042, C1043, C1044, C103)", len(chick_and_chair), len(chick_and_chair) / n_chick if n_chick > 0 else 0, "Cross-sell sur Chair"),
+    (f"Clients Chick + Concentrés Ponte (C102, C1022, C101)", len(chick_and_ponte), len(chick_and_ponte) / n_chick if n_chick > 0 else 0, "Cross-sell sur Ponte"),
+    (f"Clients Chick + Chair OU Ponte (cross-sell réussi)", n_chick_and_chair_or_ponte, n_chick_and_chair_or_ponte / n_chick if n_chick > 0 else 0, "✅ Cross-sell sur au moins 1 concentré volaille"),
+    (f"Clients Chick ONLY (pas de concentrés Chair/Ponte)", len(chick_only), len(chick_only) / n_chick if n_chick > 0 else 0, "⚠️ Opportunité cross-sell énorme"),
+]
+for i, (cat, n, pct, comment) in enumerate(synth_rows, start=1):
+    r = 5 + i
+    banding = (i % 2 == 0)
+    c = ws.cell(row=r, column=1, value=cat)
+    c.font = BOLD_FONT; c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=2, value=n)
+    c.font = BOLD_FONT; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=3, value=pct)
+    c.font = BODY_FONT; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+    c.number_format = '0.0%'
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=4, value=comment)
+    c.font = BODY_FONT; c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+    ws.merge_cells(start_row=r, start_column=4, end_row=r, end_column=10)
+    if banding: c.fill = BAND_FILL
+    # Highlight specific rows
+    if "cross-sell réussi" in cat.lower() or "chair ou ponte" in cat.lower():
+        ws.cell(row=r, column=2).fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+        ws.cell(row=r, column=2).font = Font(name="Calibri", size=10, bold=True, color="006100")
+    elif "chick only" in cat.lower():
+        ws.cell(row=r, column=2).fill = PatternFill(start_color="FCE4E4", end_color="FCE4E4", fill_type="solid")
+        ws.cell(row=r, column=2).font = Font(name="Calibri", size=10, bold=True, color="C00000")
+
+# Section 2: Liste détaillée
+r_detail_start = 5 + len(synth_rows) + 2
+ws.cell(row=r_detail_start, column=1, value="2. Liste détaillée des clients Chick Booster avec statut cross-sell").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=r_detail_start, start_column=1, end_row=r_detail_start, end_column=10)
+ws.row_dimensions[r_detail_start].height = 22
+
+HEADERS = ["N°", "Réf. client", "Nom du client", "Agence", "CA Chick (FCFA)",
+           "CA Concentrés Chair (FCFA)", "CA Concentrés Ponte (FCFA)", "Statut cross-sell", "20/80", ""]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=r_detail_start + 1, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[r_detail_start + 1].height = 36
+
+START_ROW = r_detail_start + 2
+chick_sorted2 = sorted(client_chick.keys(), key=lambda k: -client_chick[k]["ca"])
+for i, key in enumerate(chick_sorted2, start=1):
+    r = START_ROW + i - 1
+    ref, name = key
+    banding = (i % 2 == 0)
+    chick_ca = client_chick[key]["ca"]
+    chair_ca = client_chair.get(key, {"ca": 0})["ca"]
+    ponte_ca = client_ponte.get(key, {"ca": 0})["ca"]
+    if key in chick_and_chair_or_ponte:
+        status = "✅ Cross-sell"
+        status_color = "C6EFCE"
+        status_font = Font(name="Calibri", size=10, bold=True, color="006100")
+    else:
+        status = "⚠️ Chick only"
+        status_color = "FCE4E4"
+        status_font = Font(name="Calibri", size=10, bold=True, color="C00000")
+
+    cells = [
+        (1, i, BODY_ALIGN_CENTER),
+        (2, ref, BODY_ALIGN_CENTER),
+        (3, name, BODY_ALIGN_LEFT),
+        (4, get_primary_agency(key), BODY_ALIGN_LEFT),
+        (5, chick_ca, BODY_ALIGN_RIGHT),
+        (6, chair_ca, BODY_ALIGN_RIGHT),
+        (7, ponte_ca, BODY_ALIGN_RIGHT),
+    ]
+    for col, val, align in cells:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    for col in [5, 6, 7]:
+        ws.cell(row=r, column=col).number_format = CA_NUM_FMT
+    # Status with color
+    c = ws.cell(row=r, column=8, value=status)
+    c.font = status_font; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+    c.fill = PatternFill(start_color=status_color, end_color=status_color, fill_type="solid")
+    # 20/80 marker
+    c = ws.cell(row=r, column=9)
+    c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    if key in pareto_clients:
+        c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
+    else:
+        if banding: c.fill = BAND_FILL
+
+# Column widths
+ws.column_dimensions['A'].width = 6
+ws.column_dimensions['B'].width = 16
+ws.column_dimensions['C'].width = 38
+ws.column_dimensions['D'].width = 22
+ws.column_dimensions['E'].width = 18
+ws.column_dimensions['F'].width = 22
+ws.column_dimensions['G'].width = 22
+ws.column_dimensions['H'].width = 16
+ws.column_dimensions['I'].width = 9
+ws.column_dimensions['J'].width = 8
+ws.freeze_panes = f"E{START_ROW}"
+ws.auto_filter.ref = f"A{r_detail_start + 1}:I{START_ROW + len(chick_sorted2) - 1}"
+
+# Native pie chart for synergy
+# Write chart data in column L (hidden)
+DATA_COL = 12
+ws.cell(row=5, column=DATA_COL, value="Catégorie").font = BOLD_FONT
+ws.cell(row=5, column=DATA_COL+1, value="Nb clients").font = BOLD_FONT
+chart_data = [
+    ("Cross-sell (Chair ou Ponte)", n_chick_and_chair_or_ponte),
+    ("Chick only (opportunité)", len(chick_only)),
+]
+for i, (cat, n) in enumerate(chart_data, start=1):
+    ws.cell(row=5+i, column=DATA_COL, value=cat)
+    ws.cell(row=5+i, column=DATA_COL+1, value=n)
+ws.column_dimensions[get_column_letter(DATA_COL)].hidden = True
+ws.column_dimensions[get_column_letter(DATA_COL+1)].hidden = True
+
+from openpyxl.chart import PieChart
+chart_pie = PieChart()
+chart_pie.title = f"Synergie Chick Booster × Concentrés Chair/Ponte (sur {n_chick} clients Chick)"
+chart_pie.height = 10
+chart_pie.width = 14
+data = Reference(ws, min_col=DATA_COL+1, min_row=5, max_row=7)
+cats = Reference(ws, min_col=DATA_COL, min_row=6, max_row=7)
+chart_pie.add_data(data, titles_from_data=True)
+chart_pie.set_categories(cats)
+chart_pie.dataLabels = DataLabelList(showPercent=True, showCatName=True)
+pie_colors_2 = ["70AD47", "C00000"]
+if chart_pie.series:
+    s = chart_pie.series[0]
+    s.data_points = [DataPoint(idx=i, spPr=GraphicalProperties(solidFill=pie_colors_2[i])) for i in range(2)]
+# Anchor chart to the right of the synthesis section
+ws.add_chart(chart_pie, f"J5")
+
+print(f"  Sheet 25 (Synergie Chick x Conc Chair/Ponte) built — {n_chick} clients Chick, {n_chick_and_chair_or_ponte} cross-sell ({pct_synergy_chick:.1f}%)")
+
+# ===== SHEET 26: SYNERGIE PIGLET BOOSTER × CONCENTRÉS PORC =====
+ws = wb.create_sheet("26. Synergie Piglet x Conc Porc")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Synergie Piglet Booster × Concentrés Porc").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=10)
+ws.row_dimensions[1].height = 26
+
+# Compute synergy stats
+piglet_clients_set = set(client_piglet.keys())
+porc_clients_set = set(client_porc.keys())
+piglet_and_porc = piglet_clients_set & porc_clients_set
+piglet_only = piglet_clients_set - porc_clients_set
+
+n_piglet_and_porc = len(piglet_and_porc)
+pct_synergy_piglet = (n_piglet_and_porc / n_piglet * 100) if n_piglet > 0 else 0
+
+ws.cell(row=2, column=1, value=f"📊 Sur {n_piglet} clients Piglet Booster, {n_piglet_and_porc} ({pct_synergy_piglet:.1f}%) achètent AUSSI des concentrés Porc (C105, C1053, C1054, C1055). {len(piglet_only)} ({100-pct_synergy_piglet:.1f}%) n'achètent QUE du Piglet (opportunité cross-sell).").font = Font(name="Calibri", size=11, bold=True, color="833C00")
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=10)
+ws.row_dimensions[2].height = 36
+
+# Section 1: Synthèse
+ws.cell(row=4, column=1, value="1. Synthèse de la synergie").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=10)
+ws.row_dimensions[4].height = 22
+
+synth_headers = ["Catégorie", "Nb clients", "% des clients Piglet", "Commentaire", "", "", "", "", "", ""]
+for col_idx, h in enumerate(synth_headers, start=1):
+    c = ws.cell(row=5, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[5].height = 32
+
+synth_rows = [
+    ("Total clients Piglet Booster", n_piglet, 1.0, "Base 100%"),
+    (f"Clients Piglet + Concentrés Porc (C105, C1053, C1054, C1055)", n_piglet_and_porc, n_piglet_and_porc / n_piglet if n_piglet > 0 else 0, "✅ Cross-sell sur Porc"),
+    (f"Clients Piglet ONLY (pas de concentrés Porc)", len(piglet_only), len(piglet_only) / n_piglet if n_piglet > 0 else 0, "⚠️ Opportunité cross-sell énorme"),
+]
+for i, (cat, n, pct, comment) in enumerate(synth_rows, start=1):
+    r = 5 + i
+    banding = (i % 2 == 0)
+    c = ws.cell(row=r, column=1, value=cat)
+    c.font = BOLD_FONT; c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=2, value=n)
+    c.font = BOLD_FONT; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=3, value=pct)
+    c.font = BODY_FONT; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+    c.number_format = '0.0%'
+    if banding: c.fill = BAND_FILL
+    c = ws.cell(row=r, column=4, value=comment)
+    c.font = BODY_FONT; c.alignment = BODY_ALIGN_LEFT; c.border = BORDER
+    ws.merge_cells(start_row=r, start_column=4, end_row=r, end_column=10)
+    if banding: c.fill = BAND_FILL
+    if "cross-sell" in cat.lower() and "porc" in cat.lower():
+        ws.cell(row=r, column=2).fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+        ws.cell(row=r, column=2).font = Font(name="Calibri", size=10, bold=True, color="006100")
+    elif "piglet only" in cat.lower():
+        ws.cell(row=r, column=2).fill = PatternFill(start_color="FCE4E4", end_color="FCE4E4", fill_type="solid")
+        ws.cell(row=r, column=2).font = Font(name="Calibri", size=10, bold=True, color="C00000")
+
+# Section 2: Liste détaillée
+r_detail_start = 5 + len(synth_rows) + 2
+ws.cell(row=r_detail_start, column=1, value="2. Liste détaillée des clients Piglet Booster avec statut cross-sell").font = Font(name="Calibri", size=12, bold=True, color="1F4E78")
+ws.merge_cells(start_row=r_detail_start, start_column=1, end_row=r_detail_start, end_column=10)
+ws.row_dimensions[r_detail_start].height = 22
+
+HEADERS = ["N°", "Réf. client", "Nom du client", "Agence", "CA Piglet (FCFA)",
+           "CA Concentrés Porc (FCFA)", "Total Booster+Porc (FCFA)", "Statut cross-sell", "20/80", ""]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=r_detail_start + 1, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[r_detail_start + 1].height = 36
+
+START_ROW = r_detail_start + 2
+piglet_sorted2 = sorted(client_piglet.keys(), key=lambda k: -client_piglet[k]["ca"])
+for i, key in enumerate(piglet_sorted2, start=1):
+    r = START_ROW + i - 1
+    ref, name = key
+    banding = (i % 2 == 0)
+    piglet_ca = client_piglet[key]["ca"]
+    porc_ca = client_porc.get(key, {"ca": 0})["ca"]
+    if key in piglet_and_porc:
+        status = "✅ Cross-sell"
+        status_color = "C6EFCE"
+        status_font = Font(name="Calibri", size=10, bold=True, color="006100")
+    else:
+        status = "⚠️ Piglet only"
+        status_color = "FCE4E4"
+        status_font = Font(name="Calibri", size=10, bold=True, color="C00000")
+
+    cells = [
+        (1, i, BODY_ALIGN_CENTER),
+        (2, ref, BODY_ALIGN_CENTER),
+        (3, name, BODY_ALIGN_LEFT),
+        (4, get_primary_agency(key), BODY_ALIGN_LEFT),
+        (5, piglet_ca, BODY_ALIGN_RIGHT),
+        (6, porc_ca, BODY_ALIGN_RIGHT),
+        (7, piglet_ca + porc_ca, BODY_ALIGN_RIGHT),
+    ]
+    for col, val, align in cells:
+        c = ws.cell(row=r, column=col, value=val)
+        c.font = BODY_FONT; c.alignment = align; c.border = BORDER
+        if banding: c.fill = BAND_FILL
+    for col in [5, 6, 7]:
+        ws.cell(row=r, column=col).number_format = CA_NUM_FMT
+    c = ws.cell(row=r, column=8, value=status)
+    c.font = status_font; c.alignment = BODY_ALIGN_CENTER; c.border = BORDER
+    c.fill = PatternFill(start_color=status_color, end_color=status_color, fill_type="solid")
+    c = ws.cell(row=r, column=9)
+    c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    if key in pareto_clients:
+        c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
+    else:
+        if banding: c.fill = BAND_FILL
+
+ws.column_dimensions['A'].width = 6
+ws.column_dimensions['B'].width = 16
+ws.column_dimensions['C'].width = 38
+ws.column_dimensions['D'].width = 22
+ws.column_dimensions['E'].width = 18
+ws.column_dimensions['F'].width = 22
+ws.column_dimensions['G'].width = 22
+ws.column_dimensions['H'].width = 16
+ws.column_dimensions['I'].width = 9
+ws.column_dimensions['J'].width = 8
+ws.freeze_panes = f"E{START_ROW}"
+ws.auto_filter.ref = f"A{r_detail_start + 1}:I{START_ROW + len(piglet_sorted2) - 1}"
+
+# Native pie chart
+DATA_COL = 12
+ws.cell(row=5, column=DATA_COL, value="Catégorie").font = BOLD_FONT
+ws.cell(row=5, column=DATA_COL+1, value="Nb clients").font = BOLD_FONT
+chart_data = [
+    ("Cross-sell Porc", n_piglet_and_porc),
+    ("Piglet only (opportunité)", len(piglet_only)),
+]
+for i, (cat, n) in enumerate(chart_data, start=1):
+    ws.cell(row=5+i, column=DATA_COL, value=cat)
+    ws.cell(row=5+i, column=DATA_COL+1, value=n)
+ws.column_dimensions[get_column_letter(DATA_COL)].hidden = True
+ws.column_dimensions[get_column_letter(DATA_COL+1)].hidden = True
+
+chart_pie2 = PieChart()
+chart_pie2.title = f"Synergie Piglet Booster × Concentrés Porc (sur {n_piglet} clients Piglet)"
+chart_pie2.height = 10
+chart_pie2.width = 14
+data = Reference(ws, min_col=DATA_COL+1, min_row=5, max_row=7)
+cats = Reference(ws, min_col=DATA_COL, min_row=6, max_row=7)
+chart_pie2.add_data(data, titles_from_data=True)
+chart_pie2.set_categories(cats)
+chart_pie2.dataLabels = DataLabelList(showPercent=True, showCatName=True)
+if chart_pie2.series:
+    s = chart_pie2.series[0]
+    s.data_points = [DataPoint(idx=i, spPr=GraphicalProperties(solidFill=pie_colors_2[i])) for i in range(2)]
+ws.add_chart(chart_pie2, f"J5")
+
+print(f"  Sheet 26 (Synergie Piglet x Conc Porc) built — {n_piglet} clients Piglet, {n_piglet_and_porc} cross-sell ({pct_synergy_piglet:.1f}%)")
+
 # ===== SAVE =====
 wb.save(OUT)
 print(f"\nSaved: {OUT}")
