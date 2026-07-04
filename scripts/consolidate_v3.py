@@ -90,6 +90,14 @@ client_q2_by_product_concentre = defaultdict(lambda: defaultdict(lambda: {"vol_k
 client_q2_active_months_target = defaultdict(set)
 client_q2_active_months_concentre = defaultdict(set)
 
+# NEW: per-month Q2 aggregates (months 4, 5, 6 = April, May, June)
+# For tracking month-by-month evolution in the new sheet
+client_t_month_kg = {m: defaultdict(float) for m in [1,2,3,4,5,6]}  # targeted vol per month
+client_t_month_ca = {m: defaultdict(float) for m in [1,2,3,4,5,6]}
+client_t_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}  # bought targeted in month m
+client_c_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}  # bought concentré in month m
+client_any_month_active = {m: defaultdict(bool) for m in [1,2,3,4,5,6]}  # bought anything in month m
+
 for sheet_name in wb_src.sheetnames:
     ws = wb_src[sheet_name]
     is_q1 = sheet_name in Q1_SHEETS
@@ -117,10 +125,14 @@ for sheet_name in wb_src.sheetnames:
         except: ca_f = 0.0
         client_ca_total[key] += ca_f
         client_months_any[key].add(month_num)
+        client_any_month_active[month_num][key] = True
         is_target = ref_prod_str in TARGET_REFS
         is_concentre = ref_prod_str in CONCENTRE_REFS
         vol_kg = qte_f * weight_kg
         if is_target:
+            client_t_month_active[month_num][key] = True
+            client_t_month_kg[month_num][key] += vol_kg
+            client_t_month_ca[month_num][key] += ca_f
             if is_q1:
                 client_t_q1_kg[key] += vol_kg; client_t_q1_ca[key] += ca_f
                 client_t_q1_months[key].add(month_num)
@@ -132,6 +144,7 @@ for sheet_name in wb_src.sheetnames:
                 if month_num: rec["months"].add(month_num)
                 if month_num: client_q2_active_months_target[key].add(month_num)
         if is_concentre:
+            client_c_month_active[month_num][key] = True
             if is_q1:
                 client_c_q1_kg[key] += vol_kg; client_c_q1_ca[key] += ca_f
                 client_c_q1_months[key].add(month_num)
@@ -251,7 +264,7 @@ ws = wb.create_sheet("1. Sommaire")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Analyse complète Janvier-Juin 2026").font = Font(name="Calibri", size=18, bold=True, color="1F4E78")
 ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=4)
 ws.row_dimensions[1].height = 32
-ws.cell(row=2, column=1, value=f"Fichier consolidé multi-feuilles — {len(clients_all)} clients (après exclusion de 23 clients internes/filiales/comptoirs), 16 produits ciblés").font = SUB_FONT
+ws.cell(row=2, column=1, value=f"Fichier consolidé multi-feuilles — {len(clients_all)} clients (après exclusion de 35 clients internes/filiales/comptoirs), 16 produits ciblés").font = SUB_FONT
 ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=4)
 ws.row_dimensions[2].height = 22
 
@@ -269,16 +282,18 @@ sommaire = [
     ("2", "2. Clients uniques", f"Liste de {len(clients_all)} clients uniques sur 6 mois avec check mensuel vert, CA Total HT 6 mois et marque 20/80 (★).", f"{len(clients_all)} clients"),
     ("3", "3. Zero achat global Q1", f"{len(zero_global)} clients n'ayant acheté AUCUN des 16 produits ciblés en Jan-Mar 2026.", f"{len(zero_global)} clients"),
     ("4", "4. Zero achat concentrés Q1", f"{len(zero_concentre)} clients n'ayant acheté AUCUN concentré (12 produits) en Jan-Mar 2026.", f"{len(zero_concentre)} clients"),
-    ("5", "5. Zero achat 20/80 Q1 (ciblé)", "NOUVEAU — Clients 20/80 qui n'ont rien acheté de ciblé en Q1. GROS COMPTES À RISQUE — action commerciale prioritaire.", "Filtre 20/80"),
-    ("6", "6. Zero achat 20/80 Q1 (conc.)", "NOUVEAU — Clients 20/80 qui n'ont rien acheté de concentrés en Q1.", "Filtre 20/80"),
+    ("5", "5. Zero achat 20/80 Q1 (ciblé)", "Clients 20/80 qui n'ont rien acheté de ciblé en Q1. GROS COMPTES À RISQUE — action commerciale prioritaire.", "Filtre 20/80"),
+    ("6", "6. Zero achat 20/80 Q1 (conc.)", "Clients 20/80 qui n'ont rien acheté de concentrés en Q1.", "Filtre 20/80"),
     ("7", "7. Pertes Q1 - Global (fréquence)", f"Pertes Q1 estimées pour les {len(zero_global)} clients zéro achat global. Méthode : Perte = Σ(moyennes mensuelles) × Fréquence × 3.", f"{len(zero_global)} clients"),
     ("8", "8. Pertes Q1 - Concentrés (fréq.)", f"Pertes Q1 estimées pour les {len(zero_concentre)} clients zéro achat concentrés. Même méthode.", f"{len(zero_concentre)} clients"),
     ("9", "9. Transition Q1-Q2 (cible)", "Synthèse : matrice de transition Q1→Q2 sur 16 produits ciblés, bilan net (gain/perte), destin des Q1 fidèles.", "Synthèse"),
     ("10", "10. Transition Q1-Q2 (conc.)", "Synthèse : matrice de transition Q1→Q2 sur 12 concentrés uniquement.", "Synthèse"),
     ("11", "11. Détail transition (cible)", f"Détail par client des {len(clients_all)} clients sur 16 produits ciblés. Triés par segment (churned en premier).", f"{len(clients_all)} clients"),
     ("12", "12. Détail transition (conc.)", f"Détail par client des {len(clients_all)} clients sur 12 concentrés.", f"{len(clients_all)} clients"),
-    ("13", "13. Graphiques", "NOUVEAU — 7 graphiques natifs Excel (modifiables) : évolution mensuelle, segments de transition, top 10 pertes, répartition 20/80, bilan net.", "7 graphiques"),
-    ("14", "14. Recommandations", "NOUVEAU — Plan d'action commercial priorisé en 5 axes avec clients cibles, montants et actions concrètes.", "Plan d'action"),
+    ("13", "13. Evolution mensuelle (cible)", "NOUVEAU — Analyse mois par mois (Jan→Juin) sur 16 produits ciblés. Volume (t) et statut actif ✓ pour chaque mois, Q2 détaillé Avril/Mai/Juin séparément.", f"{len(clients_all)} clients"),
+    ("14", "14. Evolution mensuelle (conc.)", "NOUVEAU — Analyse mois par mois (Jan→Juin) sur 12 concentrés. Q2 détaillé Avril/Mai/Juin séparément.", f"{len(clients_all)} clients"),
+    ("15", "15. Graphiques", "7 graphiques natifs Excel (modifiables) : évolution mensuelle, segments de transition, top 10 pertes, répartition 20/80, bilan net.", "7 graphiques"),
+    ("16", "16. Recommandations", "Plan d'action commercial priorisé en 6 axes avec clients cibles, montants et actions concrètes.", "Plan d'action"),
 ]
 
 for i, (num, sheet, content, lignes) in enumerate(sommaire, start=1):
@@ -301,7 +316,7 @@ ws.row_dimensions[r].height = 22
 
 stats = [
     ("Total clients uniques (après exclusion)", f"{len(clients_all)}"),
-    ("Clients exclus (internes/filiales/comptoirs)", "23 (SPC, PDC filiale NJS, soldes compta, 13 clients comptoirs)"),
+    ("Clients exclus (internes/filiales/comptoirs)", "35 (SPC, PDC filiale NJS, soldes compta, 25 clients comptoirs agences)"),
     ("Total CA HT (6 mois, après exclusion)", f"{total_ca:,.0f} FCFA".replace(",", " ")),
     ("Clients Pareto 20/80 (★)", f"{len(pareto_clients)} ({len(pareto_clients)/len(clients_all)*100:.1f}% des clients → 80% du CA)"),
     ("Clients zéro achat global Q1 (16 produits)", f"{len(zero_global)}"),
@@ -1147,7 +1162,307 @@ build_detail_transition(
 )
 print(f"  Sheet 12 (Détail transition concentrés) built")
 
-# ===== SHEET 13: GRAPHIQUES (NATIVE EXCEL CHARTS) =====
+# ===== SHEET 13 (NEW): ÉVOLUTION MENSUELLE Q2 MOIS PAR MOIS =====
+# Detailed month-by-month analysis: for each client, show vol/CA/status for Jan, Feb, Mar, Apr, May, Jun
+# on targeted products. This gives the month-by-month Q2 view requested.
+
+ws = wb.create_sheet("13. Evolution mensuelle (cible)")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Évolution mensuelle (Janvier → Juin) sur 16 produits ciblés").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=20)
+ws.row_dimensions[1].height = 26
+
+ws.cell(row=2, column=1, value=("Pour chaque client : statut actif (✓) et volume (t) sur produits ciblés, mois par mois. "
+                                  "Permet de voir la dynamique mensuelle (Avril / Mai / Juin) et le moment exact de la (ré)activation ou du churn.")
+).font = SUB_FONT
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=20)
+ws.row_dimensions[2].height = 30
+
+# Group headers (row 3)
+ws.merge_cells(start_row=3, start_column=4, end_row=3, end_column=9)
+c = ws.cell(row=3, column=4, value="Q1 (Jan-Mar) — mois par mois")
+c.fill = GROUP_FILL; c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
+for col in [5, 6, 7, 8, 9]:
+    cc = ws.cell(row=3, column=col); cc.fill = GROUP_FILL; cc.border = BORDER
+
+ws.merge_cells(start_row=3, start_column=10, end_row=3, end_column=15)
+c = ws.cell(row=3, column=10, value="Q2 (Avr-Juin) — mois par mois")
+c.fill = PatternFill(start_color="C00000", end_color="C00000", fill_type="solid")
+c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
+for col in [11, 12, 13, 14, 15]:
+    cc = ws.cell(row=3, column=col); cc.fill = PatternFill(start_color="C00000", end_color="C00000", fill_type="solid"); cc.border = BORDER
+
+ws.merge_cells(start_row=3, start_column=16, end_row=3, end_column=18)
+c = ws.cell(row=3, column=16, value="Synthèse")
+c.fill = PatternFill(start_color="375623", end_color="375623", fill_type="solid")
+c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
+for col in [17, 18]:
+    cc = ws.cell(row=3, column=col); cc.fill = PatternFill(start_color="375623", end_color="375623", fill_type="solid"); cc.border = BORDER
+ws.row_dimensions[3].height = 22
+
+# Column headers (row 4)
+HEADERS = [
+    "N°", "Réf. client", "Nom du client",
+    "Jan (t)", "Jan ✓", "Fév (t)", "Fév ✓", "Mar (t)", "Mar ✓",
+    "Avr (t)", "Avr ✓", "Mai (t)", "Mai ✓", "Juin (t)", "Juin ✓",
+    "Segment Q1→Q2", "Vol 6m (t)", "CA 6m (FCFA)",
+    "20/80", "Statut détaillé"
+]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=4, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[4].height = 36
+
+# Build data rows
+# Sort: churned first, then reactivated, then retained, then persistent
+seg_order = {
+    ("Active Q1","Zero Q2"): 0,
+    ("Zero Q1","Active Q2"): 1,
+    ("Active Q1","Active Q2"): 2,
+    ("Zero Q1","Zero Q2"): 3,
+}
+def sort_key(k):
+    seg = client_seg_target[k]
+    return (seg_order[seg], -(client_t_q1_ca[k] + client_t_q2_ca[k]))
+
+sorted_clients = sorted(clients_all, key=sort_key)
+
+START_ROW = 5
+for i, key in enumerate(sorted_clients, start=1):
+    r = START_ROW + i - 1
+    ref, name = key
+    seg = client_seg_target[key]
+    seg_label = SEGMENT_LABELS[seg]
+    color = SEG_COLORS[seg]
+    font = SEG_FONTS[seg]
+    banding = (i % 2 == 0)
+    fill = PatternFill(start_color=color, end_color=color, fill_type="solid")
+
+    # Build detailed status string
+    q1_months_active = sorted(client_t_q1_months[key])
+    q2_months_active = sorted(client_t_q2_months[key])
+    status_parts = []
+    if not q1_months_active and not q2_months_active:
+        status_parts.append("Jamais actif (ciblé) sur 6 mois")
+    else:
+        if q1_months_active:
+            month_names_map = {1:"Jan",2:"Fév",3:"Mar"}
+            status_parts.append(f"Q1: {','.join(month_names_map[m] for m in q1_months_active)}")
+        else:
+            status_parts.append("Q1: inactif")
+        if q2_months_active:
+            month_names_map = {4:"Avr",5:"Mai",6:"Juin"}
+            status_parts.append(f"Q2: {','.join(month_names_map[m] for m in q2_months_active)}")
+        else:
+            status_parts.append("Q2: inactif")
+    status_detail = " | ".join(status_parts)
+
+    # Vol 6m and CA 6m (targeted)
+    vol_6m_t = (client_t_q1_kg[key] + client_t_q2_kg[key]) / 1000.0
+    ca_6m = client_t_q1_ca[key] + client_t_q2_ca[key]
+
+    # Cells: (col, value, align, fmt)
+    cells = [
+        (1, i, BODY_ALIGN_CENTER, None),
+        (2, ref, BODY_ALIGN_CENTER, None),
+        (3, name, BODY_ALIGN_LEFT, None),
+        (4, client_t_month_kg[1][key]/1000.0, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (5, "✓" if client_t_month_active[1][key] else "", BODY_ALIGN_CENTER, None),
+        (6, client_t_month_kg[2][key]/1000.0, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (7, "✓" if client_t_month_active[2][key] else "", BODY_ALIGN_CENTER, None),
+        (8, client_t_month_kg[3][key]/1000.0, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (9, "✓" if client_t_month_active[3][key] else "", BODY_ALIGN_CENTER, None),
+        (10, client_t_month_kg[4][key]/1000.0, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (11, "✓" if client_t_month_active[4][key] else "", BODY_ALIGN_CENTER, None),
+        (12, client_t_month_kg[5][key]/1000.0, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (13, "✓" if client_t_month_active[5][key] else "", BODY_ALIGN_CENTER, None),
+        (14, client_t_month_kg[6][key]/1000.0, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (15, "✓" if client_t_month_active[6][key] else "", BODY_ALIGN_CENTER, None),
+        (16, seg_label, Alignment(horizontal="left", vertical="center", wrap_text=True), None),
+        (17, vol_6m_t, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (18, ca_6m, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+    ]
+    for col_idx, val, align, fmt in cells:
+        c = ws.cell(row=r, column=col_idx, value=val)
+        c.font = font; c.alignment = align; c.border = BORDER
+        if fmt: c.number_format = fmt
+        c.fill = fill
+    # Highlight active month ticks with green
+    for col_idx in [5, 7, 9, 11, 13, 15]:
+        v = ws.cell(row=r, column=col_idx).value
+        if v == "✓":
+            ws.cell(row=r, column=col_idx).fill = GREEN_FILL
+            ws.cell(row=r, column=col_idx).font = GREEN_FONT
+    # 20/80 marker
+    c = ws.cell(row=r, column=19)
+    c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    if key in pareto_clients:
+        c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
+    else:
+        c.fill = fill; c.font = font
+    # Status detail
+    c = ws.cell(row=r, column=20, value=status_detail)
+    c.font = font; c.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True); c.border = BORDER
+    c.fill = fill
+
+# Column widths
+widths_13 = [6, 16, 38,
+             10, 7, 10, 7, 10, 7,
+             10, 7, 10, 7, 10, 7,
+             38, 12, 18, 9, 40]
+for i, w in enumerate(widths_13, start=1):
+    ws.column_dimensions[get_column_letter(i)].width = w
+ws.freeze_panes = "D5"
+ws.auto_filter.ref = f"A4:T{START_ROW + len(sorted_clients) - 1}"
+
+print(f"  Sheet 13 (Évolution mensuelle) built — {len(sorted_clients)} rows")
+
+# ===== SHEET 14 (NEW): ÉVOLUTION MENSUELLE CONCENTRÉS =====
+ws = wb.create_sheet("14. Evolution mensuelle (conc.)")
+ws.cell(row=1, column=1, value="BELGOCAM SA - Évolution mensuelle (Janvier → Juin) sur 12 concentrés").font = TITLE_FONT
+ws.cell(row=1, column=1).alignment = TITLE_ALIGN
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=20)
+ws.row_dimensions[1].height = 26
+
+ws.cell(row=2, column=1, value="Pour chaque client : statut actif (✓) sur concentrés, mois par mois. Permet de voir la dynamique mensuelle Q2.").font = SUB_FONT
+ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=20)
+ws.row_dimensions[2].height = 30
+
+# Group headers
+ws.merge_cells(start_row=3, start_column=4, end_row=3, end_column=9)
+c = ws.cell(row=3, column=4, value="Q1 (Jan-Mar)")
+c.fill = GROUP_FILL; c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
+for col in [5, 6, 7, 8, 9]:
+    cc = ws.cell(row=3, column=col); cc.fill = GROUP_FILL; cc.border = BORDER
+ws.merge_cells(start_row=3, start_column=10, end_row=3, end_column=15)
+c = ws.cell(row=3, column=10, value="Q2 (Avr-Juin)")
+c.fill = PatternFill(start_color="C00000", end_color="C00000", fill_type="solid")
+c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
+for col in [11, 12, 13, 14, 15]:
+    cc = ws.cell(row=3, column=col); cc.fill = PatternFill(start_color="C00000", end_color="C00000", fill_type="solid"); cc.border = BORDER
+ws.merge_cells(start_row=3, start_column=16, end_row=3, end_column=18)
+c = ws.cell(row=3, column=16, value="Synthèse")
+c.fill = PatternFill(start_color="375623", end_color="375623", fill_type="solid")
+c.font = GROUP_FONT; c.alignment = GROUP_ALIGN; c.border = BORDER
+for col in [17, 18]:
+    cc = ws.cell(row=3, column=col); cc.fill = PatternFill(start_color="375623", end_color="375623", fill_type="solid"); cc.border = BORDER
+ws.row_dimensions[3].height = 22
+
+HEADERS = [
+    "N°", "Réf. client", "Nom du client",
+    "Jan ✓", "Fév ✓", "Mar ✓", "Avr ✓", "Mai ✓", "Juin ✓",
+    "Vol Q1 conc (t)", "CA Q1 conc", "Vol Q2 conc (t)", "CA Q2 conc",
+    "Vol 6m conc (t)", "CA 6m conc",
+    "Segment Q1→Q2", "Vol 6m (t)", "CA 6m (FCFA)",
+    "20/80", "Statut détaillé"
+]
+for col_idx, h in enumerate(HEADERS, start=1):
+    c = ws.cell(row=4, column=col_idx, value=h)
+    c.fill = HEADER_FILL; c.font = HEADER_FONT; c.alignment = HEADER_ALIGN; c.border = BORDER
+ws.row_dimensions[4].height = 36
+
+# Sort: churned first
+seg_order_c = {
+    ("Active Q1","Zero Q2"): 0,
+    ("Zero Q1","Active Q2"): 1,
+    ("Active Q1","Active Q2"): 2,
+    ("Zero Q1","Zero Q2"): 3,
+}
+def sort_key_c(k):
+    seg = client_seg_concentre[k]
+    return (seg_order_c[seg], -(client_c_q1_ca[k] + client_c_q2_ca[k]))
+
+sorted_clients_c = sorted(clients_all, key=sort_key_c)
+
+START_ROW = 5
+for i, key in enumerate(sorted_clients_c, start=1):
+    r = START_ROW + i - 1
+    ref, name = key
+    seg = client_seg_concentre[key]
+    seg_label = SEGMENT_LABELS[seg]
+    color = SEG_COLORS[seg]
+    font = SEG_FONTS[seg]
+    fill = PatternFill(start_color=color, end_color=color, fill_type="solid")
+
+    q1_months_active = sorted(client_c_q1_months[key])
+    q2_months_active = sorted(client_c_q2_months[key])
+    status_parts = []
+    if not q1_months_active and not q2_months_active:
+        status_parts.append("Jamais actif (concentrés) sur 6 mois")
+    else:
+        if q1_months_active:
+            month_names_map = {1:"Jan",2:"Fév",3:"Mar"}
+            status_parts.append(f"Q1: {','.join(month_names_map[m] for m in q1_months_active)}")
+        else:
+            status_parts.append("Q1: inactif")
+        if q2_months_active:
+            month_names_map = {4:"Avr",5:"Mai",6:"Juin"}
+            status_parts.append(f"Q2: {','.join(month_names_map[m] for m in q2_months_active)}")
+        else:
+            status_parts.append("Q2: inactif")
+    status_detail = " | ".join(status_parts)
+
+    vol_q1_c_t = client_c_q1_kg[key] / 1000.0
+    vol_q2_c_t = client_c_q2_kg[key] / 1000.0
+    ca_q1_c = client_c_q1_ca[key]
+    ca_q2_c = client_c_q2_ca[key]
+    vol_6m_c_t = vol_q1_c_t + vol_q2_c_t
+    ca_6m_c = ca_q1_c + ca_q2_c
+    vol_6m_t = (client_t_q1_kg[key] + client_t_q2_kg[key]) / 1000.0
+    ca_6m = client_t_q1_ca[key] + client_t_q2_ca[key]
+
+    cells = [
+        (1, i, BODY_ALIGN_CENTER, None),
+        (2, ref, BODY_ALIGN_CENTER, None),
+        (3, name, BODY_ALIGN_LEFT, None),
+        (4, "✓" if client_c_month_active[1][key] else "", BODY_ALIGN_CENTER, None),
+        (5, "✓" if client_c_month_active[2][key] else "", BODY_ALIGN_CENTER, None),
+        (6, "✓" if client_c_month_active[3][key] else "", BODY_ALIGN_CENTER, None),
+        (7, "✓" if client_c_month_active[4][key] else "", BODY_ALIGN_CENTER, None),
+        (8, "✓" if client_c_month_active[5][key] else "", BODY_ALIGN_CENTER, None),
+        (9, "✓" if client_c_month_active[6][key] else "", BODY_ALIGN_CENTER, None),
+        (10, vol_q1_c_t, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (11, ca_q1_c, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (12, vol_q2_c_t, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (13, ca_q2_c, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (14, vol_6m_c_t, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (15, ca_6m_c, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+        (16, seg_label, Alignment(horizontal="left", vertical="center", wrap_text=True), None),
+        (17, vol_6m_t, BODY_ALIGN_RIGHT, VOL_NUM_FMT),
+        (18, ca_6m, BODY_ALIGN_RIGHT, CA_NUM_FMT),
+    ]
+    for col_idx, val, align, fmt in cells:
+        c = ws.cell(row=r, column=col_idx, value=val)
+        c.font = font; c.alignment = align; c.border = BORDER
+        if fmt: c.number_format = fmt
+        c.fill = fill
+    for col_idx in [4, 5, 6, 7, 8, 9]:
+        v = ws.cell(row=r, column=col_idx).value
+        if v == "✓":
+            ws.cell(row=r, column=col_idx).fill = GREEN_FILL
+            ws.cell(row=r, column=col_idx).font = GREEN_FONT
+    c = ws.cell(row=r, column=19)
+    c.border = BORDER; c.alignment = BODY_ALIGN_CENTER
+    if key in pareto_clients:
+        c.value = PARETO_SYMBOL; c.fill = PARETO_FILL; c.font = PARETO_FONT
+    else:
+        c.fill = fill; c.font = font
+    c = ws.cell(row=r, column=20, value=status_detail)
+    c.font = font; c.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True); c.border = BORDER
+    c.fill = fill
+
+widths_14 = [6, 16, 38,
+             8, 8, 8, 8, 8, 8,
+             14, 16, 14, 16, 14, 16,
+             38, 12, 18, 9, 40]
+for i, w in enumerate(widths_14, start=1):
+    ws.column_dimensions[get_column_letter(i)].width = w
+ws.freeze_panes = "D5"
+ws.auto_filter.ref = f"A4:T{START_ROW + len(sorted_clients_c) - 1}"
+
+print(f"  Sheet 14 (Évolution mensuelle concentrés) built — {len(sorted_clients_c)} rows")
+
+# ===== SHEET 15: GRAPHIQUES (NATIVE EXCEL CHARTS) =====
 from openpyxl.chart import BarChart, LineChart, PieChart, Reference, BarChart3D
 from openpyxl.chart.label import DataLabelList
 from openpyxl.chart.layout import Layout, ManualLayout
@@ -1156,7 +1471,7 @@ from openpyxl.drawing.line import LineProperties
 from openpyxl.drawing.fill import ColorChoice
 from openpyxl.chart.series import DataPoint
 
-ws = wb.create_sheet("13. Graphiques")
+ws = wb.create_sheet("15. Graphiques")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Graphiques d'analyse (graphiques natifs Excel)").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
 ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=12)
@@ -1467,10 +1782,10 @@ for i, s in enumerate(chart7.series):
 ws.add_chart(chart7, "A152")
 
 ws.column_dimensions['A'].width = 12
-print(f"  Sheet 13 (Graphiques) built — 7 native Excel charts")
+print(f"  Sheet 15 (Graphiques) built — 7 native Excel charts")
 
-# ===== SHEET 14: RECOMMANDATIONS =====
-ws = wb.create_sheet("14. Recommandations")
+# ===== SHEET 16: RECOMMANDATIONS =====
+ws = wb.create_sheet("16. Recommandations")
 ws.cell(row=1, column=1, value="BELGOCAM SA - Plan d'action commercial priorisé").font = TITLE_FONT
 ws.cell(row=1, column=1).alignment = TITLE_ALIGN
 ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
