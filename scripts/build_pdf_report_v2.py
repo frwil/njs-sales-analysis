@@ -335,10 +335,11 @@ def build_story():
         ["7", "Perspectives stratégiques — 5 axes", "14"],
         ["8", "Projection CA 6 mois (3 scénarios)", "16"],
         ["9", "Ventes vs Objectifs 2026", "17"],
-        ["10", "Forecast S2 2026 (3 scénarios)", "20"],
-        ["10bis", "Analyse YoY 2025-2026 et forecast affiné", "22"],
-        ["11", "Recommandations et plan d'action priorisé", "25"],
-        ["12", "Conclusion et prochaines étapes", "27"],
+        ["9bis", "Focus CONCENTRÉS — Cœur de marge", "20"],
+        ["10", "Forecast S2 2026 (3 scénarios)", "24"],
+        ["10bis", "Analyse YoY 2025-2026 et forecast affiné", "26"],
+        ["11", "Recommandations et plan d'action priorisé", "29"],
+        ["12", "Conclusion et prochaines étapes", "31"],
     ]
     t = make_table(toc_data, col_widths=[1.5*cm, 12*cm, 2.5*cm], header_row=True)
     story.append(t)
@@ -1273,7 +1274,147 @@ def build_story():
 
     story.append(PageBreak())
 
-    # ---------- PAGE 20: SECTION 10 - FORECAST S2 ----------
+    # ---------- PAGE 20: SECTION 9 BIS - FOCUS CONCENTRÉS ----------
+    story.append(Paragraph("9bis. Focus CONCENTRÉS — Cœur de marge", H1))
+    story.append(section_divider())
+
+    story.append(Paragraph(
+        "Les CONCENTRÉS (BELGO 10% + BELGO 5%) représentent <b>la plus grosse partie de la marge</b> de BELGOCAM. "
+        "Avec 8 592 tonnes et 5,73 milliards FCFA de CA HT en S1 2026, ils sont la catégorie stratégique par excellence. "
+        "Pourtant, ils n'atteignent que 68,5% de l'objectif S1 et stagnent en YoY (-0,9%). "
+        "Cette section propose une analyse approfondie par sous-catégorie, par produit, par agence et dans le temps.",
+        BODY
+    ))
+
+    story.append(Paragraph("9bis.1 Décomposition par sous-catégorie (S1 2026)", H2))
+    conc_subcat_data = [
+        ["Sous-catégorie", "Volume S1 (t)", "% vol", "CA HT (M FCFA)", "Prix moyen (FCFA/t)", "YoY S1"],
+        ["BELGO 10% Chair", "4 308,0", "50,1%", "2 752,4", "638 908", "-3,2%"],
+        ["BELGO 5% Ponte", "1 703,5", "19,8%", "1 230,1", "722 104", "+19,3%"],
+        ["BELGO 10% Porc", "1 164,2", "13,5%", "640,9", "550 499", "-19,6%"],
+        ["BELGO 5% Chair", "1 369,5", "15,9%", "1 084,1", "791 635", "+6,1%"],
+        ["BELGO 10% Ponte", "36,8", "0,4%", "21,6", "586 569", "-27,9%"],
+        ["BELGO Rabbit", "10,1", "0,1%", "4,1", "402 963", "Nouveau"],
+        ["BELGO Ruminant", "0,1", "0,0%", "0,0", "600 000", "Nouveau"],
+        ["TOTAL", "8 592,1", "100%", "5 733,2", "667 263", "-0,9%"],
+    ]
+    story.append(make_table(conc_subcat_data, col_widths=[3.2*cm, 2*cm, 1.2*cm, 2.2*cm, 2.5*cm, 1.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    # Chart K: CONCENTRÉS by sub-category
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartK_conc_subcat.png', width=16*cm, height=5.5*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 19 — CONCENTRÉS : volume et CA HT par sous-catégorie (S1 2026)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Hiérarchie des sous-catégories :</b><br/>"
+        "• <b>BELGO 10% Chair</b> (C104) domine avec 50% du volume et 48% du CA. C'est le produit locomotive des concentrés. "
+        "Son déclin YoY de -3,2% tire l'ensemble de la catégorie vers le bas.<br/>"
+        "• <b>BELGO 5% Ponte</b> (C101) est le seul produit en forte croissance (+19,3% YoY) — bonne dynamique sur l'élevage de ponte.<br/>"
+        "• <b>BELGO 10% Porc</b> (C105) subit le plus fort déclin YoY (-19,6%) — alerte rouge sur l'élevage porcin.<br/>"
+        "• <b>BELGO 5% Chair</b> (C103) progresse modesteement (+6,1%) — les éleveurs migrent du 10% vers le 5% ?",
+        BODY
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 21: SECTION 9 BIS SUITE ----------
+    story.append(Paragraph("9bis.2 Croissance YoY par sous-catégorie", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartL_conc_yoy.png', width=15*cm, height=7.5*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 20 — CONCENTRÉS : croissance YoY S1 2025 vs S1 2026 par sous-catégorie", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Analyse YoY détaillée :</b><br/>"
+        "• <b>BELGO 10% Chair -3,2%</b> : déclin modéré mais inquiétant car c'est 50% du volume. "
+        "Perte de 143 tonnes YoY. À surveiller de près — c'est le produit qui fait le plus de marge.<br/>"
+        "• <b>BELGO 10% Porc -19,6%</b> : effondrement de 284 tonnes. L'élevage porcin semble en difficulté. "
+        "Vérifier si c'est une conjoncture (maladie, prix de l'aliment) ou structurel (concurrence).<br/>"
+        "• <b>BELGO 10% Ponte -27,9%</b> : chute de 14 tonnes (base faible). Quasi-disparition de ce produit.<br/>"
+        "• <b>BELGO 5% Ponte +19,3%</b> : seule vraie bonne nouvelle. +275 tonnes YoY. "
+        "L'élevage de ponte se porte bien et migre vers le BELGO 5%.<br/>"
+        "• <b>BELGO 5% Chair +6,1%</b> : croissance de 78 tonnes. Confirmation d'une migration 10%→5% Chair.",
+        BODY
+    ))
+
+    story.append(Paragraph("9bis.3 Évolution mensuelle 2026", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartM_conc_monthly.png', width=15*cm, height=7.5*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 21 — CONCENTRÉS : évolution mensuelle 2026 par sous-catégorie", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "L'évolution mensuelle montre une <b>stabilité globale sans tendance haussière</b> : "
+        "le BELGO 10% Chair oscille entre 660 et 803 t/mois sans progression nette. "
+        "Le BELGO 5% Ponte est le seul à montrer une légère tendance haussière vers juin. "
+        "Le BELGO 10% Porc reste stable autour de 190-209 t/mois — pas de signal de redressement.",
+        BODY
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 22: SECTION 9 BIS SUITE 2 ----------
+    story.append(Paragraph("9bis.4 Répartition par agence (S1 2026)", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartN_conc_by_agence.png', width=16*cm, height=7.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 22 — CONCENTRÉS : volume S1 2026 par agence (tonnes)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    conc_agence_data = [
+        ["Agence", "Vol S1 (t)", "CA (M FCFA)", "% du total", "Objectif S1 (t)", "% atteinte"],
+        ["FAMLA", "2 107,1", "1 465,1", "24,5%", "≈ 3 200", "≈ 66%"],
+        ["MESSASSI", "871,7", "569,3", "10,1%", "≈ 1 400", "≈ 62%"],
+        ["NDOBO", "791,4", "500,1", "9,2%", "≈ 1 200", "≈ 66%"],
+        ["DJELENG", "778,5", "521,3", "9,1%", "≈ 1 100", "≈ 71%"],
+        ["MBOUDA", "619,3", "411,6", "7,2%", "≈ 900", "≈ 69%"],
+        ["AHALA", "572,7", "386,7", "6,7%", "≈ 800", "≈ 72%"],
+        ["Autres (7 agences)", "2 851,4", "1 979,1", "33,2%", "≈ 3 942", "≈ 72%"],
+        ["TOTAL", "8 592,1", "5 733,2", "100%", "12 542", "68,5%"],
+    ]
+    story.append(make_table(conc_agence_data, col_widths=[3*cm, 2*cm, 2.2*cm, 1.5*cm, 2.2*cm, 1.8*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Constat par agence :</b> FAMLA concentre 24,5% du volume concentrés mais n'atteint que 66% de son objectif. "
+        "MESSASSI sous-performe à 62% — confirmant les diagnostics précédents. "
+        "Aucune agence n'atteint 100% de son objectif concentrés — c'est un problème systémique, pas localisé.",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph("9bis.5 Focus produit : BELGO 10% Chair (C104) — la locomotive", H2))
+    story.append(Paragraph(
+        "Le C104 (BELGO 10% Chair 50Kg) est le produit stratégique numéro 1 de BELGOCAM : "
+        "<b>4 292 tonnes et 2,74 milliards FCFA de CA en S1 2026</b>, soit à lui seul 16% du CA total de l'entreprise. "
+        "Son prix moyen est de 638 721 FCFA/t. Son déclin YoY de -3,2% représente une perte de 143 tonnes et ~91 millions FCFA.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Recommandation spécifique C104 :</b> ce produit doit faire l'objet d'un plan de sauvegarne dédié. "
+        "Les 143 tonnes perdues YoY correspondent à environ 5 700 sacs de 50Kg. "
+        "Identifier les clients qui ont arrêté d'acheter le C104 en 2026 vs 2025 et mener une enquête de satisfaction. "
+        "Vérifier la concurrence sur le segment Chair 10%.",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph("9bis.6 Synthèse stratégique CONCENTRÉS", H2))
+    story.append(Paragraph(
+        "<b>1. Stagnation globale (-0,9% YoY, 68,5% de l'objectif S1).</b> "
+        "Le problème est structurel, pas conjoncturel. La rupture concurrente sur le soja n'a pas bénéficié aux concentrés — "
+        "les clients qui viennent pour le soja ne cross-sellent pas vers les concentrés.<br/><br/>"
+        "<b>2. Dynamiques contradictoires entre sous-catégories.</b> "
+        "Le BELGO 5% Ponte (+19,3%) et le BELGO 5% Chair (+6,1%) progressent, suggérant une migration des clients du 10% vers le 5%. "
+        "Mais le 10% Chair (-3,2%) et le 10% Porc (-19,6%) déclinent fortement. "
+        "Le mix produit se dégrade — migration vers des produits moins marginaux ?<br/><br/>"
+        "<b>3. Aucune agence n'atteint son objectif concentrés.</b> "
+        "C'est un problème systémique qui require une action au niveau national : "
+        "benchmark tarifaire, qualité perçue, argumentaire commercial, et peut-être une revisite du positionnement produit.<br/><br/>"
+        "<b>4. Le C104 (BELGO 10% Chair) est le produit critique.</b> "
+        "Avec 4 292 t et 2,74 Md FCFA, il représente à lui seul 16% du CA BELGOCAM. "
+        "Sa sauvegarde est prioritaire — un plan dédié doit être mis en place dès le S2 2026.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 23: SECTION 10 - FORECAST S2 ----------
     story.append(Paragraph("10. Forecast S2 2026 (3 scénarios)", H1))
     story.append(section_divider())
 
