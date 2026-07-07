@@ -339,12 +339,18 @@ def build_story():
     ]
     t = make_table(toc_data, col_widths=[1.5*cm, 12*cm, 2.5*cm], header_row=True)
     story.append(t)
-    story.append(Spacer(1, 1*cm))
+    story.append(Spacer(1, 0.6*cm))
     story.append(Paragraph(
         "<i>Ce rapport présente l'analyse complète des ventes BELGOCAM SA sur la période Janvier-Juin 2026, "
         "après exclusion de 35 clients internes (filiales NJS, SPC, comptoirs d'agences et soldes comptables). "
         "L'analyse porte sur 1 359 clients actifs et 16 produits ciblés (4 tourteaux de soja + 10 BELGO 10% + 2 BELGO 5%).</i>",
         BODY_ITALIC
+    ))
+    story.append(Spacer(1, 0.4*cm))
+    story.append(Paragraph(
+        "<b>Glossaire des abréviations :</b> Q1 = Trimestre 1 (Janvier-Mars 2026) ; Q2 = Trimestre 2 (Avril-Juin 2026) ; "
+        "S1 = Semestre 1 (Janvier-Juin 2026) ; S2 = Semestre 2 (Juillet-Décembre 2026) ; CA = Chiffre d'Affaires ; HT = Hors Taxes ; FCFA = Franc CFA.",
+        SMALL
     ))
     story.append(PageBreak())
 
@@ -363,6 +369,11 @@ def build_story():
     story.append(Spacer(1, 0.6*cm))
 
     story.append(Paragraph("5 messages clés", H2))
+    story.append(Paragraph(
+        "<i>Note : Q1 = Trimestre 1 (Janvier-Mars 2026) ; Q2 = Trimestre 2 (Avril-Juin 2026). Glossaire complet en page 2.</i>",
+        SMALL
+    ))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>1. Base clients saine et concentrée.</b> BELGOCAM compte 1 359 clients actifs sur 6 mois (après exclusion de 35 clients internes). "
         "Le portefeuille est très concentré : 359 clients du top 20/80 (★) génèrent 80% du chiffre d'affaires, soit environ 13,8 Md FCFA sur les 17,3 Md FCFA totaux. "
@@ -407,6 +418,11 @@ def build_story():
         "Cette analyse porte sur l'ensemble des ventes BELGOCAM SA sur la période Janvier-Juin 2026, soit 6 mois d'activité. "
         "Le fichier source contient 6 feuilles mensuelles (une par mois), totalisant 61 242 lignes de commandes après application du filtre \"État = Livrée\". "
         "Chaque ligne correspond à une ligne de commande caractérisée par 18 colonnes : référence produit, description, quantité, référence commande, tiers (client), date de commande, mode de règlement, montant HT, montant TTC, auteur, dates de création/modification/clôture, statut facturé, état, statut facture et agence.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "Pour les besoins de l'analyse de transition, la période est divisée en deux trimestres : <b>Q1 = Trimestre 1 (Janvier-Mars 2026)</b> et <b>Q2 = Trimestre 2 (Avril-Juin 2026)</b>. "
+        "Cette subdivision trimestrielle permet d'analyser les évolutions de comportement clients entre le début et la fin du semestre.",
         BODY
     ))
     story.append(Paragraph(
