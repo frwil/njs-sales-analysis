@@ -57,9 +57,11 @@ styles = getSampleStyleSheet()
 H1 = ParagraphStyle('H1', parent=styles['Heading1'], fontName='NotoSerifSC-Bold', fontSize=20,
                     textColor=NAVY, spaceAfter=14, spaceBefore=10, alignment=TA_LEFT, leading=26)
 H2 = ParagraphStyle('H2', parent=styles['Heading2'], fontName='NotoSerifSC-Bold', fontSize=14,
-                    textColor=NAVY, spaceAfter=10, spaceBefore=14, alignment=TA_LEFT, leading=18)
+                    textColor=NAVY, spaceAfter=10, spaceBefore=14, alignment=TA_LEFT, leading=18,
+                    keepWithNext=1)
 H3 = ParagraphStyle('H3', parent=styles['Heading3'], fontName='NotoSerifSC-Bold', fontSize=12,
-                    textColor=NAVY_LIGHT, spaceAfter=8, spaceBefore=10, alignment=TA_LEFT, leading=15)
+                    textColor=NAVY_LIGHT, spaceAfter=8, spaceBefore=10, alignment=TA_LEFT, leading=15,
+                    keepWithNext=1)
 
 # Body styles
 BODY = ParagraphStyle('Body', parent=styles['BodyText'], fontName='NotoSerifSC', fontSize=10,
@@ -231,21 +233,33 @@ def draw_body_page(canv, doc):
 
 # ===== HELPER FUNCTIONS =====
 def make_table(data, col_widths=None, header_row=True, font_size=9, align='LEFT'):
-    """Create a styled table with BELGOCAM colors."""
+    """Create a styled table with BELGOCAM colors. Auto-scales to full content width."""
     if col_widths is None:
         n_cols = len(data[0])
         col_widths = [CONTENT_W / n_cols] * n_cols
+    else:
+        # Auto-scale: if sum of col_widths < CONTENT_W, scale up proportionally
+        total = sum(col_widths)
+        if total < CONTENT_W * 0.95:
+            scale = CONTENT_W / total
+            col_widths = [w * scale for w in col_widths]
 
     # Wrap text cells in Paragraphs for proper wrapping
+    # Use a font-size-aware cell style
+    cell_style = ParagraphStyle('cell_fs', parent=CELL, fontSize=font_size, leading=font_size + 3)
+    cell_style_r = ParagraphStyle('cell_r_fs', parent=CELL_RIGHT, fontSize=font_size, leading=font_size + 3)
+    cell_style_c = ParagraphStyle('cell_c_fs', parent=CELL_CENTER, fontSize=font_size, leading=font_size + 3)
+    cell_style_w = ParagraphStyle('cell_w_fs', parent=CELL_WHITE, fontSize=font_size, leading=font_size + 3)
+
     wrapped = []
     for i, row in enumerate(data):
         wrapped_row = []
         for j, cell in enumerate(row):
             if isinstance(cell, str):
                 if i == 0 and header_row:
-                    style = CELL_WHITE
+                    style = cell_style_w
                 else:
-                    style = CELL_RIGHT if align == 'RIGHT' else CELL
+                    style = cell_style_r if align == 'RIGHT' else cell_style
                 wrapped_row.append(Paragraph(cell, style))
             else:
                 wrapped_row.append(cell)
@@ -254,10 +268,10 @@ def make_table(data, col_widths=None, header_row=True, font_size=9, align='LEFT'
     t = Table(wrapped, colWidths=col_widths, repeatRows=1 if header_row else 0)
     ts = TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('LEFTPADDING', (0, 0), (-1, -1), 5),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
         ('GRID', (0, 0), (-1, -1), 0.4, GRAY_LIGHT),
     ])
     if header_row:
@@ -308,6 +322,20 @@ def kpi_row(cards):
 
 def section_divider():
     return HRFlowable(width="100%", thickness=0.5, color=GOLD, spaceBefore=6, spaceAfter=10)
+
+
+def heading_with_content(heading_text, content_flowables, level=2):
+    """Create a heading that stays together with its first content element.
+    Prevents orphan headings at the bottom of pages.
+    level=2 for H2, level=3 for H3.
+    """
+    style = H2 if level == 2 else H3
+    heading = Paragraph(heading_text, style)
+    # Keep heading + first content together
+    if isinstance(content_flowables, list):
+        return KeepTogether([heading] + content_flowables[:2])
+    else:
+        return KeepTogether([heading, content_flowables])
 
 
 # ===== BUILD CONTENT =====
@@ -1675,9 +1703,10 @@ def build_story():
         BODY_BOLD
     ))
 
-    story.append(Paragraph("10bis.8 CONCENTRÉS — Peut-on boucler +5% à +10% vs 2025 ?", H2))
-    img = Image('/home/z/my-project/scripts/pdf_charts/chartP_conc_target_5_10pct.png', width=15*cm, height=7.5*cm)
-    story.append(img)
+    story.append(KeepTogether([
+        Paragraph("10bis.8 CONCENTRÉS — Peut-on boucler +5% à +10% vs 2025 ?", H2),
+        Image('/home/z/my-project/scripts/pdf_charts/chartP_conc_target_5_10pct.png', width=15*cm, height=7.5*cm),
+    ]))
     story.append(Paragraph("Figure 19 — CONCENTRÉS : forecast S2 vs cibles +5% et +10% vs 2025", CAPTION))
     story.append(Spacer(1, 0.2*cm))
 
