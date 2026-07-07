@@ -1218,7 +1218,7 @@ def build_story():
     story.append(Paragraph("9.1 Vue d'ensemble (S1 2026 — Janvier-Juin)", H2))
     story.append(Paragraph(
         "Les objectifs 2026 ont été définis par catégorie de produits et par agence. Sur le semestre 1 (Janvier-Juin 2026), "
-        "le volume total atteint est de <b>37 322 tonnes</b>, soit <b>90,5% de l'objectif S1</b> (41 230 tonnes). "
+        "le volume total atteint est de <b>42 826 tonnes</b>, soit <b>103,9% de l'objectif S1</b> (41 230 tonnes). "
         "L'écart de 3 908 tonnes correspond principalement à la sous-performance des CONCENTRES (écart -3 950 t) et des INGREDIENTS (écart -463 t), "
         "partiellement compensé par le dépassement des TOURTEAUX (+1 183 t) lié à la rupture concurrente sur le soja.",
         BODY
@@ -1227,15 +1227,15 @@ def build_story():
     story.append(Paragraph("9.2 Analyse par catégorie (Q1 / Q2 / S1)", H2))
     cat_obj_data = [
         ["Catégorie", "Q1 obj. (t)", "Q1 réel (t)", "% Q1", "Q2 obj. (t)", "Q2 réel (t)", "% Q2", "S1 obj. (t)", "S1 réel (t)", "% S1"],
-        ["TOURTEAUX", "14 068", "12 096", "86,0%", "12 617", "15 772", "125,0%", "26 685", "27 868", "104,4%"],
-        ["CONCENTRES", "6 612", "4 369", "66,1%", "5 930", "4 223", "71,2%", "12 542", "8 592", "68,5%"],
-        ["ALIMENT COMPLET", "271", "200", "73,8%", "243", "210", "86,4%", "514", "410", "79,7%"],
-        ["INGREDIENTS", "315", "71", "22,6%", "283", "64", "22,5%", "598", "135", "22,6%"],
-        ["COMPLEMENT ALIM.", "3", "145", "4845%", "3", "125", "4165%", "6", "270", "4505%"],
-        ["PREMIX", "32", "22", "68,1%", "29", "21", "71,5%", "61", "43", "69,7%"],
+        ["TOURTEAUX", "14 068", "12 855", "91,4%", "12 617", "16 206", "128,4%", "26 685", "29 061", "108,9%"],
+        ["CONCENTRES", "6 612", "4 629", "70,0%", "5 930", "4 464", "75,3%", "12 542", "9 093", "72,5%"],
+        ["ALIMENT COMPLET", "271", "258", "95,2%", "243", "270", "110,9%", "514", "528", "102,7%"],
+        ["INGREDIENTS", "315", "1 970", "625%", "283", "1 789", "632%", "598", "3 759", "628,5%"],
+        ["COMPLEMENT ALIM.", "3", "165", "5494%", "3", "141", "4714%", "6", "306", "5104%"],
+        ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%"],
         ["MATERIEL ELEVAGE", "0", "4", "—", "0", "1", "—", "0", "5", "—"],
         ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%"],
-        ["TOTAL", "21 736", "16 906", "77,8%", "19 494", "20 416", "104,7%", "41 230", "37 322", "90,5%"],
+        ["TOTAL", "21 736", "19 931", "91,7%", "19 494", "22 895", "117,4%", "41 230", "42 826", "103,9%"],
     ]
     story.append(make_table(cat_obj_data, col_widths=[3*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm], font_size=7))
     story.append(Spacer(1, 0.3*cm))
@@ -1260,7 +1260,7 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
     story.append(icr_block(
         insights=[
-            "CONCENTRÉS à 68,5% de l'objectif S1 avec écart de -3 950 tonnes — sous-performance critique et constante (Q1 : 66,1%, Q2 : 71,2%).",
+            "CONCENTRÉS à 72,5% de l'objectif S1 avec écart de -3 449 tonnes — sous-performance critique et constante (Q1 : 66,1%, Q2 : 71,2%).",
             "Aucune agence n'atteint 100% de son objectif concentrés — problème systémique national.",
             "Le déclin YoY de -0,9% confirme le caractère structurel, pas conjoncturel.",
         ],
@@ -1281,22 +1281,13 @@ def build_story():
     ))
 
     story.append(Spacer(1, 0.3*cm))
-    story.append(icr_block(
-        insights=[
-            "INGREDIENTS à 22,6% de l'objectif S1 — sous-performance majeure de -463 tonnes.",
-            "Effondrement YoY de -65,6% (392 t en S1 2025 vs 135 t en S1 2026).",
-            "Les matières premières (lysine, méthionine, farine de poisson, sulfate de fer) sont vendues bien en deçà des objectifs.",
-        ],
-        causes=[
-            "Objectifs potentiellement irréalistes — fixés sans tenir compte de la base réelle de clients acheteurs d'ingrédients.",
-            "Perte de parts de marché au profit de concurrents spécialisés en ingrédients (importateurs directs).",
-            "Changement de stratégie produit — les clients peuvent s'approvisionner ailleurs pour les matières premières.",
-        ],
-        recommandations=[
-            "Réviser les objectifs INGREDIENTS à la baisse pour les aligner sur la réalité du marché (objectif S1 réel ≈ 135 t vs 598 t prévus).",
-            "Analyser les clients 2025 qui n'ont plus acheté d'ingrédients en 2026 — identifier s'ils sont partis chez la concurrence.",
-            "Évaluer la rentabilité de cette catégorie — si la marge est faible, réallouer les efforts commerciaux vers les concentrés.",
-        ],
+    story.append(Paragraph(
+        "<b>INGREDIENTS (628,5% — sur-performance massive) :</b> les ventes atteignent 3 759 t "
+        "contre 598 t d'objectif. Cette sur-performance est portée par le Maïs (M1051, 3 623 t) "
+        "qui n'était pas comptabilisé en volume auparavant (poids non spécifié dans la description, désormais corrigé à 50 kg/sac). "
+        "Les objectifs INGREDIENTS doivent être révisés massivement à la hausse pour intégrer le Maïs. "
+        "Aucune action corrective nécessaire — mais réviser les objectifs 2027 pour tenir compte du Maïs.",
+        BODY
     ))
 
     story.append(Spacer(1, 0.3*cm))
@@ -1390,8 +1381,8 @@ def build_story():
 
     story.append(Paragraph(
         "Les CONCENTRÉS (BELGO 10% + BELGO 5%) représentent <b>la plus grosse partie de la marge</b> de BELGOCAM. "
-        "Avec 8 592 tonnes et 5,73 milliards FCFA de CA HT en S1 2026, ils sont la catégorie stratégique par excellence. "
-        "Pourtant, ils n'atteignent que 68,5% de l'objectif S1 et stagnent en YoY (-0,9%). "
+        "Avec 9 093 tonnes et 6,07 milliards FCFA de CA HT en S1 2026, ils sont la catégorie stratégique par excellence. "
+        "Pourtant, ils n'atteignent que 72,5% de l'objectif S1 et stagnent en YoY (-1,7%). "
         "Cette section propose une analyse approfondie par sous-catégorie, par produit, par agence et dans le temps.",
         BODY
     ))
@@ -1406,7 +1397,7 @@ def build_story():
         ["BELGO 10% Ponte", "36,8", "0,4%", "21,6", "586 569", "-27,9%"],
         ["BELGO Rabbit", "10,1", "0,1%", "4,1", "402 963", "Nouveau"],
         ["BELGO Ruminant", "0,1", "0,0%", "0,0", "600 000", "Nouveau"],
-        ["TOTAL", "8 592,1", "100%", "5 733,2", "667 263", "-0,9%"],
+        ["TOTAL", "9 092,9", "100%", "6 071,8", "667 747", "-1,7%"],
     ]
     story.append(make_table(conc_subcat_data, col_widths=[3.2*cm, 2*cm, 1.2*cm, 2.2*cm, 2.5*cm, 1.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -1478,7 +1469,7 @@ def build_story():
         ["MBOUDA", "619,3", "411,6", "7,2%", "≈ 900", "≈ 69%"],
         ["AHALA", "572,7", "386,7", "6,7%", "≈ 800", "≈ 72%"],
         ["Autres (7 agences)", "2 851,4", "1 979,1", "33,2%", "≈ 3 942", "≈ 72%"],
-        ["TOTAL", "8 592,1", "5 733,2", "100%", "12 542", "68,5%"],
+        ["TOTAL", "9 092,9", "6 071,8", "100%", "12 542", "72,5%"],
     ]
     story.append(make_table(conc_agence_data, col_widths=[3*cm, 2*cm, 2.2*cm, 1.5*cm, 2.2*cm, 1.8*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -1506,7 +1497,7 @@ def build_story():
 
     story.append(Paragraph("9bis.6 Synthèse stratégique CONCENTRÉS", H2))
     story.append(Paragraph(
-        "<b>1. Stagnation globale (-0,9% YoY, 68,5% de l'objectif S1).</b> "
+        "<b>1. Stagnation globale (-0,9% YoY, 72,5% de l'objectif S1).</b> "
         "Le problème est structurel, pas conjoncturel. La rupture concurrente sur le soja n'a pas bénéficié aux concentrés — "
         "les clients qui viennent pour le soja ne cross-sellent pas vers les concentrés.<br/><br/>"
         "<b>2. Dynamiques contradictoires entre sous-catégories.</b> "
@@ -1572,7 +1563,7 @@ def build_story():
 
     total_data = [
         ["Scénario", "Volume S2 (t)", "vs Objectif S2", "vs S1 réel", "Hypothèses"],
-        ["S1 réel (référence)", "37 322", "—", "—", "Base observée Jan-Juin 2026"],
+        ["S1 réel (référence)", "42 826", "—", "—", "Base observée Jan-Juin 2026"],
         ["S2 objectif", "39 436", "100,0%", "+5,7%", "Objectif officiel BELGOCAM"],
         ["🔴 S2 Pessimiste", "32 563", "82,6%", "-12,8%", "Fin rupture concurrente, pas d'action"],
         ["🟡 S2 Réaliste", "36 442", "92,4%", "-2,4%", "Statu quo, actions partielles"],
@@ -1627,13 +1618,13 @@ def build_story():
     story.append(Paragraph("10bis.2 Croissance YoY par catégorie (S1 2025 vs S1 2026)", H2))
     yoy_table = [
         ["Catégorie", "S1 2025 (t)", "S1 2026 (t)", "YoY %", "S2 2025 (t)", "Lecture"],
-        ["TOURTEAUX", "19 023", "27 868", "+46,5%", "27 358", "Effet rupture concurrente massif"],
-        ["CONCENTRES", "8 670", "8 592", "-0,9%", "9 243", "Stagnation inquiétante (cœur de marge)"],
-        ["ALIMENT COMPLET", "250", "410", "+64,0%", "316", "Belle progression (Chick/Piglet)"],
-        ["INGREDIENTS", "392", "135", "-65,6%", "375", "Effondrement — à investiguer"],
-        ["COMPLEMENT ALIM.", "3", "270", "+8225%", "3", "Boom (objectif sous-estimé)"],
-        ["PREMIX", "45", "43", "-4,8%", "43", "Léger déclin"],
-        ["TOTAL", "28 383", "37 252", "+31,2%", "36 338", "Croissance globale tirée par TOURTEAUX"],
+        ["TOURTEAUX", "20 794", "29 061", "+39,8%", "28 627", "Effet rupture concurrente massif"],
+        ["CONCENTRES", "9 251", "9 093", "-1,7%", "9 843", "Stagnation inquiétante (cœur de marge)"],
+        ["ALIMENT COMPLET", "361", "528", "+46,2%", "424", "Belle progression (Chick/Piglet)"],
+        ["INGREDIENTS", "509", "3 759", "+637,7%", "572", "Boom du Maïs (3 623 t)"],
+        ["COMPLEMENT ALIM.", "4", "306", "+7360%", "3", "Boom (objectif sous-estimé)"],
+        ["PREMIX", "48", "69", "+44,3%", "66", "Bonne progression"],
+        ["TOTAL", "35 126", "42 826", "+21,9%", "39 535", "Croissance globale tirée par TOURTEAUX + Maïs"],
     ]
     story.append(make_table(yoy_table, col_widths=[3.2*cm, 2.3*cm, 2.3*cm, 1.5*cm, 2.3*cm, 5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -1645,9 +1636,9 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Insights YoY clés :</b><br/>"
-        "• <b>TOURTEAUX +46,5%</b> : la rupture concurrente a généré un gain exceptionnel de 8 845 tonnes en S1 2026.<br/>"
-        "• <b>CONCENTRES -0,9%</b> : stagnation quasi parfaite — confirmant le caractère structurel du problème, pas conjoncturel.<br/>"
-        "• <b>INGREDIENTS -65,6%</b> : effondrement de 257 tonnes. Vérifier si c'est une perte de marché ou un changement de stratégie produit.<br/>"
+        "• <b>TOURTEAUX +39,8%</b> : la rupture concurrente a généré un gain exceptionnel de 8 845 tonnes en S1 2026.<br/>"
+        "• <b>CONCENTRES -1,7%</b> : stagnation quasi parfaite — confirmant le caractère structurel du problème, pas conjoncturel.<br/>"
+        "• <b>INGREDIENTS +637,7% (grâce au Maïs 3 623 t non comptabilisé auparavant)</b> : effondrement de 257 tonnes. Vérifier si c'est une perte de marché ou un changement de stratégie produit.<br/>"
         "• <b>ALIMENT COMPLET +64%</b> : les Booster progressent bien — confirmer la synergie avec les concentrés.<br/>"
         "• <b>COMPLEMENT ALIMENTAIRE +8225%</b> : explosion liée à la gamme BELGOFOS/BELGOTOX — objectif 2026 est à revoir à la hausse.",
         BODY
