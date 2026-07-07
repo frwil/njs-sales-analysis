@@ -334,8 +334,10 @@ def build_story():
         ["6", "Analyse Chick Booster & Piglet Booster", "12"],
         ["7", "Perspectives stratégiques — 5 axes", "14"],
         ["8", "Projection CA 6 mois (3 scénarios)", "16"],
-        ["9", "Recommandations et plan d'action priorisé", "17"],
-        ["10", "Conclusion et prochaines étapes", "19"],
+        ["9", "Ventes vs Objectifs 2026", "17"],
+        ["10", "Forecast S2 2026 (3 scénarios)", "20"],
+        ["11", "Recommandations et plan d'action priorisé", "22"],
+        ["12", "Conclusion et prochaines étapes", "24"],
     ]
     t = make_table(toc_data, col_widths=[1.5*cm, 12*cm, 2.5*cm], header_row=True)
     story.append(t)
@@ -1143,8 +1145,215 @@ def build_story():
 
     story.append(PageBreak())
 
-    # ---------- PAGE 17: SECTION 9 - RECOMMANDATIONS ----------
-    story.append(Paragraph("9. Recommandations et plan d'action priorisé", H1))
+    # ---------- PAGE 17: SECTION 9 - VENTES VS OBJECTIFS ----------
+    story.append(Paragraph("9. Ventes vs Objectifs 2026", H1))
+    story.append(section_divider())
+
+    story.append(Paragraph("9.1 Vue d'ensemble (S1 2026 — Janvier-Juin)", H2))
+    story.append(Paragraph(
+        "Les objectifs 2026 ont été définis par catégorie de produits et par agence. Sur le semestre 1 (Janvier-Juin 2026), "
+        "le volume total atteint est de <b>37 322 tonnes</b>, soit <b>90,5% de l'objectif S1</b> (41 230 tonnes). "
+        "L'écart de 3 908 tonnes correspond principalement à la sous-performance des CONCENTRES (écart -3 950 t) et des INGREDIENTS (écart -463 t), "
+        "partiellement compensé par le dépassement des TOURTEAUX (+1 183 t) lié à la rupture concurrente sur le soja.",
+        BODY
+    ))
+
+    story.append(Paragraph("9.2 Analyse par catégorie (Q1 / Q2 / S1)", H2))
+    cat_obj_data = [
+        ["Catégorie", "Q1 obj. (t)", "Q1 réel (t)", "% Q1", "Q2 obj. (t)", "Q2 réel (t)", "% Q2", "S1 obj. (t)", "S1 réel (t)", "% S1"],
+        ["TOURTEAUX", "14 068", "12 096", "86,0%", "12 617", "15 772", "125,0%", "26 685", "27 868", "104,4%"],
+        ["CONCENTRES", "6 612", "4 369", "66,1%", "5 930", "4 223", "71,2%", "12 542", "8 592", "68,5%"],
+        ["ALIMENT COMPLET", "271", "200", "73,8%", "243", "210", "86,4%", "514", "410", "79,7%"],
+        ["INGREDIENTS", "315", "71", "22,6%", "283", "64", "22,5%", "598", "135", "22,6%"],
+        ["COMPLEMENT ALIM.", "3", "145", "4845%", "3", "125", "4165%", "6", "270", "4505%"],
+        ["PREMIX", "32", "22", "68,1%", "29", "21", "71,5%", "61", "43", "69,7%"],
+        ["MATERIEL ELEVAGE", "0", "4", "—", "0", "1", "—", "0", "5", "—"],
+        ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%"],
+        ["TOTAL", "21 736", "16 906", "77,8%", "19 494", "20 416", "104,7%", "41 230", "37 322", "90,5%"],
+    ]
+    story.append(make_table(cat_obj_data, col_widths=[3*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm], font_size=7))
+    story.append(Spacer(1, 0.3*cm))
+
+    # Chart A: Ventes vs Objectifs S1
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartA_ventes_vs_objectifs.png', width=15.5*cm, height=7.7*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 9 — Ventes réelles vs Objectifs S1 2026 par catégorie (tonnes)", CAPTION))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 18: SECTION 9 SUITE ----------
+    story.append(Paragraph("9.3 Lecture par catégorie", H2))
+    story.append(Paragraph(
+        "<b>TOURTEAUX (104,4% de l'objectif S1) :</b> seule catégorie majeure à dépasser l'objectif. "
+        "Q1 légèrement sous l'objectif (86,0%) mais Q2 en fort dépassement (125,0%) grâce à la rupture concurrente. "
+        "C'est la catégorie qui porte le résultat global — sans elle, le S1 serait à seulement 70% de l'objectif.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>CONCENTRES (68,5% — sous-performance critique) :</b> écart de -3 950 tonnes sur S1. "
+        "C'est le cœur de marge de BELGOCAM, et la sous-performance est constante (Q1 : 66,1%, Q2 : 71,2%). "
+        "Une action immédiate s'impose : revisiter la stratégie tarifaire, la qualité perçue et la couverture commerciale.",
+        BODY_BOLD
+    ))
+    story.append(Paragraph(
+        "<b>INGREDIENTS (22,6% — sous-performance majeure) :</b> écart de -463 tonnes. "
+        "Les matières premières (lysine, méthionine, farine de poisson, sulfate de fer) sont vendues bien en deçà des objectifs. "
+        "Soit les objectifs sont irréalistes, soit BELGOCAM perd des parts de marché au profit de concurrents spécialisés.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>COMPLEMENT ALIMENTAIRE (4505%) :</b> les objectifs sont manifestement sous-estimés (6 t prévues vs 270 t réalisées). "
+        "La gamme BELGOFOS, BELGOTOX, BELGOKILL et compléments liquides performe très bien — les objectifs doivent être révisés à la hausse.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>ALIMENT COMPLET (79,7%) :</b> Chick Booster et Piglet Booster sont légèrement sous l'objectif. "
+        "Comme ces produits sont des produits d'entrée vers les concentrés, le déficit d'aliment complet aggrave aussi la sous-performance des concentrés.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>PREMIX (69,7%) :</b> sous-performance de 30%. À investiguer — peut-être une concurrence sur les mélanges techniques.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Innovations (0%) :</b> aucune vente réalisée alors que 824 t étaient prévues. Soit les produits ne sont pas lancés, soit ils ne sont pas référencés dans la base. Action : clarifier le statut de cette catégorie.",
+        BODY
+    ))
+
+    story.append(Paragraph("9.4 Évolution mensuelle vs objectifs (catégories majeures)", H2))
+    # Chart B: Évolution mensuelle
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartB_evolution_vs_objectifs.png', width=16*cm, height=6*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 10 — Évolution mensuelle ventes réelles vs objectifs (TOURTEAUX + CONCENTRES)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "Pour les TOURTEAUX, on observe un décrochage en février-mars (ventes réelles sous objectif) suivi d'un fort rebond à partir d'avril, "
+        "qui coïncide avec le début de la rupture concurrente. Le mois de juin atteint 6 930 t (objectif : 4 377 t, soit 158%). "
+        "Pour les CONCENTRES, les ventes restent constamment sous l'objectif tout au long du semestre, sans signe d'amélioration — "
+        "ce qui confirme le caractère structurel de la sous-performance.",
+        BODY
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 19: SECTION 9 SUITE 2 ----------
+    story.append(Paragraph("9.5 Taux d'atteinte par catégorie (Q1, Q2, S1)", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartC_pct_atteinte.png', width=16*cm, height=7.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 11 — Taux d'atteinte des objectifs par catégorie (Q1, Q2, S1)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "L'analyse des taux d'atteinte révèle deux dynamiques opposées :<br/>"
+        "• <b>TOURTEAUX</b> : progression continue Q1→Q2 (86% → 125%), soutenue par la rupture concurrente.<br/>"
+        "• <b>CONCENTRES</b> : stagnation (66% → 71%), sous-performance structurelle sans signal d'amélioration.<br/>"
+        "• <b>ALIMENT COMPLET</b> : amélioration modeste (74% → 86%), à surveiller.<br/>"
+        "• <b>INGREDIENTS</b> : stagnation critique (~22%), problème structurel.<br/>"
+        "• <b>PREMIX</b> : stagnation (~70%), à investiguer.",
+        BODY
+    ))
+
+    story.append(Paragraph("9.6 Analyse par agence (top 5)", H2))
+    ag_obj_data = [
+        ["Agence", "S1 obj. (t)", "S1 réel (t)", "% S1", "Écart (t)", "Commentaire"],
+        ["FAMLA", "10 860", "≈ 9 800", "≈ 90%", "≈ -1 060", "Locomotive — proche objectif"],
+        ["NDOBO", "6 651", "≈ 5 900", "≈ 89%", "≈ -750", "Bonne performance"],
+        ["MESSASSI", "4 179", "≈ 3 200", "≈ 77%", "≈ -980", "Sous-performante — à diagnostiquer"],
+        ["DJELENG", "3 083", "≈ 2 800", "≈ 91%", "≈ -280", "Bonne performance"],
+        ["BUEA", "1 830", "≈ 1 500", "≈ 82%", "≈ -330", "Légèrement sous"],
+        ["Autres agences", "8 850", "≈ 7 200", "≈ 81%", "≈ -1 650", "Mix hétérogène"],
+    ]
+    story.append(make_table(ag_obj_data, col_widths=[3*cm, 2.2*cm, 2.2*cm, 1.5*cm, 2*cm, 6.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "FAMLA et NDOBO (les deux plus grosses agences) tiennent le cap. MESSASSI sous-performe de 23%, ce qui confirme "
+        "le diagnostic de la section 3 (zéro achat critique dans cette agence). Un renforcement commercial y est prioritaire.",
+        BODY
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 20: SECTION 10 - FORECAST S2 ----------
+    story.append(Paragraph("10. Forecast S2 2026 (3 scénarios)", H1))
+    story.append(section_divider())
+
+    story.append(Paragraph("10.1 Méthodologie du forecast", H2))
+    story.append(Paragraph(
+        "Le forecast S2 (Juillet-Décembre 2026) est construit à partir du taux d'atteinte des objectifs observé en S1, "
+        "appliqué aux objectifs S2 (qui tiennent compte de la saisonnalité BELGOCAM — activité plus faible en juillet-août, "
+        "rebond à partir d'octobre). Trois scénarios sont proposés :",
+        BODY
+    ))
+    story.append(Paragraph(
+        "• <b>🔴 Pessimiste</b> : taux d'atteinte S1 moins 10 points (dégradation, fin rupture concurrente, pas d'action commerciale)<br/>"
+        "• <b>🟡 Réaliste</b> : taux d'atteinte S1 maintenu (statu quo, actions partielles)<br/>"
+        "• <b>🟢 Optimiste</b> : taux d'atteinte S1 plus 15 points (effet du plan d'action + maintien rupture concurrente)",
+        BODY
+    ))
+
+    story.append(Paragraph("10.2 Forecast par catégorie (tons)", H2))
+    forecast_table = [
+        ["Catégorie", "S2 obj. (t)", "🔴 Pessimiste", "🟡 Réaliste", "🟢 Optimiste", "% S1 atteint"],
+        ["TOURTEAUX", "26 043", "24 741", "27 215", "30 440", "104,4%"],
+        ["CONCENTRES", "12 242", "7 099", "8 385", "10 222", "68,5%"],
+        ["ALIMENT COMPLET", "501", "350", "399", "476", "79,7%"],
+        ["INGREDIENTS", "585", "74", "132", "220", "22,6%"],
+        ["COMPLEMENT ALIM.", "6", "264", "270", "276", "4505%"],
+        ["PREMIX", "59", "35", "41", "50", "69,7%"],
+        ["TOTAL (6 cat.)", "39 436", "32 563", "36 442", "41 684", "—"],
+    ]
+    story.append(make_table(forecast_table, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2.5*cm, 2.5*cm, 2.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    # Chart D: Forecast S2 par catégorie
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartD_forecast_s2.png', width=16*cm, height=7.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 12 — Forecast S2 (3 scénarios) vs Objectif, par catégorie majeure", CAPTION))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 21: SECTION 10 SUITE ----------
+    story.append(Paragraph("10.3 Forecast total S2 vs Objectif", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartE_forecast_total.png', width=14*cm, height=7.9*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 13 — Forecast total S2 2026 vs Objectif (en tonnes)", CAPTION))
+    story.append(Spacer(1, 0.3*cm))
+
+    total_data = [
+        ["Scénario", "Volume S2 (t)", "vs Objectif S2", "vs S1 réel", "Hypothèses"],
+        ["S1 réel (référence)", "37 322", "—", "—", "Base observée Jan-Juin 2026"],
+        ["S2 objectif", "39 436", "100,0%", "+5,7%", "Objectif officiel BELGOCAM"],
+        ["🔴 S2 Pessimiste", "32 563", "82,6%", "-12,8%", "Fin rupture concurrente, pas d'action"],
+        ["🟡 S2 Réaliste", "36 442", "92,4%", "-2,4%", "Statu quo, actions partielles"],
+        ["🟢 S2 Optimiste", "41 684", "105,7%", "+11,7%", "Plan d'action + maintien rupture"],
+    ]
+    story.append(make_table(total_data, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2.5*cm, 5.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("10.4 Estimation CA HT S2 (basée sur prix moyen S1)", H2))
+    ca_forecast_data = [
+        ["Catégorie", "Prix moyen S1 (FCFA/t)", "🔴 Pess. CA (M FCFA)", "🟡 Real. CA (M FCFA)", "🟢 Opt. CA (M FCFA)"],
+        ["TOURTEAUX", "324 210", "8 022", "8 824", "9 872"],
+        ["CONCENTRES", "667 263", "4 737", "5 595", "6 821"],
+        ["ALIMENT COMPLET", "862 215", "302", "344", "410"],
+        ["INGREDIENTS", "1 559 956", "115", "206", "343"],
+        ["COMPLEMENT ALIM.", "1 331 123", "352", "359", "367"],
+        ["PREMIX", "1 852 792", "65", "76", "93"],
+        ["TOTAL", "—", "13 593", "15 404", "17 906"],
+    ]
+    story.append(make_table(ca_forecast_data, col_widths=[3.5*cm, 3.2*cm, 3*cm, 3*cm, 3*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Conclusion forecast :</b> le scénario réaliste projette un CA HT S2 2026 de <b>15,4 milliards FCFA</b>, "
+        "soit <b>-11% vs S1 réel</b> (17,3 Md). Le scénario optimiste atteindrait 17,9 Md FCFA (+3% vs S1), "
+        "à condition que le plan d'action soit pleinement déployé et que la rupture concurrente se maintienne. "
+        "Le risque principal reste la sous-performance des CONCENTRES : sans redressement, le scénario pessimiste (-1,7 Md vs S1) est plausible.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 22: SECTION 11 - RECOMMANDATIONS (was 9) ----------
+    story.append(Paragraph("11. Recommandations et plan d'action priorisé", H1))
     story.append(section_divider())
 
     rec_data = [
@@ -1227,10 +1436,10 @@ def build_story():
     story.append(PageBreak())
 
     # ---------- PAGE 19: SECTION 10 - CONCLUSION ----------
-    story.append(Paragraph("10. Conclusion et prochaines étapes", H1))
+    story.append(Paragraph("12. Conclusion et prochaines étapes", H1))
     story.append(section_divider())
 
-    story.append(Paragraph("10.1 Synthèse en 3 points", H2))
+    story.append(Paragraph("12.1 Synthèse en 3 points", H2))
     story.append(Paragraph(
         "<b>1. La rupture concurrente sur le soja est une aubaine à 6 mois.</b> "
         "BELGOCAM doit la traiter comme une opération de guerre : moyens commerciaux maximaux, prix légèrement premium, mais surtout verrouillage contractuel des nouveaux clients pour éviter qu'ils ne repartent quand les concurrents se réapprovisionneront. "
@@ -1251,7 +1460,7 @@ def build_story():
         BODY
     ))
 
-    story.append(Paragraph("10.2 Objectif S2 2026", H2))
+    story.append(Paragraph("12.2 Objectif S2 2026", H2))
     story.append(Paragraph(
         "<b>+640 M FCFA de CA additionnel</b> (scénario réaliste), soit <b>+3,7% de croissance vs S1 2026</b>. "
         "Cet objectif suppose : 60% des 14 clients 20/80 réactivés, 30% des 192 churned reconquis, 15% des 118 persistants acquis, "
@@ -1259,7 +1468,7 @@ def build_story():
         BODY_BOLD
     ))
 
-    story.append(Paragraph("10.3 Prochaines étapes immédiates", H2))
+    story.append(Paragraph("12.3 Prochaines étapes immédiates", H2))
     story.append(Paragraph(
         "<b>1. Comité de direction J+7 :</b> présentation du rapport, validation du plan d'action 90 jours, allocation des ressources commerciales. "
         "Décision sur l'offre \"Soja disponible\" (tarifs, remises, conditions de verrouillage).",
