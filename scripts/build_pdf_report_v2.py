@@ -1596,42 +1596,70 @@ def build_story():
     story.append(Paragraph("10bis.5 Objectifs S2 recalibrés — Confrontation avec le forecast", H2))
     story.append(Paragraph(
         "Les objectifs S2 2026 ont été recalibrés par agence pour tenir compte des performances réelles du S1. "
-        "Le recalibrage principal concerne les deux catégories majeures :",
+        "Le total reste stable (~40 239 t) mais la répartition entre catégories a été ajustée :",
         BODY
     ))
     recaled_table = [
-        ["Catégorie", "Ancien S2 (t)", "Recalibré S2 (t)", "Écart (t)", "Écart %", "Lecture"],
-        ["TOURTEAUX", "26 043", "29 628", "+3 585", "+13,8%", "Hausse — intègre rupture concurrente"],
-        ["CONCENTRES", "12 242", "9 533", "-2 709", "-22,1%", "Baisse — reconnaissance sous-performance"],
+        ["Catégorie", "Objectif initial (t)", "Recalibré (t)", "Écart (t)", "Écart %", "Lecture"],
+        ["TOURTEAUX", "26 043", "27 511", "+1 468", "+5,6%", "Hausse modérée — intègre rupture concurrente"],
+        ["CONCENTRES", "12 242", "11 650", "-592", "-4,8%", "Légère baisse — objectif ambitieux"],
         ["INGREDIENTS", "585", "466", "-119", "-20,3%", "Baisse — ajustement réaliste"],
         ["ALIMENT COMPLET", "501", "532", "+31", "+6,3%", "Légère hausse"],
         ["PREMIX", "59", "69", "+10", "+16,1%", "Hausse modérée"],
         ["COMPLEMENT ALIM.", "6", "3", "-3", "-52,0%", "Toujours sous-estimé (270 t en S1)"],
         ["TOTAL", "40 238", "40 239", "+1", "+0,0%", "Total stable — reallocation interne"],
     ]
-    story.append(make_table(recaled_table, col_widths=[3*cm, 2.2*cm, 2.5*cm, 1.8*cm, 1.5*cm, 5*cm], font_size=8))
+    story.append(make_table(recaled_table, col_widths=[3*cm, 2.2*cm, 2.2*cm, 1.5*cm, 1.3*cm, 5.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>Insight stratégique du recalibrage :</b> le total S2 reste stable (~40 239 t), mais la répartition change drastiquement. "
-        "Les objectifs CONCENTRES baissent de 22% — c'est une reconnaissance officielle de la sous-performance structurelle. "
-        "À l'inverse, les objectifs TOURTEAUX augmentent de 14%, capitalisant sur l'effet rupture concurrente. "
-        "Cela signifie que BELGOCAM mise sur le soja pour compenser le déficit concentrés — stratégie risquée si la rupture concurrente s'arrête.",
+        "<b>Insight stratégique du recalibrage :</b> contrairement à une simple baisse des objectifs concentrés, "
+        "ce recalibrage maintient un objectif CONCENTRÉS ambitieux (11 650 t, soit +25,9% vs S2 2025) tout en ajustant modérément les TOURTEAUX à la hausse (+5,6%). "
+        "Le signal envoyé aux équipes commerciales est clair : les CONCENTRÉS restent la priorité, avec un objectif volontariste "
+        "qui, s'il est atteint, permettrait de boucler +13% vs 2025 — bien au-dessus de la cible +5-10%.",
         BODY_BOLD
     ))
 
-    story.append(Paragraph("10bis.6 Forecast YoY vs Objectifs S2 recalibrés", H2))
+    story.append(Paragraph("10bis.6 Incidence du recalibrage sur le CA HT", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartO_ca_impact_recaled.png', width=15*cm, height=7.5*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 17 — Incidence du recalibrage sur le CA HT S2 par catégorie (millions FCFA)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    ca_impact = [
+        ["Catégorie", "CA initial (M FCFA)", "CA recalibré (M FCFA)", "Écart CA (M)", "% écart"],
+        ["CONCENTRÉS", "8 169", "7 774", "-395", "-4,8%"],
+        ["TOURTEAUX", "8 443", "8 919", "+476", "+5,6%"],
+        ["INGREDIENTS", "913", "728", "-185", "-20,3%"],
+        ["ALIMENT COMPLET", "432", "459", "+27", "+6,3%"],
+        ["PREMIX", "109", "127", "+18", "+16,1%"],
+        ["COMPLEMENT ALIM.", "8", "4", "-4", "-52,0%"],
+        ["TOTAL", "18 074", "18 010", "-64", "-0,4%"],
+    ]
+    story.append(make_table(ca_impact, col_widths=[3.2*cm, 2.8*cm, 2.8*cm, 2*cm, 1.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Bilan CA du recalibrage :</b> la perte sur les CONCENTRÉS (-395 M FCFA) est plus que compensée par le gain sur les TOURTEAUX (+476 M FCFA). "
+        "Le bilan net CONCENTRÉS + TOURTEAUX est <b>positif (+81 M FCFA)</b> — le recalibrage ne détruit pas de CA, il le réalloue. "
+        "La perte totale est de seulement 64 M FCFA (-0,4%), principalement due aux INGREDIENTS (-185 M). "
+        "Le recalibrage est donc <b>neutre sur le CA global</b> tout en fixant un objectif CONCENTRÉS plus ambitieux.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 25: SECTION 10 BIS SUITE 3 ----------
+    story.append(Paragraph("10bis.7 Forecast YoY vs Objectifs S2 recalibrés", H2))
     img = Image('/home/z/my-project/scripts/pdf_charts/chartI_forecast_vs_recaled.png', width=16*cm, height=7.3*cm)
     story.append(img)
-    story.append(Paragraph("Figure 17 — Forecast YoY (réaliste) vs Objectifs S2 anciens et recalibrés, par catégorie", CAPTION))
+    story.append(Paragraph("Figure 18 — Forecast YoY (réaliste) vs Objectifs S2 initial et recalibré, par catégorie", CAPTION))
     story.append(Spacer(1, 0.2*cm))
 
     fc_vs_obj = [
         ["Catégorie", "Forecast YoY (t)", "Obj. Recalibré (t)", "Atteinte %", "Lecture"],
-        ["TOURTEAUX", "40 078", "29 628", "135,3%", "Dépassement massif si rupture maintenue"],
-        ["CONCENTRES", "9 160", "9 533", "96,1%", "Quasi-atteinte — objectif réaliste"],
+        ["TOURTEAUX", "40 078", "27 511", "145,7%", "Dépassement massif si rupture maintenue"],
+        ["CONCENTRES", "9 160", "11 650", "78,6%", "Objectif ambitieux — nécessite plan d'action"],
         ["ALIMENT COMPLET", "519", "532", "97,4%", "Quasi-atteinte"],
         ["INGREDIENTS", "129", "466", "27,7%", "Très sous — problème structurel"],
-        ["COMPLEMENT ALIM.", "214", "3", "7432%", "Objectif toujours aberrant"],
+        ["COMPLEMENT ALIM.", "214", "3", "7432%", "Objectif aberrant — à corriger"],
         ["PREMIX", "41", "69", "59,9%", "Sous-performance persistante"],
         ["TOTAL", "50 141", "40 239", "124,6%", "Dépassement global porté par TOURTEAUX"],
     ]
@@ -1639,18 +1667,47 @@ def build_story():
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "<b>Conclusion forecast vs objectifs recalibrés :</b><br/>"
-        "• Le recalibrage rend les objectifs CONCENTRES beaucoup plus atteignables (96,1% vs 68,5% avec l'ancien objectif).<br/>"
-        "• Les TOURTEAUX dépasseraient l'objectif recalibré de 35% si la rupture concurrente se maintient.<br/>"
-        "• Le total S2 serait à 124,6% des objectifs recalibrés — soit un potentiel de dépassement de ~10 000 tonnes.<br/>"
-        "• ⚠️ <b>Risque</b> : ce dépassement est entièrement porté par les TOURTEAUX. Si la rupture s'arrête, le total retomberait à ~37 000 t (92% de l'objectif recalibré).<br/>"
-        "• <b>Recommandation</b> : le recalibrage des CONCENTRES est pertinent, mais l'objectif COMPLEMENT ALIMENTAIRE (3 t) reste aberrant (270 t réalisées en S1). À corriger.",
+        "• Les CONCENTRÉS ont un objectif ambitieux (11 650 t) que le forecast réaliste (9 160 t) n'atteint qu'à 78,6%. "
+        "L'écart de 2 490 t doit être comblé par le plan d'action.<br/>"
+        "• Les TOURTEAUX dépasseraient l'objectif recalibré de 46% si la rupture concurrente se maintient.<br/>"
+        "• Le total S2 serait à 124,6% des objectifs recalibrés — porté par les TOURTEAUX.<br/>"
+        "• ⚠️ <b>Risque</b> : ce dépassement est entièrement porté par les TOURTEAUX. Si la rupture s'arrête, le total retomberait à ~37 000 t (92% de l'objectif recalibré).",
         BODY_BOLD
     ))
 
-    story.append(Paragraph("10bis.7 Objectifs S2 recalibrés par agence", H2))
+    story.append(Paragraph("10bis.8 CONCENTRÉS — Peut-on boucler +5% à +10% vs 2025 ?", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartP_conc_target_5_10pct.png', width=15*cm, height=7.5*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 19 — CONCENTRÉS : forecast S2 vs cibles +5% et +10% vs 2025", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    conc_target = [
+        ["Scénario / Cible", "S2 2026 (t)", "Total 2026 (t)", "YoY vs 2025", "Cible +5% ?", "Cible +10% ?"],
+        ["S2 2025 (référence)", "9 256", "17 926", "—", "—", "—"],
+        ["🔴 Forecast pessimiste", "8 236", "16 828", "-6,1%", "Non", "Non"],
+        ["🟡 Forecast réaliste", "9 160", "17 752", "-1,0%", "Non", "Non"],
+        ["🟢 Forecast optimiste", "10 085", "18 677", "+4,2%", "Non (proche)", "Non"],
+        ["Objectif S2 recalibré", "11 650", "20 242", "+13,0%", "Oui", "Oui"],
+        ["Cible +5% vs 2025", "10 230", "18 822", "+5,0%", "—", "—"],
+        ["Cible +10% vs 2025", "11 127", "19 719", "+10,0%", "—", "—"],
+    ]
+    story.append(make_table(conc_target, col_widths=[3.5*cm, 2*cm, 2.2*cm, 1.8*cm, 1.5*cm, 1.5*cm], font_size=7))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Verdict :</b> avec les dynamiques actuelles (stagnation -1% YoY), le scénario réaliste ne permet pas d'atteindre +5%. "
+        "Le forecast optimiste (+4,2%) est juste en-dessous de la cible +5%. "
+        "Pour boucler +5%, il faut produire 10 230 t en S2 (vs 9 160 t forecast), soit <b>+1 070 t</b> à trouver — "
+        "ce qui correspond aux leviers identifiés dans le plan d'action (réactivation 14 clients 20/80 ~600 t, "
+        "reconquête 178 churned ~300 t, cross-sell Booster ~200 t, sauvegarde C104 ~143 t = potentiel total ~1 243 t). "
+        "<b>La cible +5% est atteignable si le plan d'action est exécuté avec rigueur.</b> "
+        "Pour +10%, il manque encore ~723 t après épuisement de ces leviers — des actions supplémentaires seraient nécessaires.",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph("10bis.9 Objectifs S2 recalibrés par agence", H2))
     img = Image('/home/z/my-project/scripts/pdf_charts/chartJ_s2_by_agence.png', width=16*cm, height=6.7*cm)
     story.append(img)
-    story.append(Paragraph("Figure 18 — Objectifs S2 recalibrés par agence (tonnes, Juillet-Décembre 2026)", CAPTION))
+    story.append(Paragraph("Figure 20 — Objectifs S2 recalibrés par agence (tonnes, Juillet-Décembre 2026)", CAPTION))
 
     story.append(PageBreak())
 
