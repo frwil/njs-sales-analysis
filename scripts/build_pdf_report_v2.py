@@ -336,8 +336,9 @@ def build_story():
         ["8", "Projection CA 6 mois (3 scénarios)", "16"],
         ["9", "Ventes vs Objectifs 2026", "17"],
         ["10", "Forecast S2 2026 (3 scénarios)", "20"],
-        ["11", "Recommandations et plan d'action priorisé", "22"],
-        ["12", "Conclusion et prochaines étapes", "24"],
+        ["10bis", "Analyse YoY 2025-2026 et forecast affiné", "22"],
+        ["11", "Recommandations et plan d'action priorisé", "25"],
+        ["12", "Conclusion et prochaines étapes", "27"],
     ]
     t = make_table(toc_data, col_widths=[1.5*cm, 12*cm, 2.5*cm], header_row=True)
     story.append(t)
@@ -1343,7 +1344,7 @@ def build_story():
     story.append(make_table(ca_forecast_data, col_widths=[3.5*cm, 3.2*cm, 3*cm, 3*cm, 3*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>Conclusion forecast :</b> le scénario réaliste projette un CA HT S2 2026 de <b>15,4 milliards FCFA</b>, "
+        "<b>Conclusion forecast (méthode 1 — basée sur objectifs) :</b> le scénario réaliste projette un CA HT S2 2026 de <b>15,4 milliards FCFA</b>, "
         "soit <b>-11% vs S1 réel</b> (17,3 Md). Le scénario optimiste atteindrait 17,9 Md FCFA (+3% vs S1), "
         "à condition que le plan d'action soit pleinement déployé et que la rupture concurrente se maintienne. "
         "Le risque principal reste la sous-performance des CONCENTRES : sans redressement, le scénario pessimiste (-1,7 Md vs S1) est plausible.",
@@ -1352,7 +1353,105 @@ def build_story():
 
     story.append(PageBreak())
 
-    # ---------- PAGE 22: SECTION 11 - RECOMMANDATIONS (was 9) ----------
+    # ---------- PAGE 22: SECTION 10 BIS - YoY 2025-2026 + FORECAST REFINED ----------
+    story.append(Paragraph("10bis. Analyse YoY 2025-2026 et forecast affiné", H1))
+    story.append(section_divider())
+
+    story.append(Paragraph("10bis.1 Méthodologie — comparaison Year-over-Year", H2))
+    story.append(Paragraph(
+        "Les ventes 2025 (Janvier-Décembre, 71 477 lignes après exclusion des clients internes) ont été intégrées pour :<br/>"
+        "• Mesurer la croissance YoY (S1 2026 vs S1 2025) par catégorie<br/>"
+        "• Extraire la saisonnalité 2025 (notamment le ratio S2/S1)<br/>"
+        "• Affiner le forecast S2 2026 en appliquant la croissance YoY observée sur la base saisonnière 2025",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Méthode du forecast affiné :</b> S2 2026 = S2 2025 × (1 + croissance YoY S1) ± ajustement scénario.<br/>"
+        "• 🔴 Pessimiste : YoY - 10 points (fin rupture concurrente)<br/>"
+        "• 🟡 Réaliste : YoY maintenu (statu quo)<br/>"
+        "• 🟢 Optimiste : YoY + 10 points (plan d'action + maintien rupture)",
+        BODY
+    ))
+
+    story.append(Paragraph("10bis.2 Croissance YoY par catégorie (S1 2025 vs S1 2026)", H2))
+    yoy_table = [
+        ["Catégorie", "S1 2025 (t)", "S1 2026 (t)", "YoY %", "S2 2025 (t)", "Lecture"],
+        ["TOURTEAUX", "19 023", "27 868", "+46,5%", "27 358", "Effet rupture concurrente massif"],
+        ["CONCENTRES", "8 670", "8 592", "-0,9%", "9 243", "Stagnation inquiétante (cœur de marge)"],
+        ["ALIMENT COMPLET", "250", "410", "+64,0%", "316", "Belle progression (Chick/Piglet)"],
+        ["INGREDIENTS", "392", "135", "-65,6%", "375", "Effondrement — à investiguer"],
+        ["COMPLEMENT ALIM.", "3", "270", "+8225%", "3", "Boom (objectif sous-estimé)"],
+        ["PREMIX", "45", "43", "-4,8%", "43", "Léger déclin"],
+        ["TOTAL", "28 383", "37 252", "+31,2%", "36 338", "Croissance globale tirée par TOURTEAUX"],
+    ]
+    story.append(make_table(yoy_table, col_widths=[3.2*cm, 2.3*cm, 2.3*cm, 1.5*cm, 2.3*cm, 5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    # Chart F: YoY
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartF_yoy_2025_2026.png', width=16*cm, height=7.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 14 — Comparaison YoY S1 2025 vs S1 2026 par catégorie (tonnes)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Insights YoY clés :</b><br/>"
+        "• <b>TOURTEAUX +46,5%</b> : la rupture concurrente a généré un gain exceptionnel de 8 845 tonnes en S1 2026.<br/>"
+        "• <b>CONCENTRES -0,9%</b> : stagnation quasi parfaite — confirmant le caractère structurel du problème, pas conjoncturel.<br/>"
+        "• <b>INGREDIENTS -65,6%</b> : effondrement de 257 tonnes. Vérifier si c'est une perte de marché ou un changement de stratégie produit.<br/>"
+        "• <b>ALIMENT COMPLET +64%</b> : les Booster progressent bien — confirmer la synergie avec les concentrés.<br/>"
+        "• <b>COMPLEMENT ALIMENTAIRE +8225%</b> : explosion liée à la gamme BELGOFOS/BELGOTOX — objectif 2026 est à revoir à la hausse.",
+        BODY
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 23: SECTION 10 BIS SUITE ----------
+    story.append(Paragraph("10bis.3 Évolution mensuelle 2025 (année complète) vs 2026", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartG_evolution_2025_2026.png', width=16*cm, height=6*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 15 — Évolution mensuelle 2025 (année complète) vs 2026 (S1 réel + S2 forecast réaliste)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "L'analyse de la saisonnalité 2025 révèle :<br/>"
+        "• <b>TOURTEAUX</b> : forte saisonnalité avec pic en octobre 2025 (7 178 t) — lié aux fêtes de fin d'année. "
+        "Le forecast S2 2026 anticiperait un pic similaire, voire supérieur, si la rupture concurrente se maintient.<br/>"
+        "• <b>CONCENTRES</b> : activité relativement stable sur 2025 (1 335-1 777 t/mois), sans saisonnalité marquée. "
+        "Le forecast S2 2026 reste dans cette fourchette, confirmant la stagnation.",
+        BODY
+    ))
+
+    story.append(Paragraph("10bis.4 Forecast S2 2026 affiné (basé sur YoY + saisonnalité 2025)", H2))
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartH_forecast_refined.png', width=16*cm, height=7.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 16 — Forecast S2 2026 affiné (3 scénarios) vs S2 2025 et Objectif, par catégorie", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    forecast_refined_table = [
+        ["Catégorie", "S2 2025 (t)", "YoY S1", "🔴 Pess. (t)", "🟡 Real. (t)", "🟢 Opt. (t)", "S2 obj. (t)"],
+        ["TOURTEAUX", "27 358", "+46,5%", "37 342", "40 078", "42 814", "26 043"],
+        ["CONCENTRES", "9 243", "-0,9%", "8 236", "9 160", "10 085", "12 242"],
+        ["ALIMENT COMPLET", "316", "+64,0%", "487", "519", "550", "501"],
+        ["INGREDIENTS", "375", "-65,6%", "92", "129", "167", "585"],
+        ["COMPLEMENT ALIM.", "3", "+8225%", "214", "214", "214", "6"],
+        ["PREMIX", "43", "-4,8%", "37", "41", "45", "59"],
+        ["TOTAL", "37 339", "+31,2%", "46 407", "50 141", "53 875", "40 238"],
+    ]
+    story.append(make_table(forecast_refined_table, col_widths=[3*cm, 2*cm, 1.5*cm, 2*cm, 2*cm, 2*cm, 2*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph(
+        "<b>Confrontation des deux méthodes de forecast :</b><br/>"
+        "• Méthode 1 (basée sur objectifs S2 × taux atteinte S1) : S2 réaliste = 36 442 t (92% obj)<br/>"
+        "• Méthode 2 (basée sur 2025 + YoY) : S2 réaliste = 50 141 t (125% obj)<br/><br/>"
+        "L'écart significatif (14 000 tonnes) s'explique par la croissance YoY exceptionnelle des TOURTEAUX (+46,5%), "
+        "que la méthode 1 ne capte pas. <b>La méthode 2 est plus réaliste</b> si la rupture concurrente se maintient en S2.<br/><br/>"
+        "⚠️ <b>Risque principal</b> : si la rupture concurrente s'arrête en S2, les TOURTEAUX reviendraient vers les niveaux 2025 (~27 000 t sur S2), "
+        "soit un forecast réaliste révisé à 37 000-38 000 t (proche de la méthode 1).",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- PAGE 24: SECTION 11 - RECOMMANDATIONS ----------
     story.append(Paragraph("11. Recommandations et plan d'action priorisé", H1))
     story.append(section_divider())
 
