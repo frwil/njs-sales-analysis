@@ -84,6 +84,42 @@ CELL_WHITE_R = ParagraphStyle('CellWR', parent=CELL_WHITE, alignment=TA_RIGHT)
 BULLET = ParagraphStyle('Bullet', parent=BODY, leftIndent=18, bulletIndent=6, spaceAfter=4)
 BULLET_BOLD = ParagraphStyle('BulletB', parent=BULLET, fontName='NotoSerifSC-Bold')
 
+# Insight/Cause/Recommandation block styles
+INSIGHT_TITLE = ParagraphStyle('InsightT', fontName='NotoSerifSC-Bold', fontSize=10,
+                               textColor=NAVY, spaceBefore=6, spaceAfter=4, leading=13)
+INSIGHT_BODY = ParagraphStyle('InsightB', fontName='NotoSerifSC', fontSize=9,
+                              textColor=BLACK, spaceAfter=3, leading=12, leftIndent=12,
+                              alignment=TA_JUSTIFY)
+CAUSE_TITLE = ParagraphStyle('CauseT', fontName='NotoSerifSC-Bold', fontSize=10,
+                             textColor=colors.HexColor('#8B0000'), spaceBefore=6, spaceAfter=4, leading=13)
+CAUSE_BODY = ParagraphStyle('CauseB', fontName='NotoSerifSC', fontSize=9,
+                            textColor=BLACK, spaceAfter=3, leading=12, leftIndent=12,
+                            alignment=TA_JUSTIFY)
+RECO_TITLE = ParagraphStyle('RecoT', fontName='NotoSerifSC-Bold', fontSize=10,
+                            textColor=colors.HexColor('#375623'), spaceBefore=6, spaceAfter=4, leading=13)
+RECO_BODY = ParagraphStyle('RecoB', fontName='NotoSerifSC', fontSize=9,
+                           textColor=BLACK, spaceAfter=3, leading=12, leftIndent=12,
+                           alignment=TA_JUSTIFY)
+
+
+def icr_block(insights, causes, recommandations):
+    """Create an Insights / Causes / Recommandations block for underperformance sections.
+    Each argument is a list of strings (bullet points)."""
+    elements = []
+    # Insights
+    elements.append(Paragraph("Insights", INSIGHT_TITLE))
+    for s in insights:
+        elements.append(Paragraph(f"• {s}", INSIGHT_BODY))
+    # Causes
+    elements.append(Paragraph("Causes", CAUSE_TITLE))
+    for s in causes:
+        elements.append(Paragraph(f"• {s}", CAUSE_BODY))
+    # Recommandations
+    elements.append(Paragraph("Recommandations", RECO_TITLE))
+    for s in recommandations:
+        elements.append(Paragraph(f"• {s}", RECO_BODY))
+    return KeepTogether(elements)
+
 # ===== PAGE SETUP =====
 PAGE_W, PAGE_H = A4
 MARGIN_L = 1.5*cm
@@ -1212,42 +1248,88 @@ def build_story():
     story.append(PageBreak())
 
     # ---------- PAGE 18: SECTION 9 SUITE ----------
-    story.append(Paragraph("9.3 Lecture par catégorie", H2))
+    story.append(Paragraph("9.3 Lecture par catégorie — sous-performances", H2))
     story.append(Paragraph(
         "<b>TOURTEAUX (104,4% de l'objectif S1) :</b> seule catégorie majeure à dépasser l'objectif. "
         "Q1 légèrement sous l'objectif (86,0%) mais Q2 en fort dépassement (125,0%) grâce à la rupture concurrente. "
-        "C'est la catégorie qui porte le résultat global — sans elle, le S1 serait à seulement 70% de l'objectif.",
+        "C'est la catégorie qui porte le résultat global — sans elle, le S1 serait à seulement 70% de l'objectif. "
+        "Pas de sous-performance — mais dépendance excessive à cette catégorie.",
         BODY
     ))
-    story.append(Paragraph(
-        "<b>CONCENTRES (68,5% — sous-performance critique) :</b> écart de -3 950 tonnes sur S1. "
-        "C'est le cœur de marge de BELGOCAM, et la sous-performance est constante (Q1 : 66,1%, Q2 : 71,2%). "
-        "Une action immédiate s'impose : revisiter la stratégie tarifaire, la qualité perçue et la couverture commerciale.",
-        BODY_BOLD
+
+    story.append(Spacer(1, 0.2*cm))
+    story.append(icr_block(
+        insights=[
+            "CONCENTRÉS à 68,5% de l'objectif S1 avec écart de -3 950 tonnes — sous-performance critique et constante (Q1 : 66,1%, Q2 : 71,2%).",
+            "Aucune agence n'atteint 100% de son objectif concentrés — problème systémique national.",
+            "Le déclin YoY de -0,9% confirme le caractère structurel, pas conjoncturel.",
+        ],
+        causes=[
+            "Positionnement tarifaire potentiellement non compétitif vs concurrents sur les concentrés.",
+            "Qualité perçue en baisse ou absence de différenciation perçue par les éleveurs.",
+            "Couverture commerciale insuffisante sur les clients moyens (pas seulement les 20/80).",
+            "Absence de bundle soja-concentrés — les clients qui viennent pour le soja ne cross-sellent pas vers les concentrés.",
+            "Migration des clients du BELGO 10% vers le BELGO 5% (dégradation du mix produit).",
+        ],
+        recommandations=[
+            "Benchmark tarifaire immédiat sur les 12 références concentrés vs concurrents (délai : 30 jours).",
+            "Imposer un bundle soja-concentrés sur chaque commande : 3 sacs de soja pour 1 sac de concentré (ratio 3:1 obligatoire).",
+            "Mener une enquête qualitative auprès de 30 clients churned concentrés pour comprendre les causes de départ.",
+            "Ajustement tarifaire si le benchmark confirme un écart — priorité sur C104 (BELGO 10% Chair) qui représente 50% du volume.",
+            "Renforcer le suivi client par le SAV : appels de satisfaction systématiques sur les clients concentrés à risque.",
+        ],
     ))
-    story.append(Paragraph(
-        "<b>INGREDIENTS (22,6% — sous-performance majeure) :</b> écart de -463 tonnes. "
-        "Les matières premières (lysine, méthionine, farine de poisson, sulfate de fer) sont vendues bien en deçà des objectifs. "
-        "Soit les objectifs sont irréalistes, soit BELGOCAM perd des parts de marché au profit de concurrents spécialisés.",
-        BODY
+
+    story.append(Spacer(1, 0.3*cm))
+    story.append(icr_block(
+        insights=[
+            "INGREDIENTS à 22,6% de l'objectif S1 — sous-performance majeure de -463 tonnes.",
+            "Effondrement YoY de -65,6% (392 t en S1 2025 vs 135 t en S1 2026).",
+            "Les matières premières (lysine, méthionine, farine de poisson, sulfate de fer) sont vendues bien en deçà des objectifs.",
+        ],
+        causes=[
+            "Objectifs potentiellement irréalistes — fixés sans tenir compte de la base réelle de clients acheteurs d'ingrédients.",
+            "Perte de parts de marché au profit de concurrents spécialisés en ingrédients (importateurs directs).",
+            "Changement de stratégie produit — les clients peuvent s'approvisionner ailleurs pour les matières premières.",
+        ],
+        recommandations=[
+            "Réviser les objectifs INGREDIENTS à la baisse pour les aligner sur la réalité du marché (objectif S1 réel ≈ 135 t vs 598 t prévus).",
+            "Analyser les clients 2025 qui n'ont plus acheté d'ingrédients en 2026 — identifier s'ils sont partis chez la concurrence.",
+            "Évaluer la rentabilité de cette catégorie — si la marge est faible, réallouer les efforts commerciaux vers les concentrés.",
+        ],
     ))
-    story.append(Paragraph(
-        "<b>COMPLEMENT ALIMENTAIRE (4505%) :</b> les objectifs sont manifestement sous-estimés (6 t prévues vs 270 t réalisées). "
-        "La gamme BELGOFOS, BELGOTOX, BELGOKILL et compléments liquides performe très bien — les objectifs doivent être révisés à la hausse.",
-        BODY
+
+    story.append(Spacer(1, 0.3*cm))
+    story.append(icr_block(
+        insights=[
+            "ALIMENT COMPLET à 79,7% de l'objectif S1 — sous-performance modérée mais stratégique.",
+            "Les Booster (Chick + Piglet) sont des produits d'entrée vers les concentrés — leur déficit aggrave la sous-performance des concentrés.",
+        ],
+        causes=[
+            "Manque de promotion sur les gammes Booster auprès des nouveaux éleveurs.",
+            "Absence de bundle Booster-concentrés dans l'offre commerciale.",
+        ],
+        recommandations=[
+            "Campagne de promotion Booster auprès des nouveaux clients : échantillon gratuit à la première commande.",
+            "Bundle Booster + concentré correspondant (Chick + Chair, Piglet + Porc) avec remise incitative.",
+            "Suivi SAV systématique des clients Booster-only (141 clients) pour les convertir aux concentrés.",
+        ],
     ))
-    story.append(Paragraph(
-        "<b>ALIMENT COMPLET (79,7%) :</b> Chick Booster et Piglet Booster sont légèrement sous l'objectif. "
-        "Comme ces produits sont des produits d'entrée vers les concentrés, le déficit d'aliment complet aggrave aussi la sous-performance des concentrés.",
-        BODY
-    ))
-    story.append(Paragraph(
-        "<b>PREMIX (69,7%) :</b> sous-performance de 30%. À investiguer — peut-être une concurrence sur les mélanges techniques.",
-        BODY
-    ))
-    story.append(Paragraph(
-        "<b>Innovations (0%) :</b> aucune vente réalisée alors que 824 t étaient prévues. Soit les produits ne sont pas lancés, soit ils ne sont pas référencés dans la base. Action : clarifier le statut de cette catégorie.",
-        BODY
+
+    story.append(Spacer(1, 0.3*cm))
+    story.append(icr_block(
+        insights=[
+            "PREMIX à 69,7% de l'objectif S1 — sous-performance de 30%.",
+            "Innovations à 0% — aucune vente réalisée alors que 824 t étaient prévues.",
+        ],
+        causes=[
+            "Concurrence sur les mélanges techniques (premix personnalisés par les concurrents).",
+            "Innovations : produits non lancés ou non référencés dans la base de ventes.",
+        ],
+        recommandations=[
+            "Investiguer la concurrence sur les premix techniques — comparer offres et prix.",
+            "Clarifier le statut de la catégorie Innovations : produits en développement ? Lancés mais non référencés ?",
+        ],
     ))
 
     story.append(Paragraph("9.4 Évolution mensuelle vs objectifs (catégories majeures)", H2))
@@ -1747,47 +1829,82 @@ def build_story():
     rec_data = [
         ["Priorité", "Axe d'action", "Nb clients", "Délai", "Pilote"],
         ["🔴 CRITIQUE", "Sauvetage des 14 clients 20/80 en clients zéro achat Q1 (ciblé + concentrés)", "14", "30 j", "Directeur Commercial + Responsables agences"],
-        ["🟠 ÉLEVÉE", "Recontact des 192 clients churned (actifs Q1 → Zéro achat Q2)", "192", "15 j", "Commerciaux terrain"],
-        ["🟠 ÉLEVÉE", "Sauvetage des 97 anciens fidèles Q1 en déclin Q2", "97", "30 j", "Commerciaux + Service client"],
+        ["🔴 CRITIQUE", "Bundle soja-concentrés obligatoire : 3 sacs soja pour 1 sac concentré sur chaque commande", "Tous", "Immédiat", "Direction Commerciale"],
+        ["🟠 ÉLEVÉE", "Recontact des 192 clients churned (actifs Q1 → Zéro achat Q2) par SAV + commercial", "192", "15 j", "SAV + Commerciaux terrain"],
+        ["🟠 ÉLEVÉE", "Sauvetage des 97 anciens fidèles Q1 en déclin Q2 — visite physique + suivi SAV", "97", "30 j", "Commerciaux + SAV"],
+        ["🟠 ÉLEVÉE", "Suivi SAV systématique des clients concentrés à risque (appels de satisfaction mensuels)", "850+", "Continu", "Service Après-Vente"],
         ["🟡 MOYENNE", "Prospection des 118 clients jamais acquis (persistants zéro achat)", "118", "60 j", "Marketing + Commerciaux"],
         ["🟡 MOYENNE", "Capitalisation sur les 234 clients réactivés Q2 (étude qualitative)", "234", "45 j", "Marketing + Direction commerciale"],
-        ["🟢 STRUCTURANTE", "Analyse du déclin volume concentrés (segment retenu -248 t)", "672", "90 j", "Direction Produit + Direction Commerciale"],
+        ["🟡 MOYENNE", "Motivation de l'équipe commerciale : primes liées aux ventes de concentrés (objectif individuel)", "Tous", "30 j", "Direction + RH"],
+        ["🟢 STRUCTURANTE", "Analyse du déclin volume concentrés (segment retenu -248 t) + benchmark tarifaire", "672", "90 j", "Direction Produit + Direction Commerciale"],
     ]
-    story.append(make_table(rec_data, col_widths=[2.5*cm, 6.5*cm, 1.5*cm, 1.5*cm, 5.5*cm], font_size=8))
+    story.append(make_table(rec_data, col_widths=[2.5*cm, 6.5*cm, 1.2*cm, 1.3*cm, 5.5*cm], font_size=7))
     story.append(Spacer(1, 0.3*cm))
 
-    story.append(Paragraph("9.1 Actions concrètes par recommandation", H2))
+    story.append(Paragraph("11.1 Actions concrètes par recommandation", H2))
     story.append(Paragraph(
         "<b>1. Sauvetage des 14 clients 20/80 (CRITIQUE) :</b> RDV individuel avec chaque client par le directeur commercial. "
         "Offre dédiée : remise volume + échantillon + livraison gratuite. Vérifier s'il y a un problème qualité/prix/concurrence. "
-        "Enjeu : 175 M FCFA de perte Q1 estimée sur ces 14 clients.",
+        "Enjeu : 175 M FCFA de perte Q1 estimée sur ces 14 clients. Le SAV prépare le terrain avant chaque RDV en collectant "
+        "l'historique des réclamations et le niveau de satisfaction du client.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>2. Recontact des 192 churned (ÉLEVÉE) :</b> appel téléphonique par le commercial dédié sous 7 jours. "
-        "Enquête : pourquoi plus d'achat ? (concurrence, prix, qualité, défaut livraison). "
-        "Offre de retour : -5% sur première commande de réactivation. Enjeu : 273 M FCFA perdus.",
+        "<b>2. Bundle soja-concentrés obligatoire (CRITIQUE) :</b> chaque commande de tourteaux de soja doit inclure "
+        "une fraction de concentré — ratio 3:1 (3 sacs de soja pour 1 sac de concentré). "
+        "Cette règle transforme le soja (produit d'appel) en moteur de cross-sell vers les concentrés (cœur de marge). "
+        "Les clients qui viennent pour le soja pendant la rupture concurrente repartiront systématiquement avec du concentré. "
+        "Mise en œuvre : conditionner la vente de soja à l'achat d'au moins 1 sac de concentré pour 3 sacs de soja. "
+        "Remise de -5% sur le concentré dans le cadre du bundle pour inciter.",
+        BODY_BOLD
+    ))
+    story.append(Paragraph(
+        "<b>3. Recontact des 192 churned par SAV + commercial (ÉLEVÉE) :</b> le SAV effectue un premier appel "
+        "dans les 7 jours pour recueillir le motif de départ (qualité, prix, concurrence, livraison). "
+        "Le commercial prend le relais dans les 15 jours avec une offre de retour : -5% sur première commande de réactivation. "
+        "Le SAV assure ensuite un suivi mensuel pendant 3 mois pour éviter les rechutes. Enjeu : 273 M FCFA perdus.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>3. Sauvetage des 97 fidèles en déclin (ÉLEVÉE) :</b> visite physique par le commercial. "
+        "<b>4. Sauvetage des 97 fidèles en déclin (ÉLEVÉE) :</b> visite physique par le commercial. "
+        "Le SAV identifie en amont les signaux faibles (baisse de fréquence, réclamations récentes, retards de paiement). "
         "Diagnostic : changement d'activité ? Concurrence ? Insatisfaction ? "
-        "Mise en place d'un plan de fidélisation sur 3 mois (tarif préférentiel, livraison prioritaire).",
+        "Mise en place d'un plan de fidélisation sur 3 mois (tarif préférentiel, livraison prioritaire, suivi SAV dédié).",
         BODY
     ))
     story.append(Paragraph(
-        "<b>4. Prospection des 118 persistants zéro achat (MOYENNE) :</b> campagne d'échantillonnage + invitation à une démonstration produit. "
+        "<b>5. Suivi SAV systématique des clients concentrés (ÉLEVÉE) :</b> le SAV met en place un programme "
+        "d'appels de satisfaction mensuels sur les 850+ clients actifs concentrés. Chaque appel permet de : "
+        "(a) détecter les signaux d'attrition avant qu'ils ne se transforment en churn, "
+        "(b) collecter le feedback sur la qualité et les prix, "
+        "(c) identifier les opportunités de cross-sell (Booster, compléments). "
+        "Le SAV devient le système d'alerte précoce de la Direction Commerciale. "
+        "Budget : 2 ETP SAV dédiés aux concentrés pendant 6 mois.",
+        BODY_BOLD
+    ))
+    story.append(Paragraph(
+        "<b>6. Prospection des 118 persistants zéro achat (MOYENNE) :</b> campagne d'échantillonnage + invitation à une démonstration produit. "
         "Tarif découverte sur première commande. Identifier ceux qui achètent chez les concurrents (analyse de marché locale).",
         BODY
     ))
     story.append(Paragraph(
-        "<b>5. Capitalisation sur les 234 réactivés Q2 (MOYENNE) :</b> enquête qualitative auprès de 30 clients : "
+        "<b>7. Capitalisation sur les 234 réactivés Q2 (MOYENNE) :</b> enquête qualitative auprès de 30 clients : "
         "qu'est-ce qui a déclenché l'achat Q2 ? (visite commerciale, promo, rupture concurrentielle, nouveauté produit). "
         "Reproduire les leviers efficaces à grande échelle.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>6. Analyse déclin volume concentrés (STRUCTURANTE) :</b> le segment \"retenu\" sur concentrés décline en volume malgré la rétention. "
+        "<b>8. Motivation de l'équipe commerciale (MOYENNE) :</b> la motivation de l'équipe commerciale est une arme stratégique. "
+        "Mise en place d'un système de primes individualisées liées aux ventes de concentrés (et non de soja qui se vend seul). "
+        "Chaque commercial se voit fixer un objectif individuel de ventes concentrés avec : "
+        "(a) prime mensuelle si objectif atteint, (b) bonus trimestriel sur le cross-sell soja→concentrés, "
+        "(c) reconnaissance interne (classement mensuel des meilleurs vendeurs de concentrés). "
+        "L'objectif est d'aligner les intérêts des commerciaux sur la marge (concentrés) plutôt que sur le volume (soja). "
+        "Formation spécifique sur l'argumentaire concentrés + bundles à organiser dans les 30 jours.",
+        BODY_BOLD
+    ))
+    story.append(Paragraph(
+        "<b>9. Analyse déclin volume concentrés (STRUCTURANTE) :</b> le segment \"retenu\" sur concentrés décline en volume malgré la rétention. "
         "Enquête : prix trop élevés vs concurrents ? Qualité perçue en baisse ? Substitution par soja ? "
         "Lancer un atelier interne produit/marché.",
         BODY
@@ -1796,28 +1913,33 @@ def build_story():
     story.append(PageBreak())
 
     # ---------- PAGE 18: SECTION 9 SUITE ----------
-    story.append(Paragraph("9.2 Synthèse du plan d'action", H2))
+    story.append(Paragraph("11.2 Synthèse du plan d'action", H2))
     synth_pa = [
         ["Indicateur", "Valeur"],
         ["Enjeu total identifié (pertes Q1 + risques churn)", "≈ 854 M FCFA"],
         ["Gain potentiel (si réactivation complète des 20/80 zéro achat)", "≈ 175 M FCFA"],
-        ["Nb total de clients concernés par une action prioritaire", "≈ 524 clients"],
+        ["Nb total de clients concernés par une action prioritaire", "≈ 524 clients + 850+ suivis SAV"],
+        ["Bundle soja-concentrés (ratio 3:1)", "Déploiement immédiat — toutes agences"],
+        ["Suivi SAV clients concentrés", "2 ETP dédiés — appels mensuels 850+ clients"],
+        ["Motivation équipe commerciale", "Primes sur concentrés + formation bundles (30 j)"],
         ["Horizon de mise en œuvre", "30-90 jours (priorités CRITIQUE et ÉLEVÉE sous 30 jours)"],
-        ["Pilotage", "Revue mensuelle du CA ciblé/concentrés par segment + tableau de bord des actions"],
+        ["Pilotage", "Revue mensuelle CA concentrés + tableau de bord SAV + classement commercial"],
     ]
     story.append(make_table(synth_pa, col_widths=[8*cm, 9*cm]))
     story.append(Spacer(1, 0.5*cm))
 
-    story.append(Paragraph("9.3 Calendrier de mise en œuvre", H2))
+    story.append(Paragraph("11.3 Calendrier de mise en œuvre", H2))
     cal_data = [
         ["Période", "Action principale", "Livrable attendu"],
-        ["J+7", "Lancement opération \"Soja disponible\" (14 clients 20/80)", "RDV planifiés + 1er contact effectué"],
-        ["J+15", "Recontact 192 churned + 118 persistants", "50% des 324 clients contactés"],
-        ["J+30", "Verrouillage contrats 6 mois nouveaux clients", "60% des nouveaux verrouillés"],
-        ["J+30", "Sauvetage 14 clients 20/80 + 97 fidèles en déclin", "Premiers retours et CA récupéré"],
+        ["Immédiat", "Bundle soja-concentrés 3:1 obligatoire sur chaque commande", "Règle déployée dans toutes les agences"],
+        ["J+7", "Lancement opération \"Soja disponible\" + SAV prépare les 14 RDV 20/80", "RDV planifiés + 1er contact effectué"],
+        ["J+15", "Recontact 192 churned par SAV (1er appel) + commercial (offre de retour)", "50% des 192 clients contactés"],
+        ["J+30", "Verrouillage contrats 6 mois + formation commerciale bundles", "60% des nouveaux verrouillés + formation complète"],
+        ["J+30", "Sauvetage 14 clients 20/80 + 97 fidèles en déclin + lancement primes concentrés", "Premiers retours + système de primes actif"],
+        ["J+30", "SAV : lancement du programme d'appels mensuels clients concentrés", "Programme SAV opérationnel (850+ clients)"],
         ["J+45", "Enquête qualitative 30 clients réactivés", "Rapport d'enquête + leviers identifiés"],
         ["J+60", "Benchmark prix concentrés concurrents", "Rapport benchmark + recommandations tarifaires"],
-        ["J+90", "Bilan conquest soja + plan marketing agences", "Bilan CA additionnel vs scénario réaliste"],
+        ["J+90", "Bilan conquest soja + plan marketing agences + bilan primes", "Bilan CA additionnel vs scénario réaliste"],
     ]
     story.append(make_table(cal_data, col_widths=[2.2*cm, 7.5*cm, 8*cm]))
 
