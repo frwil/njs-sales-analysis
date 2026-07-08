@@ -965,6 +965,45 @@ def build_story():
 
     story.append(PageBreak())
 
+    # ---------- 3.11 VENTES VS OBJECTIFS PAR RÉGION ----------
+    story.append(KeepTogether([
+        Paragraph("3.11 Ventes vs Objectifs par région", H2),
+        Image('/home/z/my-project/scripts/pdf_charts/chartAA_region_ventes_vs_obj.png', width=16*cm, height=6*cm),
+    ]))
+    story.append(Paragraph("Figure 32 — Ventes vs Objectifs par région : volume total et CONCENTRÉS (S1 2026)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    region_obj_table = [
+        ["Région", "Agences", "Vol obj (t)", "Vol réel (t)", "% vol", "CA (M FCFA)", "Conc vol (t)", "Conc obj (t)", "% conc"],
+        ["Ouest", "FAMLA, DJELENG, MBOUDA", "15 719", "16 365", "104,1%", "6 822", "3 605", "4 870", "74,0%"],
+        ["Centre", "MESSASSI, NDOBO, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON", "11 317", "10 725", "94,8%", "5 039", "3 020", "4 317", "69,9%"],
+        ["Littoral", "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE", "13 271", "14 159", "106,7%", "4 811", "2 150", "2 978", "72,2%"],
+        ["TOTAL", "14 agences", "40 307", "41 249", "102,3%", "16 672", "8 775", "12 165", "72,1%"],
+    ]
+    story.append(make_table(region_obj_table, col_widths=[1.8*cm, 4.5*cm, 1.8*cm, 1.8*cm, 1.2*cm, 1.8*cm, 1.5*cm, 1.5*cm, 1.2*cm], font_size=7))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(icr_block(
+        insights=[
+            "L'Ouest (FAMLA + DJELENG + MBOUDA) est la première région en CA (6 822 M FCFA, 41% du total) et dépasse son objectif volume (104,1%).",
+            "Le Littoral sur-performe en volume global (106,7%) mais reste sous l'objectif sur les CONCENTRÉS (72,2%).",
+            "Le Centre est la seule région sous l'objectif volume global (94,8%) et a la plus faible atteinte CONCENTRÉS (69,9%).",
+            "Aucune région n'atteint son objectif CONCENTRÉS — le problème est bien systémique et national.",
+        ],
+        causes=[
+            "Le Centre sous-performe globalement car MESSASSI (56,9% conc) et AHALA (63,0% conc) tirent la région vers le bas.",
+            "Le Littoral dépasse en volume grâce aux TOURTEAUX (NDOBO = 134,5% obj global) mais les CONCENTRÉS restent sous l'objectif.",
+            "L'Ouest, porté par FAMLA (64,8% conc), performe mieux sur les concentrés (74,0%) mais reste sous l'objectif.",
+        ],
+        recommandations=[
+            "Prioriser le Centre pour le renforcement commercial — c'est la région qui sous-performe le plus (94,8% global, 69,9% conc).",
+            "Au Littoral, capitaliser sur la dynamique TOURTEAUX pour pousser le bundle soja-concentrés (3:1) et améliorer l'atteinte CONCENTRÉS.",
+            "Dans l'Ouest, maintenir la performance globale tout en ciblant les 1 265 t de CONCENTRÉS manquantes (principalement à FAMLA).",
+        ],
+    ))
+
+    story.append(PageBreak())
+
     # ---------- PAGE 20: SECTION 9 BIS - FOCUS CONCENTRÉS ----------
     story.append(Paragraph("4. Focus CONCENTRÉS — Cœur de marge", H1))
     story.append(section_divider())
