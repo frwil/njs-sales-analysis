@@ -3600,7 +3600,7 @@ for col in range(1, len(headers)+1):
     c.font = Font(bold=True, color="FFFFFF")
     c.fill = HEADER_FILL
     c.alignment = Alignment(horizontal='center', vertical='center')
-    c.border = thin_border
+    c.border = BORDER
 
 row_idx = 2
 for t in ["Chair", "Ponte", "Porc"]:
@@ -3657,7 +3657,7 @@ for type_conc, sheet_name in sheet_names_map.items():
         c.font = Font(bold=True, color="FFFFFF")
         c.fill = HEADER_FILL
         c.alignment = Alignment(horizontal='center', vertical='center')
-        c.border = thin_border
+        c.border = BORDER
 
     if type_conc in _annexe:
         for c_data in _annexe[type_conc]["clients"]:
