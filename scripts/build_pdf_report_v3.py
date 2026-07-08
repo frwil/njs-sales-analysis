@@ -426,9 +426,9 @@ def build_story():
 
     # KPI row
     cards = [
-        kpi_card("Clients analysés", "1 359", "(après exclusion interne)"),
-        kpi_card("CA HT 6 mois", "17,3 Md", "FCFA"),
-        kpi_card("Clients 20/80 (★)", "359", "80% du CA"),
+        kpi_card("CA HT S1", "17,34 Md", "FCFA (93% obj)"),
+        kpi_card("Volume S1", "42 816 t", "(103,8% obj)"),
+        kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
         kpi_card("Bilan net Q1→Q2", "+276 M", "FCFA (ciblé)"),
     ]
     story.append(kpi_row(cards))
@@ -441,35 +441,51 @@ def build_story():
     ))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "<b>1. Base clients saine et concentrée.</b> BELGOCAM compte 1 359 clients actifs sur 6 mois (après exclusion de 35 clients internes). "
-        "Le portefeuille est très concentré : 359 clients du top 20/80 (★) génèrent 80% du chiffre d'affaires, soit environ 13,8 Md FCFA sur les 17,3 Md FCFA totaux. "
-        "Cette concentration est à la fois une force (relations directes avec les gros comptes) et un risque (dépendance à un nombre limité de clients).",
+        "<b>1. Volume global au-dessus de l'objectif, CA en dessous.</b> "
+        "Avec 42 816 tonnes en S1 2026, le volume atteint 103,8% de l'objectif. "
+        "Mais en CA, l'objectif de 18,64 Md FCFA n'est atteint qu'à 93,0% (17,34 Md réalisé). "
+        "L'écart provient principalement des CONCENTRES qui représentent à eux seuls 2 213 M FCFA de CA manquant.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>2. Pertes Q1 significatives mais récupérables.</b> 338 clients n'ont acheté aucun produit ciblé en Q1 (soja + concentrés), générant une perte estimée à 1 598 tonnes et 591 millions FCFA par la méthode fréquence/moyenne mensuelle. "
-        "Sur ces 338 clients, 14 font partie du top 20/80 — ce sont des comptes stratégiques prioritaires à réactiver.",
+        "<b>2. Les CONCENTRÉS sous-performent à 72,4% — c'est le coeur de marge.</b> "
+        "Avec 9 075 t réalisées vs 12 542 t d'objectif, les concentrés accusent un déficit de 3 467 t. "
+        "Aucune agence n'atteint son objectif concentrés — c'est un problème systémique. "
+        "Le déclin YoY de -1,7% confirme le caractère structurel. Le C104 (BELGO 10% Chair), "
+        "qui représente 50% du volume concentrés, décline de 3,2% en YoY.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>3. Transition Q1→Q2 positive, portée par le soja.</b> Le bilan net Q1→Q2 sur produits ciblés est positif : +276 M FCFA (gain de réactivation 549 M − perte par churn 273 M). "
-        "Cependant, ce bilan est principalement porté par les tourteaux de soja ; le bilan concentrés seul est fragile (+52 M FCFA seulement), avec un segment \"retenu\" en déclin de volume (-248 t).",
+        "<b>3. Les TOURTEAUX portent le résultat grâce à la rupture concurrente.</b> "
+        "Les tourteaux de soja dépassent l'objectif de 8,9% en volume (29 062 t vs 26 685 t) "
+        "et de 8,2% en CA (9 437 M vs 8 725 M). Cette sur-performance est entièrement liée à la "
+        "rupture d'approvisionnement chez les concurrents — une fenêtre de tir temporaire qu'il faut "
+        "verrouiller contractuellement.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>4. Concentrés = cœur de marge à défendre.</b> Les concentrés (BELGO 10% + BELGO 5%) représentent la plus grosse partie de la marge. "
-        "Or 526 clients n'ont jamais acheté de concentrés en Q1, dont 41 clients 20/80. Les Booster (Chick + Piglet, 300 M FCFA, 573 clients) sont des produits d'entrée qui amènent 75% de leurs acheteurs vers les concentrés — levier de cross-sell à exploiter.",
+        "<b>4. Diagnostic zéro achat : 338 clients n'ont pas acheté de produits ciblés en Q1.</b> "
+        "L'analyse zéro achat révèle que 338 clients n'ont fait aucun achat de produits ciblés "
+        "(soja + concentrés) en Janvier-Mars 2026, dont 14 clients du top 20/80. "
+        "La perte Q1 estimée est de 1 599 tonnes et 581 millions FCFA. "
+        "Ces clients constituent les cibles prioritaires du plan d'action.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>5. Fenêtre stratégique exceptionnelle.</b> La rupture concurrente actuelle sur le soja offre une opportunité de conquête limitée dans le temps. "
-        "Le scénario réaliste projette un CA additionnel de 640 M FCFA à 6 mois (+3,7% de croissance vs S1 2026), à condition de verrouiller contractuellement les nouveaux clients et de pousser les bundles soja+concentrés.",
+        "<b>5. Le plan d'action repose sur 3 leviers + le SAV.</b> "
+        "(a) Bundle soja-concentrés obligatoire (3 sacs soja pour 1 sac concentré) pour transformer "
+        "le soja en moteur de cross-sell vers les concentrés. "
+        "(b) Suivi SAV systématique des 850+ clients concentrés (appels mensuels, détection précoce). "
+        "(c) Motivation de l'équipe commerciale par des primes liées aux ventes de concentrés. "
+        "Le forecast S2 réaliste projette 16,95 Md FCFA de CA (93% de l'objectif S2).",
         BODY
     ))
 
     story.append(Spacer(1, 0.5*cm))
     story.append(Paragraph(
-        "<b>Recommandation immédiate :</b> traiter la période de rupture concurrente comme une opération de guerre. Lancer sous 15 jours l'opération \"Soja disponible\" auprès des 324 clients prioritaires (14 clients 20/80 + 192 churned + 118 jamais acquis), avec bundles soja+concentrés obligatoires et contrats multi-produits 6 mois pour verrouillage.",
+        "<b>Recommandation immédiate :</b> déployer le bundle soja-concentrés (ratio 3:1) "
+        "dès juillet 2026 dans toutes les agences, lancer le programme SAV sur les clients concentrés, "
+        "et mettre en place le système de primes commerciales liées aux concentrés sous 30 jours.",
         BODY_BOLD
     ))
 
@@ -621,7 +637,7 @@ def build_story():
     story.append(Paragraph("3.1 Vue d'ensemble (S1 2026 — Janvier-Juin)", H2))
     story.append(Paragraph(
         "Les objectifs 2026 ont été définis par catégorie de produits et par agence. Sur le semestre 1 (Janvier-Juin 2026), "
-        "le volume total atteint est de <b>42 826 tonnes</b>, soit <b>103,9% de l'objectif S1</b> (41 230 tonnes). "
+        "le volume total atteint est de <b>42 816 tonnes</b>, soit <b>103,8% de l'objectif S1</b> (41 230 tonnes). "
         "En CA, l'objectif S1 est de <b>18,64 milliards FCFA</b>, atteint à <b>93,0%</b> (17,34 Md réalisé). "
         "La seule sous-performance majeure est les CONCENTRES : 72,5% en volume et 73,4% en CA — le cœur de marge.",
         BODY
@@ -631,14 +647,14 @@ def build_story():
     cat_obj_data = [
         ["Catégorie", "Q1 obj. (t)", "Q1 réel (t)", "% Q1", "Q2 obj. (t)", "Q2 réel (t)", "% Q2", "S1 obj. (t)", "S1 réel (t)", "% S1"],
         ["TOURTEAUX", "14 068", "12 855", "91,4%", "12 617", "16 206", "128,4%", "26 685", "29 061", "108,9%"],
-        ["CONCENTRES", "6 612", "4 629", "70,0%", "5 930", "4 464", "75,3%", "12 542", "9 093", "72,5%"],
-        ["ALIMENT COMPLET", "271", "258", "95,2%", "243", "270", "110,9%", "514", "528", "102,7%"],
+        ["CONCENTRES", "6 612", "4 626", "70,0%", "5 930", "4 450", "75,0%", "12 542", "9 075", "72,4%"],
+        ["ALIMENT COMPLET", "271", "266", "98,2%", "243", "279", "114,8%", "514", "545", "106,1%"],
         ["INGREDIENTS", "315", "1 970", "625%", "283", "1 789", "632%", "598", "3 759", "628,5%"],
         ["COMPLEMENT ALIM.", "3", "165", "5494%", "3", "141", "4714%", "6", "306", "5104%"],
         ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%"],
         ["MATERIEL ELEVAGE", "0", "4", "—", "0", "1", "—", "0", "5", "—"],
         ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%"],
-        ["TOTAL", "21 736", "19 931", "91,7%", "19 494", "22 895", "117,4%", "41 230", "42 826", "103,9%"],
+        ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "22 895", "117,4%", "41 230", "42 816", "103,8%"],
     ]
     story.append(make_table(cat_obj_data, col_widths=[3*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm], font_size=7))
     story.append(Spacer(1, 0.3*cm))
@@ -654,15 +670,15 @@ def build_story():
     ca_obj_table = [
         ["Catégorie", "CA obj S1 (M FCFA)", "CA réel S1 (M FCFA)", "Écart (M)", "% atteinte"],
         ["TOURTEAUX", "8 724", "9 437", "+713", "108,2%"],
-        ["CONCENTRES", "8 277", "6 072", "-2 205", "73,4%"],
-        ["ALIMENT COMPLET", "435", "463", "+29", "106,6%"],
+        ["CONCENTRES", "8 277", "6 064", "-2 213", "73,3%"],
+        ["ALIMENT COMPLET", "435", "471", "+36", "108,2%"],
         ["INGREDIENTS", "810", "678", "-132", "83,7%"],
         ["COMPLEMENT ALIM.", "16", "410", "+394", "2600%"],
         ["PREMIX", "113", "126", "+13", "111,6%"],
         ["MATERIEL ELEVAGE", "170", "129", "-41", "75,8%"],
         ["ALVEOLE", "91", "14", "-77", "15,1%"],
         ["DIVERS", "5", "12", "+7", "251%"],
-        ["TOTAL", "18 641", "17 340", "-1 300", "93,0%"],
+        ["TOTAL", "18 641", "17 340", "-1 301", "93,0%"],
     ]
     story.append(make_table(ca_obj_table, col_widths=[3*cm, 3*cm, 3*cm, 2*cm, 2*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -954,7 +970,7 @@ def build_story():
 
     story.append(Paragraph(
         "Les CONCENTRÉS (BELGO 10% + BELGO 5%) représentent <b>la plus grosse partie de la marge</b> de BELGOCAM. "
-        "Avec 9 093 tonnes et 6,07 milliards FCFA de CA HT en S1 2026, ils sont la catégorie stratégique par excellence. "
+        "Avec 9 075 tonnes et 6,06 milliards FCFA de CA HT en S1 2026, ils sont la catégorie stratégique par excellence. "
         "Pourtant, ils n'atteignent que 72,5% de l'objectif S1 et stagnent en YoY (-1,7%). "
         "Cette section propose une analyse approfondie par sous-catégorie, par produit, par agence et dans le temps.",
         BODY
@@ -970,7 +986,7 @@ def build_story():
         ["BELGO 10% Ponte", "36,8", "0,4%", "21,6", "586 569", "-27,9%"],
         ["BELGO Rabbit", "10,1", "0,1%", "4,1", "402 963", "Nouveau"],
         ["BELGO Ruminant", "0,1", "0,0%", "0,0", "600 000", "Nouveau"],
-        ["TOTAL", "9 092,9", "100%", "6 071,8", "667 747", "-1,7%"],
+        ["TOTAL", "9 075,4", "100%", "6 064,4", "668 221", "-1,7%"],
     ]
     story.append(make_table(conc_subcat_data, col_widths=[3.2*cm, 2*cm, 1.2*cm, 2.2*cm, 2.5*cm, 1.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -1042,7 +1058,7 @@ def build_story():
         ["MBOUDA", "619,3", "411,6", "7,2%", "≈ 900", "≈ 69%"],
         ["AHALA", "572,7", "386,7", "6,7%", "≈ 800", "≈ 72%"],
         ["Autres (7 agences)", "2 851,4", "1 979,1", "33,2%", "≈ 3 942", "≈ 72%"],
-        ["TOTAL", "9 092,9", "6 071,8", "100%", "12 542", "72,5%"],
+        ["TOTAL", "9 075,4", "6 064,4", "100%", "12 542", "72,4%"],
     ]
     story.append(make_table(conc_agence_data, col_widths=[3*cm, 2*cm, 2.2*cm, 1.5*cm, 2.2*cm, 1.8*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
