@@ -2158,10 +2158,11 @@ def build_story():
         "<b>Principe 1 — Stabilité du total (~40 239 t, +0,0%)</b> : ne pas baisser l'ambition globale. "
         "Baisser le total reviendrait à admettre un échec global — impact négatif sur le moral des équipes et la perception direction. "
         "Le choix politique est de maintenir le cap global.<br/><br/>"
-        "<b>Principe 2 — Réallocation interne</b> : déplacer le curseur là où le marché le permet (TOURTEAUX, ALIMENT COMPLET, PREMIX) "
+        "<b>Principe 2 — Réallocation interne</b> : déplacer le curseur là où le marché le permet (TOURTEAUX, ALIMENT COMPLET) "
         "tout en compensant là où il résiste (CONCENTRÉS, INGREDIENTS, COMPLEMENT ALIM.). "
-        "Le bilan net est neutre en volume (-1 t) et quasi-neutre en CA (-0,4%).<br/><br/>"
-        "<b>Principe 3 — Maintien de l'ambition CONCENTRÉS</b> : malgré la stagnation S1, l'objectif CONCENTRÉS reste à 11 650 t "
+        "Le bilan net est neutre en volume (-1 t) et quasi-neutre en CA (-0,4%). "
+        "Transfert stratégique PREMIX → CONCENTRÉS pour prioriser le produit maison.<br/><br/>"
+        "<b>Principe 3 — Maintien de l'ambition CONCENTRÉS</b> : malgré la stagnation S1, l'objectif CONCENTRÉS reste à 11 652 t "
         "(+25,9% vs S2 2025). C'est un choix volontariste — le plan d'action identifie 1 243 t de potentiel "
         "(réactivation 14 clients 20/80 ~600 t, reconquête churned ~300 t, cross-sell Booster ~200 t, sauvegarde C104 ~143 t). "
         "L'objectif est atteignable SI le plan est exécuté avec rigueur.",
@@ -2178,9 +2179,10 @@ def build_story():
         ["TOURTEAUX", "26 043", "27 511", "+5,6%",
          "Prudence face à la rupture concurrente. +46,5% YoY en S1, mais on n'ose pas parier sur la durée. "
          "Hausse modérée pour capter l'effet de rétention sans sur-bet sur un facteur externe incontrôlable."],
-        ["CONCENTRES", "12 242", "11 650", "-4,8%",
-         "Concession minimale au réel (-592 t) SANS casser le signal commercial. "
-         "L'objectif recalibré reste +25,9% vs S2 2025 — volontariste. Le plan d'action identifie 1 243 t de potentiel."],
+        ["CONCENTRES", "12 242", "11 652", "-4,8%",
+         "Concession minimale au réel (-590 t) SANS casser le signal commercial. "
+         "L'objectif recalibré reste +25,9% vs S2 2025 — volontariste. Le plan d'action identifie 1 243 t de potentiel. "
+         "Les +2 t supplémentaires (vs recalibrage précédent à 11 650 t) proviennent du transfert depuis le PREMIX — choix stratégique assumé de prioriser le produit maison."],
         ["INGREDIENTS", "585", "466", "-20,3%",
          "Ajustement réaliste : S1=2 382 t (avec Maïs hors régularisation), forecast S2=2 281 t. "
          "L'objectif initial de 585 t ne tenait pas compte du Maïs ni des sels minéraux (BELGOFOS/BELGOTOX). "
@@ -2188,27 +2190,33 @@ def build_story():
         ["ALIMENT COMPLET", "501", "532", "+6,3%",
          "Confiance dans le pipeline produit. S1=420 t (84% obj), forecast S2=531 t. "
          "Innovations (Chick/Piglet Booster, BELGO Rabbit) en montée en charge. Hausse pour accompagner la croissance."],
-        ["PREMIX", "59", "69", "+16,1%",
-         "Pari sur le cross-sell. S1=42,5 t (70% obj), forecast S2=41 t. "
-         "Le PREMIX est un produit complémentaire aux CONCENTRÉS et ALIMENT COMPLET — si le plan CONCENTRÉS fonctionne, le PREMIX suit mécaniquement."],
+        ["PREMIX", "59", "66", "+11,9%",
+         "Ajustement à la baisse vs recalibrage précédent (68,5 t → 66 t) pour aligner sur le forecast réaliste (66,4 t). "
+         "Les 2,5 t libérées sont réallouées aux CONCENTRÉS. "
+         "Justification stratégique : le PREMIX est un produit IMPORTÉ (dépendance fournisseur + risque de change), "
+         "tandis que les CONCENTRÉS sont produits localement par BELGOCAM. Promouvoir les CONCENTRÉS = promouvoir la création de valeur locale, "
+         "renforcer la marque BELGOCAM (gamme BELGO 5%/10%) et la fidélisation client. Le PREMIX reste un produit d'accompagnement "
+         "(cross-sell) qui suit mécaniquement la dynamique des CONCENTRÉS."],
         ["COMPLEMENT ALIM.", "6", "3", "-52,0%",
          "Alignement sur le périmètre corrigé. Reclassification : BELGOFOS/BELGOTOX→INGREDIENTS, Pierre à lécher→DIVERS, "
          "ajout PONT_BASCULE/CONTRIBUTION_CARBURANT en DIVERS (état 'Validée' inclus). "
          "Il ne reste que les additifs liquides BELGO (3 t en S1). Recalibrage à 3 t = alignment sur le réalisé."],
         ["TOTAL", "40 238", "40 239", "+0,0%",
          "Total stable — choix politique de maintenir l'ambition globale. "
-         "Réallocation interne : +1 499 t sur les catégories en dynamique (TOURTEAUX, ALIM. COMPLET, PREMIX) "
-         "compensent -1 498 t sur les catégories en difficulté (CONCENTRÉS, INGREDIENTS, COMPLEMENT ALIM.)."],
+         "Réallocation interne : +1 499 t sur les catégories en dynamique (TOURTEAUX, ALIM. COMPLET) "
+         "compensent -1 498 t sur les catégories en difficulté (CONCENTRÉS, INGREDIENTS, COMPLEMENT ALIM.). "
+         "Transfert stratégique PREMIX → CONCENTRÉS (2,5 t) pour prioriser le produit maison."],
     ]
     story.append(make_table(recaled_table, col_widths=[2.5*cm, 1.8*cm, 1.8*cm, 1.2*cm, 8.5*cm], font_size=7))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "<b>Insight stratégique du recalibrage :</b> contrairement à une simple baisse des objectifs concentrés, "
-        "ce recalibrage maintient un objectif CONCENTRÉS ambitieux (11 650 t, soit +25,9% vs S2 2025) tout en ajustant modérément les TOURTEAUX à la hausse (+5,6%). "
-        "Le signal envoyé aux équipes commerciales est clair : les CONCENTRÉS restent la priorité, avec un objectif volontariste "
+        "ce recalibrage maintient un objectif CONCENTRÉS ambitieux (11 652 t, soit +25,9% vs S2 2025) tout en ajustant modérément les TOURTEAUX à la hausse (+5,6%). "
+        "Le signal envoyé aux équipes commerciales est clair : les CONCENTRÉS restent la priorité absolue, avec un objectif volontariste "
         "qui, s'il est atteint, permettrait de boucler +13% vs 2025 — bien au-dessus de la cible +5-10%. "
         "Le recalibrage n'est donc ni un aveu d'échec, ni un alignement purement mécanique sur le réel — c'est un "
-        "<b>choix stratégique délibéré</b> de maintenir l'ambition sur le cœur de marge tout en réajustant le mix.",
+        "<b>choix stratégique délibéré</b> de maintenir l'ambition sur le cœur de marge tout en réajustant le mix. "
+        "Le transfert de 2,5 t du PREMIX (importé) vers les CONCENTRÉS (produit maison) matérialise ce choix au niveau des objectifs.",
         BODY_BOLD
     ))
 
@@ -2249,18 +2257,18 @@ def build_story():
     fc_vs_obj = [
         ["Catégorie", "Forecast YoY (t)", "Obj. Recalibré (t)", "Atteinte %", "Lecture"],
         ["TOURTEAUX", "40 078", "27 511", "145,7%", "Dépassement massif si rupture maintenue"],
-        ["CONCENTRES", "9 160", "11 650", "78,6%", "Objectif ambitieux — nécessite plan d'action"],
+        ["CONCENTRES", "9 160", "11 652", "78,6%", "Objectif ambitieux — nécessite plan d'action"],
         ["ALIMENT COMPLET", "519", "532", "97,4%", "Quasi-atteinte"],
         ["INGREDIENTS", "2 281", "466", "489,5%", "Forecast très au-dessus — objectif sous-calibré"],
         ["COMPLEMENT ALIM.", "1,9", "3", "63,3%", "Sous-légère — déclin liquides"],
-        ["PREMIX", "41", "69", "59,9%", "Sous-performance persistante"],
+        ["PREMIX", "41", "66", "62,1%", "Ajusté au forecast réaliste"],
         ["TOTAL", "50 141", "40 239", "124,6%", "Dépassement global porté par TOURTEAUX"],
     ]
     story.append(make_table(fc_vs_obj, col_widths=[3.2*cm, 2.5*cm, 2.5*cm, 1.5*cm, 6*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "<b>Conclusion forecast vs objectifs recalibrés :</b><br/>"
-        "• Les CONCENTRÉS ont un objectif ambitieux (11 650 t) que le forecast réaliste (9 160 t) n'atteint qu'à 78,6%. "
+        "• Les CONCENTRÉS ont un objectif ambitieux (11 652 t) que le forecast réaliste (9 160 t) n'atteint qu'à 78,6%. "
         "L'écart de 2 490 t doit être comblé par le plan d'action.<br/>"
         "• Les TOURTEAUX dépasseraient l'objectif recalibré de 46% si la rupture concurrente se maintient.<br/>"
         "• Le total S2 serait à 124,6% des objectifs recalibrés — porté par les TOURTEAUX.<br/>"
@@ -2281,7 +2289,7 @@ def build_story():
         ["🔴 Forecast pessimiste", "8 236", "16 828", "-6,1%", "Non", "Non"],
         ["🟡 Forecast réaliste", "9 160", "17 752", "-1,0%", "Non", "Non"],
         ["🟢 Forecast optimiste", "10 085", "18 677", "+4,2%", "Non (proche)", "Non"],
-        ["Objectif S2 recalibré", "11 650", "20 242", "+13,0%", "Oui", "Oui"],
+        ["Objectif S2 recalibré", "11 652", "20 244", "+13,0%", "Oui", "Oui"],
         ["Cible +5% vs 2025", "10 230", "18 822", "+5,0%", "—", "—"],
         ["Cible +10% vs 2025", "11 127", "19 719", "+10,0%", "—", "—"],
     ]
@@ -2532,7 +2540,7 @@ def build_story():
         "Cette annexe présente le top 20/80 des clients par type de concentré consommé (Chair, Ponte, Porc). "
         "Pour chaque client, sont indiqués : le volume et CA réalisés en S1 2026, le pourcentage du volume total du type, "
         "et un objectif S2 2026 calculé proportionnellement au poids du client dans la consommation globale du type. "
-        "L'objectif global S2 pour les CONCENTRÉS est de 11 650 t, réparti entre Chair (7 428 t, 63,8%), Ponte (2 362 t, 20,3%) et Porc (1 859 t, 16,0%) "
+        "L'objectif global S2 pour les CONCENTRÉS est de 11 652 t, réparti entre Chair (7 429 t, 63,8%), Ponte (2 362 t, 20,3%) et Porc (1 860 t, 16,0%) "
         "selon la répartition observée en S1.",
         BODY
     ))
@@ -2552,7 +2560,7 @@ def build_story():
         ["Chair", "895", "235", "5 472", "7 428", "+35,8%", "3 393", "4 606"],
         ["Ponte", "399", "75", "1 740", "2 362", "+35,8%", "1 252", "1 699"],
         ["Porc", "533", "140", "1 370", "1 859", "+35,8%", "1 084", "1 472"],
-        ["TOTAL", "1 827", "450", "8 582", "11 650", "+35,8%", "5 729", "7 777"],
+        ["TOTAL", "1 827", "450", "8 582", "11 652", "+35,8%", "5 729", "7 778"],
     ]
     story.append(make_table(synthese_annexe, col_widths=[2*cm, 2*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2*cm, 2*cm, 2.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -2560,7 +2568,7 @@ def build_story():
     story.append(Paragraph(
         "<b>Lecture :</b> sur les 1 827 clients CONCENTRÉS actifs en S1, 450 (25%) représentent 80% du volume — c'est la loi de Pareto. "
         "Ces 450 clients constituent la cible prioritaire du plan d'action S2. "
-        "La croissance cible de +35,8% par type est ambitieuse mais alignée sur l'objectif global CONCENTRÉS de 11 650 t. "
+        "La croissance cible de +35,8% par type est ambitieuse mais alignée sur l'objectif global CONCENTRÉS de 11 652 t. "
         "Pour chaque client 20/80, l'objectif individuel est calculé au prorata de son poids S1 — "
         "ce qui garantit équité et réalisme (les gros clients reçoivent des objectifs plus élevés).",
         BODY_BOLD
