@@ -521,23 +521,23 @@ def build_story():
         BODY
     ))
     prod_data = [
-        ["Catégorie", "Produits principaux", "Vol S1 2026 (t)", "CA S1 (M FCFA)", "% CA"],
-        ["TOURTEAUX", "T102 Soja 50Kg + formats", "29 062", "9 437", "54,4%"],
-        ["CONCENTRES", "C104 BELGO 10% Chair, C105 Porc, C103/C101 5%, etc.", "9 075", "6 064", "35,0%"],
-        ["INGREDIENTS", "Maïs, BELGOFOS, BELGOTOX, Lysine, Méthionine, Farine poisson, etc.", "2 382", "1 071", "5,8%"],
-        ["ALIMENT COMPLET", "Chick Booster, Piglet Booster, BELGO Rabbit, BELGO Fish", "545", "471", "2,7%"],
-        ["COMPLEMENT ALIM.", "Additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.)", "3", "15", "0,0%"],
-        ["PREMIX", "P102N2 Chair, P104N2 Ponte, P109 Multi Rumi", "69", "126", "0,7%"],
-        ["MATERIEL ELEVAGE", "Abreuvoirs, grillages, cages, radiants (évalués en CA)", "—", "129", "0,7%"],
-        ["ALVEOLE", "Cartons à œufs, caisses (évalués en CA)", "—", "14", "0,1%"],
-        ["DIVERS", "Manuels, sacs, contribution carburant (évalués en CA)", "—", "12", "0,1%"],
-        ["TOTAL", "—", "41 148", "17 330", "100%"],
+        ["Catégorie", "Produits principaux", "Vol S1 2026 (t)", "CA S1 (M FCFA)", "% CA", "YoY vol"],
+        ["TOURTEAUX", "T102 Soja 50Kg + formats", "29 062", "9 437", "54,4%", "+52,8%"],
+        ["CONCENTRES", "C104 BELGO 10% Chair, C105 Porc, C103/C101 5%, etc.", "9 075", "6 064", "35,0%", "+4,7%"],
+        ["INGREDIENTS", "Maïs, BELGOFOS, BELGOTOX, Lysine, Méthionine, Farine poisson, etc.", "2 382", "1 071", "5,8%", "+507,7%"],
+        ["ALIMENT COMPLET", "Chick Booster, Piglet Booster, BELGO Rabbit, BELGO Fish", "545", "471", "2,7%", "+118,2%"],
+        ["COMPLEMENT ALIM.", "Additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.)", "3", "15", "0,0%", "-8,8%"],
+        ["PREMIX", "P102N2 Chair, P104N2 Ponte, P109 Multi Rumi", "69", "126", "0,7%", "+54,1%"],
+        ["MATERIEL ELEVAGE", "Abreuvoirs, grillages, cages, radiants (évalués en CA)", "—", "129", "0,7%", "—"],
+        ["ALVEOLE", "Cartons à œufs, caisses (évalués en CA)", "—", "14", "0,1%", "—"],
+        ["DIVERS", "Manuels, sacs, contribution carburant, pont bascule", "—", "17", "0,1%", "—"],
+        ["TOTAL", "—", "41 148", "17 330", "100%", "+17,1%"],
     ]
-    story.append(make_table(prod_data, col_widths=[3.2*cm, 5.5*cm, 2.2*cm, 2.2*cm, 1.2*cm], font_size=8))
+    story.append(make_table(prod_data, col_widths=[2.8*cm, 5*cm, 2*cm, 2*cm, 1.2*cm, 1.5*cm], font_size=7.5))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "Les CONCENTRÉS (BELGO 10% + BELGO 5%) représentent <b>la plus grosse partie de la marge</b> de BELGOCAM. "
-        "Les TOURTEAUX représentent le volume mais à faible marge unitaire. Le Maïs (3 623 t) est vendu en sacs de 50 kg. "
+        "Les TOURTEAUX représentent le volume mais à faible marge unitaire. Le Maïs (1 892 t hors régularisation stock) est vendu en sacs de 50 kg. "
         "Le matériel d'élevage, les alvéoles et divers sont évalués en CA uniquement (pas de volume en tonnes).",
         BODY
     ))
@@ -585,23 +585,25 @@ def build_story():
     story.append(kpi_row(cards2))
     story.append(Spacer(1, 0.5*cm))
 
-    story.append(Paragraph("2.2 Performance par catégorie (volume vs objectif)", H2))
+    story.append(Paragraph("2.2 Performance par catégorie (volume vs objectif + YoY)", H2))
     perf_data = [
-        ["Catégorie", "Vol S1 (t)", "CA S1 (M FCFA)", "Obj vol S1 (t)", "% vol", "Obj CA S1 (M)", "% CA"],
-        ["TOURTEAUX", "29 062", "9 437", "26 685", "108,9%", "8 725", "108,2%"],
-        ["CONCENTRES", "9 075", "6 064", "12 542", "72,4%", "8 277", "73,3%"],
-        ["ALIMENT COMPLET", "545", "471", "514", "106,1%", "435", "108,2%"],
-        ["INGREDIENTS", "2 382", "1 071", "598", "398,4%", "810", "132,2%"],
-        ["COMPLEMENT ALIM.", "3", "15", "6", "49,3%", "16", "96,2%"],
-        ["PREMIX", "69", "126", "61", "112,8%", "113", "111,6%"],
-        ["MATERIEL ELEVAGE", "—", "129", "0", "—", "170", "75,8%"],
-        ["ALVEOLE", "—", "14", "0", "—", "91", "15,1%"],
-        ["TOTAL", "41 148", "17 330", "41 230", "99,8%", "18 215", "95,1%"],
+        ["Catégorie", "Vol S1 (t)", "Obj vol (t)", "% vol", "YoY vol", "CA S1 (M)", "Obj CA (M)", "% CA"],
+        ["TOURTEAUX", "29 062", "26 685", "108,9%", "+52,8%", "9 437", "8 725", "108,2%"],
+        ["CONCENTRES", "9 075", "12 542", "72,4%", "+4,7%", "6 064", "8 277", "73,3%"],
+        ["ALIMENT COMPLET", "545", "514", "106,1%", "+118,2%", "471", "435", "108,2%"],
+        ["INGREDIENTS", "2 382", "598", "398,4%", "+507,7%", "1 071", "810", "132,2%"],
+        ["COMPLEMENT ALIM.", "3", "6", "49,3%", "-8,8%", "15", "16", "96,2%"],
+        ["PREMIX", "69", "61", "112,8%", "+54,1%", "126", "113", "111,6%"],
+        ["MATERIEL ELEVAGE", "—", "0", "—", "—", "129", "170", "75,8%"],
+        ["ALVEOLE", "—", "0", "—", "—", "14", "91", "15,1%"],
+        ["TOTAL", "41 148", "41 230", "99,8%", "+17,1%", "17 330", "18 215", "95,1%"],
     ]
-    story.append(make_table(perf_data, col_widths=[3*cm, 2*cm, 2.2*cm, 2.2*cm, 1.3*cm, 2*cm, 1.3*cm], font_size=8))
+    story.append(make_table(perf_data, col_widths=[2.8*cm, 1.7*cm, 1.7*cm, 1.2*cm, 1.4*cm, 1.7*cm, 1.7*cm, 1.2*cm], font_size=7))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "Le volume global atteint 99,8% de l'objectif — légèrement sous, mais le pipeline en cours (192,8 t) le ferait passer à 102,3%. La sur-performance des TOURTEAUX (108,9%) et des INGREDIENTS (398%, porté par le Maïs) compense la sous-performance CONCENTRÉS (72,4%). "
+        "Le volume global atteint 99,8% de l'objectif — légèrement sous, mais le pipeline en cours (192,8 t) le ferait passer à 102,3%. "
+        "<b>YoY volume +17,1%</b> — croissance solide portée par les TOURTEAUX (+52,8%) et les INGREDIENTS (+507,7% — Boom Maïs). "
+        "Les CONCENTRÉS progressent timidement (+4,7% YoY) mais restent très sous l'objectif (72,4%). "
         "Mais le CA n'atteint que 95,1% de l'objectif — l'écart de 885 M FCFA provient principalement des CONCENTRES "
         "(-2 213 M FCFA, 73,3% de l'objectif CA). Le matériel d'élevage et les alvéoles sous-performent en CA "
         "(75,8% et 15,1%) mais ne pèsent que marginalement sur le total.",
@@ -645,20 +647,20 @@ def build_story():
         BODY
     ))
 
-    story.append(Paragraph("3.2 Analyse par catégorie (Q1 / Q2 / S1)", H2))
+    story.append(Paragraph("3.2 Analyse par catégorie (Q1 / Q2 / S1) — avec YoY", H2))
     cat_obj_data = [
-        ["Catégorie", "Q1 obj. (t)", "Q1 réel (t)", "% Q1", "Q2 obj. (t)", "Q2 réel (t)", "% Q2", "S1 obj. (t)", "S1 réel (t)", "% S1"],
-        ["TOURTEAUX", "14 068", "12 855", "91,4%", "12 617", "16 206", "128,4%", "26 685", "29 061", "108,9%"],
-        ["CONCENTRES", "6 612", "4 626", "70,0%", "5 930", "4 450", "75,0%", "12 542", "9 075", "72,4%"],
-        ["ALIMENT COMPLET", "271", "266", "98,2%", "243", "279", "114,8%", "514", "545", "106,1%"],
-        ["INGREDIENTS", "315", "1 970", "625%", "283", "2 090", "739%", "598", "2 382", "398,4%"],
-        ["COMPLEMENT ALIM.", "3", "0,4", "13%", "3", "2,6", "87%", "6", "3,0", "49,3%"],
-        ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%"],
-        ["MATERIEL ELEVAGE", "0", "4", "—", "0", "1", "—", "0", "5", "—"],
-        ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%"],
-        ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "21 227", "108,9%", "41 230", "41 148", "99,8%"],
+        ["Catégorie", "Q1 obj.", "Q1 réel", "% Q1", "Q2 obj.", "Q2 réel", "% Q2", "S1 obj.", "S1 réel", "% S1", "YoY"],
+        ["TOURTEAUX", "14 068", "12 855", "91,4%", "12 617", "16 206", "128,4%", "26 685", "29 061", "108,9%", "+52,8%"],
+        ["CONCENTRES", "6 612", "4 626", "70,0%", "5 930", "4 450", "75,0%", "12 542", "9 075", "72,4%", "+4,7%"],
+        ["ALIMENT COMPLET", "271", "266", "98,2%", "243", "279", "114,8%", "514", "545", "106,1%", "+118,2%"],
+        ["INGREDIENTS", "315", "1 970", "625%", "283", "2 090", "739%", "598", "2 382", "398,4%", "+507,7%"],
+        ["COMPLEMENT ALIM.", "3", "0,4", "13%", "3", "2,6", "87%", "6", "3,0", "49,3%", "-8,8%"],
+        ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%", "+54,1%"],
+        ["MATERIEL ELEVAGE", "0", "4", "—", "0", "1", "—", "0", "5", "—", "—"],
+        ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%", "—"],
+        ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "21 227", "108,9%", "41 230", "41 148", "99,8%", "+17,1%"],
     ]
-    story.append(make_table(cat_obj_data, col_widths=[3*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm], font_size=7))
+    story.append(make_table(cat_obj_data, col_widths=[2.7*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.2*cm], font_size=6.5))
     story.append(Spacer(1, 0.3*cm))
 
     # Chart A: Ventes vs Objectifs S1
