@@ -510,7 +510,7 @@ def build_story():
         BODY
     ))
     story.append(Paragraph(
-        "Le périmètre géographique couvre l'ensemble du Cameroun via 16 agences BELGOCAM : FAMLA, MESSASSI, NDOBO, DJELENG, NKONGSAMBA, AHALA, BERTOUA, NGAOUNDERE, BAMENDA-MBOUDA, VILLAGE, BUEA, NKOABANG, PK11, NKOLBISSON, ainsi que des points SPC. "
+        "Le périmètre géographique couvre l'ensemble du Cameroun via 14 agences BELGOCAM : FAMLA, MESSASSI, NDOBO, DJELENG, NKONGSAMBA, AHALA, BERTOUA, NGAOUNDERE, BAMENDA-MBOUDA, VILLAGE, BUEA, NKOABANG, PK11, NKOLBISSON, ainsi que des points SPC. "
         "Les données 2025 (année complète) et les objectifs 2026 (par catégorie, par agence, en volume et en CA) ont également été intégrés pour permettre les comparaisons YoY et ventes vs objectifs.",
         BODY
     ))
@@ -1126,12 +1126,12 @@ def build_story():
             "TOURTEAUX : prix moyen en baisse YoY (-4,0%) — de 338 375 à 324 740 FCFA/t. Cette baisse suggère un shift vers plus de ventes en gros (grands volumes à prix unitaire plus bas), ce qui est cohérent avec l'effet rupture concurrente (les clients concurrents viennent chercher de gros volumes).",
             "CONCENTRÉS : prix moyen légèrement en hausse YoY (+0,9%) et vs objectif (+1,3%) — de 662 399 à 668 221 FCFA/t. Cette stabilité/hausse légère suggère que le mix produit ne s'est pas dégradé : pas de migration massive vers les petits conditionnements. Le problème des concentrés est donc un problème de VOLUME, pas de prix.",
             "ALIMENT COMPLET : prix moyen quasi stable YoY (-0,6%) mais légèrement au-dessus de l'objectif (+2,1%). Légère hausse vs objectif suggère un mix légèrement plus orienté détail (Booster 5Kg vs 25Kg).",
-            "Le prix des TOURTEAUX (324 740 FCFA/t ≈ 541 USD/t) est très supérieur au prix mondial du soja (~322 USD/t). L'écart de 219 USD/t couvre le fret, la douane, la transformation et la marge BELGOCAM.",
+            "Le prix des TOURTEAUX (324 740 FCFA/t ≈ 541 USD/t) est supérieur au prix mondial du soja (~322 USD/t). L'écart s'explique par les coûts d'importation et la marge BELGOCAM.",
         ],
         causes=[
             "TOURTEAUX : la baisse YoY du prix moyen reflète la baisse du prix mondial du soja en 2025/26 (production mondiale record selon USDA) transmise au marché camerounais, combinée à un shift vers plus de gros volumes.",
             "CONCENTRÉS : la stabilité du prix moyen indique que la sous-performance n'est PAS un problème de prix mais un problème de VOLUME (perte de clients, manque de cross-sell, concurrence).",
-            "Le soja étant un produit importé, son prix fluctue avec le marché mondial (USD/fret/douane) — BELGOCAM subit la volatilité sans pouvoir la contrôler entièrement.",
+            "Le soja étant un produit importé, son prix fluctue avec le marché mondial — BELGOCAM subit la volatilité sans pouvoir la contrôler entièrement.",
         ],
         recommandations=[
             "CONCENTRÉS : ne pas baisser les prix (le prix moyen est stable et aligné avec l'objectif) — l'enjeu est le VOLUME, pas le prix. Concentrer les efforts sur la réactivation clients et le bundle soja-concentrés.",
@@ -1145,8 +1145,8 @@ def build_story():
     story.append(Paragraph(
         "<b>Contexte marché international du soja :</b> selon le USDA (WASDE avril 2026) et Macrotrends, "
         "le prix mondial du tourteau de soja est de ~322 USD/t (mai 2026), en baisse grâce à une production mondiale record "
-        "en 2025/26. Le USDA prévoit ~310 USD/t pour la saison. Le Cameroun étant importateur net de soja, "
-        "le prix local intègre le prix mondial + fret + douane + transformation + marge BELGOCAM (soit ~219 USD/t d'écart). "
+        "en 2025/26. Le USDA prévoit ~310 USD/t pour la saison. Le prix BELGOCAM (541 USD/t) est supérieur au prix mondial, "
+        "l'écart s'expliquant par les coûts d'importation et la marge. "
         "La volatilité du soja à l'importation explique pourquoi cette catégorie a les prix les plus fluctuants — "
         "contrairement aux concentrés dont les prix sont stables car fabriqués localement à partir de matières premières moins volatiles.",
         BODY_BOLD
