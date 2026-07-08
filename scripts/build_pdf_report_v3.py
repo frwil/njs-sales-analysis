@@ -585,7 +585,7 @@ def build_story():
     story.append(kpi_row(cards2))
     story.append(Spacer(1, 0.5*cm))
 
-    story.append(Paragraph("2.2 Performance par catégorie (volume vs objectif + YoY)", H2))
+    story.append(Paragraph("2.2 Performance par catégorie (volume vs objectif)", H2))
     perf_data = [
         ["Catégorie", "Vol S1 (t)", "Obj vol (t)", "% vol", "YoY vol", "CA S1 (M)", "Obj CA (M)", "% CA"],
         ["TOURTEAUX", "29 062", "26 685", "108,9%", "+52,8%", "9 437", "8 725", "108,2%"],
@@ -647,7 +647,7 @@ def build_story():
         BODY
     ))
 
-    story.append(Paragraph("3.2 Analyse par catégorie (Q1 / Q2 / S1) — avec YoY", H2))
+    story.append(Paragraph("3.2 Analyse par catégorie (Q1 / Q2 / S1)", H2))
     cat_obj_data = [
         ["Catégorie", "Q1 obj.", "Q1 réel", "% Q1", "Q2 obj.", "Q2 réel", "% Q2", "S1 obj.", "S1 réel", "% S1", "YoY"],
         ["TOURTEAUX", "14 068", "12 855", "91,4%", "12 617", "16 206", "128,4%", "26 685", "29 061", "108,9%", "+52,8%"],
@@ -1294,7 +1294,7 @@ def build_story():
     story.append(PageBreak())
 
     # ---------- 4.7.4 Price by region ----------
-    story.append(Paragraph("4.7.4 Prix moyen par région (avec YoY)", H3))
+    story.append(Paragraph("4.7.4 Prix moyen par région", H3))
     region_table = [
         ["Région", "Vol (t)", "YoY vol", "CA (M)", "YoY CA", "Prix moy (FCFA/t)", "% CA", "Vol conc (t)", "Prix conc (FCFA/t)"],
         ["Ouest", "16 365", "+16,4%", "6 822", "+3,5%", "416 881", "39,3%", "3 605", "684 073"],
