@@ -840,30 +840,32 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
 
     ag_full_data = [
-        ["Agence", "S1 obj. (t)", "S1 réel (t)", "% atteinte", "CA (M FCFA)"],
-        ["FAMLA", "10 801", "10 791", "99,9%", "4 450,9"],
-        ["NDOBO", "6 618", "8 902", "134,5%", "2 562,2"],
-        ["MESSASSI", "4 095", "3 919", "95,7%", "1 761,6"],
-        ["DJELENG", "3 024", "3 187", "105,4%", "1 343,1"],
-        ["MBOUDA", "1 895", "2 387", "126,0%", "1 028,1"],
-        ["VILLAGE", "1 699", "2 171", "127,8%", "948,5"],
-        ["BERTOUA", "1 739", "1 686", "97,0%", "833,5"],
-        ["NKONGSAMBA", "1 895", "1 663", "87,7%", "710,7"],
-        ["NKOABANG", "1 288", "1 223", "94,9%", "558,2"],
-        ["NGAOUNDERE", "1 002", "1 123", "112,1%", "557,7"],
-        ["BUEA", "1 771", "1 424", "80,4%", "589,7"],
-        ["AHALA", "2 578", "2 038", "79,1%", "967,8"],
-        ["NKOLBISSON", "617", "737", "119,5%", "360,0"],
-        ["TOTAL", "41 230", "41 148", "99,8%", "17 330,4"],
+        ["Agence", "S1 obj. (t)", "S1 réel (t)", "% atteinte", "YoY vol", "CA (M FCFA)", "YoY CA"],
+        ["FAMLA", "10 801", "10 791", "99,9%", "+5,3%", "4 450,9", "-6,1%"],
+        ["NDOBO", "6 618", "8 902", "134,5%", "-16,1%", "2 562,2", "-18,6%"],
+        ["MESSASSI", "4 095", "3 919", "95,7%", "+51,8%", "1 761,6", "+31,0%"],
+        ["DJELENG", "3 024", "3 187", "105,4%", "+40,8%", "1 343,1", "+31,7%"],
+        ["MBOUDA", "1 895", "2 387", "126,0%", "+54,2%", "1 028,1", "+43,0%"],
+        ["VILLAGE", "1 699", "2 171", "127,8%", "+45,5%", "948,5", "+25,3%"],
+        ["BERTOUA", "1 739", "1 686", "97,0%", "+15,9%", "833,5", "+4,5%"],
+        ["NKONGSAMBA", "1 895", "1 663", "87,7%", "+13,1%", "710,7", "+1,8%"],
+        ["NKOABANG", "1 288", "1 223", "94,9%", "+62,5%", "558,2", "+39,6%"],
+        ["NGAOUNDERE", "1 002", "1 123", "112,1%", "+84,4%", "557,7", "+51,0%"],
+        ["BUEA", "1 771", "1 424", "80,4%", "+5,0%", "589,7", "-6,2%"],
+        ["AHALA", "2 578", "2 038", "79,1%", "+50,0%", "967,8", "+29,8%"],
+        ["NKOLBISSON", "617", "737", "119,5%", "+105,3%", "360,0", "+66,1%"],
+        ["TOTAL", "41 230", "41 148", "99,8%", "+17,1%", "17 330,4", "+7,8%"],
     ]
-    story.append(make_table(ag_full_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2.5*cm], font_size=8))
+    story.append(make_table(ag_full_data, col_widths=[2.8*cm, 2*cm, 2*cm, 1.7*cm, 1.5*cm, 2*cm, 1.5*cm], font_size=7))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>Insights par agence :</b><br/>"
-        "• <b>NDOBO</b> sur-performe massivement (134,5%) — l'agence capitalise le mieux sur la rupture concurrente.<br/>"
-        "• <b>AHALA (79,1%) et BUEA (80,4%)</b> sous-performent — diagnostic terrain nécessaire.<br/>"
-        "• <b>FAMLA</b> (99,9%) est parfaitement alignée sur son objectif malgré son volume.<br/>"
-        "• <b>NKONGSAMBA (87,7%)</b> légèrement sous — renforcement commercial recommandé.",
+        "<b>Insights par agence (atteinte objectif + YoY) :</b><br/>"
+        "• <b>NDOBO</b> sur-performe massivement l'objectif (134,5%) MAIS est en repli YoY (-16,1% vol, -18,6% CA) — la base 2025 était exceptionnellement haute, l'objectif 2026 était prudent.<br/>"
+        "• <b>NKOLBISSON</b> affiche la plus forte croissance YoY (+105,3% vol, +66,1% CA) — dynamique exceptionnelle à confirmer en S2.<br/>"
+        "• <b>NGAOUNDERE (+84,4%)</b> et <b>NKOABANG (+62,5%)</b> — fortes progressions YoY, signe d'un développement réussi.<br/>"
+        "• <b>AHALA (79,1% obj, mais +50,0% YoY)</b> et <b>BUEA (80,4% obj, +5,0% YoY)</b> sous-performent l'objectif — AHALA est en forte croissance mais partait d'un objectif trop ambitieux.<br/>"
+        "• <b>FAMLA</b> (99,9% obj, +5,3% YoY) est parfaitement alignée sur son objectif — l'agence leader reste stable.<br/>"
+        "• <b>MBOUDA (+54,2% YoY)</b> et <b>VILLAGE (+45,5% YoY)</b> — belles croissances, objectifs dépassés (126,0% et 127,8%).",
         BODY_BOLD
     ))
 
@@ -977,31 +979,33 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
 
     region_obj_table = [
-        ["Région", "Agences", "Vol obj (t)", "Vol réel (t)", "% vol", "CA (M FCFA)", "Conc vol (t)", "Conc obj (t)", "% conc"],
-        ["Ouest", "FAMLA, DJELENG, MBOUDA", "15 719", "16 365", "104,1%", "6 822", "3 605", "4 870", "74,0%"],
-        ["Centre", "MESSASSI, NDOBO, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON", "11 317", "10 725", "94,8%", "5 039", "3 020", "4 317", "69,9%"],
-        ["Littoral", "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE", "13 271", "14 159", "106,7%", "4 811", "2 150", "2 978", "72,2%"],
-        ["TOTAL", "14 agences", "40 307", "41 249", "102,3%", "16 672", "8 775", "12 165", "72,1%"],
+        ["Région", "Agences", "Vol obj (t)", "Vol réel (t)", "% vol", "YoY vol", "CA (M FCFA)", "YoY CA", "Conc vol (t)", "Conc obj (t)", "% conc"],
+        ["Ouest", "FAMLA, DJELENG, MBOUDA", "15 719", "16 365", "104,1%", "+16,4%", "6 822", "+3,5%", "3 605", "4 870", "74,0%"],
+        ["Centre", "MESSASSI, NDOBO, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON", "11 317", "10 725", "94,8%", "+50,7%", "5 039", "+30,0%", "3 020", "4 317", "69,9%"],
+        ["Littoral", "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE", "13 271", "14 159", "106,7%", "+0,7%", "4 811", "-4,6%", "2 150", "2 978", "72,2%"],
+        ["TOTAL", "14 agences", "40 307", "41 249", "102,3%", "+17,1%", "16 672", "+7,8%", "8 775", "12 165", "72,1%"],
     ]
-    story.append(make_table(region_obj_table, col_widths=[1.8*cm, 4.5*cm, 1.8*cm, 1.8*cm, 1.2*cm, 1.8*cm, 1.5*cm, 1.5*cm, 1.2*cm], font_size=7))
+    story.append(make_table(region_obj_table, col_widths=[1.5*cm, 4*cm, 1.5*cm, 1.5*cm, 1.1*cm, 1.2*cm, 1.6*cm, 1.2*cm, 1.4*cm, 1.4*cm, 1.1*cm], font_size=6.5))
     story.append(Spacer(1, 0.3*cm))
 
     story.append(icr_block(
         insights=[
-            "L'Ouest (FAMLA + DJELENG + MBOUDA) est la première région en CA (6 822 M FCFA, 41% du total) et dépasse son objectif volume (104,1%).",
-            "Le Littoral sur-performe en volume global (106,7%) mais reste sous l'objectif sur les CONCENTRÉS (72,2%).",
-            "Le Centre est la seule région sous l'objectif volume global (94,8%) et a la plus faible atteinte CONCENTRÉS (69,9%).",
-            "Aucune région n'atteint son objectif CONCENTRÉS — le problème est bien systémique et national.",
+            "L'Ouest (FAMLA + DJELENG + MBOUDA) est la première région en CA (6 822 M FCFA, 41% du total) et dépasse son objectif volume (104,1%) avec une croissance YoY +16,4%.",
+            "Le Centre est la région qui croît le plus vite (+50,7% YoY vol, +30,0% YoY CA) — portée par MESSASSI, NKOLBISSON et NGAOUNDERE. Pourtant elle reste sous l'objectif volume global (94,8%) — l'objectif était trop ambitieux au regard de la base 2025.",
+            "Le Littoral stagne YoY (+0,7% vol, -4,6% CA) — la chute de NDOBO (-16,1% YoY) pèse lourd. Mais la région sur-performe l'objectif (106,7%) car l'objectif était prudent.",
+            "YoY CA global +7,8% (Centre +30,0% > Ouest +3,5% > Littoral -4,6%) — le Centre est le moteur de la croissance CA en 2026.",
+            "Aucune région n'atteint son objectif CONCENTRÉS (Ouest 74,0%, Centre 69,9%, Littoral 72,2%) — le problème est systémique et national.",
         ],
         causes=[
-            "Le Centre sous-performe globalement car MESSASSI (56,9% conc) et AHALA (63,0% conc) tirent la région vers le bas.",
-            "Le Littoral dépasse en volume grâce aux TOURTEAUX (NDOBO = 134,5% obj global) mais les CONCENTRÉS restent sous l'objectif.",
-            "L'Ouest, porté par FAMLA (64,8% conc), performe mieux sur les concentrés (74,0%) mais reste sous l'objectif.",
+            "Le Centre croît fortement (+50,7%) grâce aux agences en dynamique : NKOLBISSON (+105,3%), NGAOUNDERE (+84,4%), NKOABANG (+62,5%), AHALA (+50,0%), MESSASSI (+51,8%).",
+            "Le Littoral stagne car NDOBO (la plus grosse agence de la région) chute YoY (-16,1% vol, -18,6% CA) — la base 2025 était exceptionnellement haute.",
+            "L'Ouest croît modérément (+16,4%) — FAMLA est stable (+5,3%) mais DJELENG (+40,8%) et MBOUDA (+54,2%) compensent.",
         ],
         recommandations=[
-            "Prioriser le Centre pour le renforcement commercial — c'est la région qui sous-performe le plus (94,8% global, 69,9% conc).",
-            "Au Littoral, capitaliser sur la dynamique TOURTEAUX pour pousser le bundle soja-concentrés (3:1) et améliorer l'atteinte CONCENTRÉS.",
-            "Dans l'Ouest, maintenir la performance globale tout en ciblant les 1 265 t de CONCENTRÉS manquantes (principalement à FAMLA).",
+            "Capitaliser sur la dynamique du Centre — région en forte croissance, investir en renforcement commercial pour accélérer.",
+            "Au Littoral, diagnostiquer le repli de NDOBO — l'agence leader stagne, vérifier le portefeuille client et la concurrence.",
+            "Dans l'Ouest, accompagner la croissance de MBOUDA et DJELENG tout en maintenant FAMLA (chef de file).",
+            "Le manque CONCENTRÉS est national (-3 390 t vs objectif) — le plan d'action doit être déployé dans toutes les régions, pas seulement celles sous l'objectif.",
         ],
     ))
 
@@ -1290,15 +1294,15 @@ def build_story():
     story.append(PageBreak())
 
     # ---------- 4.7.4 Price by region ----------
-    story.append(Paragraph("4.7.4 Prix moyen par région", H3))
+    story.append(Paragraph("4.7.4 Prix moyen par région (avec YoY)", H3))
     region_table = [
-        ["Région", "Vol (t)", "CA (M FCFA)", "Prix moy (FCFA/t)", "% CA", "Vol conc (t)", "Prix conc (FCFA/t)"],
-        ["Ouest", "16 365", "6 822", "416 881", "39,3%", "3 605", "684 073"],
-        ["Centre", "10 723", "5 039", "469 914", "29,1%", "3 003", "677 209"],
-        ["Littoral", "14 159", "4 811", "339 802", "27,7%", "2 150", "633 734"],
-        ["TOTAL", "41 247", "16 672", "404 302", "96,1%", "8 758", "671 614"],
+        ["Région", "Vol (t)", "YoY vol", "CA (M)", "YoY CA", "Prix moy (FCFA/t)", "% CA", "Vol conc (t)", "Prix conc (FCFA/t)"],
+        ["Ouest", "16 365", "+16,4%", "6 822", "+3,5%", "416 881", "39,3%", "3 605", "684 073"],
+        ["Centre", "10 723", "+50,7%", "5 039", "+30,0%", "469 914", "29,1%", "3 003", "677 209"],
+        ["Littoral", "14 159", "+0,7%", "4 811", "-4,6%", "339 802", "27,7%", "2 150", "633 734"],
+        ["TOTAL", "41 247", "+17,1%", "16 672", "+7,8%", "404 302", "96,1%", "8 758", "671 614"],
     ]
-    story.append(make_table(region_table, col_widths=[2*cm, 1.8*cm, 2*cm, 2.2*cm, 1.2*cm, 1.8*cm, 2.2*cm], font_size=8))
+    story.append(make_table(region_table, col_widths=[1.7*cm, 1.7*cm, 1.4*cm, 1.7*cm, 1.4*cm, 2.2*cm, 1.2*cm, 1.7*cm, 2.2*cm], font_size=7))
     story.append(Spacer(1, 0.2*cm))
 
     img = Image('/home/z/my-project/scripts/pdf_charts/chartZ_price_by_region.png', width=15*cm, height=5.6*cm)
