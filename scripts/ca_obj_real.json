@@ -178,70 +178,70 @@
     "Innovations": 0
   },
   "ca_real_S1": {
-    "TOURTEAUX": 9437426044.0,
-    "CONCENTRES": 6071778553.0,
-    "COMPLEMENT ALIMENTAIRE": 409634430.71999997,
-    "ALIMENT COMPLET": 463168316.0,
-    "INGREDIENTS": 677805702.01,
-    "PREMIX": 126044000.0,
-    "DIVERS": 11935750.0,
-    "MATERIEL ELEVAGE": 128803200.0,
-    "ALVEOLE": 13778500.0
+    "TOURTEAUX": 9034948159.0,
+    "CONCENTRES": 5729125572.0,
+    "INGREDIENTS": 557803224.83,
+    "PREMIX": 78790000.0,
+    "DIVERS": 11538650.0,
+    "ALIMENT COMPLET": 357394268.0,
+    "MATERIEL ELEVAGE": 64457100.0,
+    "COMPLEMENT ALIMENTAIRE": 12114000.0,
+    "ALVEOLE": 11038000.0
   },
   "comparison_S1": [
     {
       "category": "TOURTEAUX",
       "ca_obj_S1": 8724459003,
-      "ca_real_S1": 9437426044.0,
-      "pct": 108.17204872823447
+      "ca_real_S1": 9034948159.0,
+      "pct": 103.55883563546158
     },
     {
       "category": "CONCENTRES",
       "ca_obj_S1": 8277162747,
-      "ca_real_S1": 6071778553.0,
-      "pct": 73.35579519927494
+      "ca_real_S1": 5729125572.0,
+      "pct": 69.21605563544684
     },
     {
       "category": "ALIMENT COMPLET",
       "ca_obj_S1": 434475642,
-      "ca_real_S1": 463168316.0,
-      "pct": 106.60397758270648
+      "ca_real_S1": 357394268.0,
+      "pct": 82.25875824817815
     },
     {
       "category": "INGREDIENTS",
       "ca_obj_S1": 809976644,
-      "ca_real_S1": 677805702.01,
-      "pct": 83.68212923556842
+      "ca_real_S1": 557803224.83,
+      "pct": 68.8665813961421
     },
     {
       "category": "COMPLEMENT ALIMENTAIRE",
       "ca_obj_S1": 15752928,
-      "ca_real_S1": 409634430.71999997,
-      "pct": 2600.37010719531
+      "ca_real_S1": 12114000.0,
+      "pct": 76.8999896400212
     },
     {
       "category": "PREMIX",
       "ca_obj_S1": 112943630,
-      "ca_real_S1": 126044000.0,
-      "pct": 111.59903396056954
+      "ca_real_S1": 78790000.0,
+      "pct": 69.76046369326008
     },
     {
       "category": "MATERIEL ELEVAGE",
       "ca_obj_S1": 170019532,
-      "ca_real_S1": 128803200.0,
-      "pct": 75.75788410004563
+      "ca_real_S1": 64457100.0,
+      "pct": 37.91158535832224
     },
     {
       "category": "ALVEOLE",
       "ca_obj_S1": 91134000,
-      "ca_real_S1": 13778500.0,
-      "pct": 15.118945728268265
+      "ca_real_S1": 11038000.0,
+      "pct": 12.111835319419756
     },
     {
       "category": "DIVERS",
       "ca_obj_S1": 4748222,
-      "ca_real_S1": 11935750.0,
-      "pct": 251.3730402664408
+      "ca_real_S1": 11538650.0,
+      "pct": 243.00990981466325
     },
     {
       "category": "Innovations",
@@ -252,8 +252,8 @@
   ],
   "totals": {
     "ca_obj_S1": 18640672348,
-    "ca_real_S1": 17340374495.73,
+    "ca_real_S1": 15857208973.83,
     "ca_obj_S2": 18215042708,
-    "ca_forecast_S2": 16949701932.296545
+    "ca_forecast_S2": 15484953344.657953
   }
 }
