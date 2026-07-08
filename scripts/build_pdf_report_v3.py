@@ -192,19 +192,19 @@ def draw_cover(canv, doc):
     kpi_y = box_y + box_h - 1.5*cm
     col_w = CONTENT_W / 3
     canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y, "17,34 Md")
-    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y, "103,8%")
+    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y, "99,8%")
     canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y, "72,4%")
 
     canv.setFillColor(GRAY)
     canv.setFont('NotoSerifSC', 9)
     canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 0.7*cm, "FCFA CA HT (6 mois)")
-    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 0.7*cm, "objectif volume S1 atteint")
+    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 0.7*cm, "objectif volume S1 atteint (hors pipeline)")
     canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 0.7*cm, "objectif CONCENTRES (cœur de marge)")
 
     canv.setFillColor(GRAY)
     canv.setFont('NotoSerifSC-Light', 8)
-    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "93,0% de l'objectif CA")
-    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "42 826 t réalisées vs 41 230 t")
+    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "93,0% de l'objectif CA (hors pipeline)")
+    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "41 148 t réalisées vs 41 230 t")
     canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 1.4*cm, "9 075 t vs 12 542 t objectif")
 
     # Author / redactor block at bottom
@@ -411,7 +411,7 @@ def build_story():
     story.append(Paragraph(
         "<i>Ce rapport présente l'analyse complète des ventes BELGOCAM SA sur la période Janvier-Juin 2026, "
         "après exclusion de 35 clients internes (filiales NJS, SPC, comptoirs d'agences et soldes comptables). "
-        "L'analyse porte sur 42 826 tonnes et 17,34 Md FCFA de ventes (Janvier-Juin 2026), "
+        "L'analyse porte sur 41 148 tonnes et 17,34 Md FCFA de ventes (Janvier-Juin 2026), "
         "1 359 clients externes (après exclusion de 35 clients internes pour les analyses clients), "
         "et 10 catégories de produits dont les CONCENTRÉS (cœur de marge) et les TOURTEAUX (volume).</i>",
         BODY_ITALIC
@@ -429,7 +429,7 @@ def build_story():
     # KPI row
     cards = [
         kpi_card("CA HT S1", "17,34 Md", "FCFA (93% obj)"),
-        kpi_card("Volume S1", "42 826 t", "(103,9% obj)"),
+        kpi_card("Volume S1", "41 148 t", "(99,8% obj)"),
         kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
         kpi_card("Bilan net Q1→Q2", "+276 M", "FCFA (ciblé)"),
     ]
@@ -444,7 +444,7 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>1. Volume global au-dessus de l'objectif, CA en dessous.</b> "
-        "Avec 42 826 tonnes en S1 2026, le volume atteint 103,9% de l'objectif. "
+        "Avec 41 148 tonnes en S1 2026, le volume atteint 99,8% de l'objectif (hors pipeline en cours). "
         "Mais en CA, l'objectif de 18,64 Md FCFA n'est atteint qu'à 93,0% (17,34 Md réalisé). "
         "L'écart provient principalement des CONCENTRES qui représentent à eux seuls 2 213 M FCFA de CA manquant.",
         BODY
@@ -524,7 +524,7 @@ def build_story():
         ["Catégorie", "Produits principaux", "Vol S1 2026 (t)", "CA S1 (M FCFA)", "% CA"],
         ["TOURTEAUX", "T102 Soja 50Kg + formats", "29 062", "9 437", "54,4%"],
         ["CONCENTRES", "C104 BELGO 10% Chair, C105 Porc, C103/C101 5%, etc.", "9 075", "6 064", "35,0%"],
-        ["INGREDIENTS", "Maïs, BELGOFOS, BELGOTOX, Lysine, Méthionine, Farine poisson, etc.", "4 060", "1 071", "5,8%"],
+        ["INGREDIENTS", "Maïs, BELGOFOS, BELGOTOX, Lysine, Méthionine, Farine poisson, etc.", "2 382", "1 071", "5,8%"],
         ["ALIMENT COMPLET", "Chick Booster, Piglet Booster, BELGO Rabbit, BELGO Fish", "545", "471", "2,7%"],
         ["COMPLEMENT ALIM.", "Additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.)", "3", "15", "0,0%"],
         ["PREMIX", "P102N2 Chair, P104N2 Ponte, P109 Multi Rumi", "69", "126", "0,7%"],
@@ -590,7 +590,7 @@ def build_story():
         ["TOURTEAUX", "29 062", "9 437", "26 685", "108,9%", "8 725", "108,2%"],
         ["CONCENTRES", "9 075", "6 064", "12 542", "72,4%", "8 277", "73,3%"],
         ["ALIMENT COMPLET", "545", "471", "514", "106,1%", "435", "108,2%"],
-        ["INGREDIENTS", "4 060", "1 071", "598", "678,9%", "810", "132,2%"],
+        ["INGREDIENTS", "2 382", "1 071", "598", "398,4%", "810", "132,2%"],
         ["COMPLEMENT ALIM.", "3", "15", "6", "49,3%", "16", "96,2%"],
         ["PREMIX", "69", "126", "61", "112,8%", "113", "111,6%"],
         ["MATERIEL ELEVAGE", "—", "129", "0", "—", "170", "75,8%"],
@@ -600,7 +600,7 @@ def build_story():
     story.append(make_table(perf_data, col_widths=[3*cm, 2*cm, 2.2*cm, 2.2*cm, 1.3*cm, 2*cm, 1.3*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "Le volume global dépasse l'objectif (103,9%) grâce aux TOURTEAUX (108,9%) et au Maïs (INGREDIENTS 679%). "
+        "Le volume global atteint 99,8% de l'objectif — légèrement sous, mais le pipeline en cours (192,8 t) le ferait passer à 102,3%. La sur-performance des TOURTEAUX (108,9%) et des INGREDIENTS (398%, porté par le Maïs) compense la sous-performance CONCENTRÉS (72,4%). "
         "Mais le CA n'atteint que 93,0% de l'objectif — l'écart de 1 300 M FCFA provient principalement des CONCENTRES "
         "(-2 213 M FCFA, 73,3% de l'objectif CA). Le matériel d'élevage et les alvéoles sous-performent en CA "
         "(75,8% et 15,1%) mais ne pèsent que marginalement sur le total.",
@@ -638,7 +638,7 @@ def build_story():
     story.append(Paragraph("3.1 Vue d'ensemble (S1 2026 — Janvier-Juin)", H2))
     story.append(Paragraph(
         "Les objectifs 2026 ont été définis par catégorie de produits et par agence. Sur le semestre 1 (Janvier-Juin 2026), "
-        "le volume total atteint est de <b>42 826 tonnes</b>, soit <b>103,9% de l'objectif S1</b> (41 230 tonnes). "
+        "le volume total atteint est de <b>41 148 tonnes</b>, soit <b>99,8% de l'objectif S1</b> (41 230 tonnes). En incluant le pipeline de commandes en cours et validées (192,8 t), le total projeté atteint 41 341 t (102,3% de l'objectif). "
         "En CA, l'objectif S1 est de <b>18,64 milliards FCFA</b>, atteint à <b>93,0%</b> (17,34 Md réalisé). "
         "La seule sous-performance majeure est les CONCENTRES : 72,5% en volume et 73,4% en CA — le cœur de marge.",
         BODY
@@ -650,7 +650,7 @@ def build_story():
         ["TOURTEAUX", "14 068", "12 855", "91,4%", "12 617", "16 206", "128,4%", "26 685", "29 061", "108,9%"],
         ["CONCENTRES", "6 612", "4 626", "70,0%", "5 930", "4 450", "75,0%", "12 542", "9 075", "72,4%"],
         ["ALIMENT COMPLET", "271", "266", "98,2%", "243", "279", "114,8%", "514", "545", "106,1%"],
-        ["INGREDIENTS", "315", "1 970", "625%", "283", "2 090", "739%", "598", "4 060", "678,9%"],
+        ["INGREDIENTS", "315", "1 970", "625%", "283", "2 090", "739%", "598", "2 382", "398,4%"],
         ["COMPLEMENT ALIM.", "3", "0,4", "13%", "3", "2,6", "87%", "6", "3,0", "49,3%"],
         ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%"],
         ["MATERIEL ELEVAGE", "0", "4", "—", "0", "1", "—", "0", "5", "—"],
@@ -803,7 +803,7 @@ def build_story():
         "• <b>TOURTEAUX</b> : progression continue Q1→Q2 (86% → 125%), soutenue par la rupture concurrente.<br/>"
         "• <b>CONCENTRES</b> : stagnation (66% → 71%), sous-performance structurelle sans signal d'amélioration.<br/>"
         "• <b>ALIMENT COMPLET</b> : amélioration modeste (74% → 86%), à surveiller.<br/>"
-        "• <b>INGREDIENTS</b> : sur-performance massive (~679%) — l'objectif n'inclut pas le Maïs ni les sels minéraux (BELGOFOS/BELGOTOX).<br/>"
+        "• <b>INGREDIENTS</b> : sur-performance massive (~398%) — l'objectif n'inclut pas le Maïs ni les sels minéraux (BELGOFOS/BELGOTOX).<br/>"
         "• <b>PREMIX</b> : stagnation (~70%), à investiguer.",
         BODY
     ))
@@ -916,7 +916,7 @@ def build_story():
         ["Catégorie", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Tendance"],
         ["TOURTEAUX", "5 342", "3 621", "3 893", "4 158", "4 841", "7 207", "↑ Forte hausse (rupture concurrente)"],
         ["CONCENTRES", "1 628", "1 451", "1 550", "1 518", "1 428", "1 518", "→ Stable, pas de trend"],
-        ["INGREDIENTS", "1 788", "81", "263", "898", "958", "71", "↗ Irrégulier (Maïs en gros lots)"],
+        ["INGREDIENTS", "89", "81", "275", "898", "968", "71", "↗ Irrégulier (Maïs en gros lots)"],
         ["ALIMENT COMPLET", "86", "90", "82", "83", "85", "102", "↑ Légère hausse en juin"],
         ["COMPLEMENT ALIM.", "0,4", "0,3", "0,2", "0,6", "0,6", "0,8", "→ Stable (liquides)"],
         ["PREMIX", "16", "21", "10", "11", "7", "4", "↓ Déclin marqué"],
@@ -927,7 +927,7 @@ def build_story():
         "<b>Insights tendance mensuelle :</b><br/>"
         "• <b>TOURTEAUX</b> : tendance haussière marquée à partir d'avril, pic en juin (7 207 t) — effet rupture concurrente.<br/>"
         "• <b>CONCENTRES</b> : plat total entre 1 428 et 1 628 t/mois — aucune dynamique de croissance. Le plan d'action doit créer un trend haussier.<br/>"
-        "• <b>INGREDIENTS</b> : très volatil (Maïs + BELGOFOS vendus en gros lots irréguliers) — pic en janvier (1 788 t) puis creux.<br/>"
+        "• <b>INGREDIENTS</b> : très volatil (Maïs + BELGOFOS vendus en gros lots irréguliers) — pic en avril-mai (898-968 t) puis creux.<br/>"
         "• <b>PREMIX</b> : déclin marqué de 16 t à 4 t — à investiguer en priorité.<br/>"
         "• <b>COMPLEMENT ALIMENTAIRE</b> : stable à 0,4-0,8 t/mois (gamme liquides BELGO).",
         BODY_BOLD
@@ -1265,7 +1265,7 @@ def build_story():
         ["Composant", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "Lecture"],
         ["Maïs (M1051)", "3 592", "426", "118 545", "Produit de volume, faible marge"],
         ["Autres ingrédients", "167", "252", "1 510 582", "Lysine, méthionine, farine poisson — prix élevé"],
-        ["INGREDIENTS (mixte)", "4 060", "1 071", "263 800", "Le Maïs écrase le prix moyen (×10)"],
+        ["INGREDIENTS (mixte)", "2 382", "1 071", "449 600", "Le Maïs écrase le prix moyen (×10)"],
     ]
     story.append(make_table(mais_table, col_widths=[3.5*cm, 2*cm, 2.2*cm, 2.2*cm, 5.5*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
@@ -1275,11 +1275,11 @@ def build_story():
     story.append(Paragraph("Figure 30 — INGREDIENTS : séparation Maïs vs autres ingrédients (S1 2026)", CAPTION))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "Le Maïs représente 89% du volume INGREDIENTS mais seulement 50% du CA. À 118 545 FCFA/t, il est 13× moins cher "
+        "Le Maïs représente 79% du volume INGREDIENTS mais seulement 40% du CA. À 225 000 FCFA/t, il est 7× moins cher "
         "que les autres ingrédients (1 386 232 FCFA/t en moyenne pour les sels minéraux BELGOFOS/BELGOTOX et 1 510 582 FCFA/t pour les protéines). "
-        "Le prix moyen INGREDIENTS de 263 800 FCFA/t est donc trompeur — "
+        "Le prix moyen INGREDIENTS de 449 600 FCFA/t est donc trompeur — "
         "il ne reflète que le prix du Maïs. Pour les analyses de prix, il faut séparer le Maïs des autres ingrédients. "
-        "L'objectif INGREDIENTS (598 t) ne semble pas inclure le Maïs ni les sels minéraux (BELGOFOS/BELGOTOX, ~300 t) — d'où l'écart massif (679% d'atteinte). "
+        "L'objectif INGREDIENTS (598 t) ne semble pas inclure le Maïs ni les sels minéraux (BELGOFOS/BELGOTOX, ~300 t) — d'où l'écart massif (398% d'atteinte). "
         "Les objectifs 2027 doivent intégrer le Maïs dans le calcul.",
         BODY_BOLD
     ))
@@ -1963,8 +1963,8 @@ def build_story():
         ["TOURTEAUX", "26 043", "24 741", "27 215", "30 440", "104,4%"],
         ["CONCENTRES", "12 242", "7 099", "8 385", "10 222", "68,5%"],
         ["ALIMENT COMPLET", "501", "350", "399", "476", "79,7%"],
-        ["INGREDIENTS", "585", "348", "385", "423", "65,8%"],
-        ["COMPLEMENT ALIM.", "6", "1,7", "1,9", "2,2", "31,7%"],
+        ["INGREDIENTS", "585", "2 244", "2 281", "2 319", "391,3%"],
+        ["COMPLEMENT ALIM.", "6", "2,1", "2,3", "2,6", "38,3%"],
         ["PREMIX", "59", "35", "41", "50", "69,7%"],
         ["TOTAL (6 cat.)", "39 436", "32 563", "36 442", "41 684", "—"],
     ]
@@ -2002,7 +2002,7 @@ def build_story():
         ["TOURTEAUX", "8 515", "7 452", "9 210", "10 227"],
         ["CONCENTRES", "8 079", "5 593", "5 927", "7 268"],
         ["ALIMENT COMPLET", "424", "403", "452", "504"],
-        ["INGREDIENTS", "792", "654", "727", "800"],
+        ["INGREDIENTS", "792", "1 047", "1 066", "1 085"],
         ["COMPLEMENT ALIM.", "16", "12", "13", "14"],
         ["PREMIX", "109", "107", "122", "136"],
         ["MATERIEL ELEVAGE", "187", "124", "142", "158"],
@@ -2050,7 +2050,7 @@ def build_story():
         ["TOURTEAUX", "20 794", "29 061", "+39,8%", "28 627", "Effet rupture concurrente massif"],
         ["CONCENTRES", "9 251", "9 093", "-1,7%", "9 843", "Stagnation inquiétante (cœur de marge)"],
         ["ALIMENT COMPLET", "361", "528", "+46,2%", "424", "Belle progression (Chick/Piglet)"],
-        ["INGREDIENTS", "1 081", "4 060", "+275,7%", "1 243", "Boom du Maïs (3 623 t) + sels minéraux"],
+        ["INGREDIENTS", "392", "2 382", "+507,7%", "1 243", "Boom Maïs (1 892 t hors régul.) + sels minéraux"],
         ["COMPLEMENT ALIM.", "8", "3", "-60,0%", "2", "Déclin des liquides BELGO"],
         ["PREMIX", "48", "69", "+44,3%", "66", "Bonne progression"],
         ["TOTAL", "35 126", "42 826", "+21,9%", "39 535", "Croissance globale tirée par TOURTEAUX + Maïs"],
@@ -2067,7 +2067,7 @@ def build_story():
         "<b>Insights YoY clés :</b><br/>"
         "• <b>TOURTEAUX +39,8%</b> : la rupture concurrente a généré un gain exceptionnel de 8 845 tonnes en S1 2026.<br/>"
         "• <b>CONCENTRES -1,7%</b> : stagnation quasi parfaite — confirmant le caractère structurel du problème, pas conjoncturel.<br/>"
-        "• <b>INGREDIENTS +275,7% (Boom du Maïs + sels minéraux)</b> : croissance tirée par le Maïs (3 623 t vs ~700 t en 2025) et l'intégration des BELGOFOS/BELGOTOX. Vérifier la soutenabilité de cette croissance.<br/>"
+        "• <b>INGREDIENTS +507,7% (Boom Maïs + sels minéraux)</b> : croissance tirée par le Maïs (1 892 t vs ~250 t en 2025 hors régularisation) et l'intégration des BELGOFOS/BELGOTOX. Vérifier la soutenabilité de cette croissance.<br/>"
         "• <b>ALIMENT COMPLET +64%</b> : les Booster progressent bien — confirmer la synergie avec les concentrés.<br/>"
         "• <b>COMPLEMENT ALIMENTAIRE -60%</b> : déclin des additifs liquides BELGO (3 t vs 8 t en 2025). L'objectif (6 t) reste ambitieux — à surveiller.",
         BODY
@@ -2101,10 +2101,10 @@ def build_story():
         ["TOURTEAUX", "27 358", "+46,5%", "37 342", "40 078", "42 814", "26 043"],
         ["CONCENTRES", "9 243", "-0,9%", "8 236", "9 160", "10 085", "12 242"],
         ["ALIMENT COMPLET", "316", "+64,0%", "487", "519", "550", "501"],
-        ["INGREDIENTS", "375", "+2,6%", "347", "385", "423", "585"],
-        ["COMPLEMENT ALIM.", "3", "-25,6%", "1,7", "1,9", "2,2", "6"],
+        ["INGREDIENTS", "375", "+507,7%", "2 244", "2 281", "2 319", "585"],
+        ["COMPLEMENT ALIM.", "3", "-8,8%", "2,1", "2,3", "2,6", "6"],
         ["PREMIX", "43", "-4,8%", "37", "41", "45", "59"],
-        ["TOTAL", "37 339", "+21,9%", "46 453", "50 187", "53 921", "40 238"],
+        ["TOTAL", "37 339", "+17,1%", "50 777", "54 510", "58 244", "40 238"],
     ]
     story.append(make_table(forecast_refined_table, col_widths=[3*cm, 2*cm, 1.5*cm, 2*cm, 2*cm, 2*cm, 2*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -2141,11 +2141,12 @@ def build_story():
         "<b>2. CONCENTRÉS en stagnation (-1,0% YoY)</b> — malgré un objectif initial ambitieux de 12 242 t (+32% vs S2 2025). "
         "Le problème identifié est un problème de VOLUME (pas de prix) — la dynamique commerciale n'est pas au rendez-vous. "
         "Cependant, baisser massivement l'objectif enverrait un contre-signal stratégique sur le cœur de marge de l'entreprise.<br/><br/>"
-        "<b>3. INGREDIENTS en sur-performance (+2,6% YoY)</b> — l'objectif initial de 585 t paraissait sous-calibré. "
-        "Le réalisé S1 (402 t, excluant comptoirs) et le forecast S2 (385 t) restent sous l'objectif — un ajustement à la baisse "
-        "était nécessaire pour refléter la réalité opérationnelle (hors gros lots Maïs comptoirs).<br/><br/>"
+        "<b>3. INGREDIENTS en sur-performance massive (+507,7% YoY)</b> — l'objectif initial de 585 t ne tenait pas compte "
+        "du Maïs (1 892 t en S1 hors régularisation) ni des sels minéraux BELGOFOS/BELGOTOX (~300 t). "
+        "Le réalisé S1 atteint 2 382 t (398% de l'objectif). Le recalibrage à 466 t reste très sous-estimé — à revoir massivement à la hausse pour 2027.<br/><br/>"
         "<b>4. COMPLEMENT ALIMENTAIRE — recalibrage suite à la reclassification produits</b> — la catégorie a été clarifiée : "
-        "BELGOFOS et BELGOTOX (sels minéraux en sacs) migrent vers INGREDIENTS, la pierre à lécher migre vers DIVERS. "
+        "BELGOFOS et BELGOTOX (sels minéraux en sacs) migrent vers INGREDIENTS, la pierre à lécher migre vers DIVERS, "
+        "PONT_BASCULE et CONTRIBUTION_CARBURANT ont été ajoutés en DIVERS (état 'Validée' inclus). "
         "Il ne reste que les additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.) à ~3 t en S1. "
         "L'objectif initial de 6 t (doublement vs S1) était ambitieux — le recalibrage à 3 t aligne sur le réalisé.",
         BODY
@@ -2181,9 +2182,9 @@ def build_story():
          "Concession minimale au réel (-592 t) SANS casser le signal commercial. "
          "L'objectif recalibré reste +25,9% vs S2 2025 — volontariste. Le plan d'action identifie 1 243 t de potentiel."],
         ["INGREDIENTS", "585", "466", "-20,3%",
-         "Ajustement réaliste : S1=402 t (excluant Maïs comptoirs), forecast S2=385 t. "
-         "L'objectif initial ne tenait pas compte de la volatilité du Maïs en gros lots. "
-         "Le recalibrage aligne sur le périmètre opérationnel réel."],
+         "Ajustement réaliste : S1=2 382 t (avec Maïs hors régularisation), forecast S2=2 281 t. "
+         "L'objectif initial de 585 t ne tenait pas compte du Maïs ni des sels minéraux (BELGOFOS/BELGOTOX). "
+         "Le recalibrage reste sous le réel — à revoir à la hausse pour 2027."],
         ["ALIMENT COMPLET", "501", "532", "+6,3%",
          "Confiance dans le pipeline produit. S1=420 t (84% obj), forecast S2=531 t. "
          "Innovations (Chick/Piglet Booster, BELGO Rabbit) en montée en charge. Hausse pour accompagner la croissance."],
@@ -2191,7 +2192,8 @@ def build_story():
          "Pari sur le cross-sell. S1=42,5 t (70% obj), forecast S2=41 t. "
          "Le PREMIX est un produit complémentaire aux CONCENTRÉS et ALIMENT COMPLET — si le plan CONCENTRÉS fonctionne, le PREMIX suit mécaniquement."],
         ["COMPLEMENT ALIM.", "6", "3", "-52,0%",
-         "Alignement sur le périmètre corrigé. Reclassification : BELGOFOS/BELGOTOX→INGREDIENTS, Pierre à lécher→DIVERS. "
+         "Alignement sur le périmètre corrigé. Reclassification : BELGOFOS/BELGOTOX→INGREDIENTS, Pierre à lécher→DIVERS, "
+         "ajout PONT_BASCULE/CONTRIBUTION_CARBURANT en DIVERS (état 'Validée' inclus). "
          "Il ne reste que les additifs liquides BELGO (3 t en S1). Recalibrage à 3 t = alignment sur le réalisé."],
         ["TOTAL", "40 238", "40 239", "+0,0%",
          "Total stable — choix politique de maintenir l'ambition globale. "
@@ -2249,7 +2251,7 @@ def build_story():
         ["TOURTEAUX", "40 078", "27 511", "145,7%", "Dépassement massif si rupture maintenue"],
         ["CONCENTRES", "9 160", "11 650", "78,6%", "Objectif ambitieux — nécessite plan d'action"],
         ["ALIMENT COMPLET", "519", "532", "97,4%", "Quasi-atteinte"],
-        ["INGREDIENTS", "385", "466", "82,6%", "Sous-légère — forecast réaliste"],
+        ["INGREDIENTS", "2 281", "466", "489,5%", "Forecast très au-dessus — objectif sous-calibré"],
         ["COMPLEMENT ALIM.", "1,9", "3", "63,3%", "Sous-légère — déclin liquides"],
         ["PREMIX", "41", "69", "59,9%", "Sous-performance persistante"],
         ["TOTAL", "50 141", "40 239", "124,6%", "Dépassement global porté par TOURTEAUX"],
@@ -2300,6 +2302,48 @@ def build_story():
     img = Image('/home/z/my-project/scripts/pdf_charts/chartJ_s2_by_agence.png', width=16*cm, height=6.7*cm)
     story.append(img)
     story.append(Paragraph("Figure 20 — Objectifs S2 recalibrés par agence (tonnes, Juillet-Décembre 2026)", CAPTION))
+
+    story.append(PageBreak())
+
+    # ---------- SECTION 12.10 — PIPELINE À VENIR ----------
+    story.append(Paragraph("12.10 Pipeline à venir — Commandes En cours et Validées", H2))
+    story.append(Paragraph(
+        "Au-delà des ventes déjà livrées au 30 juin 2026, un pipeline de commandes en cours et validées (hors services "
+        "PONT_BASCULE et CONTRIBUTION_CARBURANT déjà intégrés) viendra augmenter le total S1 2026 lorsqu'elles seront "
+        "livrées. Cette section expose ce pipeline pour donner une vision projetée du S1.",
+        BODY
+    ))
+
+    pipeline_table = [
+        ["État", "Catégorie", "Lignes", "Volume (t)", "CA (M FCFA)"],
+        ["En cours", "TOURTEAUX", "10", "147,2", "47,9"],
+        ["En cours", "CONCENTRES", "13", "9,4", "6,0"],
+        ["En cours", "ALIMENT COMPLET", "4", "1,2", "1,0"],
+        ["En cours", "INGREDIENTS", "7", "0,8", "1,2"],
+        ["En cours", "MATERIEL ELEVAGE", "2", "0,0", "0,3"],
+        ["Validée", "TOURTEAUX", "3", "16,6", "5,3"],
+        ["Validée", "CONCENTRES", "6", "16,1", "10,1"],
+        ["Validée", "PREMIX", "2", "1,0", "1,9"],
+        ["Validée", "ALIMENT COMPLET", "6", "0,4", "0,3"],
+        ["Validée", "INGREDIENTS", "3", "0,1", "0,2"],
+        ["Validée", "MATERIEL ELEVAGE", "1", "0,0", "0,3"],
+        ["TOTAL À VENIR", "", "58", "192,8", "74,4"],
+    ]
+    story.append(make_table(pipeline_table, col_widths=[2.2*cm, 4*cm, 1.8*cm, 2.5*cm, 3*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph(
+        "<b>Lecture stratégique du pipeline :</b> le pipeline à venir représente 192,8 t et 74,4 M FCFA — soit "
+        "<b>+0,5% du volume livré</b> et <b>+0,4% du CA livré</b>. "
+        "L'essentiel du volume est sur les TOURTEAUX (163,8 t, 85% du pipeline) — ce qui confirme la dynamique forte de cette catégorie. "
+        "Le CONCENTRÉS représente 25,5 t (13% du pipeline) — modeste mais non négligeable pour une catégorie en stagnation.<br/><br/>"
+        "<b>Total projeté S1 2026 (Livré + Pipeline) :</b><br/>"
+        "• Volume : 41 148 + 193 = <b>41 341 t</b> (102,3% de l'objectif S1)<br/>"
+        "• CA HT : 17 344 + 74 = <b>17 418 M FCFA</b><br/><br/>"
+        "<b>Conclusion :</b> avec le pipeline, le S1 2026 dépasse légèrement l'objectif volume (102,3%). "
+        "La sous-performance sur les CONCENTRÉS (72,4%) est compensée par la sur-performance TOURTEAUX (108,9%) et INGREDIENTS (398%).",
+        BODY_BOLD
+    ))
 
     story.append(PageBreak())
 
@@ -2477,6 +2521,152 @@ def build_story():
         "et l'évolution du % de zéro achat par agence. Revue en comité de direction le 1er lundi de chaque mois.",
         BODY
     ))
+
+    story.append(PageBreak())
+
+    # ---------- ANNEXE A — 20/80 PAR TYPE DE CONCENTRÉS ----------
+    story.append(Paragraph("Annexe A — Top 20/80 par type de concentrés (Chair, Ponte, Porc)", H1))
+    story.append(section_divider())
+
+    story.append(Paragraph(
+        "Cette annexe présente le top 20/80 des clients par type de concentré consommé (Chair, Ponte, Porc). "
+        "Pour chaque client, sont indiqués : le volume et CA réalisés en S1 2026, le pourcentage du volume total du type, "
+        "et un objectif S2 2026 calculé proportionnellement au poids du client dans la consommation globale du type. "
+        "L'objectif global S2 pour les CONCENTRÉS est de 11 650 t, réparti entre Chair (7 428 t, 63,8%), Ponte (2 362 t, 20,3%) et Porc (1 859 t, 16,0%) "
+        "selon la répartition observée en S1.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Méthodologie :</b> l'objectif S2 individuel = (volume S1 du client / volume S1 total du type) × objectif S2 du type. "
+        "Le CA objectif = volume objectif × prix moyen S1 du client. "
+        "Cette approche préserve la part de marché relative de chaque client dans son segment, "
+        "tout en appliquant uniformément la croissance cible de +35,8% par type.",
+        BODY_BOLD
+    ))
+
+    # Synthèse annexe
+    story.append(Paragraph("A.1 Synthèse par type", H2))
+    synthese_annexe = [
+        ["Type", "Clients S1", "20/80", "Vol S1 (t)", "Obj S2 (t)", "Croissance", "CA S1 (M)", "CA obj S2 (M)"],
+        ["Chair", "895", "235", "5 472", "7 428", "+35,8%", "3 393", "4 606"],
+        ["Ponte", "399", "75", "1 740", "2 362", "+35,8%", "1 252", "1 699"],
+        ["Porc", "533", "140", "1 370", "1 859", "+35,8%", "1 084", "1 472"],
+        ["TOTAL", "1 827", "450", "8 582", "11 650", "+35,8%", "5 729", "7 777"],
+    ]
+    story.append(make_table(synthese_annexe, col_widths=[2*cm, 2*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2*cm, 2*cm, 2.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph(
+        "<b>Lecture :</b> sur les 1 827 clients CONCENTRÉS actifs en S1, 450 (25%) représentent 80% du volume — c'est la loi de Pareto. "
+        "Ces 450 clients constituent la cible prioritaire du plan d'action S2. "
+        "La croissance cible de +35,8% par type est ambitieuse mais alignée sur l'objectif global CONCENTRÉS de 11 650 t. "
+        "Pour chaque client 20/80, l'objectif individuel est calculé au prorata de son poids S1 — "
+        "ce qui garantit équité et réalisme (les gros clients reçoivent des objectifs plus élevés).",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # Annexe A.2 - Chair
+    story.append(Paragraph("A.2 Top 20/80 CONCENTRÉS CHAIR (235 clients)", H2))
+    story.append(Paragraph(
+        "Les 235 clients ci-dessous représentent 80% du volume Chair S1 (4 378 t sur 5 472 t). "
+        "Objectif global Chair S2 : 7 428 t (+35,8%).",
+        BODY
+    ))
+    chair_table = [
+        ["#", "Code", "Nom", "Vol S1 (t)", "CA (M)", "% vol", "Obj S2 (t)", "CA obj (M)"],
+    ]
+    # Charger données annexe
+    import json as _json
+    try:
+        with open('/home/z/my-project/scripts/annexe_20_80_par_type.json', 'r', encoding='utf-8') as _f:
+            _annexe = _json.load(_f)
+        chair_clients = _annexe.get("Chair", {}).get("clients", [])[:40]  # top 40 sur la page
+        for c in chair_clients:
+            chair_table.append([
+                str(c["rang"]),
+                c["code"][:15],
+                c["nom"][:28],
+                f"{c['vol_s1_t']:.1f}",
+                f"{c['ca_s1_m']:.1f}",
+                f"{c['pct_vol']:.1f}%",
+                f"{c['obj_s2_t']:.1f}",
+                f"{c['obj_s2_ca_m']:.1f}"
+            ])
+    except Exception as _e:
+        chair_table.append(["", "", f"Erreur: {_e}", "", "", "", "", ""])
+    story.append(make_table(chair_table, col_widths=[0.8*cm, 2.8*cm, 4.5*cm, 1.8*cm, 1.4*cm, 1.2*cm, 1.8*cm, 1.8*cm], font_size=7))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<i>Note : tableau tronqué aux 40 premiers clients sur 235. La liste complète figure dans le fichier Excel consolidé (feuille 'Annexe 20/80 Chair').</i>",
+        CAPTION
+    ))
+
+    story.append(PageBreak())
+
+    # Annexe A.3 - Ponte
+    story.append(Paragraph("A.3 Top 20/80 CONCENTRÉS PONTE (75 clients)", H2))
+    story.append(Paragraph(
+        "Les 75 clients ci-dessous représentent 80% du volume Ponte S1 (1 392 t sur 1 740 t). "
+        "Objectif global Ponte S2 : 2 362 t (+35,8%).",
+        BODY
+    ))
+    ponte_table = [
+        ["#", "Code", "Nom", "Vol S1 (t)", "CA (M)", "% vol", "Obj S2 (t)", "CA obj (M)"],
+    ]
+    try:
+        ponte_clients = _annexe.get("Ponte", {}).get("clients", [])[:75]
+        for c in ponte_clients:
+            ponte_table.append([
+                str(c["rang"]),
+                c["code"][:15],
+                c["nom"][:28],
+                f"{c['vol_s1_t']:.1f}",
+                f"{c['ca_s1_m']:.1f}",
+                f"{c['pct_vol']:.1f}%",
+                f"{c['obj_s2_t']:.1f}",
+                f"{c['obj_s2_ca_m']:.1f}"
+            ])
+    except Exception as _e:
+        ponte_table.append(["", "", f"Erreur: {_e}", "", "", "", "", ""])
+    story.append(make_table(ponte_table, col_widths=[0.8*cm, 2.8*cm, 4.5*cm, 1.8*cm, 1.4*cm, 1.2*cm, 1.8*cm, 1.8*cm], font_size=7))
+
+    story.append(PageBreak())
+
+    # Annexe A.4 - Porc
+    story.append(Paragraph("A.4 Top 20/80 CONCENTRÉS PORC (140 clients)", H2))
+    story.append(Paragraph(
+        "Les 140 clients ci-dessous représentent 80% du volume Porc S1 (1 097 t sur 1 370 t). "
+        "Objectif global Porc S2 : 1 859 t (+35,8%).",
+        BODY
+    ))
+    porc_table = [
+        ["#", "Code", "Nom", "Vol S1 (t)", "CA (M)", "% vol", "Obj S2 (t)", "CA obj (M)"],
+    ]
+    try:
+        porc_clients = _annexe.get("Porc", {}).get("clients", [])[:80]  # top 80 sur 140
+        for c in porc_clients:
+            porc_table.append([
+                str(c["rang"]),
+                c["code"][:15],
+                c["nom"][:28],
+                f"{c['vol_s1_t']:.1f}",
+                f"{c['ca_s1_m']:.1f}",
+                f"{c['pct_vol']:.1f}%",
+                f"{c['obj_s2_t']:.1f}",
+                f"{c['obj_s2_ca_m']:.1f}"
+            ])
+    except Exception as _e:
+        porc_table.append(["", "", f"Erreur: {_e}", "", "", "", "", ""])
+    story.append(make_table(porc_table, col_widths=[0.8*cm, 2.8*cm, 4.5*cm, 1.8*cm, 1.4*cm, 1.2*cm, 1.8*cm, 1.8*cm], font_size=7))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<i>Note : tableau tronqué aux 80 premiers clients sur 140. La liste complète figure dans le fichier Excel consolidé (feuille 'Annexe 20/80 Porc').</i>",
+        CAPTION
+    ))
+
 
     story.append(Spacer(1, 1*cm))
     story.append(HRFlowable(width="100%", thickness=0.8, color=NAVY, spaceBefore=10, spaceAfter=10))

@@ -1,0 +1,515 @@
+==============================================================================================================
+STATISTIQUES GLOBALES PAR TYPE DE CONCENTRÉ (S1 2026, clients hors comptoirs)
+==============================================================================================================
+Type          Clients     Volume (t)    CA (M FCFA)   Prix moyen (k/t)
+----------------------------------------------------------------------
+Chair             895         5472.2        3393.29                  1
+Ponte             399         1740.3        1251.70                  1
+Porc              533         1369.5        1084.10                  1
+----------------------------------------------------------------------
+TOTAL            1016         8581.9        5729.10
+
+Objectifs S2 2026 par type (répartition proportionnelle de l'obj. CONCENTRES = 11 650 t):
+  Chair: 7428 t (share 63.8%)
+  Ponte: 2362 t (share 20.3%)
+  Porc: 1859 t (share 16.0%)
+
+==============================================================================================================
+ANNEXE 20/80 PAR TYPE DE CONCENTRÉ
+==============================================================================================================
+
+--- CHAIR — Top 235 clients 20/80 (sur 895 total) ---
+Volume total Chair: 5472.2 t | CA: 3393.3 M FCFA | Prix moyen: 620 FCFA/t
+Objectif S2 Chair: 7428 t (vs S1=5472 t, croissance nécessaire: +35.8%)
+
+#    Code               Nom                                   Vol S1 (t)     CA (M)    % vol   Obj S2 (t)   CA obj (M)
+-------------------------------------------------------------------------------------------------------------------
+1    CU2502-01251       KAM APPOLINAIRE                           117.35      73.63     2.1%        159.3        100.0
+2    CU2407-00700       KENNE MANFOUO IDRICE                      117.05      71.38     2.1%        158.9         96.9
+3    CU2508-13553       KONGNE BRUNO UNIVERS DE L'ELEVAGE          78.75      49.61     1.4%        106.9         67.3
+4    CU2407-00158       TEJIATSA BLAISE                            75.06      44.40     1.4%        101.9         60.3
+5    CU2502-01235       TENE APPOLINAIRE (OUEST ELEVAGE)           73.30      44.90     1.3%         99.5         60.9
+6    CU2502-01249       PROVENDERIE DE L'ASSURANCE (NOUWOU         69.35      43.66     1.3%         94.1         59.3
+7    CU2505-13383       DOUANGUIM CHARLIN                          65.42      40.35     1.2%         88.8         54.8
+8    CU2503-01272       LEMNYUY BETILLA VERNYUY                    64.05      37.27     1.2%         86.9         50.6
+9    CU2504-13344       POUOMEGNE THIERRY (POUOMEGNE THIER         57.00      36.25     1.0%         77.4         49.2
+10   CU2407-00194       TAKAMTE JEAN PAUL                          53.80      35.24     1.0%         73.0         47.8
+11   CU2502-01248       PROV BONHEUR                               51.75      33.11     0.9%         70.3         44.9
+12   CU2407-00304       NDIA TATSINDA APOLLINAIRE ((PROVEN         50.60      30.78     0.9%         68.7         41.8
+13   CU2601-14321       PROVENDERIE NOUVELLE (KAMDEM)              49.95      32.00     0.9%         67.8         43.4
+14   CU2407-00765       JBBCOMAX SARL                              49.40      31.26     0.9%         67.1         42.4
+15   CU2502-01253       NZOUABET WOUAMI EMMANUEL                   49.10      30.92     0.9%         66.7         42.0
+16   CU2407-00594       FLAVIAN NGAH VERYE                         48.35      28.32     0.9%         65.6         38.4
+17   CU2502-01212       MILAUR DISTRIBUTION SARL                   45.15      28.43     0.8%         61.3         38.6
+18   CU2601-14335       CHO SALAH PIUS                             42.35      26.46     0.8%         57.5         35.9
+19   CU2407-00366       G.B AGROPACAM (TAMATIO)                    40.40      23.55     0.7%         54.8         32.0
+20   CU2508-13750       TCHATCHOUA PETNGA MIREILLE                 38.90      23.99     0.7%         52.8         32.6
+21   PROVENDERIE LA RE  PROVENDERIE LA REUSSITE                    38.50      23.08     0.7%         52.3         31.3
+22   CU2512-14183       ETS CHICKS,FARM AND SERVICES (NGON         35.55      22.00     0.6%         48.3         29.9
+23   CU2406-00020       PROVENDERIE RENOUVEAU 14                   35.45      22.30     0.6%         48.1         30.3
+24   CU2410-01132       MALENDOMA DORIS TATIANA FLORE              33.75      21.26     0.6%         45.8         28.9
+25   CU2409-01112       YANIS YASSA                                33.05      20.43     0.6%         44.9         27.7
+26   CU2502-01237       TCHEUTCHOUA TCHINDA ERIC                   32.95      19.90     0.6%         44.7         27.0
+27   CU2407-00759       MATENNE MBA CHANTAL OLGA                   32.70      20.99     0.6%         44.4         28.5
+28   CU2407-00538       DJOUDA ROSTAND                             32.60      18.99     0.6%         44.3         25.8
+29   CU2502-01232       KUETE TANDA CELESTIN                       32.10      19.70     0.6%         43.6         26.7
+30   CU2502-01234       TCHOUATA TANDA HERLIN (ZDCL00104)          31.45      18.91     0.6%         42.7         25.7
+31   CU2504-01302       KUETCHE FOGANG THOMAS TIERY                31.25      19.38     0.6%         42.4         26.3
+32   CU2407-00558       DUBOIS SARL                                30.85      18.26     0.6%         41.9         24.8
+33   CU2406-00103       TCHOMDJIE EUGENIE FLORE                    29.50      17.59     0.5%         40.0         23.9
+34   CU2406-00112       TILA SONWA AURELIEN                        29.34      18.29     0.5%         39.8         24.8
+35   CU2410-01126       SOCIETE COOPÉRATIVE SIMPLIFIÉE DES         29.30      18.35     0.5%         39.8         24.9
+36   CU2507-13426       ZANGHO WILFRIED                            28.85      17.30     0.5%         39.2         23.5
+37   CU2407-00367       PROV TAGNE                                 28.50      17.88     0.5%         38.7         24.3
+38   CU2502-01252       MUMINYI AUGUSTINE                          27.75      17.26     0.5%         37.7         23.4
+39   CU2407-00956       KOM BLAISE STANISLAS                       27.55      17.56     0.5%         37.4         23.8
+40   CU2407-00160       PROVENDERIE LA GRACE DIVINE                27.16      17.11     0.5%         36.9         23.2
+41   CU2502-01229       FOTSO MBAH                                 26.95      15.52     0.5%         36.6         21.1
+42   CU2407-00199       NTSOPA TANDJONG LANDRY                     26.95      17.65     0.5%         36.6         24.0
+43   CU2407-00157       TOGUE JEAN FRANCOIS SIEGE                  25.85      16.06     0.5%         35.1         21.8
+44   CU2407-00774       MEKESSE SUZANNE                            25.75      15.43     0.5%         35.0         20.9
+45   CU2407-00203       TEFACK DASSI HERVE                         25.15      16.33     0.5%         34.1         22.2
+46   CU2407-00659       ISSA OUMAROU                               25.00      15.59     0.5%         33.9         21.2
+47   CU2409-01092       ABOUBAKAR NGNAZOKE                         24.25      15.25     0.4%         32.9         20.7
+48   CU2409-01084       FEED DEPOT COMPANY LIMITED                 24.20      14.76     0.4%         32.9         20.0
+49   CU2409-01087       SOUH CHRISTELLE (SOUH CHRISTELLE)          24.15      13.85     0.4%         32.8         18.8
+50   CU2407-00915       FEUDJIO MAURICETTE                         24.05      14.38     0.4%         32.6         19.5
+51   CU2407-00266       EMMANUEL WIRSENYUY                         24.00      13.32     0.4%         32.6         18.1
+52   CU2407-00257       COOP AFAA'MBONG                            23.80      14.99     0.4%         32.3         20.4
+53   CU2603-14426       PROVENDERIE POPULAIRE                      23.80      14.98     0.4%         32.3         20.3
+54   CU2505-13382       TCHANTCHOU EPS WOUABO GHISLAINE (T         23.55      14.44     0.4%         32.0         19.6
+55   CU2407-00159       SIGNE WILLIAM                              23.34      14.77     0.4%         31.7         20.0
+56   CU2410-01135       NDIKUM ZOUSSE JUNIOR                       23.25      13.60     0.4%         31.6         18.5
+57   CU2407-00318       FOMKAN TABOUE WILLIAM RAOUL (ETS P         22.60      13.88     0.4%         30.7         18.8
+58   CU2407-00801       NANA                                       22.55      13.61     0.4%         30.6         18.5
+59   CU2407-00412       WANDJA JEAN CLAUDE                         22.10      14.01     0.4%         30.0         19.0
+60   CU2407-00353       PROVOCAM                                   22.00      13.86     0.4%         29.9         18.8
+61   CU2407-00866       FEEMDISPRO SARL (FEED MILL DISTRIB         21.00      13.35     0.4%         28.5         18.1
+62   CU2407-00161       TAMBA TALOGUE MARTIAL                      20.98      12.89     0.4%         28.5         17.5
+63   CU2407-00433       ACHU ERIC NGWA                             20.85      13.19     0.4%         28.3         17.9
+64   CU2502-01259       PROVENDERIE TPR                            19.80      12.38     0.4%         26.9         16.8
+65   CU2407-00744       LUKONG EMMANUEL                            19.75      11.61     0.4%         26.8         15.8
+66   CU2406-00096       SONWA RONICE                               19.30      11.81     0.4%         26.2         16.0
+67   CU2601-14325       TCHONBEUA AUGUSTIN                         19.05      12.48     0.3%         25.9         16.9
+68   CU2407-00456       TALOM PROV PYRAMIDE                        18.90      10.78     0.3%         25.7         14.6
+69   CU2407-00385       ETS MBAGA                                  18.75      12.51     0.3%         25.5         17.0
+70   CU2408-01037       ED-PROVENDERIE (TCHOUNET EDMOND)           18.75      11.96     0.3%         25.5         16.2
+71   CU2407-00817       NJOMOU NJOJIP FABRICE (PROVENDIER)         18.50      11.79     0.3%         25.1         16.0
+72   CU2601-14256       TABO ET SONS ENTERPRISE                    18.45      11.78     0.3%         25.0         16.0
+73   CU2406-00016       PROVENDERIE LE TRIOMPHE (ETS LE TR         18.35      11.56     0.3%         24.9         15.7
+74   CU2502-01242       YAGUE MARTIN                               18.25      10.34     0.3%         24.8         14.0
+75   CU2407-00900       PROVENDERIE TSOUAS OBALA                   18.00      11.25     0.3%         24.4         15.3
+76   CU2407-00465       PHAVETA                                    17.85      10.96     0.3%         24.2         14.9
+77   CU2504-01301       GIC NKOUNA                                 17.65      11.54     0.3%         24.0         15.7
+78   CU2504-013337      PROVENDERIE LA GRACE LOGBESSOU (PR         17.50      10.76     0.3%         23.8         14.6
+79   CU2407-00415       NDEM NETMOH HILARY                         17.30      10.93     0.3%         23.5         14.8
+80   CU2407-00362       PROVENDERIE MOKOLO                         17.30      10.78     0.3%         23.5         14.6
+81   CU2407-00424       NTANG HILDA AMIKE                          17.20      10.90     0.3%         23.3         14.8
+82   CU2406-00131       YEMELONG                                   17.10       9.87     0.3%         23.2         13.4
+83   CU2407-00270       ETS GMC                                    17.00      10.71     0.3%         23.1         14.5
+84   CU2407-00439       MOUAFO MATHIAS                             16.95      10.68     0.3%         23.0         14.5
+85   CU2407-00694       KENGNE STEPHANE                            16.75      10.32     0.3%         22.7         14.0
+86   CU2409-01078       LA SOCIÉTÉ COOPÉRATIVE SIMPLIFIÉE          16.50      11.05     0.3%         22.4         15.0
+87   CU2502-01236       TSAFACK HENRIETTE                          16.40       9.61     0.3%         22.3         13.1
+88   CU2407-00422       ZEVELUS MBANWIE BEIN                       16.40       9.98     0.3%         22.3         13.5
+89   CU2407-00332       SOCIETE NGNOMEGNE GILBERT SARL             16.25      10.24     0.3%         22.1         13.9
+90   CU2506-13400       NOVEACAM (DJEMENE JEAN PIERRE)             16.05       9.82     0.3%         21.8         13.3
+91   CU2407-00351       PROV DJUGNING                              16.00      10.08     0.3%         21.7         13.7
+92   CU2407-01012       FOFE DEMATIO GABRIEL                       15.90       9.79     0.3%         21.6         13.3
+93   CU2407-00662       JEUGO ALICE                                15.70       9.56     0.3%         21.3         13.0
+94   CU2409-01081       GHUEGO SIMO RACHEL (GHUEGO SIMO RA         15.68       9.43     0.3%         21.3         12.8
+95   CU2407-00430       KENMEGNE HERMANN MICHAEL                   15.55       9.83     0.3%         21.1         13.3
+96   SCOOPS PROTRAPRO-  SCOOPS PROTRAPRO-AG                        15.25       9.61     0.3%         20.7         13.0
+97   CU2406-00117       PROVENDERIE LE BIEN                        15.00       9.39     0.3%         20.4         12.8
+98   CU2407-00530       ETS NKOUAM                                 14.90       8.70     0.3%         20.2         11.8
+99   CU2407-00384       ABDOUL HAKIM                               14.65       9.80     0.3%         19.9         13.3
+100  CU2407-00961       SCOOP DIKEL                                14.45       7.95     0.3%         19.6         10.8
+101  CU2512-14195       TEKO NGHOJIO PATRICK DUPLEX                14.45       9.11     0.3%         19.6         12.4
+102  CU2407-00709       KOAGNE TCHOUDA                             14.40       9.09     0.3%         19.5         12.3
+103  CU2407-00191       GIC EMERGENCE                              14.15       9.27     0.3%         19.2         12.6
+104  CU2406-00125       FOZE CYPRIEN                               14.05       8.96     0.3%         19.1         12.2
+105  CU2511-14164       TANKE NFOUO MARCEL AIME                    14.05       8.57     0.3%         19.1         11.6
+106  CU2407-00601       FOKO                                       14.00       8.45     0.3%         19.0         11.5
+107  CU2407-00825       TAMO JEAN ROBERT                           13.90       8.79     0.3%         18.9         11.9
+108  CU2504-01323       DJIOMETSA TETSOPMO GEORGE BALBAIL          13.85       8.42     0.3%         18.8         11.4
+109  CU2407-00382       PROVENDERIE LE RELAIS                      13.70       8.68     0.3%         18.6         11.8
+110  CU2407-00292       MANFOUOKOUO JEAN CALVIN                    13.65       8.55     0.2%         18.5         11.6
+111  CU2508-13440       SODIPE SARL                                13.50       8.53     0.2%         18.3         11.6
+112  CU2407-00902       M MBOZEKO MATHURIN                         13.43       8.59     0.2%         18.2         11.7
+113  CU2407-00289       LIEDJI ALAIN PIERRE                        13.35       8.05     0.2%         18.1         10.9
+114  CU2502-01239       MOFOR YACTAGHA JOSEPH                      13.30       7.62     0.2%         18.1         10.3
+115  CU2504-13354       PROVENDERIE FODJO                          13.25       8.20     0.2%         18.0         11.1
+116  CU2407-00316       NOUVELLE PROVENDERIE D'EDEA (NPE)          13.20       8.20     0.2%         17.9         11.1
+117  TAMGOU KADJE DANI  TAMGOU KADJE DANIEL FRANCK                 13.10       8.21     0.2%         17.8         11.1
+118  CU2512-14221       NZUEFOUO TAMOIFO ANNETTE                   13.00       8.52     0.2%         17.6         11.6
+119  CU2407-00997       MOFFO DJUZANE LION ELLE SONIA              13.00       8.07     0.2%         17.6         11.0
+120  CU2407-00466       PROVENDERIE CENTRALE                       12.90       7.98     0.2%         17.5         10.8
+121  CU2407-00730       PROV CLBC                                  12.75       7.74     0.2%         17.3         10.5
+122  CU2509-13991       TIOFOUE HERVE JOEL                         12.75       8.16     0.2%         17.3         11.1
+123  CU2407-00459       PROV DES ELEVEURS KENDECK                  12.70       7.31     0.2%         17.2          9.9
+124  CU2501-01197       NSUH EDWIN CHEO ETS GILLI BROWN CO         12.65       7.81     0.2%         17.2         10.6
+125  CU2502-01218       AWAMBA FABRICE (KEOGUE TCHINDA)            12.60       7.74     0.2%         17.1         10.5
+126  CU2407-00324       PROV. NOUVELLE (KENFACK EPSE KINGN         12.50       7.88     0.2%         17.0         10.7
+127  CU2407-00569       EMC MBOUDA                                 12.50       7.91     0.2%         17.0         10.7
+128  CU2407-00198       ROCHE KENGNE RAYMOND                       12.30       8.06     0.2%         16.7         10.9
+129  CU2407-00701       KENNY KADJIEU PATRICK WILSON               12.25       7.22     0.2%         16.6          9.8
+130  CU2407-00168       KAMGNO PIERRE                              12.20       7.69     0.2%         16.6         10.4
+131  CU2407-00441       ENONGENE SONE STANLEY                      12.10       7.67     0.2%         16.4         10.4
+132  CU2507-13416       LADO HENRI                                 12.00       7.05     0.2%         16.3          9.6
+133  CU2406-00040       DJUIKOM MARLISE                            12.00       7.56     0.2%         16.3         10.3
+134  CU2407-00892       GUEMNING THEODORE                          12.00       7.56     0.2%         16.3         10.3
+135  CU2407-00467       PROV ELI                                   11.75       7.38     0.2%         16.0         10.0
+136  SAP                SAP                                        11.70       6.98     0.2%         15.9          9.5
+137  CU2407-00325       PROVENDERIE DU CENTRE                      11.60       7.20     0.2%         15.7          9.8
+138  CU2508-13578       FOKOU DONGFACK BIENVENU                    11.60       7.40     0.2%         15.7         10.0
+139  CU2504-01325       NGUISSEU KWEKOUA CHRISTOPHINE FLOR         11.55       7.19     0.2%         15.7          9.8
+140  CU2511-14162       PROV MERLIN                                11.50       7.53     0.2%         15.6         10.2
+141  CU2504-01313       NOULEM BERNARD                             11.40       7.24     0.2%         15.5          9.8
+142  CU2407-00989       NSUH EDWIN CHEO (ETS GILLI BROWN C         11.35       7.01     0.2%         15.4          9.5
+143  CU2407-00855       WABO MICHEL                                11.35       6.65     0.2%         15.4          9.0
+144  CU2407-00176       TENE FRANCIS                               11.35       6.77     0.2%         15.4          9.2
+145  CU2502-01241       TIWA RENE                                  11.35       6.79     0.2%         15.4          9.2
+146  CU2410-01125       Monguh Ernest ningha                       11.25       6.96     0.2%         15.3          9.4
+147  CU2504-01328       SOCIETE COOPERATIVE SIMPLIFIEE DES         11.20       6.70     0.2%         15.2          9.1
+148  M. FONKOU ROSTIN   M. FONKOU ROSTIN ALBERT (ZDCL00010         11.15       7.03     0.2%         15.1          9.5
+149  CU2407-00421       PALO SERGE SINCLAIR                        11.10       7.01     0.2%         15.1          9.5
+150  CU2504-01327       NINDJEE ELISE M. (CAMAGRO) (NINDJE         11.00       6.93     0.2%         14.9          9.4
+151  TCHAMAGO JOSEPH P  TCHAMAGO JOSEPH PAULI                      10.75       6.70     0.2%         14.6          9.1
+152  CU2407-00262       DJIMENI KENNE RICCARDO                     10.70       6.72     0.2%         14.5          9.1
+153  PROV. MONT DES OL  PROV. MONT DES OLIVERS                     10.50       6.62     0.2%         14.3          9.0
+154  MBEKAP MERIME      MBEKAP MERIME                              10.30       6.59     0.2%         14.0          8.9
+155  CU2408-01057       SOCIETE AGRICOLE ET COMMERCIALE DU         10.25       6.46     0.2%         13.9          8.8
+156  CU2407-00627       FRANK PRIX                                 10.15       5.82     0.2%         13.8          7.9
+157  CU2510-14127       HAMIDOU MOUSSA                             10.10       6.74     0.2%         13.7          9.2
+158  CU2408-01025       SOCAMES SARL (ROSE AKOUMBA ADJOMO)         10.05       6.31     0.2%         13.6          8.6
+159  CU2502-01224       PROVENDERIE YVESCAM                        10.00       6.06     0.2%         13.6          8.2
+160  CU2406-00027       IVO PK14                                   10.00       6.30     0.2%         13.6          8.6
+161  CU2407-00413       TALAMBE PETESUNGU EMMANUEL                 10.00       6.25     0.2%         13.6          8.5
+162  CU2502-01223       PERFECTA EBOLOWA                            9.95       6.26     0.2%         13.5          8.5
+163  CU2409-01088       Nom Nzontheu paul                           9.90       5.99     0.2%         13.4          8.1
+164  MADANA FOUONE SOL  MADANA FOUONE SOLANGE (ZDCL00004)           9.90       6.18     0.2%         13.4          8.4
+165  CU2506-13395       TEKOH MARTIN                                9.80       6.20     0.2%         13.3          8.4
+166  CU2503-01271       YENDE MONGBET ZAKARIAOU                     9.75       6.26     0.2%         13.2          8.5
+167  CU2407-00299       MOHAMAED DJALLO                             9.75       6.14     0.2%         13.2          8.3
+168  CU2407-00230       TCHUENKAM KAMSU LILIANE YVETTE (NG          9.70       6.34     0.2%         13.2          8.6
+169  CU2507-13419       TAMATIO ZACHARIE                            9.65       6.20     0.2%         13.1          8.4
+170  CU2407-00314       NZOUANKEU MANGA EPSE FOSSO                  9.65       6.03     0.2%         13.1          8.2
+171  CU2502-01258       TALOM                                       9.55       6.06     0.2%         13.0          8.2
+172  CU2511-14179       PROVENDERIE CYRUS SA                        9.35       5.98     0.2%         12.7          8.1
+173  CU2407-00766       MAISON DU FERMIER ZNCL00041 (PROVE          9.25       5.74     0.2%         12.6          7.8
+174  CU2407-00943       PROVENDERIE QUEEN FEET                      9.25       5.92     0.2%         12.6          8.0
+175  CU2512-14223       TCHINDA NOTSAYO LEONEL CHRISTIAN            9.25       5.92     0.2%         12.6          8.0
+176  CU2407-00162       FOTSING PIERRE                              9.25       5.79     0.2%         12.6          7.9
+177  CU2504-13358       NYAMSI GUY RAOUL                            9.10       5.19     0.2%         12.4          7.0
+178  CU2407-00928       AFRICA BELIEVE GROUP (ABF - Toukam          9.00       5.40     0.2%         12.2          7.3
+179  CU2407-00767       PROV DU PROGRES ZNCL00013                   9.00       5.75     0.2%         12.2          7.8
+180  CU2407-01014       ETS FORCE N                                 9.00       5.76     0.2%         12.2          7.8
+181  CU2502-01246       DOUNTIO GHISLAIN                            9.00       5.41     0.2%         12.2          7.3
+182  CU2407-00566       ELARO                                       8.95       5.60     0.2%         12.1          7.6
+183  CU2407-00952       TCHEUMTCHOUA DANIEL                         8.85       5.57     0.2%         12.0          7.6
+184  CU2407-00379       SMI'S AGROINDUSTRIEL                        8.80       5.63     0.2%         11.9          7.6
+185  CU2601-14327       KEMDJO NGATE PATRICK                        8.75       5.13     0.2%         11.9          7.0
+186  CU2407-00444       TRIYA MBANYA IBRAHIM                        8.65       5.46     0.2%         11.7          7.4
+187  CU2504-01316       PROVENDERIE TALA                            8.65       5.47     0.2%         11.7          7.4
+188  CU2601-14281       BELLO BACHAR                                8.65       5.63     0.2%         11.7          7.6
+189  CU2601-14314       DJOUDA MOISE ERIC SCOOPS APACAM             8.60       5.14     0.2%         11.7          7.0
+190  CU2502-01231       Mr SIMO                                     8.60       5.62     0.2%         11.7          7.6
+191  CU2507-13432       TALOM NGUENO DIEUDONNE                      8.50       5.42     0.2%         11.5          7.4
+192  CU2407-00416       TSEUFFA EMMANUEL                            8.40       5.30     0.2%         11.4          7.2
+193  CU2409-01085       NJAKOI KINKO MICHAEL                        8.15       5.00     0.1%         11.1          6.8
+194  CU2502-01233       NOUATONG ROSTAND (CBF010)                   8.15       5.03     0.1%         11.1          6.8
+195  CU2407-00446       ACHA BENJAMIN MBAH                          8.10       5.10     0.1%         11.0          6.9
+196  CU2407-00317       SCOOPS EA2PEAL (SOCIETE COORPERATI          8.10       5.10     0.1%         11.0          6.9
+197  CU2407-00936       TALLA EMILE                                 8.00       4.81     0.1%         10.9          6.5
+198  CU2507-13411       STE IPACAM ET FILS SARL (TAKALA KU          8.00       4.67     0.1%         10.9          6.3
+199  CU2410-01144       FODZO LEONIE CLAIRE                         8.00       5.04     0.1%         10.9          6.8
+200  CU2502-01250       PROVENDERIE SOFAB                           8.00       5.12     0.1%         10.9          7.0
+201  CU2407-00337       STE FERME AVICOLE DE L'ESPERENCE E          7.95       4.95     0.1%         10.8          6.7
+202  CU2407-00809       PROV LA FELICITE (MERAUDE BILOA MI          7.85       4.80     0.1%         10.7          6.5
+203  CU2407-00163       MME DJALEU TCHAGOUE                         7.77       4.84     0.1%         10.5          6.6
+204  CU2408-01048       NDJANANG KAMGA MERLINE BEATRICE (P          7.75       4.88     0.1%         10.5          6.6
+205  CU2407-00464       PROV MERVEILLE +                            7.75       4.88     0.1%         10.5          6.6
+206  ZOCL00002000       KUHLIFARM COOP-BOD (KUHLIFARM COOP          7.65       4.88     0.1%         10.4          6.6
+207  CU2504-01324       MAYOUDOM GATCHOUSSI EPSE FEZEU              7.55       4.76     0.1%         10.2          6.5
+208  CU2408-01064       Tchemenack Djinte Yves Gaël                 7.50       4.82     0.1%         10.2          6.5
+209  CU2507-13422       SOCIETE DG SARL (DG SARL) (MR TANE          7.50       4.91     0.1%         10.2          6.7
+210  CU2601-14336       FOSSI FOKA RODRIGUE                         7.50       4.72     0.1%         10.2          6.4
+211  CU2504-13355       KOYOUE FOTSO VINCENT                        7.45       4.25     0.1%         10.1          5.8
+212  CU2407-00153       DJIMELI FRANCIS                             7.45       4.69     0.1%         10.1          6.4
+213  CU2407-00437       MENDI WAGHEM RUDOLF                         7.35       4.63     0.1%         10.0          6.3
+214  PROVENDERIE LA SO  PROVENDERIE LA SOLUTION                     7.15       4.31     0.1%          9.7          5.8
+215  CU2502-01226       ETS TOUT EST GRACE                          7.00       4.41     0.1%          9.5          6.0
+216  CU2504-13353       GLOBAL INVESTMENT SARL                      6.95       4.37     0.1%          9.4          5.9
+217  CU2407-00427       NDOH SAMPSUN MANCHO                         6.90       4.33     0.1%          9.4          5.9
+218  CU2407-00330       SOCIETE COOPERATIVE SIMPLIFIEE DAT          6.90       4.35     0.1%          9.4          5.9
+219  CU2407-00733       KUITCHE SADEUH GABIN                        6.85       4.40     0.1%          9.3          6.0
+220  CU2407-00478       ASANGWE PAUL                                6.80       3.99     0.1%          9.2          5.4
+221  CU2507-13434       TCHINDA TCHANDA FERDINAND                   6.80       3.97     0.1%          9.2          5.4
+222  ETS K & BROTHERS   ETS K & BROTHERS                            6.80       4.28     0.1%          9.2          5.8
+223  CU2407-00918       PROVENDERIE NOURIX                          6.75       3.78     0.1%          9.2          5.1
+224  CU2407-00893       PROVENDERIE LE GOSEN                        6.75       4.06     0.1%          9.2          5.5
+225  CU2407-00676       KAMGO                                       6.70       4.14     0.1%          9.1          5.6
+226  I.A.O COOP-CA      I.A.O COOP-CA                               6.65       4.23     0.1%          9.0          5.7
+227  CU2502-01262       M. WAYAP GUY MERLIN                         6.55       4.10     0.1%          8.9          5.6
+228  CU2512-14194       KAMWA TAGNE DENISE                          6.50       3.81     0.1%          8.8          5.2
+229  CU2504-01287       IBC SARL                                    6.50       4.16     0.1%          8.8          5.6
+230  CU2407-00976       PROVENDERIE du MBAM                         6.50       4.16     0.1%          8.8          5.6
+231  CU2412-01177       TCHOMTCHOUA CIRILLE                         6.40       4.11     0.1%          8.7          5.6
+232  CU2504-01329       TEUTSEU GUY FRANKLIN                        6.40       3.85     0.1%          8.7          5.2
+233  PROVENDERIE FELIX  PROVENDERIE FELIX                           6.25       4.00     0.1%          8.5          5.4
+234  CU2407-00927       Kingdom farm enterprise (KFE                6.20       3.93     0.1%          8.4          5.3
+235  CU2407-01020       FERME MOGOUONG THÉRÈSE                      6.10       3.90     0.1%          8.3          5.3
+-------------------------------------------------------------------------------------------------------------------
+     SOUS-TOTAL 20/80                                             4379.4     2711.9    80.0%       5945.0
+     RESTE (80/20)                                                1092.8      681.4    20.0%       1483.5
+     TOTAL                                                        5472.2     3393.3   100,0%       7428.5
+
+--- PONTE — Top 75 clients 20/80 (sur 399 total) ---
+Volume total Ponte: 1740.3 t | CA: 1251.7 M FCFA | Prix moyen: 719 FCFA/t
+Objectif S2 Ponte: 2362 t (vs S1=1740 t, croissance nécessaire: +35.8%)
+
+#    Code               Nom                                   Vol S1 (t)     CA (M)    % vol   Obj S2 (t)   CA obj (M)
+-------------------------------------------------------------------------------------------------------------------
+1    CU2505-13361       AVIDEM SARL                               108.75      78.30     6.2%        147.6        106.3
+2    CU2407-00700       KENNE MANFOUO IDRICE                       98.35      70.81     5.7%        133.5         96.1
+3    CU2407-00794       PENKA DEFFO DANIEL                         81.80      58.90     4.7%        111.0         80.0
+4    CU2407-00379       SMI'S AGROINDUSTRIEL                       54.20      39.02     3.1%         73.6         53.0
+5    CU2407-00840       NGOMPE BRUNO                               53.45      38.48     3.1%         72.6         52.2
+6    CU2502-01235       TENE APPOLINAIRE (OUEST ELEVAGE)           50.50      36.36     2.9%         68.6         49.4
+7    CU2502-01231       Mr SIMO                                    47.20      34.11     2.7%         64.1         46.3
+8    CU2505-13383       DOUANGUIM CHARLIN                          38.50      27.72     2.2%         52.3         37.6
+9    CU2407-00952       TCHEUMTCHOUA DANIEL                        32.70      23.54     1.9%         44.4         32.0
+10   CU2502-01241       TIWA RENE                                  32.00      23.04     1.8%         43.4         31.3
+11   CU2407-00385       ETS MBAGA                                  28.50      21.36     1.6%         38.7         29.0
+12   PRADU-COOP CA      PRADU-COOP CA                              28.00      20.16     1.6%         38.0         27.4
+13   CU2407-00552       DOMTCHUENG K MICHEL                        26.85      19.33     1.5%         36.4         26.2
+14   CU2407-00701       KENNY KADJIEU PATRICK WILSON               26.10      18.79     1.5%         35.4         25.5
+15   CU2407-00288       LIDEL SARL                                 25.90      18.55     1.5%         35.2         25.2
+16   CU2407-00610       FOTAGI                                     25.65      18.47     1.5%         34.8         25.1
+17   CU2503-01272       LEMNYUY BETILLA VERNYUY                    25.55      18.40     1.5%         34.7         25.0
+18   CU2407-00199       NTSOPA TANDJONG LANDRY                     25.40      18.54     1.5%         34.5         25.2
+19   CU2412-01173       KAMDEM TCHUENKAM HOPESON JUNIOR            24.90      17.93     1.4%         33.8         24.3
+20   CU2407-00384       ABDOUL HAKIM                               22.85      17.14     1.3%         31.0         23.3
+21   CU2407-00766       MAISON DU FERMIER ZNCL00041 (PROVE         21.50      15.48     1.2%         29.2         21.0
+22   CU2502-01242       YAGUE MARTIN                               21.25      15.30     1.2%         28.8         20.8
+23   CU2407-00899       GIC DES PRODUCTEURS D'OEUFS                19.00      13.68     1.1%         25.8         18.6
+24   CU2502-01255       SIETCHIPING                                18.25      12.96     1.0%         24.8         17.6
+25   CU2502-01263       ASSOCIATION FERME LA RENAISSAINCE          17.60      12.67     1.0%         23.9         17.2
+26   CU2506-13400       NOVEACAM (DJEMENE JEAN PIERRE)             17.25      12.42     1.0%         23.4         16.9
+27   CU2408-01045       Tiokeng tiwa richard                       17.00      12.24     1.0%         23.1         16.6
+28   CU2407-00465       PHAVETA                                    15.80      11.38     0.9%         21.4         15.4
+29   CU2407-00566       ELARO                                      13.40       9.65     0.8%         18.2         13.1
+30   CU2601-14257       DZOUGUELA MICHEL ETS AGRO                  12.75       9.18     0.7%         17.3         12.5
+31   CU2505-13381       ETS MOFFO FOBOU MERLIN (MOFFO FOBO         12.30       8.86     0.7%         16.7         12.0
+32   CU2407-00190       TELONG IGOR                                11.35       7.12     0.7%         15.4          9.7
+33   CU2407-00817       NJOMOU NJOJIP FABRICE (PROVENDIER)         11.25       8.05     0.6%         15.3         10.9
+34   CU2407-00844       WAMBA NDE JACOB ERIC                       11.25       8.10     0.6%         15.3         11.0
+35   CU2407-00366       G.B AGROPACAM (TAMATIO)                    11.00       7.92     0.6%         14.9         10.8
+36   CU2407-00559       DZEKENG                                    11.00       7.92     0.6%         14.9         10.8
+37   CU2504-01289       PROVENDERIE LE GRAIN                       10.65       7.73     0.6%         14.5         10.5
+38   CU2601-14295       COMPLEX NGASCHO                            10.50       7.67     0.6%         14.3         10.4
+39   CU2504-13343       FOTIE TAGOUMTSE CONSTANTIN LEGRAND         10.20       7.34     0.6%         13.8         10.0
+40   CU2407-00765       JBBCOMAX SARL                              10.10       7.27     0.6%         13.7          9.9
+41   CU2407-00600       FOKA MARCEL                                 9.85       7.09     0.6%         13.4          9.6
+42   CU2502-01251       KAM APPOLINAIRE                             9.75       7.02     0.6%         13.2          9.5
+43   CU2407-00902       M MBOZEKO MATHURIN                          9.60       6.91     0.6%         13.0          9.4
+44   CU2407-00801       NANA                                        9.10       6.55     0.5%         12.4          8.9
+45   CU2407-00729       KUETCHE N. JOSEPH                           9.05       6.52     0.5%         12.3          8.8
+46   CU2407-00601       FOKO                                        9.00       6.48     0.5%         12.2          8.8
+47   CU2412-01177       TCHOMTCHOUA CIRILLE                         9.00       6.48     0.5%         12.2          8.8
+48   CU2407-00694       KENGNE STEPHANE                             8.75       6.30     0.5%         11.9          8.6
+49   CU2407-00933       SECRET ÉLEVAGE                              8.75       6.30     0.5%         11.9          8.6
+50   CU2502-01237       TCHEUTCHOUA TCHINDA ERIC                    8.50       6.12     0.5%         11.5          8.3
+51   CU2407-00795       MOTSOU DJEUMAKOU VICTOR                     8.40       6.05     0.5%         11.4          8.2
+52   CU2601-14294       CO.V.AGRO/SCOOP-CA                          8.00       5.84     0.5%         10.9          7.9
+53   CU2411-01158       Tchinda Boniface                            7.70       5.54     0.4%         10.5          7.5
+54   CU2407-00774       MEKESSE SUZANNE                             7.65       5.51     0.4%         10.4          7.5
+55   CU2504-13344       POUOMEGNE THIERRY (POUOMEGNE THIER          7.55       4.62     0.4%         10.2          6.3
+56   CU2603-14425       KEUBOU KUEBOU BORIS                         7.50       5.40     0.4%         10.2          7.3
+57   CU2407-00748       MAFO CHRISTINE                              7.20       5.18     0.4%          9.8          7.0
+58   CU2407-00825       TAMO JEAN ROBERT                            7.00       5.04     0.4%          9.5          6.8
+59   CU2411-01159       SOCIETE ZEPHARMA SARL (TCHINDA ZEP          6.95       5.21     0.4%          9.4          7.1
+60   CU2407-00381       NADEB'S FARMS                               6.75       4.86     0.4%          9.2          6.6
+61   CU2407-00823       NGNANG CIRILLE                              6.50       4.68     0.4%          8.8          6.4
+62   CU2502-01244       MAFFO CHRISTINE                             6.40       4.61     0.4%          8.7          6.3
+63   DZUDJO EMMANUEL (  DZUDJO EMMANUEL (ZDCL00072)                 6.30       4.54     0.4%          8.6          6.2
+64   M. NGOMPE ROGER    M. NGOMPE ROGER                             6.20       4.65     0.4%          8.4          6.3
+65   CU2407-00915       FEUDJIO MAURICETTE                          6.10       4.39     0.4%          8.3          6.0
+66   CU2407-00910       TEZOH KIENGNI FLORENTIN                     6.05       4.36     0.3%          8.2          5.9
+67   CU2602-14379       ETS HAMAS ET FILS (ABDOUL AZIZ BOU          5.95       4.46     0.3%          8.1          6.1
+68   CU2512-14195       TEKO NGHOJIO PATRICK DUPLEX                 5.85       4.21     0.3%          7.9          5.7
+69   CU2502-01249       PROVENDERIE DE L'ASSURANCE (NOUWOU          5.70       4.10     0.3%          7.7          5.6
+70   CU2601-14327       KEMDJO NGATE PATRICK                        5.65       4.07     0.3%          7.7          5.5
+71   CU2502-01248       PROV BONHEUR                                5.60       4.03     0.3%          7.6          5.5
+72   CU2407-00942       TCHAMO                                      5.60       4.03     0.3%          7.6          5.5
+73   CU2406-00096       SONWA RONICE                                5.55       4.00     0.3%          7.5          5.4
+74   CU2407-00809       PROV LA FELICITE (MERAUDE BILOA MI          5.55       4.00     0.3%          7.5          5.4
+75   CU2408-01052       Chedjou André (CHENJOU ANDRE)               5.40       3.89     0.3%          7.3          5.3
+-------------------------------------------------------------------------------------------------------------------
+     SOUS-TOTAL 20/80                                             1395.0     1004.9    80.2%       1893.7
+     RESTE (80/20)                                                 345.3      246.8    19.8%        468.8
+     TOTAL                                                        1740.3     1251.7   100,0%       2362.5
+
+--- PORC — Top 140 clients 20/80 (sur 533 total) ---
+Volume total Porc: 1369.5 t | CA: 1084.1 M FCFA | Prix moyen: 792 FCFA/t
+Objectif S2 Porc: 1859 t (vs S1=1369 t, croissance nécessaire: +35.8%)
+
+#    Code               Nom                                   Vol S1 (t)     CA (M)    % vol   Obj S2 (t)   CA obj (M)
+-------------------------------------------------------------------------------------------------------------------
+1    CU2507-13426       ZANGHO WILFRIED                            51.80      40.92     3.8%         70.3         55.6
+2    CU2407-00662       JEUGO ALICE                                41.35      32.67     3.0%         56.1         44.3
+3    CU2407-00700       KENNE MANFOUO IDRICE                       35.30      27.89     2.6%         47.9         37.9
+4    CU2502-01235       TENE APPOLINAIRE (OUEST ELEVAGE)           33.85      26.74     2.5%         46.0         36.3
+5    PROVENDERIE LA RE  PROVENDERIE LA REUSSITE                    28.50      22.52     2.1%         38.7         30.6
+6    CU2502-01251       KAM APPOLINAIRE                            25.95      20.50     1.9%         35.2         27.8
+7    CU2503-01272       LEMNYUY BETILLA VERNYUY                    24.85      19.63     1.8%         33.7         26.6
+8    CU2407-00619       FOTSO FOUMBOT                              24.50      19.36     1.8%         33.3         26.3
+9    CU2407-00281       GIC ESPOIR KELENG (POKAM MERLINE)          21.75      17.18     1.6%         29.5         23.3
+10   CU2504-01300       GIC LOIC                                   20.00      16.00     1.5%         27.2         21.7
+11   CU2407-00765       JBBCOMAX SARL                              20.00      15.80     1.5%         27.2         21.4
+12   CU2407-00720       KUATE MATHIAS                              19.50      15.40     1.4%         26.5         20.9
+13   CU2407-00879       NSANGOU DAOUDA                             18.85      14.89     1.4%         25.6         20.2
+14   CU2407-00538       DJOUDA ROSTAND                             18.40      14.54     1.3%         25.0         19.7
+15   CU2502-01242       YAGUE MARTIN                               17.75      14.02     1.3%         24.1         19.0
+16   CU2601-14335       CHO SALAH PIUS                             17.75      14.02     1.3%         24.1         19.0
+17   CU2406-00096       SONWA RONICE                               17.65      13.94     1.3%         24.0         18.9
+18   CU2407-00709       KOAGNE TCHOUDA                             16.50      13.04     1.2%         22.4         17.7
+19   CU2407-00366       G.B AGROPACAM (TAMATIO)                    16.50      13.04     1.2%         22.4         17.7
+20   CU2502-01249       PROVENDERIE DE L'ASSURANCE (NOUWOU         14.15      11.18     1.0%         19.2         15.2
+21   CU2503-01273       DJOGAB KWETIO SERGE                        14.00      11.06     1.0%         19.0         15.0
+22   CU2407-00733       KUITCHE SADEUH GABIN                       13.30      10.51     1.0%         18.1         14.3
+23   CU2407-00734       KWANGE GEROME                              13.15      10.39     1.0%         17.9         14.1
+24   CU2407-00384       ABDOUL HAKIM                               12.20      10.00     0.9%         16.6         13.6
+25   CU2407-00817       NJOMOU NJOJIP FABRICE (PROVENDIER)         10.55       8.33     0.8%         14.3         11.3
+26   CU2502-01224       PROVENDERIE YVESCAM                        10.15       8.02     0.7%         13.8         10.9
+27   CU2407-00866       FEEMDISPRO SARL (FEED MILL DISTRIB         10.05       7.94     0.7%         13.6         10.8
+28   CU2407-00637       GIC DES AGRICULTEURS DE TSINGBEU           10.00       7.90     0.7%         13.6         10.7
+29   CU2506-13400       NOVEACAM (DJEMENE JEAN PIERRE)              9.90       7.82     0.7%         13.4         10.6
+30   CU2407-00774       MEKESSE SUZANNE                             9.80       7.74     0.7%         13.3         10.5
+31   CU2502-01259       PROVENDERIE TPR                             9.50       7.50     0.7%         12.9         10.2
+32   CU2407-01014       ETS FORCE N                                 8.90       7.03     0.6%         12.1          9.5
+33   CU2409-01112       YANIS YASSA                                 8.75       6.91     0.6%         11.9          9.4
+34   CU2505-13383       DOUANGUIM CHARLIN                           8.70       6.87     0.6%         11.8          9.3
+35   CU2502-01258       TALOM                                       8.35       6.60     0.6%         11.3          9.0
+36   CU2601-14310       DJIFACK LUCAS EDIMOND                       8.30       6.56     0.6%         11.3          8.9
+37   CU2407-00379       SMI'S AGROINDUSTRIEL                        8.15       6.44     0.6%         11.1          8.7
+38   CU2502-01253       NZOUABET WOUAMI EMMANUEL                    8.00       6.32     0.6%         10.9          8.6
+39   CU2407-00842       YACOUBA                                     7.95       6.28     0.6%         10.8          8.5
+40   CU2502-01241       TIWA RENE                                   7.50       5.92     0.5%         10.2          8.0
+41   CU2507-13416       LADO HENRI                                  7.45       5.89     0.5%         10.1          8.0
+42   CU2407-00466       PROVENDERIE CENTRALE                        7.40       5.85     0.5%         10.0          7.9
+43   CU2407-00914       VOUFO                                       7.35       5.81     0.5%         10.0          7.9
+44   CU2502-01234       TCHOUATA TANDA HERLIN (ZDCL00104)           7.35       5.81     0.5%         10.0          7.9
+45   CU2407-00601       FOKO                                        7.30       5.77     0.5%          9.9          7.8
+46   CU2501-01190       ETS GRAND ELEVEUR (NGONGANG KENMOE          7.20       5.69     0.5%          9.8          7.7
+47   CU2406-00131       YEMELONG                                    7.00       5.53     0.5%          9.5          7.5
+48   CU2502-01232       KUETE TANDA CELESTIN                        6.80       5.37     0.5%          9.2          7.3
+49   CU2407-00701       KENNY KADJIEU PATRICK WILSON                6.65       5.25     0.5%          9.0          7.1
+50   CU2407-00809       PROV LA FELICITE (MERAUDE BILOA MI          6.50       5.13     0.5%          8.8          7.0
+51   CU2504-01322       YANMO NGUEWOUO HUBERT                       6.50       5.33     0.5%          8.8          7.2
+52   CU2410-01138       ETS GLOBAL COMPAGNY AGROVET (ABOUB          6.50       5.33     0.5%          8.8          7.2
+53   CU2407-00918       PROVENDERIE NOURIX                          6.50       5.13     0.5%          8.8          7.0
+54   CU2502-01236       TSAFACK HENRIETTE                           6.45       5.10     0.5%          8.8          6.9
+55   CU2407-00946       PROV K-EMMA (Kenmeu Philippe)               6.25       4.94     0.5%          8.5          6.7
+56   CU2407-00422       ZEVELUS MBANWIE BEIN                        6.00       4.74     0.4%          8.1          6.4
+57   CU2503-01275       ETS LA PERCEVERANCE                         6.00       4.74     0.4%          8.1          6.4
+58   CU2510-14127       HAMIDOU MOUSSA                              5.70       4.67     0.4%          7.7          6.3
+59   DJIOMBOG FRANCOIS  DJIOMBOG FRANCOIS BONHEUR                   5.60       4.42     0.4%          7.6          6.0
+60   CU2407-00767       PROV DU PROGRES ZNCL00013                   5.50       4.34     0.4%          7.5          5.9
+61   KUITCHE SADEUH GA  KUITCHE SADEUH GABIN (ZDCL00053)            5.50       4.34     0.4%          7.5          5.9
+62   CU2602-14377       NJOUPOUO CHETOU                             5.40       4.27     0.4%          7.3          5.8
+63   CU2407-00362       PROVENDERIE MOKOLO                          5.35       4.23     0.4%          7.3          5.7
+64   CU2407-00203       TEFACK DASSI HERVE                          5.25       4.25     0.4%          7.1          5.8
+65   CU2407-00710       KOAGNE TCHOUDA                              5.25       4.15     0.4%          7.1          5.6
+66   CU2407-00766       MAISON DU FERMIER ZNCL00041 (PROVE          4.90       3.87     0.4%          6.7          5.3
+67   CU2502-01237       TCHEUTCHOUA TCHINDA ERIC                    4.90       3.87     0.4%          6.7          5.3
+68   CU2407-00952       TCHEUMTCHOUA DANIEL                         4.90       3.87     0.4%          6.7          5.3
+69   CU2410-01125       Monguh Ernest ningha                        4.80       3.79     0.4%          6.5          5.1
+70   CU2512-14195       TEKO NGHOJIO PATRICK DUPLEX                 4.80       3.79     0.4%          6.5          5.1
+71   CU2601-14339       MEFIRE HERVE MARIUS                         4.80       3.79     0.4%          6.5          5.1
+72   CU2407-00915       FEUDJIO MAURICETTE                          4.75       3.75     0.3%          6.4          5.1
+73   CU2505-13365       WAN POULTRY FARMING AND TRANSFORMI          4.50       3.56     0.3%          6.1          4.8
+74   CU2508-13626       JIATSA ALICE MA BLANCHE LAURE               4.50       3.56     0.3%          6.1          4.8
+75   CU2407-00552       DOMTCHUENG K MICHEL                         4.40       3.48     0.3%          6.0          4.7
+76   CU2407-00977       DJUIKO NANDJOU FRANCKY JORDAN               4.25       3.36     0.3%          5.8          4.6
+77   CU2503-01271       YENDE MONGBET ZAKARIAOU                     4.20       3.32     0.3%          5.7          4.5
+78   CU2508-13453       MEZE AGRIFINE                               4.20       3.44     0.3%          5.7          4.7
+79   CU2504-13354       PROVENDERIE FODJO                           4.15       3.28     0.3%          5.6          4.5
+80   CU2407-00693       KENGNE ROGER                                4.10       3.24     0.3%          5.6          4.4
+81   CU2407-00825       TAMO JEAN ROBERT                            4.05       3.20     0.3%          5.5          4.3
+82   CU2504-01321       KAKANOU PIERRE                              4.00       3.28     0.3%          5.4          4.5
+83   CU2410-01131       TANG INNOCENT                               4.00       3.16     0.3%          5.4          4.3
+84   CU2407-00492       CHEF BAYANGAM                               4.00       3.16     0.3%          5.4          4.3
+85   CU2407-00266       EMMANUEL WIRSENYUY                          4.00       3.16     0.3%          5.4          4.3
+86   CU2407-00565       EBOUE                                       4.00       3.16     0.3%          5.4          4.3
+87   CU2407-00367       PROV TAGNE                                  3.90       3.08     0.3%          5.3          4.2
+88   CU2407-00198       ROCHE KENGNE RAYMOND                        3.80       3.04     0.3%          5.2          4.1
+89   CU2603-14426       PROVENDERIE POPULAIRE                       3.80       3.00     0.3%          5.2          4.1
+90   CU2504-13344       POUOMEGNE THIERRY (POUOMEGNE THIER          3.75       2.98     0.3%          5.1          4.1
+91   CU2407-00798       MOUNCHILI IVAN                              3.75       2.96     0.3%          5.1          4.0
+92   CU2407-00385       ETS MBAGA                                   3.70       3.03     0.3%          5.0          4.1
+93   CU2409-01088       Nom Nzontheu paul                           3.65       2.88     0.3%          5.0          3.9
+94   CU2407-00158       TEJIATSA BLAISE                             3.50       2.74     0.3%          4.8          3.7
+95   CU2407-00791       MOFFO BERTIN                                3.50       2.77     0.3%          4.8          3.8
+96   CU2502-01211       TCHOUWA TCHAPDA ROMUALD                     3.50       2.87     0.3%          4.8          3.9
+97   PROV. MONT DES OL  PROV. MONT DES OLIVERS                      3.50       2.77     0.3%          4.8          3.8
+98   CU2603-14425       KEUBOU KUEBOU BORIS                         3.50       2.77     0.3%          4.8          3.8
+99   CU2407-00465       PHAVETA                                     3.45       2.73     0.3%          4.7          3.7
+100  MARSHAL FARMERS'   MARSHAL FARMERS' COOPERATIVE LIMIT          3.45       2.73     0.3%          4.7          3.7
+101  CU2604-14459       MAKOUGANG KEUMBOU HERMINE                   3.45       2.73     0.3%          4.7          3.7
+102  CU2407-00566       ELARO                                       3.35       2.65     0.2%          4.5          3.6
+103  CU2504-01314       PROV DU CENTRE                              3.30       2.61     0.2%          4.5          3.5
+104  CU2409-01087       SOUH CHRISTELLE (SOUH CHRISTELLE)           3.30       2.61     0.2%          4.5          3.5
+105  CU2411-01158       Tchinda Boniface                            3.25       2.57     0.2%          4.4          3.5
+106  CU2407-00771       MEGOUO PIMATCHI ULRICH AURELLE              3.25       2.57     0.2%          4.4          3.5
+107  CU2504-13343       FOTIE TAGOUMTSE CONSTANTIN LEGRAND          3.20       2.53     0.2%          4.3          3.4
+108  CU2502-01248       PROV BONHEUR                                3.10       2.45     0.2%          4.2          3.3
+109  CU2412-01177       TCHOMTCHOUA CIRILLE                         3.05       2.41     0.2%          4.1          3.3
+110  TCHINDA MICHEL AC  TCHINDA MICHEL ACHILE (CBF014)              3.05       2.41     0.2%          4.1          3.3
+111  CU2407-00978       ACHOITEG CLODINE ENDONG                     3.05       2.41     0.2%          4.1          3.3
+112  CU2407-00232       KAMDEM MERLIN                               3.05       2.44     0.2%          4.1          3.3
+113  CU2506-13402       NGAMBEKET HAMIDOU                           3.05       2.41     0.2%          4.1          3.3
+114  CU2407-00794       PENKA DEFFO DANIEL                          3.00       2.37     0.2%          4.1          3.2
+115  CU2504-01302       KUETCHE FOGANG THOMAS TIERY                 3.00       2.40     0.2%          4.1          3.3
+116  CU2508-13436       PROVENDERIE RENOVATION (TCHINDA AU          3.00       2.37     0.2%          4.1          3.2
+117  CU2502-01246       DOUNTIO GHISLAIN                            3.00       2.37     0.2%          4.1          3.2
+118  KUETCHE MUKAM ARM  KUETCHE MUKAM ARMAND AIME (ZDCL001          3.00       2.37     0.2%          4.1          3.2
+119  CU2410-01135       NDIKUM ZOUSSE JUNIOR                        2.95       2.33     0.2%          4.0          3.2
+120  CU2502-01263       ASSOCIATION FERME LA RENAISSAINCE           2.85       2.25     0.2%          3.9          3.1
+121  CU2407-00663       JIOGO                                       2.75       2.17     0.2%          3.7          2.9
+122  CU2507-13432       TALOM NGUENO DIEUDONNE                      2.75       2.17     0.2%          3.7          2.9
+123  M. FONKOU ROSTIN   M. FONKOU ROSTIN ALBERT (ZDCL00010          2.75       2.17     0.2%          3.7          2.9
+124  CU2504-01328       SOCIETE COOPERATIVE SIMPLIFIEE DES          2.75       2.17     0.2%          3.7          2.9
+125  CU2504-01334       PROV DU SAVOIR                              2.75       2.17     0.2%          3.7          2.9
+126  CU2602-14376       PEFOURA MOHAMED AWEL                        2.75       2.17     0.2%          3.7          2.9
+127  CU2602-14397       GIC PATBEN FARM (GROUPE D'INITIATI          2.75       2.17     0.2%          3.7          2.9
+128  CU2407-00805       TALLA SERGES ZFCL00037 (ELEVEUR)            2.70       2.13     0.2%          3.7          2.9
+129  CU2407-00439       MOUAFO MATHIAS                              2.65       2.09     0.2%          3.6          2.8
+130  CU2407-00694       KENGNE STEPHANE                             2.55       2.01     0.2%          3.5          2.7
+131  CU2407-00930       PROVENDERIE DJUIFFOUO                       2.55       2.01     0.2%          3.5          2.7
+132  CU2601-14257       DZOUGUELA MICHEL ETS AGRO                   2.50       1.98     0.2%          3.4          2.7
+133  CU2407-00659       ISSA OUMAROU                                2.50       1.98     0.2%          3.4          2.7
+134  GIC PRODEV         GIC PRODEV                                  2.50       1.98     0.2%          3.4          2.7
+135  ZOCL00002000       KUHLIFARM COOP-BOD (KUHLIFARM COOP          2.35       1.86     0.2%          3.2          2.5
+136  CU2407-00984       PROVENDERIE DONFACK                         2.35       1.86     0.2%          3.2          2.5
+137  CU2407-00944       PROVENDERIE le progrès                      2.35       1.86     0.2%          3.2          2.5
+138  CU2407-00933       SECRET ÉLEVAGE                              2.25       1.78     0.2%          3.1          2.4
+139  CU2407-00518       DJEM JOSEPH                                 2.25       1.78     0.2%          3.1          2.4
+140  CU2407-00966       PROVENDERIE MERVEILLES MESSASSI             2.25       1.78     0.2%          3.1          2.4
+-------------------------------------------------------------------------------------------------------------------
+     SOUS-TOTAL 20/80                                             1097.0      868.5    80.1%       1489.2
+     RESTE (80/20)                                                 272.4      215.6    19.9%        369.8
+     TOTAL                                                        1369.5     1084.1   100,0%       1859.0
+
+✓ Annexe sauvegardée dans annexe_20_80_par_type.json
+
+==============================================================================================================
+SYNTHÈSE — OBJECTIFS S2 PAR TYPE DE CONCENTRÉ
+==============================================================================================================
+Type       Clients S1    20/80   Vol S1 (t)   Obj S2 (t)   Croissance    CA S1 (M)  CA obj S2 (M)
+--------------------------------------------------------------------------------------------
+Chair             895      235       5472.2       7428.5       +35.8%       3393.3         4606.4
+Ponte             399       75       1740.3       2362.5       +35.8%       1251.7         1699.2
+Porc              533      140       1369.5       1859.0       +35.8%       1084.1         1471.7
+--------------------------------------------------------------------------------------------
+TOTAL            1827      450       8581.9      11650.0       +35.8%       5729.1         7777.3

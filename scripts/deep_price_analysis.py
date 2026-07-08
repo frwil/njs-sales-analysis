@@ -18,10 +18,19 @@ with open("scripts/zero_weight_products.json", "r") as f:
     ZERO_WEIGHT = set(json.load(f))
 
 WEIGHT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(KG|Kg|kg|KG|GRAMMES?|G|L)\b", re.IGNORECASE)
+
+# Manual weight overrides
+MANUAL_WEIGHTS = {
+    "M1051": 50.0,   # Maïs
+    "CF101": 1.0,    # Carbonate de calcium
+    "S101": 1.0,     # Sel
+    "P109": 25.0,    # Premix Multi Rumi
+}
+SERVICES_VALIDEE = {"PONT_BASCULE", "CONTRIBUTION_CARBURANT"}
+
 def parse_weight(desc, ref=""):
     if ref in ZERO_WEIGHT: return 0.0
-    if ref == "M1051": return 50.0
-    if ref == "P109": return 25.0
+    if ref in MANUAL_WEIGHTS: return MANUAL_WEIGHTS[ref]
     if not desc: return 0.0
     m = WEIGHT_RE.findall(str(desc))
     if not m: return 0.0
@@ -78,6 +87,19 @@ for sn in wb.sheetnames:
         qte = row[2] if len(row)>2 else 0
         ca = row[8] if len(row)>8 else 0
         agence = row[17] if len(row)>17 else None
+        etat = row[15] if len(row)>15 else None
+
+        # Filter: Livrée OR (service + Validée)
+        etat_str = str(etat) if etat else ""
+        if etat_str != "Livrée":
+            if not (ref in SERVICES_VALIDEE and etat_str == "Validée"):
+                continue
+
+        # Exclure M1051 (Maïs) à CA=0 (régularisation stock)
+        try: ca_check = float(ca) if ca else 0.0
+        except: ca_check = 0.0
+        if ref == "M1051" and ca_check == 0:
+            continue
 
         if ref not in pw: pw[ref] = parse_weight(desc, ref)
         w = pw[ref]

@@ -24,9 +24,24 @@ with open("/home/z/my-project/scripts/product_category_map.json", "r", encoding=
 with open("/home/z/my-project/scripts/excluded_clients.json", "r", encoding="utf-8") as f:
     excluded_tiers = set(json.load(f))
 
-# ===== WEIGHT PARSER =====
+# ===== WEIGHT PARSER (with manual overrides for misconfigured products) =====
 WEIGHT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(KG|Kg|kg|KG|GRAMMES?|G|L)\b", re.IGNORECASE)
-def parse_weight_kg(desc):
+
+# Manual weight overrides for products where the description lacks weight info
+MANUAL_WEIGHTS = {
+    "M1051": 50.0,   # Maïs en sacs de 50 kg (poids non spécifié dans la description)
+    "CF101": 1.0,    # Carbonate de calcium 1 kg (confirmé par ratio prix vs CF1012)
+    "S101": 1.0,     # Sel en sachets de 1 kg
+}
+
+# Services dont l'état 'Validée' doit être inclus (jamais 'Livrée')
+SERVICES_VALIDEE = {"PONT_BASCULE", "CONTRIBUTION_CARBURANT"}
+
+def parse_weight_kg(ref, desc):
+    """Retourne le poids en kg. Override manuel si présent, sinon regex sur la description."""
+    ref_str = str(ref).strip() if ref else ""
+    if ref_str in MANUAL_WEIGHTS:
+        return MANUAL_WEIGHTS[ref_str]
     if not desc: return 0.0
     matches = WEIGHT_RE.findall(str(desc))
     if not matches: return 0.0
@@ -88,14 +103,27 @@ for sheet_name in wb_src.sheetnames:
         qte = row[2] if len(row) > 2 else 0
         ca_ht = row[8] if len(row) > 8 else 0
         agence = row[17] if len(row) > 17 else None
+        etat = row[15] if len(row) > 15 else None
 
         ref_prod_str = str(ref_prod).strip() if ref_prod is not None else ""
         if not ref_prod_str: continue
+
+        # Filter: Livrée OR (service + Validée)
+        etat_str = str(etat) if etat else ""
+        if etat_str != "Livrée":
+            if not (ref_prod_str in SERVICES_VALIDEE and etat_str == "Validée"):
+                continue
+
+        # Exclure M1051 (Maïs) à CA=0 (régularisation stock SPC)
+        try: ca_check = float(ca_ht) if ca_ht is not None else 0.0
+        except: ca_check = 0.0
+        if ref_prod_str == "M1051" and ca_check == 0:
+            continue
+
         category = PRODUCT_CATEGORY.get(ref_prod_str, "DIVERS")
 
-        # Compute weight
-        # We don't have product_weight pre-loaded; parse from desc
-        weight_kg = parse_weight_kg(desc)
+        # Compute weight (with manual override)
+        weight_kg = parse_weight_kg(ref_prod_str, desc)
 
         try: qte_f = float(qte) if qte is not None else 0.0
         except: qte_f = 0.0

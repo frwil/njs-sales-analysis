@@ -19,14 +19,21 @@ SRC_2025 = "/home/z/my-project/upload/86d96135-9db7-45bc-bba6-a69efa2c5ee3.xlsx"
 with open("/home/z/my-project/scripts/product_category_map.json", "r", encoding="utf-8") as f:
     PRODUCT_CATEGORY = json.load(f)
 
-# Override: Maïs weight = 50kg
-MAIS_WEIGHT = 50.0  # kg per sac
+# Override: Manual weights for misconfigured products
+MANUAL_WEIGHTS = {
+    "M1051": 50.0,   # Maïs en sacs de 50 kg
+    "CF101": 1.0,    # Carbonate de calcium 1 kg (confirmé par ratio prix vs CF1012)
+    "S101": 1.0,     # Sel en sachets de 1 kg
+}
+
+# Services dont l'état 'Validée' doit être inclus (jamais 'Livrée')
+SERVICES_VALIDEE = {"PONT_BASCULE", "CONTRIBUTION_CARBURANT"}
 
 WEIGHT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(KG|Kg|kg|KG|GRAMMES?|G|L)\b", re.IGNORECASE)
 def parse_weight_kg(desc, ref=""):
-    # Special case: Maïs has no weight in description, use 50kg
-    if ref == "M1051":
-        return MAIS_WEIGHT
+    # Manual override first
+    if ref in MANUAL_WEIGHTS:
+        return MANUAL_WEIGHTS[ref]
     if not desc: return 0.0
     matches = WEIGHT_RE.findall(str(desc))
     if not matches: return 0.0
@@ -62,9 +69,23 @@ for sheet_name in wb.sheetnames:
         desc = row[1] if len(row) > 1 else None
         qte = row[2] if len(row) > 2 else 0
         ca_ht = row[8] if len(row) > 8 else 0
+        etat = row[15] if len(row) > 15 else None
 
         ref_prod_str = str(ref_prod).strip() if ref_prod is not None else ""
         if not ref_prod_str: continue
+
+        # Filter: Livrée OR (service + Validée)
+        etat_str = str(etat) if etat else ""
+        if etat_str != "Livrée":
+            if not (ref_prod_str in SERVICES_VALIDEE and etat_str == "Validée"):
+                continue
+
+        # Exclure M1051 (Maïs) à CA=0 (régularisation stock)
+        try: ca_check = float(ca_ht) if ca_ht is not None else 0.0
+        except: ca_check = 0.0
+        if ref_prod_str == "M1051" and ca_check == 0:
+            continue
+
         category = PRODUCT_CATEGORY.get(ref_prod_str, "DIVERS")
 
         if ref_prod_str not in product_weight:
@@ -135,7 +156,7 @@ for row in ws2.iter_rows(min_row=2, values_only=True):
         qte = row[2] if len(row) > 2 else 0
         try: qte_f = float(qte) if qte else 0
         except: qte_f = 0
-        vol_t = qte_f * MAIS_WEIGHT / 1000.0
+        vol_t = qte_f * MANUAL_WEIGHTS["M1051"] / 1000.0
 
     month = None
     if date_cmd:

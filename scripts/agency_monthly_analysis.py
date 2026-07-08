@@ -16,14 +16,18 @@ SRC_OBJ_S2 = "/home/z/my-project/upload/DOC-20260706-WA0017.xlsx"
 with open("/home/z/my-project/scripts/product_category_map.json", "r") as f:
     PRODUCT_CATEGORY = json.load(f)
 
-# Fix P109 weight
-MAIS_WEIGHT = 50.0
-P109_WEIGHT = 25.0
+# Manual weight overrides for misconfigured products
+MANUAL_WEIGHTS = {
+    "M1051": 50.0,   # Maïs en sacs de 50 kg
+    "CF101": 1.0,    # Carbonate de calcium 1 kg
+    "S101": 1.0,     # Sel en sachets de 1 kg
+    "P109": 25.0,    # Premix Multi Rumi 25 kg
+}
+SERVICES_VALIDEE = {"PONT_BASCULE", "CONTRIBUTION_CARBURANT"}
 
 WEIGHT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(KG|Kg|kg|KG|GRAMMES?|G|L)\b", re.IGNORECASE)
 def parse_weight_kg(desc, ref=""):
-    if ref == "M1051": return MAIS_WEIGHT
-    if ref == "P109": return P109_WEIGHT
+    if ref in MANUAL_WEIGHTS: return MANUAL_WEIGHTS[ref]
     if not desc: return 0.0
     matches = WEIGHT_RE.findall(str(desc))
     if not matches: return 0.0
@@ -72,9 +76,23 @@ for sn in wb.sheetnames:
         qte = row[2] if len(row)>2 else 0
         ca = row[8] if len(row)>8 else 0
         agence = row[17] if len(row)>17 else None
+        etat = row[15] if len(row)>15 else None
 
         ref_str = str(ref_prod).strip() if ref_prod else ""
         if not ref_str: continue
+
+        # Filter: Livrée OR (service + Validée)
+        etat_str = str(etat) if etat else ""
+        if etat_str != "Livrée":
+            if not (ref_str in SERVICES_VALIDEE and etat_str == "Validée"):
+                continue
+
+        # Exclure M1051 (Maïs) à CA=0 (régularisation stock)
+        try: ca_check = float(ca) if ca else 0.0
+        except: ca_check = 0.0
+        if ref_str == "M1051" and ca_check == 0:
+            continue
+
         cat = PRODUCT_CATEGORY.get(ref_str, "DIVERS")
 
         if ref_str not in product_weight_cache:

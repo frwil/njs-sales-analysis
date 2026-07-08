@@ -18,13 +18,13 @@ with open("/home/z/my-project/scripts/excluded_clients.json", "r", encoding="utf
 COMPTOIR_RE = re.compile(r"CLIENTS?\s+COMPTOIR", re.IGNORECASE)
 INTERNAL_RE = re.compile(r"FILIALE\s+GROUPE\s+NJS|SOLDE\s+COMPTA|BELGOCAM\b|NJS\s+GROUP\b", re.IGNORECASE)
 
-# Concentrés sub-categories
+# Concentrés sub-categories (corrigé selon descriptions réelles produits)
 CONC_SUBCATS = {
     "BELGO 10% Chair": {"C104", "C1042", "C1043", "C1044"},
-    "BELGO 10% Porc": {"C105", "C1053", "C1054", "C1055"},
+    "BELGO 5% Chair": {"C105", "C1053", "C1054", "C1055"},
     "BELGO 10% Ponte": {"C102", "C1022"},
-    "BELGO 5% Chair": {"C103"},
     "BELGO 5% Ponte": {"C101"},
+    "BELGO 10% Porc": {"C103"},
     "BELGO Ruminant": {"C108"},
     "BELGO Rabbit": {"ALAP25"},
 }
@@ -82,9 +82,16 @@ for sheet_name in wb.sheetnames:
         qte = row[2] if len(row) > 2 else 0
         ca_ht = row[8] if len(row) > 8 else 0
         agence = row[17] if len(row) > 17 else None
+        etat = row[15] if len(row) > 15 else None
 
         ref_prod_str = str(ref_prod).strip() if ref_prod is not None else ""
         if ref_prod_str not in CONC_REFS: continue
+
+        # Filter: Livrée OR (service + Validée)
+        etat_str = str(etat) if etat else ""
+        if etat_str != "Livrée":
+            # Pour les CONCENTRES, on ne garde que Livrée (pas de services)
+            continue
 
         if ref_prod_str not in product_weight_cache:
             product_weight_cache[ref_prod_str] = parse_weight_kg(desc)

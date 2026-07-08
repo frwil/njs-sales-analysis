@@ -1,0 +1,216 @@
+{
+  "audit": {
+    "Livrée": {
+      "TOURTEAUX": {
+        "lignes": 17677,
+        "vol_t": 29061.475,
+        "ca_m": 9437.426044
+      },
+      "CONCENTRES": {
+        "lignes": 21658,
+        "vol_t": 9075.404,
+        "ca_m": 6064.377053
+      },
+      "INGREDIENTS": {
+        "lignes": 12561,
+        "vol_t": 2382.3420000000006,
+        "ca_m": 1070.5733827299987
+      },
+      "ALIMENT COMPLET": {
+        "lignes": 5879,
+        "vol_t": 545.16,
+        "ca_m": 470.569816
+      },
+      "PREMIX": {
+        "lignes": 648,
+        "vol_t": 68.825,
+        "ca_m": 126.044
+      },
+      "MATERIEL ELEVAGE": {
+        "lignes": 906,
+        "vol_t": 10.2725,
+        "ca_m": 128.8032
+      },
+      "COMPLEMENT ALIMENTAIRE": {
+        "lignes": 969,
+        "vol_t": 2.96,
+        "ca_m": 15.1805
+      },
+      "DIVERS": {
+        "lignes": 393,
+        "vol_t": 2.105,
+        "ca_m": 4.14825
+      },
+      "ALVEOLE": {
+        "lignes": 28,
+        "vol_t": 0.0,
+        "ca_m": 13.7785
+      }
+    },
+    "Brouillon": {
+      "COMPLEMENT ALIMENTAIRE": {
+        "lignes": 12,
+        "vol_t": 0.052,
+        "ca_m": 0.311
+      },
+      "ALIMENT COMPLET": {
+        "lignes": 25,
+        "vol_t": 3.5,
+        "ca_m": 2.907076
+      },
+      "TOURTEAUX": {
+        "lignes": 76,
+        "vol_t": 163.581,
+        "ca_m": 52.325921
+      },
+      "CONCENTRES": {
+        "lignes": 91,
+        "vol_t": 70.065,
+        "ca_m": 44.562164
+      },
+      "INGREDIENTS": {
+        "lignes": 81,
+        "vol_t": 5.548,
+        "ca_m": 7.95618779
+      },
+      "DIVERS": {
+        "lignes": 1,
+        "vol_t": 0.0,
+        "ca_m": 0.002
+      },
+      "PREMIX": {
+        "lignes": 8,
+        "vol_t": 0.475,
+        "ca_m": 0.906
+      },
+      "MATERIEL ELEVAGE": {
+        "lignes": 13,
+        "vol_t": 0.055,
+        "ca_m": 4.8314
+      }
+    },
+    "Annulée": {
+      "TOURTEAUX": {
+        "lignes": 124,
+        "vol_t": 435.732,
+        "ca_m": 144.497233
+      },
+      "CONCENTRES": {
+        "lignes": 168,
+        "vol_t": 91.693,
+        "ca_m": 60.614463
+      },
+      "INGREDIENTS": {
+        "lignes": 82,
+        "vol_t": 3.461,
+        "ca_m": 5.398725049999999
+      },
+      "MATERIEL ELEVAGE": {
+        "lignes": 15,
+        "vol_t": 0.1105,
+        "ca_m": 4.6615
+      },
+      "PREMIX": {
+        "lignes": 3,
+        "vol_t": 0.1,
+        "ca_m": 0.188
+      },
+      "ALIMENT COMPLET": {
+        "lignes": 53,
+        "vol_t": 4.71,
+        "ca_m": 4.164282
+      },
+      "COMPLEMENT ALIMENTAIRE": {
+        "lignes": 11,
+        "vol_t": 0.042,
+        "ca_m": 0.359
+      },
+      "DIVERS": {
+        "lignes": 2,
+        "vol_t": 0.1,
+        "ca_m": 0.087
+      }
+    },
+    "En cours": {
+      "TOURTEAUX": {
+        "lignes": 10,
+        "vol_t": 147.15,
+        "ca_m": 47.8853
+      },
+      "INGREDIENTS": {
+        "lignes": 7,
+        "vol_t": 0.845,
+        "ca_m": 1.2079413700000001
+      },
+      "CONCENTRES": {
+        "lignes": 13,
+        "vol_t": 9.4,
+        "ca_m": 6.01934
+      },
+      "ALIMENT COMPLET": {
+        "lignes": 4,
+        "vol_t": 1.25,
+        "ca_m": 1.0
+      },
+      "MATERIEL ELEVAGE": {
+        "lignes": 2,
+        "vol_t": 0.0,
+        "ca_m": 0.28
+      }
+    },
+    "Validée": {
+      "ALIMENT COMPLET": {
+        "lignes": 6,
+        "vol_t": 0.375,
+        "ca_m": 0.33035
+      },
+      "CONCENTRES": {
+        "lignes": 6,
+        "vol_t": 16.1,
+        "ca_m": 10.07298
+      },
+      "TOURTEAUX": {
+        "lignes": 3,
+        "vol_t": 16.6,
+        "ca_m": 5.33598
+      },
+      "PREMIX": {
+        "lignes": 2,
+        "vol_t": 1.0,
+        "ca_m": 1.85
+      },
+      "MATERIEL ELEVAGE": {
+        "lignes": 1,
+        "vol_t": 0.0,
+        "ca_m": 0.286
+      },
+      "INGREDIENTS": {
+        "lignes": 3,
+        "vol_t": 0.11,
+        "ca_m": 0.15687835
+      },
+      "DIVERS": {
+        "lignes": 1,
+        "vol_t": 0.0,
+        "ca_m": 0.003
+      }
+    },
+    "": {
+      "DIVERS": {
+        "lignes": 6,
+        "vol_t": 0.0,
+        "ca_m": 17752.52821729
+      }
+    }
+  },
+  "a_venir": {
+    "lignes": 58,
+    "vol_t": 192.83,
+    "ca_m": 74.42776972
+  },
+  "livree": {
+    "lignes": 60719,
+    "vol_t": 41148.5435,
+    "ca_m": 17330.90074573
+  }
+}

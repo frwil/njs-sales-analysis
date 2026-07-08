@@ -3586,6 +3586,102 @@ ws.add_chart(chart_pie2, f"J5")
 
 print(f"  Sheet 26 (Synergie Piglet x Conc Porc) built — {n_piglet} clients Piglet, {n_piglet_and_porc} cross-sell ({pct_synergy_piglet:.1f}%)")
 
+# ===== SHEET 27-30: ANNEXE 20/80 PAR TYPE DE CONCENTRÉS =====
+import json as _json
+with open('/home/z/my-project/scripts/annexe_20_80_par_type.json', 'r', encoding='utf-8') as _f:
+    _annexe = _json.load(_f)
+
+# Sheet 27: Synthèse annexe
+ws = wb.create_sheet("27. Annexe 20-80 Synthèse")
+headers = ["Type", "Clients S1", "Top 20/80", "Vol S1 (t)", "CA S1 (M)", "Obj S2 (t)", "Obj S2 CA (M)", "Croissance"]
+ws.append(headers)
+for col in range(1, len(headers)+1):
+    c = ws.cell(row=1, column=col)
+    c.font = Font(bold=True, color="FFFFFF")
+    c.fill = HEADER_FILL
+    c.alignment = Alignment(horizontal='center', vertical='center')
+    c.border = thin_border
+
+row_idx = 2
+for t in ["Chair", "Ponte", "Porc"]:
+    if t not in _annexe: continue
+    d = _annexe[t]
+    croissance = (d["obj_s2_t"]/d["total_vol_t"]-1)*100 if d["total_vol_t"] > 0 else 0
+    ws.cell(row=row_idx, column=1, value=t)
+    ws.cell(row=row_idx, column=2, value=d["total_clients"])
+    ws.cell(row=row_idx, column=3, value=d["top_20_80_count"])
+    ws.cell(row=row_idx, column=4, value=round(d["total_vol_t"], 1))
+    ws.cell(row=row_idx, column=5, value=round(d["total_ca_m"], 1))
+    ws.cell(row=row_idx, column=6, value=round(d["obj_s2_t"], 0))
+    # CA obj S2 = obj_t * prix_moyen_S1
+    prix_moyen = d["total_ca_m"] / d["total_vol_t"] * 1000 if d["total_vol_t"] > 0 else 0
+    ws.cell(row=row_idx, column=7, value=round(d["obj_s2_t"] * prix_moyen / 1000, 1))
+    ws.cell(row=row_idx, column=8, value=f"+{croissance:.1f}%")
+    row_idx += 1
+
+# Total
+total_clients = sum(_annexe[t]["total_clients"] for t in _annexe)
+total_2080 = sum(_annexe[t]["top_20_80_count"] for t in _annexe)
+total_vol = sum(_annexe[t]["total_vol_t"] for t in _annexe)
+total_ca = sum(_annexe[t]["total_ca_m"] for t in _annexe)
+total_obj = sum(_annexe[t]["obj_s2_t"] for t in _annexe)
+prix_moyen_global = total_ca / total_vol * 1000 if total_vol > 0 else 0
+total_obj_ca = total_obj * prix_moyen_global / 1000
+ws.cell(row=row_idx, column=1, value="TOTAL")
+ws.cell(row=row_idx, column=2, value=total_clients)
+ws.cell(row=row_idx, column=3, value=total_2080)
+ws.cell(row=row_idx, column=4, value=round(total_vol, 1))
+ws.cell(row=row_idx, column=5, value=round(total_ca, 1))
+ws.cell(row=row_idx, column=6, value=round(total_obj, 0))
+ws.cell(row=row_idx, column=7, value=round(total_obj_ca, 1))
+ws.cell(row=row_idx, column=8, value=f"+{(total_obj/total_vol-1)*100:.1f}%")
+for col in range(1, 9):
+    c = ws.cell(row=row_idx, column=col)
+    c.font = Font(bold=True)
+    c.fill = PARETO_FILL
+
+# Column widths
+for col_letter, w in zip("ABCDEFGH", [10, 12, 12, 12, 12, 12, 14, 12]):
+    ws.column_dimensions[col_letter].width = w
+
+print(f"  Sheet 27 (Annexe 20/80 Synthèse) built")
+
+# Sheets 28-30: Top 20/80 par type
+sheet_names_map = {"Chair": "28. Annexe 20-80 Chair", "Ponte": "29. Annexe 20-80 Ponte", "Porc": "30. Annexe 20-80 Porc"}
+for type_conc, sheet_name in sheet_names_map.items():
+    ws = wb.create_sheet(sheet_name)
+    headers = ["Rang", "Code client", "Nom client", "Vol S1 (t)", "CA S1 (M FCFA)", "% vol type", "Obj S2 (t)", "CA obj S2 (M)", "Prix moyen (k/t)"]
+    ws.append(headers)
+    for col in range(1, len(headers)+1):
+        c = ws.cell(row=1, column=col)
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = HEADER_FILL
+        c.alignment = Alignment(horizontal='center', vertical='center')
+        c.border = thin_border
+
+    if type_conc in _annexe:
+        for c_data in _annexe[type_conc]["clients"]:
+            ws.append([
+                c_data["rang"],
+                c_data["code"],
+                c_data["nom"],
+                c_data["vol_s1_t"],
+                c_data["ca_s1_m"],
+                c_data["pct_vol"],
+                c_data["obj_s2_t"],
+                c_data["obj_s2_ca_m"],
+                c_data["prix_moyen_k_t"]
+            ])
+    
+    # Column widths
+    for col_letter, w in zip("ABCDEFGHI", [6, 18, 40, 12, 14, 10, 12, 14, 14]):
+        ws.column_dimensions[col_letter].width = w
+    
+    # Freeze first row
+    ws.freeze_panes = "A2"
+    
+    print(f"  Sheet {sheet_name.split('.')[0]} ({type_conc}) built — {len(_annexe.get(type_conc, {}).get('clients', []))} clients")
+
 # ===== SAVE =====
 wb.save(OUT)
 print(f"\nSaved: {OUT}")
