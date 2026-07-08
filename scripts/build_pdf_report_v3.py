@@ -508,123 +508,122 @@ def build_story():
         BODY
     ))
     story.append(Paragraph(
-        "Le périmètre géographique couvre l'ensemble du Cameroun via 16 agences BELGOCAM : FAMLA, MESSASSI, NDOBO, DJELENG, NKONGSAMBA, AHALA, BERTOUA, NGAOUNDERE, BAMENDA-MBOUDA, VILLAGE, BUEA, NKOABANG, PK11, NKOLBISSON, ainsi que 4 points SPC (BAF-CHEFFERIE, BUEA, YASSA, NDERE).",
+        "Le périmètre géographique couvre l'ensemble du Cameroun via 16 agences BELGOCAM : FAMLA, MESSASSI, NDOBO, DJELENG, NKONGSAMBA, AHALA, BERTOUA, NGAOUNDERE, BAMENDA-MBOUDA, VILLAGE, BUEA, NKOABANG, PK11, NKOLBISSON, ainsi que des points SPC. "
+        "Les données 2025 (année complète) et les objectifs 2026 (par catégorie, par agence, en volume et en CA) ont également été intégrés pour permettre les comparaisons YoY et ventes vs objectifs.",
         BODY
     ))
 
-    story.append(Paragraph("1.2 Exclusion des clients internes", H2))
+    story.append(Paragraph("1.2 Catégories de produits", H2))
     story.append(Paragraph(
-        "Pour obtenir une image fidèle du marché réel, 35 clients internes ont été exclus de l'analyse :",
-        BODY
-    ))
-    excl_data = [
-        ["Catégorie", "Nombre", "CA exclu (FCFA)", "Description"],
-        ["Filiales NJS", "1", "676 653 750", "PROVENDERIE DU CENTRE (PDC) — filiale officielle Groupe NJS"],
-        ["SPC magasins internes", "4", "103 024 000", "SPC + comptoirs SPC 4e étage, Village, PK15"],
-        ["Clients comptoirs agences", "21", "775 094 760", "CLIENTS COMPTOIR BERTOUA, MESSASSI, FAMLA, PK11, NKOLBISSON, AHALA, NGAOUNDERE, NKOABANG, BAF-DJELENG, BUEA, YAOUNDE, NDERE, etc."],
-        ["Soldes comptables", "9", "56 120 550", "SOLDE COMPTA — écritures de régularisation"],
-        ["TOTAL EXCLUS", "35", "1 610 893 060", "≈ 8,5% du CA brut — réintégration évitée"],
-    ]
-    story.append(make_table(excl_data, col_widths=[3.5*cm, 1.5*cm, 3.5*cm, 8.5*cm]))
-    story.append(Spacer(1, 0.3*cm))
-    story.append(Paragraph(
-        "Base d'analyse finale : <b>1 359 clients actifs</b>, représentant un CA HT cumulé de <b>17,3 milliards FCFA</b> sur 6 mois.",
-        BODY_BOLD
-    ))
-
-    story.append(Paragraph("1.3 Produits ciblés et catégories", H2))
-    story.append(Paragraph(
-        "L'analyse se focalise sur 16 produits \"ciblés\" représentant le cœur de l'activité BELGOCAM, répartis en 3 sous-catégories :",
+        "L'analyse couvre 10 catégories de produits BELGOCAM, dont 2 catégories majeures représentant plus de 95% du volume :",
         BODY
     ))
     prod_data = [
-        ["Catégorie", "Nb produits", "Références", "Volume 6 mois (lignes)"],
-        ["Tourteaux de soja", "4", "T102 (50Kg), T1021 (1Kg), T1023 (5Kg), T1024 (25Kg)", "16 730 lignes (40% du volume)"],
-        ["BELGO 10%", "10", "C104 Chair 50Kg, C1042/43/44, C105 Porc 50Kg + formats, C102 Ponte 50Kg + 5Kg", "14 940 lignes"],
-        ["BELGO 5%", "2", "C103 Chair 50Kg, C101 Ponte 50Kg", "7 645 lignes"],
-        ["TOTAL CIBLÉ", "16", "—", "39 315 lignes (≈ 64% des lignes Livrées)"],
+        ["Catégorie", "Produits principaux", "Vol S1 2026 (t)", "CA S1 (M FCFA)", "% CA"],
+        ["TOURTEAUX", "T102 Soja 50Kg + formats", "29 062", "9 437", "54,4%"],
+        ["CONCENTRES", "C104 BELGO 10% Chair, C105 Porc, C103/C101 5%, etc.", "9 075", "6 064", "35,0%"],
+        ["INGREDIENTS", "Maïs (M1051), Lysine, Méthionine, Farine poisson, etc.", "3 759", "678", "3,9%"],
+        ["ALIMENT COMPLET", "Chick Booster, Piglet Booster, BELGO Rabbit, BELGO Fish", "545", "471", "2,7%"],
+        ["COMPLEMENT ALIM.", "BELGOFOS, BELGOTOX, BELGOKILL, compléments liquides", "306", "410", "2,4%"],
+        ["PREMIX", "P102N2 Chair, P104N2 Ponte, P109 Multi Rumi", "69", "126", "0,7%"],
+        ["MATERIEL ELEVAGE", "Abreuvoirs, grillages, cages, radiants (évalués en CA)", "—", "129", "0,7%"],
+        ["ALVEOLE", "Cartons à œufs, caisses (évalués en CA)", "—", "14", "0,1%"],
+        ["DIVERS", "Manuels, sacs, contribution carburant (évalués en CA)", "—", "12", "0,1%"],
+        ["TOTAL", "—", "42 816", "17 340", "100%"],
     ]
-    story.append(make_table(prod_data, col_widths=[3.2*cm, 1.5*cm, 7.5*cm, 5.6*cm]))
-    story.append(Spacer(1, 0.3*cm))
+    story.append(make_table(prod_data, col_widths=[3.2*cm, 5.5*cm, 2.2*cm, 2.2*cm, 1.2*cm], font_size=8))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "Une analyse complémentaire est également conduite sur les 12 concentrés seuls (BELGO 10% + BELGO 5%, sans le soja) car ils représentent <b>la plus grosse partie de la marge</b>. "
-        "Enfin, les gammes Chick Booster (CB100, CB101) et Piglet Booster (CB200, CB201) sont analysées pour étudier les synergies avec les concentrés.",
+        "Les CONCENTRÉS (BELGO 10% + BELGO 5%) représentent <b>la plus grosse partie de la marge</b> de BELGOCAM. "
+        "Les TOURTEAUX représentent le volume mais à faible marge unitaire. Le Maïs (3 623 t) est vendu en sacs de 50 kg. "
+        "Le matériel d'élevage, les alvéoles et divers sont évalués en CA uniquement (pas de volume en tonnes).",
         BODY
     ))
 
-    story.append(Paragraph("1.4 Méthodologie des analyses", H2))
+    story.append(Paragraph("1.3 Méthodologie des analyses", H2))
     story.append(Paragraph(
-        "<b>Pareto 20/80</b> : les clients sont triés par CA HT décroissant. Le seuil 20/80 est atteint quand la somme cumulée des CA atteint 80% du CA total. Les clients au-dessus du seuil sont marqués ★ (359 clients).",
+        "<b>Ventes vs Objectifs</b> : comparaison du volume et du CA réalisés vs les objectifs par catégorie et par agence. "
+        "Les objectifs CA sont fournis directement (pas calculés à partir du prix moyen). "
+        "Le taux d'atteinte = (réalisé / objectif) × 100.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>Pertes Q1 estimées (méthode fréquence)</b> : pour chaque client \"zéro achat\" en Q1, la perte est calculée comme suit :<br/>"
-        "Perte Q1 = Σ(moyenne mensuelle par produit en Q2) × Fréquence × 3 mois<br/>"
-        "où la moyenne mensuelle par produit = (volume total Q2 du produit) / (nombre de mois Q2 où le produit a été acheté), "
-        "et la fréquence = (nombre de mois Q2 avec achat de la catégorie ciblée) / 3. "
-        "Cette méthode pondère correctement les clients à forte fréquence (qui auraient acheté tous les mois en Q1) par rapport aux clients occasionnels.",
+        "<b>Analyse YoY (Year-over-Year)</b> : comparaison S1 2026 vs S1 2025 (et S2 2025 pour le forecast). "
+        "La croissance YoY = (S1 2026 - S1 2025) / S1 2025 × 100. "
+        "Le forecast S2 2026 = S2 2025 × (1 + croissance YoY) ± ajustement scénario.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>Transition Q1→Q2</b> : chaque client est classé selon son statut d'achat sur produits ciblés en Q1 (Zéro achat/Active) et Q2 (Zéro achat/Active), "
-        "ce qui donne 4 segments : Persistant (Zéro achat→Zéro achat), Réactivé (Zéro achat→Active, GAIN), Retenu (Active→Active), Churned (Active→Zéro achat, PERTE).",
+        "<b>Pareto 20/80</b> : les clients sont triés par CA HT décroissant. Le seuil 20/80 est atteint quand la somme cumulée des CA atteint 80% du CA total. "
+        "Les clients au-dessus du seuil sont marqués ★ (359 clients sur 1 359).",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Note sur l'exclusion des clients internes</b> : 35 clients internes (filiales NJS, SPC, comptoirs d'agences, soldes comptables) "
+        "sont exclus des analyses clients (zéro achat, transition, segmentation) pour obtenir une image fidèle du marché externe. "
+        "Ils sont en revanche <b>inclus dans les ventes vs objectifs</b> car ils constituent des canaux de vente internes. "
+        "Le détail de l'exclusion est présenté en section 5 (Analyse Zéro Achat).",
         BODY
     ))
 
     story.append(PageBreak())
 
     # ---------- PAGE 5: SECTION 2 - CHIFFRES CLES ----------
-    story.append(Paragraph("2. Chiffres clés et segmentation clients", H1))
+    story.append(Paragraph("2. Chiffres clés et performance globale", H1))
     story.append(section_divider())
 
-    story.append(Paragraph("2.1 Indicateurs globaux", H2))
+    story.append(Paragraph("2.1 Indicateurs business S1 2026", H2))
     cards2 = [
-        kpi_card("CA HT total 6 mois", "17,3 Md", "FCFA"),
-        kpi_card("Clients 20/80 (★)", "359", "26,4% des clients"),
-        kpi_card("CA des 20/80", "13,8 Md", "FCFA (80% du CA)"),
-        kpi_card("CA moyen / client", "12,7 M", "FCFA"),
+        kpi_card("CA HT S1", "17,34 Md", "FCFA (93,0% obj)"),
+        kpi_card("Volume S1", "42 816 t", "(103,8% obj)"),
+        kpi_card("Clients 20/80 (★)", "359", "80% du CA clients"),
+        kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
     ]
     story.append(kpi_row(cards2))
     story.append(Spacer(1, 0.5*cm))
 
-    story.append(Paragraph("2.2 Distribution de la fréquence d'achat (sur 6 mois)", H2))
-    freq_data = [
-        ["Fréquence (nb mois actifs)", "Nb clients", "% du total", "Catégorie"],
-        ["6 mois (fidèles parfaits)", "452", "33,3%", "Fidèles"],
-        ["5 mois", "141", "10,4%", "Très réguliers"],
-        ["4 mois", "131", "9,6%", "Réguliers"],
-        ["3 mois", "145", "10,7%", "Semi-fidèles"],
-        ["2 mois", "196", "14,4%", "Occasionnels"],
-        ["1 mois seulement", "294", "21,6%", "One-shot"],
+    story.append(Paragraph("2.2 Performance par catégorie (volume vs objectif)", H2))
+    perf_data = [
+        ["Catégorie", "Vol S1 (t)", "CA S1 (M FCFA)", "Obj vol S1 (t)", "% vol", "Obj CA S1 (M)", "% CA"],
+        ["TOURTEAUX", "29 062", "9 437", "26 685", "108,9%", "8 725", "108,2%"],
+        ["CONCENTRES", "9 075", "6 064", "12 542", "72,4%", "8 277", "73,3%"],
+        ["ALIMENT COMPLET", "545", "471", "514", "106,1%", "435", "108,2%"],
+        ["INGREDIENTS", "3 759", "678", "598", "628,5%", "810", "83,7%"],
+        ["COMPLEMENT ALIM.", "306", "410", "6", "5104%", "16", "2600%"],
+        ["PREMIX", "69", "126", "61", "112,8%", "113", "111,6%"],
+        ["MATERIEL ELEVAGE", "—", "129", "0", "—", "170", "75,8%"],
+        ["ALVEOLE", "—", "14", "0", "—", "91", "15,1%"],
+        ["TOTAL", "42 816", "17 340", "41 230", "103,8%", "18 641", "93,0%"],
     ]
-    story.append(make_table(freq_data, col_widths=[5*cm, 3*cm, 3*cm, 5*cm]))
-    story.append(Spacer(1, 0.3*cm))
+    story.append(make_table(perf_data, col_widths=[3*cm, 2*cm, 2.2*cm, 2.2*cm, 1.3*cm, 2*cm, 1.3*cm], font_size=8))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "Près d'un tiers des clients (452) sont fidèles sur les 6 mois — c'est une base solide. En revanche, 294 clients (21,6%) n'ont fait qu'un seul achat sur 6 mois, "
-        "ce qui représente un potentiel important de réactivation. La fréquence moyenne est de 3,5 mois d'achat par client.",
+        "Le volume global dépasse l'objectif (103,8%) grâce aux TOURTEAUX (108,9%) et au Maïs (INGREDIENTS 628%). "
+        "Mais le CA n'atteint que 93,0% de l'objectif — l'écart de 1 300 M FCFA provient principalement des CONCENTRES "
+        "(-2 213 M FCFA, 73,3% de l'objectif CA). Le matériel d'élevage et les alvéoles sous-performent en CA "
+        "(75,8% et 15,1%) mais ne pèsent que marginalement sur le total.",
         BODY
     ))
-    # Chart: Distribution fréquence
-    story.append(Spacer(1, 0.3*cm))
-    img = Image('/home/z/my-project/scripts/pdf_charts/chart8_frequence.png', width=14*cm, height=7.9*cm)
-    story.append(img)
-    story.append(Paragraph("Figure 1 — Distribution de la fréquence d'achat (6 mois)", CAPTION))
 
-    story.append(Paragraph("2.3 Top 5 agences par nombre de clients", H2))
+    story.append(Paragraph("2.3 Top agences par CA", H2))
     ag_data = [
-        ["Agence", "Clients", "CA HT 6 mois (FCFA)", "CA moyen/client", "% Clients zéro achat Q1"],
-        ["AGENCE FAMLA", "293", "4 359 027 250", "14,87 M", "19,1%"],
-        ["AGENCE MESSASSI", "167", "1 633 657 768", "9,78 M", "33,5%"],
-        ["AGENCE NDOBO", "154", "1 782 721 571", "11,58 M", "29,2%"],
-        ["AGENCE DJELENG", "107", "1 317 911 317", "12,32 M", "25,2%"],
-        ["AGENCE NKONGSAMBA", "97", "696 795 842", "7,18 M", "—"],
-        ["AGENCE NGAOUNDERE", "91", "522 685 737", "5,74 M", "34,1%"],
+        ["Agence", "CA HT 6 mois (M FCFA)", "% du CA total", "Vol S1 (t)", "% vol obj"],
+        ["FAMLA", "4 451", "25,7%", "10 791", "99,9%"],
+        ["NDOBO", "2 562", "14,8%", "8 902", "134,5%"],
+        ["MESSASSI", "1 762", "10,2%", "3 919", "95,7%"],
+        ["DJELENG", "1 343", "7,7%", "3 187", "105,4%"],
+        ["MBOUDA", "1 028", "5,9%", "2 387", "126,0%"],
+        ["VILLAGE", "949", "5,5%", "2 171", "127,8%"],
+        ["BERTOUA", "834", "4,8%", "1 686", "97,0%"],
+        ["Autres (6 agences)", "4 412", "25,4%", "9 773", "—"],
+        ["TOTAL", "17 340", "100%", "42 816", "103,8%"],
     ]
-    story.append(make_table(ag_data, col_widths=[4*cm, 1.5*cm, 4*cm, 3*cm, 3.5*cm]))
-    story.append(Spacer(1, 0.3*cm))
+    story.append(make_table(ag_data, col_widths=[3.5*cm, 3*cm, 2*cm, 2.5*cm, 2*cm], font_size=8))
+    story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "<b>Points d'attention :</b> MESSASSI (33,5%) et NGAOUNDERE (34,1%) ont plus d'un client sur trois en zéro achat Q1 — c'est anormal et mérite un diagnostic terrain. "
-        "FAMLA reste l'agence locomotive avec 293 clients et 4,36 Md FCFA de CA (25% du CA total).",
+        "FAMLA est l'agence locomotive (25,7% du CA). NDOBO sur-performe massivement en volume (134,5% de l'objectif). "
+        "Les analyses détaillées par agence (ventes vs objectifs, CONCENTRES par agence, tendances mensuelles) "
+        "sont présentées en section 3.",
         BODY
     ))
 
