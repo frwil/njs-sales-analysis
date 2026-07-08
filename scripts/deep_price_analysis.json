@@ -1,0 +1,131 @@
+{
+  "conc_subcat_price": {
+    "BELGO 10% Chair": {
+      "vol_t": 4538.909000000128,
+      "ca": 2905116324.0,
+      "price": 640047.2721528275
+    },
+    "BELGO 10% Porc": {
+      "vol_t": 1265.0199999999793,
+      "ca": 698652004.0,
+      "price": 552285.3425242379
+    },
+    "BELGO 10% Ponte": {
+      "vol_t": 46.274999999999984,
+      "ca": 27325415.0,
+      "price": 590500.5942733659
+    },
+    "BELGO 5% Chair": {
+      "vol_t": 1457.5499999999654,
+      "ca": 1155532880.0,
+      "price": 792791.2455833608
+    },
+    "BELGO 5% Ponte": {
+      "vol_t": 1767.599999999975,
+      "ca": 1277720430.0,
+      "price": 722856.093007478
+    }
+  },
+  "c104_formats": {
+    "C104": {
+      "vol_t": 4509.400000000128,
+      "ca": 2884737680.0,
+      "price": 639716.5210449102,
+      "desc": "BELGO 10% CHAIR 50Kg"
+    },
+    "C1044": {
+      "vol_t": 10.800000000000074,
+      "ca": 7298950.0,
+      "price": 675828.703703699,
+      "desc": "BELGO 10% CHAIR 25Kg"
+    },
+    "C1043": {
+      "vol_t": 14.57000000000007,
+      "ca": 10054980.0,
+      "price": 690115.3054220969,
+      "desc": "BELGO 10% CHAIR 5Kg"
+    },
+    "C1042": {
+      "vol_t": 4.138999999999997,
+      "ca": 3024714.0,
+      "price": 730783.7641942505,
+      "desc": "BELGO 10% CHAIR 1 Kg"
+    }
+  },
+  "mais_vs_other": {
+    "mais": {
+      "vol_t": 3591.7,
+      "ca": 425778750.0,
+      "price": 118545.18751566112
+    },
+    "other": {
+      "vol_t": 166.84099999999933,
+      "ca": 252026952.01000005,
+      "price": 1510581.6436607372
+    },
+    "mixed_price": 180337.45062512293
+  },
+  "region_data": {
+    "Centre": {
+      "vol_t": 10722.742799999925,
+      "ca": 5038761775.64001
+    },
+    "Littoral": {
+      "vol_t": 14158.461199999498,
+      "ca": 4811073249.92
+    },
+    "Ouest": {
+      "vol_t": 16364.826999999312,
+      "ca": 6822192432.450003
+    },
+    "Autre": {
+      "vol_t": 1570.1399999999876,
+      "ca": 668347037.7199997
+    }
+  },
+  "region_conc": {
+    "Centre": {
+      "vol_t": 3002.868000000004,
+      "ca": 2033570102.0
+    },
+    "Littoral": {
+      "vol_t": 2150.3459999999973,
+      "ca": 1362748064.0
+    },
+    "Ouest": {
+      "vol_t": 3604.9999999999673,
+      "ca": 2466084125.0
+    },
+    "?": {
+      "vol_t": 317.1900000000008,
+      "ca": 201974762.0
+    }
+  },
+  "agency_region": {
+    "Ahala": "Centre",
+    "Bertoua": "Centre",
+    "Buea": "Littoral",
+    "Djeleng": "Ouest",
+    "Famla": "Ouest",
+    "Mbouda": "Ouest",
+    "Messassi": "Centre",
+    "Ndobo": "Littoral",
+    "Ngaoundere": "Centre",
+    "Nkoabang": "Centre",
+    "Nkolbisson": "Centre",
+    "Nkongsamba": "Littoral",
+    "PK11": "Littoral",
+    "Village": "Littoral",
+    "SPC BAF-CHEFFERIE": "Ouest",
+    "SPC BUEA": "Centre",
+    "SPC KYE-OSSI": "Centre",
+    "SPC VILLAGE": "Littoral",
+    "SPC Village": "Littoral",
+    "SPC-DLA-BERI": "Littoral",
+    "SPC-DSCHANG": "Centre",
+    "SPC-NDERE": "Centre",
+    "SPC-TPO": "Centre",
+    "SPC-YASSA": "Littoral",
+    "PDC Emana": "Centre"
+  }
+}

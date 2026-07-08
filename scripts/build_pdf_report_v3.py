@@ -1154,8 +1154,137 @@ def build_story():
 
     story.append(PageBreak())
 
-    # ---------- 4.7 (was 4.6) Synthèse stratégique CONCENTRÉS ----------
-    story.append(Paragraph("4.7 Synthèse stratégique CONCENTRÉS", H2))
+    # ---------- 4.7 DEEP PRICE ANALYSIS ----------
+    story.append(KeepTogether([
+        Paragraph("4.7 Analyse prix approfondie — Sous-catégories, formats et régions", H2),
+        Paragraph(
+            "Approfondissement du diagnostic prix au niveau sous-catégorie, format produit et région. "
+            "Cette analyse révèle la structure tarifaire des concentrés et confirme la nature du problème (volume vs prix).",
+            BODY
+        ),
+    ]))
+    story.append(Spacer(1, 0.2*cm))
+
+    story.append(Paragraph("4.7.1 Prix par sous-catégorie de concentrés", H3))
+    conc_subcat_price = [
+        ["Sous-catégorie", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "Prix (USD/t)", "Lecture"],
+        ["BELGO 10% Chair", "4 539", "2 905", "640 047", "1 067", "Produit de volume — base"],
+        ["BELGO 5% Chair", "1 458", "1 156", "792 791", "1 321", "+24% vs 10% Chair — additifs premium"],
+        ["BELGO 10% Porc", "1 265", "699", "552 285", "920", "Le moins cher — segment porcin"],
+        ["BELGO 5% Ponte", "1 768", "1 278", "722 856", "1 205", "+23% vs 10% Ponte — additifs premium"],
+        ["BELGO 10% Ponte", "46", "27", "590 501", "984", "Quasi-disparu — faible volume"],
+    ]
+    story.append(make_table(conc_subcat_price, col_widths=[3*cm, 1.8*cm, 2*cm, 2.2*cm, 1.5*cm, 4.2*cm], font_size=7))
+    story.append(Spacer(1, 0.2*cm))
+
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartW_conc_subcat_price.png', width=14*cm, height=7*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 28 — Prix moyen par sous-catégorie de concentrés (S1 2026)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Insight clé — Le 5% est plus cher que le 10% :</b> le BELGO 5% Chair (792 791 FCFA/t) est 24% plus cher que le "
+        "BELGO 10% Chair (640 047 FCFA/t). Cette contre-intuition s'explique par la présence d'<b>additifs et ingrédients plus chers</b> "
+        "dans la formulation du 5%. Le 5% n'est pas un produit d'entrée de gamme — c'est un produit premium avec des additifs spécifiques "
+        "qui justifient le prix élevé. La migration observée du 10% vers le 5% (+6,1% YoY pour le 5% Chair vs -3,2% pour le 10% Chair) "
+        "est donc une <b>amélioration du mix marge</b> : les clients montent en gamme vers un produit plus cher. "
+        "C'est une bonne nouvelle que l'analyse volume seule ne capte pas.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- 4.7.2 C104 formats ----------
+    story.append(Paragraph("4.7.2 Prix par format — C104 (BELGO 10% Chair)", H3))
+    c104_fmt = [
+        ["Réf", "Format", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "% du volume C104"],
+        ["C104", "50 Kg", "4 509", "2 885", "639 717", "99,6%"],
+        ["C1044", "25 Kg", "11", "7", "675 829", "0,2%"],
+        ["C1043", "5 Kg", "15", "10", "690 115", "0,3%"],
+        ["C1042", "1 Kg", "4", "3", "730 784", "0,1%"],
+    ]
+    story.append(make_table(c104_fmt, col_widths=[1.5*cm, 1.5*cm, 2*cm, 2.2*cm, 2.2*cm, 2.5*cm], font_size=8))
+    story.append(Spacer(1, 0.2*cm))
+
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartX_c104_format_price.png', width=13*cm, height=7.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 29 — C104 : prix moyen par format (S1 2026)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "Le C104 est vendu à 99,6% en sacs de 50 Kg. Les formats plus petits (25 Kg, 5 Kg, 1 Kg) représentent moins de 1% du volume "
+        "mais affichent des prix supérieurs (+6% à +14% vs 50 Kg), ce qui reflète un coût de conditionnement plus élevé. "
+        "L'essentiel du volume C104 est donc en gros (50 Kg) — pas de problème de mix détail/gros sur ce produit. "
+        "L'opportunité serait de développer les petits formats pour les petits éleveurs, mais l'impact sur le CA serait marginal "
+        "compte tenu du volume actuel (< 30 t pour les petits formats vs 4 509 t en 50 Kg).",
+        BODY
+    ))
+
+    story.append(Spacer(1, 0.3*cm))
+
+    # ---------- 4.7.3 Maïs vs autres ----------
+    story.append(Paragraph("4.7.3 Séparation Maïs / autres ingrédients", H3))
+    mais_table = [
+        ["Composant", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "Lecture"],
+        ["Maïs (M1051)", "3 592", "426", "118 545", "Produit de volume, faible marge"],
+        ["Autres ingrédients", "167", "252", "1 510 582", "Lysine, méthionine, farine poisson — prix élevé"],
+        ["INGREDIENTS (mixte)", "3 759", "678", "180 337", "Le Maïs écrase le prix moyen (×8)"],
+    ]
+    story.append(make_table(mais_table, col_widths=[3.5*cm, 2*cm, 2.2*cm, 2.2*cm, 5.5*cm], font_size=8))
+    story.append(Spacer(1, 0.2*cm))
+
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartY_mais_vs_other.png', width=13*cm, height=7.3*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 30 — INGREDIENTS : séparation Maïs vs autres ingrédients (S1 2026)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "Le Maïs représente 96% du volume INGREDIENTS mais seulement 63% du CA. À 118 545 FCFA/t, il est 13× moins cher "
+        "que les autres ingrédients (1 510 582 FCFA/t). Le prix moyen INGREDIENTS de 180 337 FCFA/t est donc trompeur — "
+        "il ne reflète que le prix du Maïs. Pour les analyses de prix, il faut séparer le Maïs des autres ingrédients. "
+        "L'objectif INGREDIENTS (598 t) ne semble pas inclure le Maïs — d'où l'écart massif (628% d'atteinte). "
+        "Les objectifs 2027 doivent intégrer le Maïs dans le calcul.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- 4.7.4 Price by region ----------
+    story.append(Paragraph("4.7.4 Prix moyen par région", H3))
+    region_table = [
+        ["Région", "Vol (t)", "CA (M FCFA)", "Prix moy (FCFA/t)", "% CA", "Vol conc (t)", "Prix conc (FCFA/t)"],
+        ["Ouest", "16 365", "6 822", "416 881", "39,3%", "3 605", "684 073"],
+        ["Centre", "10 723", "5 039", "469 914", "29,1%", "3 003", "677 209"],
+        ["Littoral", "14 159", "4 811", "339 802", "27,7%", "2 150", "633 734"],
+        ["TOTAL", "41 247", "16 672", "404 302", "96,1%", "8 758", "671 614"],
+    ]
+    story.append(make_table(region_table, col_widths=[2*cm, 1.8*cm, 2*cm, 2.2*cm, 1.2*cm, 1.8*cm, 2.2*cm], font_size=8))
+    story.append(Spacer(1, 0.2*cm))
+
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartZ_price_by_region.png', width=15*cm, height=5.6*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 31 — Prix moyen par région : toutes catégories vs CONCENTRÉS (S1 2026)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    story.append(icr_block(
+        insights=[
+            "Le Littoral a le prix moyen global le plus bas (339 802 FCFA/t) — suggère un mix plus orienté volume/gros (Ndobo est la 2e agence en volume, très axée tourteaux).",
+            "Le Centre a le prix moyen global le plus élevé (469 914 FCFA/t) — suggère un mix plus orienté détail ou produits à plus forte valeur ajoutée.",
+            "L'Ouest (FAMLA + DJELENG + MBOUDA) représente 39,3% du CA — la région la plus importante en valeur, avec un prix moyen intermédiaire (416 881 FCFA/t).",
+            "Sur les CONCENTRÉS, l'Ouest a le prix le plus élevé (684 073 FCFA/t) vs Littoral (633 734 FCFA/t) — suggère un mix concentrés plus premium dans l'Ouest (plus de 5% Chair ?).",
+        ],
+        causes=[
+            "Les écarts de prix entre régions reflètent des mix produits différents : le Littoral vend proportionnellement plus de tourteaux (peu chers) tandis que le Centre vend plus de concentrés et compléments (plus chers).",
+            "L'Ouest, porté par FAMLA (plus grande agence), a un mix équilibré mais avec une part de concentrés premium (5%) plus importante.",
+        ],
+        recommandations=[
+            "Analyser le mix produit par région pour confirmer les écarts de prix — particulièrement vérifier si l'Ouest vend proportionnellement plus de BELGO 5% que les autres régions.",
+            "Le Littoral (prix bas) pourrait être une opportunité pour pousser le cross-sell vers les concentrés (passer d'un mix soja-dominated à un mix plus équilibré).",
+            "Standardiser le suivi du prix moyen par région et par catégorie comme KPI mensuel.",
+        ],
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- 4.8 (was 4.7) Synthèse stratégique CONCENTRÉS ----------
+    story.append(Paragraph("4.8 Synthèse stratégique CONCENTRÉS", H2))
     story.append(Paragraph(
         "<b>1. Stagnation globale (-0,9% YoY, 72,5% de l'objectif S1).</b> "
         "Le problème est structurel, pas conjoncturel. La rupture concurrente sur le soja n'a pas bénéficié aux concentrés — "
