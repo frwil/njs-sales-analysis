@@ -1085,7 +1085,77 @@ def build_story():
         BODY_BOLD
     ))
 
-    story.append(Paragraph("4.6 Synthèse stratégique CONCENTRÉS", H2))
+    story.append(PageBreak())
+
+    # ---------- PRIX MOYEN ----------
+    story.append(KeepTogether([
+        Paragraph("4.6 Analyse du prix moyen — Diagnostic qualitatif et quantitatif", H2),
+        Paragraph(
+            "Le prix moyen (CA/volume) révèle le mix de vente : un prix élevé suggère plus de ventes en détail "
+            "(petits conditionnements, marges unitaires plus fortes), tandis qu'un prix bas suggère plus de ventes en gros "
+            "(grands volumes, marges unitaires plus faibles). Comparer le prix moyen réalisé avec l'objectif et avec 2025 "
+            "permet de détecter les changements de mix produit ou de stratégie tarifaire.",
+            BODY
+        ),
+    ]))
+    story.append(Spacer(1, 0.2*cm))
+
+    price_table = [
+        ["Catégorie", "Source", "Volume (t)", "CA (M FCFA)", "Prix moy (FCFA/t)", "Prix (USD/t)*", "Variation"],
+        ["TOURTEAUX", "Objectif 2026", "26 685", "8 725", "326 942", "545", "—"],
+        ["TOURTEAUX", "S1 2026", "29 061", "9 437", "324 740", "541", "vs obj: -0,7% | YoY: -4,0%"],
+        ["TOURTEAUX", "2025 (annuel)", "49 422", "16 723", "338 375", "564", "—"],
+        ["CONCENTRÉS", "Objectif 2026", "12 542", "8 277", "659 956", "1 100", "—"],
+        ["CONCENTRÉS", "S1 2026", "9 075", "6 064", "668 221", "1 114", "vs obj: +1,3% | YoY: +0,9%"],
+        ["CONCENTRÉS", "2025 (annuel)", "19 094", "12 648", "662 399", "1 104", "—"],
+        ["ALIMENT COMPLET", "Objectif 2026", "514", "435", "845 283", "1 409", "—"],
+        ["ALIMENT COMPLET", "S1 2026", "545", "471", "863 177", "1 439", "vs obj: +2,1% | YoY: -0,6%"],
+        ["ALIMENT COMPLET", "2025 (annuel)", "785", "682", "868 037", "1 447", "—"],
+    ]
+    story.append(make_table(price_table, col_widths=[3*cm, 2.5*cm, 2*cm, 2*cm, 2.2*cm, 1.5*cm, 3.5*cm], font_size=7))
+    story.append(Paragraph("* Taux de conversion : 1 USD ≈ 600 FCFA. Prix mondial du tourteau de soja : ~322 USD/t (mai 2026, source Macrotrends/USDA).", SMALL))
+    story.append(Spacer(1, 0.3*cm))
+
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartV_price_analysis.png', width=15*cm, height=7.5*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 27 — Prix moyen par catégorie : 2025 vs Objectif 2026 vs S1 2026 (milliers FCFA/t)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    story.append(icr_block(
+        insights=[
+            "TOURTEAUX : prix moyen en baisse YoY (-4,0%) — de 338 375 à 324 740 FCFA/t. Cette baisse suggère un shift vers plus de ventes en gros (grands volumes à prix unitaire plus bas), ce qui est cohérent avec l'effet rupture concurrente (les clients concurrents viennent chercher de gros volumes).",
+            "CONCENTRÉS : prix moyen légèrement en hausse YoY (+0,9%) et vs objectif (+1,3%) — de 662 399 à 668 221 FCFA/t. Cette stabilité/hausse légère suggère que le mix produit ne s'est pas dégradé : pas de migration massive vers les petits conditionnements. Le problème des concentrés est donc un problème de VOLUME, pas de prix.",
+            "ALIMENT COMPLET : prix moyen quasi stable YoY (-0,6%) mais légèrement au-dessus de l'objectif (+2,1%). Légère hausse vs objectif suggère un mix légèrement plus orienté détail (Booster 5Kg vs 25Kg).",
+            "Le prix des TOURTEAUX (324 740 FCFA/t ≈ 541 USD/t) est très supérieur au prix mondial du soja (~322 USD/t). L'écart de 219 USD/t couvre le fret, la douane, la transformation et la marge BELGOCAM.",
+        ],
+        causes=[
+            "TOURTEAUX : la baisse YoY du prix moyen reflète la baisse du prix mondial du soja en 2025/26 (production mondiale record selon USDA) transmise au marché camerounais, combinée à un shift vers plus de gros volumes.",
+            "CONCENTRÉS : la stabilité du prix moyen indique que la sous-performance n'est PAS un problème de prix mais un problème de VOLUME (perte de clients, manque de cross-sell, concurrence).",
+            "Le soja étant un produit importé, son prix fluctue avec le marché mondial (USD/fret/douane) — BELGOCAM subit la volatilité sans pouvoir la contrôler entièrement.",
+        ],
+        recommandations=[
+            "CONCENTRÉS : ne pas baisser les prix (le prix moyen est stable et aligné avec l'objectif) — l'enjeu est le VOLUME, pas le prix. Concentrer les efforts sur la réactivation clients et le bundle soja-concentrés.",
+            "TOURTEAUX : surveiller l'évolution du prix mondial du soja (USDA WASDE mensuel) pour anticiper les ajustements tarifaires. La baisse actuelle du prix mondial est une opportunité pour gagner des marges supplémentaires si le prix de vente est maintenu.",
+            "ALIMENT COMPLET : le prix légèrement supérieur à l'objectif suggère un bon mix produit — maintenir la stratégie actuelle de conditionnement.",
+            "Mettre en place un suivi mensuel du prix moyen par catégorie (réalisé vs objectif vs YoY) comme indicateur avancé de changement de mix ou de pression concurrentielle.",
+        ],
+    ))
+
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Contexte marché international du soja :</b> selon le USDA (WASDE avril 2026) et Macrotrends, "
+        "le prix mondial du tourteau de soja est de ~322 USD/t (mai 2026), en baisse grâce à une production mondiale record "
+        "en 2025/26. Le USDA prévoit ~310 USD/t pour la saison. Le Cameroun étant importateur net de soja, "
+        "le prix local intègre le prix mondial + fret + douane + transformation + marge BELGOCAM (soit ~219 USD/t d'écart). "
+        "La volatilité du soja à l'importation explique pourquoi cette catégorie a les prix les plus fluctuants — "
+        "contrairement aux concentrés dont les prix sont stables car fabriqués localement à partir de matières premières moins volatiles.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- 4.7 (was 4.6) Synthèse stratégique CONCENTRÉS ----------
+    story.append(Paragraph("4.7 Synthèse stratégique CONCENTRÉS", H2))
     story.append(Paragraph(
         "<b>1. Stagnation globale (-0,9% YoY, 72,5% de l'objectif S1).</b> "
         "Le problème est structurel, pas conjoncturel. La rupture concurrente sur le soja n'a pas bénéficié aux concentrés — "
