@@ -1,0 +1,168 @@
+{
+  "rubriques_2025": {
+    "TOURTEAU SOJA": {
+      "ca": 7513857160.0,
+      "vol": 20794.272999999124
+    },
+    "INGREDIENTS": {
+      "ca": 635908389.0,
+      "vol": 499.5716000003349
+    },
+    "MAIS": {
+      "ca": 1035505530.0,
+      "vol": 4154.15
+    },
+    "MATERIEL ELEVAGE": {
+      "ca": 65993800.0,
+      "vol": 0.0
+    },
+    "ALIMENTS COMPLETS": {
+      "ca": 310441909.0,
+      "vol": 360.454999999984
+    },
+    "CONCENTRES": {
+      "ca": 6113507625.0,
+      "vol": 9251.19800000046
+    },
+    "DIVERSES": {
+      "ca": 386499722.0,
+      "vol": 19.059999999999896
+    },
+    "PRODUITS ACCESSOIRES": {
+      "ca": 14145960.0,
+      "vol": 0.0
+    },
+    "ALVEOLES": {
+      "ca": 19293450.0,
+      "vol": 0.0
+    }
+  },
+  "rubriques_2026": {
+    "TOURTEAU SOJA": {
+      "ca": 9437426044.0,
+      "vol": 29061.474999998885
+    },
+    "INGREDIENTS": {
+      "ca": 644794632.7299987,
+      "vol": 489.9920000003217
+    },
+    "MAIS": {
+      "ca": 425778750.0,
+      "vol": 1892.35
+    },
+    "MATERIEL ELEVAGE": {
+      "ca": 128803200.0,
+      "vol": 10.2725
+    },
+    "ALIMENTS COMPLETS": {
+      "ca": 470569816.0,
+      "vol": 545.1599999999714
+    },
+    "CONCENTRES": {
+      "ca": 6064377053.0,
+      "vol": 9075.404000000435
+    },
+    "DIVERSES": {
+      "ca": 19328750.0,
+      "vol": 5.0649999999999515
+    },
+    "PRODUITS ACCESSOIRES": {
+      "ca": 12915750.0,
+      "vol": 0.0
+    },
+    "ALVEOLES": {
+      "ca": 13778500.0,
+      "vol": 0.0
+    }
+  },
+  "agence_ca_2025": {
+    "Ahala": 745337251.0,
+    "Bertoua": 797491248.0,
+    "Buea": 628656257.0,
+    "Mbouda": 719127200.0,
+    "Djeleng": 1019774150.0,
+    "Famla": 4740291755.0,
+    "Messassi": 1344326244.0,
+    "Ndobo": 3152050715.0,
+    "Ngaoundere": 369421977.0,
+    "Nkoabang": 399886115.0,
+    "Nkolbisson": 216719901.0,
+    "Nkongsamba": 698497782.0,
+    "Pk11": 479332323.0,
+    "Village": 756796677.0
+  },
+  "agence_ca_2026": {
+    "Bertoua": 833521499.0,
+    "Village": 948464421.0399992,
+    "Ngaoundere": 557708133.0,
+    "Messassi": 1761622350.529999,
+    "Mbouda": 1028147860.0,
+    "Famla": 4451042325.0,
+    "Nkongsamba": 710749845.0,
+    "Ahala": 967768360.44,
+    "Pk11": 637266987.7199997,
+    "Ndobo": 2565427193.29,
+    "Nkolbisson": 359991116.0,
+    "Nkoabang": 558163316.6700001,
+    "Djeleng": 1343143247.4500003,
+    "Buea": 589719790.59
+  },
+  "agences_ordre": [
+    {
+      "label": "YAOUNDE-MESSASI",
+      "agence": "Messassi"
+    },
+    {
+      "label": "YAOUNDE-AHALA",
+      "agence": "Ahala"
+    },
+    {
+      "label": "YAOUNDE-NKOABANG",
+      "agence": "Nkoabang"
+    },
+    {
+      "label": "YAOUNDE-NKOLBISSON",
+      "agence": "Nkolbisson"
+    },
+    {
+      "label": "BERTOUA",
+      "agence": "Bertoua"
+    },
+    {
+      "label": "NGAOUNDERE",
+      "agence": "Ngaoundere"
+    },
+    {
+      "label": "BAFOUSSAM-FAMLA",
+      "agence": "Famla"
+    },
+    {
+      "label": "BAFOUSSAM-DJELENG",
+      "agence": "Djeleng"
+    },
+    {
+      "label": "BAMENDA",
+      "agence": "Mbouda"
+    },
+    {
+      "label": "NKONGSAMBA",
+      "agence": "Nkongsamba"
+    },
+    {
+      "label": "BUEA",
+      "agence": "Buea"
+    },
+    {
+      "label": "DOUALA-AXE LOURD",
+      "agence": "Village"
+    },
+    {
+      "label": "DOUALA-SIEGE",
+      "agence": "Ndobo"
+    },
+    {
+      "label": "DOUALA-PK11",
+      "agence": "Pk11"
+    }
+  ]
+}
