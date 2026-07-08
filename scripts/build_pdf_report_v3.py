@@ -191,7 +191,7 @@ def draw_cover(canv, doc):
     canv.setFont('NotoSerifSC-Bold', 22)
     kpi_y = box_y + box_h - 1.5*cm
     col_w = CONTENT_W / 3
-    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y, "17,34 Md")
+    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y, "17,33 Md")
     canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y, "99,8%")
     canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y, "72,4%")
 
@@ -203,7 +203,7 @@ def draw_cover(canv, doc):
 
     canv.setFillColor(GRAY)
     canv.setFont('NotoSerifSC-Light', 8)
-    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "93,0% de l'objectif CA (hors pipeline)")
+    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "95,1% de l'objectif CA (hors pipeline)")
     canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "41 148 t réalisées vs 41 230 t")
     canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 1.4*cm, "9 075 t vs 12 542 t objectif")
 
@@ -411,7 +411,7 @@ def build_story():
     story.append(Paragraph(
         "<i>Ce rapport présente l'analyse complète des ventes BELGOCAM SA sur la période Janvier-Juin 2026, "
         "après exclusion de 35 clients internes (filiales NJS, SPC, comptoirs d'agences et soldes comptables). "
-        "L'analyse porte sur 41 148 tonnes et 17,34 Md FCFA de ventes (Janvier-Juin 2026), "
+        "L'analyse porte sur 41 148 tonnes et 17,33 Md FCFA de ventes (Janvier-Juin 2026), "
         "1 359 clients externes (après exclusion de 35 clients internes pour les analyses clients), "
         "et 10 catégories de produits dont les CONCENTRÉS (cœur de marge) et les TOURTEAUX (volume).</i>",
         BODY_ITALIC
@@ -428,7 +428,7 @@ def build_story():
 
     # KPI row
     cards = [
-        kpi_card("CA HT S1", "17,34 Md", "FCFA (93% obj)"),
+        kpi_card("CA HT S1", "17,33 Md", "FCFA (95,1% obj)"),
         kpi_card("Volume S1", "41 148 t", "(99,8% obj)"),
         kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
         kpi_card("Bilan net Q1→Q2", "+276 M", "FCFA (ciblé)"),
@@ -445,7 +445,7 @@ def build_story():
     story.append(Paragraph(
         "<b>1. Volume global au-dessus de l'objectif, CA en dessous.</b> "
         "Avec 41 148 tonnes en S1 2026, le volume atteint 99,8% de l'objectif (hors pipeline en cours). "
-        "Mais en CA, l'objectif de 18,64 Md FCFA n'est atteint qu'à 93,0% (17,34 Md réalisé). "
+        "Mais en CA, l'objectif de 18,22 Md FCFA n'est atteint qu'à 95,1% (17,33 Md réalisé). "
         "L'écart provient principalement des CONCENTRES qui représentent à eux seuls 2 213 M FCFA de CA manquant.",
         BODY
     ))
@@ -531,7 +531,7 @@ def build_story():
         ["MATERIEL ELEVAGE", "Abreuvoirs, grillages, cages, radiants (évalués en CA)", "—", "129", "0,7%"],
         ["ALVEOLE", "Cartons à œufs, caisses (évalués en CA)", "—", "14", "0,1%"],
         ["DIVERS", "Manuels, sacs, contribution carburant (évalués en CA)", "—", "12", "0,1%"],
-        ["TOTAL", "—", "42 816", "17 340", "100%"],
+        ["TOTAL", "—", "41 148", "17 330", "100%"],
     ]
     story.append(make_table(prod_data, col_widths=[3.2*cm, 5.5*cm, 2.2*cm, 2.2*cm, 1.2*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
@@ -576,8 +576,9 @@ def build_story():
 
     story.append(Paragraph("2.1 Indicateurs business S1 2026", H2))
     cards2 = [
-        kpi_card("CA HT S1", "17,34 Md", "FCFA (93,0% obj)"),
-        kpi_card("Volume S1", "42 816 t", "(103,8% obj)"),
+        kpi_card("CA HT S1", "17,33 Md", "FCFA (95,1% obj)"),
+        kpi_card("Volume S1", "41 148 t", "(99,8% obj)"),
+        kpi_card("Clients actifs", "4 481", "(20/80: 359)"),
         kpi_card("Clients 20/80 (★)", "359", "80% du CA clients"),
         kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
     ]
@@ -595,13 +596,13 @@ def build_story():
         ["PREMIX", "69", "126", "61", "112,8%", "113", "111,6%"],
         ["MATERIEL ELEVAGE", "—", "129", "0", "—", "170", "75,8%"],
         ["ALVEOLE", "—", "14", "0", "—", "91", "15,1%"],
-        ["TOTAL", "42 816", "17 340", "41 230", "103,8%", "18 641", "93,0%"],
+        ["TOTAL", "41 148", "17 330", "41 230", "99,8%", "18 215", "95,1%"],
     ]
     story.append(make_table(perf_data, col_widths=[3*cm, 2*cm, 2.2*cm, 2.2*cm, 1.3*cm, 2*cm, 1.3*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "Le volume global atteint 99,8% de l'objectif — légèrement sous, mais le pipeline en cours (192,8 t) le ferait passer à 102,3%. La sur-performance des TOURTEAUX (108,9%) et des INGREDIENTS (398%, porté par le Maïs) compense la sous-performance CONCENTRÉS (72,4%). "
-        "Mais le CA n'atteint que 93,0% de l'objectif — l'écart de 1 300 M FCFA provient principalement des CONCENTRES "
+        "Mais le CA n'atteint que 95,1% de l'objectif — l'écart de 885 M FCFA provient principalement des CONCENTRES "
         "(-2 213 M FCFA, 73,3% de l'objectif CA). Le matériel d'élevage et les alvéoles sous-performent en CA "
         "(75,8% et 15,1%) mais ne pèsent que marginalement sur le total.",
         BODY
@@ -618,7 +619,7 @@ def build_story():
         ["VILLAGE", "949", "5,5%", "2 171", "127,8%"],
         ["BERTOUA", "834", "4,8%", "1 686", "97,0%"],
         ["Autres (6 agences)", "4 412", "25,4%", "9 773", "—"],
-        ["TOTAL", "17 340", "100%", "42 816", "103,8%"],
+        ["TOTAL", "17 330", "100%", "41 148", "99,8%"],
     ]
     story.append(make_table(ag_data, col_widths=[3.5*cm, 3*cm, 2*cm, 2.5*cm, 2*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
@@ -639,7 +640,7 @@ def build_story():
     story.append(Paragraph(
         "Les objectifs 2026 ont été définis par catégorie de produits et par agence. Sur le semestre 1 (Janvier-Juin 2026), "
         "le volume total atteint est de <b>41 148 tonnes</b>, soit <b>99,8% de l'objectif S1</b> (41 230 tonnes). En incluant le pipeline de commandes en cours et validées (192,8 t), le total projeté atteint 41 341 t (102,3% de l'objectif). "
-        "En CA, l'objectif S1 est de <b>18,64 milliards FCFA</b>, atteint à <b>93,0%</b> (17,34 Md réalisé). "
+        "En CA, l'objectif S1 est de <b>18,22 milliards FCFA</b>, atteint à <b>95,1%</b> (17,33 Md réalisé). "
         "La seule sous-performance majeure est les CONCENTRES : 72,5% en volume et 73,4% en CA — le cœur de marge.",
         BODY
     ))
@@ -655,7 +656,7 @@ def build_story():
         ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%"],
         ["MATERIEL ELEVAGE", "0", "4", "—", "0", "1", "—", "0", "5", "—"],
         ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%"],
-        ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "22 895", "117,4%", "41 230", "42 816", "103,8%"],
+        ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "21 227", "108,9%", "41 230", "41 148", "99,8%"],
     ]
     story.append(make_table(cat_obj_data, col_widths=[3*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm, 1.5*cm, 1.5*cm, 1.2*cm], font_size=7))
     story.append(Spacer(1, 0.3*cm))
@@ -679,7 +680,7 @@ def build_story():
         ["MATERIEL ELEVAGE", "170", "129", "-41", "75,8%"],
         ["ALVEOLE", "91", "14", "-77", "15,1%"],
         ["DIVERS", "5", "12", "+7", "251%"],
-        ["TOTAL", "18 641", "17 340", "-1 301", "93,0%"],
+        ["TOTAL", "18 215", "17 330", "-885", "95,1%"],
     ]
     story.append(make_table(ca_obj_table, col_widths=[3*cm, 3*cm, 3*cm, 2*cm, 2*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -690,11 +691,11 @@ def build_story():
     story.append(Paragraph("Figure 9b — CA réel vs CA objectif S1 2026 par catégorie (objectifs CA)", CAPTION))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "<b>Analyse CA :</b> l'objectif CA S1 de 18,64 Md FCFA est atteint à 93,0%. "
-        "L'écart de 1 300 M FCFA provient principalement des CONCENTRES (-2 205 M, 73,4%). "
-        "Les TOURTEAUX dépassent l'objectif CA de +713 M (108,2%) grâce à la rupture concurrente. "
+        "<b>Analyse CA :</b> l'objectif CA S1 de 18,22 Md FCFA est atteint à 95,1%. "
+        "L'écart de 885 M FCFA provient principalement des CONCENTRES (-2 213 M, 73,3%). "
+        "Les TOURTEAUX dépassent l'objectif CA de +216 M (102,5%) grâce à la rupture concurrente. "
         "Le COMPLEMENT ALIMENTAIRE atteint 96% de son objectif CA (15,2 M vs 15,8 M) — l'objectif est bien calibré pour la gamme liquides. "
-        "(410 M réalisés). Les ALVEOLES sous-performent à 15,1% — l'objectif de 91 M vs 14 M réalisé.",
+        "Le MATERIEL ELEVAGE sous-performe (75,8% — 129 M vs 170 M attendu). Les ALVEOLES sous-performent à 15,1% — l'objectif de 91 M vs 14 M réalisé.",
         BODY_BOLD
     ))
 
@@ -851,7 +852,7 @@ def build_story():
         ["BUEA", "1 771", "1 424", "80,4%", "589,7"],
         ["AHALA", "2 578", "2 038", "79,1%", "967,8"],
         ["NKOLBISSON", "617", "737", "119,5%", "360,0"],
-        ["TOTAL", "41 230", "42 826", "103,9%", "17 340,4"],
+        ["TOTAL", "41 230", "41 148", "99,8%", "17 330,4"],
     ]
     story.append(make_table(ag_full_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -1987,7 +1988,7 @@ def build_story():
 
     total_data = [
         ["Scénario", "Volume S2 (t)", "vs Objectif S2", "vs S1 réel", "Hypothèses"],
-        ["S1 réel (référence)", "42 826", "—", "—", "Base observée Jan-Juin 2026"],
+        ["S1 réel (référence)", "41 148", "—", "—", "Base observée Jan-Juin 2026"],
         ["S2 objectif", "39 436", "100,0%", "+5,7%", "Objectif officiel BELGOCAM"],
         ["🔴 S2 Pessimiste", "32 563", "82,6%", "-12,8%", "Fin rupture concurrente, pas d'action"],
         ["🟡 S2 Réaliste", "36 442", "92,4%", "-2,4%", "Statu quo, actions partielles"],
@@ -2015,7 +2016,7 @@ def build_story():
     story.append(Paragraph(
         "<b>Conclusion forecast CA (basée sur CA objectifs × taux atteinte S1) :</b> "
         "le scénario réaliste projette un CA HT S2 2026 de <b>16,95 milliards FCFA</b>, "
-        "soit <b>-2% vs S1 réel</b> (17,34 Md) et <b>93% de l'objectif S2</b> (18,22 Md). "
+        "soit <b>-2% vs S1 réel</b> (17,33 Md) et <b>93% de l'objectif S2</b> (18,22 Md). "
         "Le scénario optimiste atteindrait 19,02 Md FCFA (104% de l'objectif S2), "
         "à condition que le plan d'action soit pleinement déployé et que la rupture concurrente se maintienne. "
         "Le risque principal reste les CONCENTRES : sans redressement, le scénario pessimiste (15,22 Md) est plausible.",
@@ -2053,7 +2054,7 @@ def build_story():
         ["INGREDIENTS", "392", "2 382", "+507,7%", "1 243", "Boom Maïs (1 892 t hors régul.) + sels minéraux"],
         ["COMPLEMENT ALIM.", "8", "3", "-60,0%", "2", "Déclin des liquides BELGO"],
         ["PREMIX", "48", "69", "+44,3%", "66", "Bonne progression"],
-        ["TOTAL", "35 126", "42 826", "+21,9%", "39 535", "Croissance globale tirée par TOURTEAUX + Maïs"],
+        ["TOTAL", "35 126", "41 148", "+17,1%", "39 535", "Croissance globale tirée par TOURTEAUX + Maïs"],
     ]
     story.append(make_table(yoy_table, col_widths=[3.2*cm, 2.3*cm, 2.3*cm, 1.5*cm, 2.3*cm, 5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
