@@ -1375,6 +1375,143 @@ def build_story():
 
     story.append(PageBreak())
 
+    # ---------- PAGE 20: SECTIONS 9.7-9.9 - AGENCY + MONTHLY ANALYSIS ----------
+    story.append(KeepTogether([
+        Paragraph("9.7 Ventes vs Objectifs par agence (toutes agences)", H2),
+        Image('/home/z/my-project/scripts/pdf_charts/chartQ_ventes_vs_obj_agence.png', width=16*cm, height=7.3*cm),
+    ]))
+    story.append(Paragraph("Figure 23 — Ventes réelles vs Objectifs S1 2026 par agence (tonnes)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    ag_full_data = [
+        ["Agence", "S1 obj. (t)", "S1 réel (t)", "% atteinte", "CA (M FCFA)"],
+        ["FAMLA", "10 801", "10 791", "99,9%", "4 450,9"],
+        ["NDOBO", "6 618", "8 902", "134,5%", "2 562,2"],
+        ["MESSASSI", "4 095", "3 919", "95,7%", "1 761,6"],
+        ["DJELENG", "3 024", "3 187", "105,4%", "1 343,1"],
+        ["MBOUDA", "1 895", "2 387", "126,0%", "1 028,1"],
+        ["VILLAGE", "1 699", "2 171", "127,8%", "948,5"],
+        ["BERTOUA", "1 739", "1 686", "97,0%", "833,5"],
+        ["NKONGSAMBA", "1 895", "1 663", "87,7%", "710,7"],
+        ["NKOABANG", "1 288", "1 223", "94,9%", "558,2"],
+        ["NGAOUNDERE", "1 002", "1 123", "112,1%", "557,7"],
+        ["BUEA", "1 771", "1 424", "80,4%", "589,7"],
+        ["AHALA", "2 578", "2 038", "79,1%", "967,8"],
+        ["NKOLBISSON", "617", "737", "119,5%", "360,0"],
+        ["TOTAL", "41 230", "42 826", "103,9%", "17 340,4"],
+    ]
+    story.append(make_table(ag_full_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Insights par agence :</b><br/>"
+        "• <b>NDOBO</b> sur-performe massivement (134,5%) — l'agence capitalise le mieux sur la rupture concurrente.<br/>"
+        "• <b>AHALA (79,1%) et BUEA (80,4%)</b> sous-performent — diagnostic terrain nécessaire.<br/>"
+        "• <b>FAMLA</b> (99,9%) est parfaitement alignée sur son objectif malgré son volume.<br/>"
+        "• <b>NKONGSAMBA (87,7%)</b> légèrement sous — renforcement commercial recommandé.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- CONCENTRES PAR AGENCE ----------
+    story.append(KeepTogether([
+        Paragraph("9.8 CONCENTRES — Ventes vs Objectifs par agence", H2),
+        Image('/home/z/my-project/scripts/pdf_charts/chartR_conc_by_agence.png', width=16*cm, height=6.7*cm),
+    ]))
+    story.append(Paragraph("Figure 24 — CONCENTRES : ventes vs objectifs S1 2026 par agence", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    conc_ag_table = [
+        ["Agence", "Vol S1 (t)", "CA (M FCFA)", "Obj S1 (t)", "% atteinte"],
+        ["FAMLA", "2 187", "1 520", "3 373", "64,8%"],
+        ["MESSASSI", "938", "614", "1 649", "56,9%"],
+        ["NDOBO", "834", "528", "1 244", "67,0%"],
+        ["DJELENG", "799", "535", "864", "92,4%"],
+        ["MBOUDA", "619", "412", "632", "97,9%"],
+        ["AHALA", "607", "410", "964", "63,0%"],
+        ["VILLAGE", "592", "374", "481", "123,1%"],
+        ["BERTOUA", "578", "391", "633", "91,2%"],
+        ["NKONGSAMBA", "419", "262", "652", "64,3%"],
+        ["NKOABANG", "310", "214", "446", "69,5%"],
+        ["NGAOUNDERE", "309", "223", "368", "83,8%"],
+        ["BUEA", "306", "198", "602", "50,8%"],
+        ["NKOLBISSON", "278", "189", "256", "108,6%"],
+        ["TOTAL", "9 093", "6 072", "12 542", "72,5%"],
+    ]
+    story.append(make_table(conc_ag_table, col_widths=[3*cm, 2.2*cm, 2.5*cm, 2.2*cm, 2*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Insights CONCENTRES par agence :</b><br/>"
+        "• Seules <b>VILLAGE (123,1%)</b> et <b>NKOLBISSON (108,6%)</b> dépassent leur objectif concentrés.<br/>"
+        "• <b>BUEA (50,8%)</b> et <b>MESSASSI (56,9%)</b> sont les plus sous-performantes — alerte critique.<br/>"
+        "• <b>MBOUDA (97,9%)</b> et <b>DJELENG (92,4%)</b> sont proches de l'objectif — bons modèles à reproduire.<br/>"
+        "• <b>FAMLA</b> concentre 24% du volume concentrés mais n'atteint que 64,8% — l'enjeu principal est là.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- TENDANCE MENSUELLE PAR CATEGORIE ----------
+    story.append(KeepTogether([
+        Paragraph("9.9 Tendance mensuelle par catégorie (Janvier-Juin 2026)", H2),
+        Image('/home/z/my-project/scripts/pdf_charts/chartS_monthly_by_cat.png', width=16*cm, height=7.3*cm),
+    ]))
+    story.append(Paragraph("Figure 25 — Tendance mensuelle par catégorie (échelle logarithmique, tonnes)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    monthly_cat_table = [
+        ["Catégorie", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Tendance"],
+        ["TOURTEAUX", "5 342", "3 621", "3 893", "4 158", "4 841", "7 207", "↑ Forte hausse (rupture concurrente)"],
+        ["CONCENTRES", "1 628", "1 451", "1 550", "1 518", "1 428", "1 518", "→ Stable, pas de trend"],
+        ["INGREDIENTS", "1 731", "28", "211", "850", "912", "27", "↗ Irrégulier (Maïs en grappe)"],
+        ["ALIMENT COMPLET", "86", "90", "82", "83", "85", "102", "↑ Légère hausse en juin"],
+        ["COMPLEMENT ALIM.", "58", "54", "53", "49", "47", "45", "↓ Léger déclin"],
+        ["PREMIX", "16", "21", "10", "11", "7", "4", "↓ Déclin marqué"],
+    ]
+    story.append(make_table(monthly_cat_table, col_widths=[3*cm, 1.4*cm, 1.4*cm, 1.4*cm, 1.4*cm, 1.4*cm, 1.4*cm, 4.2*cm], font_size=7))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Insights tendance mensuelle :</b><br/>"
+        "• <b>TOURTEAUX</b> : tendance haussière marquée à partir d'avril, pic en juin (7 207 t) — effet rupture concurrente.<br/>"
+        "• <b>CONCENTRES</b> : plat total entre 1 428 et 1 628 t/mois — aucune dynamique de croissance. Le plan d'action doit créer un trend haussier.<br/>"
+        "• <b>INGREDIENTS</b> : très volatil (Maïs vendu en gros lots irréguliers) — pic en janvier (1 731 t) puis creux.<br/>"
+        "• <b>PREMIX</b> : déclin marqué de 16 t à 4 t — à investiguer en priorité.<br/>"
+        "• <b>COMPLEMENT ALIMENTAIRE</b> : léger déclin continu (58 → 45 t) — surveiller.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- TENDANCE MENSUELLE PAR AGENCE ----------
+    story.append(KeepTogether([
+        Paragraph("9.10 Tendance mensuelle par agence — Top 5 (Janvier-Juin 2026)", H2),
+        Image('/home/z/my-project/scripts/pdf_charts/chartT_monthly_by_agence.png', width=16*cm, height=7.3*cm),
+    ]))
+    story.append(Paragraph("Figure 26 — Tendance mensuelle par agence — Top 5 (tonnes)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+
+    monthly_ag_table = [
+        ["Agence", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Total S1"],
+        ["FAMLA", "2 219", "1 510", "1 359", "1 573", "1 763", "2 367", "10 791"],
+        ["NDOBO", "2 466", "514", "1 110", "1 505", "1 619", "1 689", "8 902"],
+        ["MESSASSI", "680", "510", "504", "581", "779", "865", "3 919"],
+        ["DJELENG", "594", "417", "433", "403", "532", "808", "3 187"],
+        ["MBOUDA", "475", "384", "284", "369", "365", "510", "2 387"],
+    ]
+    story.append(make_table(monthly_ag_table, col_widths=[2.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 2*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Insights tendance par agence :</b><br/>"
+        "• <b>FAMLA</b> : tendance haussière en fin de semestre (pic juin 2 367 t) — l'agence bénéficie pleinement de la rupture concurrente.<br/>"
+        "• <b>NDOBO</b> : fort pic en janvier (2 466 t) suivi d'un creux en février (514 t) puis remontée régulière. Volatilité élevée.<br/>"
+        "• <b>MESSASSI</b> : croissance progressive (680 → 865 t) mais à un niveau inférieur aux autres grandes agences.<br/>"
+        "• <b>DJELENG</b> : accélération en juin (808 t) — bonne dynamique de fin de semestre.<br/>"
+        "• <b>MBOUDA</b> : stabilité avec légère hausse — agence la plus régulière du top 5.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
     # ---------- PAGE 20: SECTION 9 BIS - FOCUS CONCENTRÉS ----------
     story.append(Paragraph("9bis. Focus CONCENTRÉS — Cœur de marge", H1))
     story.append(section_divider())
