@@ -174,8 +174,8 @@ def draw_cover(canv, doc):
     # Subtitle
     canv.setFillColor(GRAY)
     canv.setFont('NotoSerifSC', 13)
-    canv.drawString(MARGIN_L, PAGE_H - 12*cm, "État des lieux, transitions Q1→Q2,")
-    canv.drawString(MARGIN_L, PAGE_H - 12.7*cm, "pertes estimées et plan d'action stratégique")
+    canv.drawString(MARGIN_L, PAGE_H - 12*cm, "Ventes vs objectifs, focus CONCENTRÉS,")
+    canv.drawString(MARGIN_L, PAGE_H - 12.7*cm, "diagnostic zéro achat et plan d'action")
 
     # Key figures box
     box_y = 8*cm
@@ -191,21 +191,21 @@ def draw_cover(canv, doc):
     canv.setFont('NotoSerifSC-Bold', 22)
     kpi_y = box_y + box_h - 1.5*cm
     col_w = CONTENT_W / 3
-    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y, "1 359")
-    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y, "17,3 Md")
-    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y, "+276 M")
+    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y, "17,34 Md")
+    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y, "103,8%")
+    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y, "72,4%")
 
     canv.setFillColor(GRAY)
     canv.setFont('NotoSerifSC', 9)
-    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 0.7*cm, "clients analysés")
-    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 0.7*cm, "FCFA CA HT (6 mois)")
-    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 0.7*cm, "FCFA bilan net Q1→Q2")
+    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 0.7*cm, "FCFA CA HT (6 mois)")
+    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 0.7*cm, "objectif volume S1 atteint")
+    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 0.7*cm, "objectif CONCENTRES (cœur de marge)")
 
     canv.setFillColor(GRAY)
     canv.setFont('NotoSerifSC-Light', 8)
-    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "(après exclusion interne)")
-    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "produits ciblés : soja + concentrés")
-    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 1.4*cm, "gain réactivés − perte churned")
+    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "93,0% de l'objectif CA")
+    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "42 816 t réalisées vs 41 230 t")
+    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 1.4*cm, "9 075 t vs 12 542 t objectif")
 
     # Author / redactor block at bottom
     auth_y = 3.5*cm
@@ -411,7 +411,9 @@ def build_story():
     story.append(Paragraph(
         "<i>Ce rapport présente l'analyse complète des ventes BELGOCAM SA sur la période Janvier-Juin 2026, "
         "après exclusion de 35 clients internes (filiales NJS, SPC, comptoirs d'agences et soldes comptables). "
-        "L'analyse porte sur 1 359 clients actifs et 16 produits ciblés (4 tourteaux de soja + 10 BELGO 10% + 2 BELGO 5%).</i>",
+        "L'analyse porte sur 42 816 tonnes et 17,34 Md FCFA de ventes (Janvier-Juin 2026), "
+        "1 359 clients externes (après exclusion de 35 clients internes pour les analyses clients), "
+        "et 10 catégories de produits dont les CONCENTRÉS (cœur de marge) et les TOURTEAUX (volume).</i>",
         BODY_ITALIC
     ))
     story.append(Spacer(1, 0.4*cm))
