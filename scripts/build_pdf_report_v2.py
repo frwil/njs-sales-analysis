@@ -1219,8 +1219,8 @@ def build_story():
     story.append(Paragraph(
         "Les objectifs 2026 ont été définis par catégorie de produits et par agence. Sur le semestre 1 (Janvier-Juin 2026), "
         "le volume total atteint est de <b>42 826 tonnes</b>, soit <b>103,9% de l'objectif S1</b> (41 230 tonnes). "
-        "L'écart de 3 908 tonnes correspond principalement à la sous-performance des CONCENTRES (écart -3 950 t) et des INGREDIENTS (écart -463 t), "
-        "partiellement compensé par le dépassement des TOURTEAUX (+1 183 t) lié à la rupture concurrente sur le soja.",
+        "En CA, l'objectif S1 est de <b>18,64 milliards FCFA</b>, atteint à <b>93,0%</b> (17,34 Md réalisé). "
+        "La seule sous-performance majeure est les CONCENTRES : 72,5% en volume et 73,4% en CA — le cœur de marge.",
         BODY
     ))
 
@@ -1244,6 +1244,39 @@ def build_story():
     img = Image('/home/z/my-project/scripts/pdf_charts/chartA_ventes_vs_objectifs.png', width=15.5*cm, height=7.7*cm)
     story.append(img)
     story.append(Paragraph("Figure 9 — Ventes réelles vs Objectifs S1 2026 par catégorie (tonnes)", CAPTION))
+    story.append(Spacer(1, 0.3*cm))
+
+    # CA comparison table with real CA objectives
+    story.append(Paragraph("9.2bis Comparaison CA HT (objectifs CA réels)", H2))
+    ca_obj_table = [
+        ["Catégorie", "CA obj S1 (M FCFA)", "CA réel S1 (M FCFA)", "Écart (M)", "% atteinte"],
+        ["TOURTEAUX", "8 724", "9 437", "+713", "108,2%"],
+        ["CONCENTRES", "8 277", "6 072", "-2 205", "73,4%"],
+        ["ALIMENT COMPLET", "435", "463", "+29", "106,6%"],
+        ["INGREDIENTS", "810", "678", "-132", "83,7%"],
+        ["COMPLEMENT ALIM.", "16", "410", "+394", "2600%"],
+        ["PREMIX", "113", "126", "+13", "111,6%"],
+        ["MATERIEL ELEVAGE", "170", "129", "-41", "75,8%"],
+        ["ALVEOLE", "91", "14", "-77", "15,1%"],
+        ["DIVERS", "5", "12", "+7", "251%"],
+        ["TOTAL", "18 641", "17 340", "-1 300", "93,0%"],
+    ]
+    story.append(make_table(ca_obj_table, col_widths=[3*cm, 3*cm, 3*cm, 2*cm, 2*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    # CA chart
+    img = Image('/home/z/my-project/scripts/pdf_charts/chartU_ca_real_vs_obj.png', width=15*cm, height=6.8*cm)
+    story.append(img)
+    story.append(Paragraph("Figure 9b — CA réel vs CA objectif S1 2026 par catégorie (objectifs CA réels)", CAPTION))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Analyse CA :</b> l'objectif CA S1 de 18,64 Md FCFA est atteint à 93,0%. "
+        "L'écart de 1 300 M FCFA provient principalement des CONCENTRES (-2 205 M, 73,4%). "
+        "Les TOURTEAUX dépassent l'objectif CA de +713 M (108,2%) grâce à la rupture concurrente. "
+        "Le COMPLEMENT ALIMENTAIRE sur-performe massivement (2600%) — l'objectif CA de 16 M est largement sous-estimé "
+        "(410 M réalisés). Les ALVEOLES sous-performent à 15,1% — l'objectif de 91 M vs 14 M réalisé.",
+        BODY_BOLD
+    ))
 
     story.append(PageBreak())
 
@@ -1709,24 +1742,29 @@ def build_story():
     story.append(make_table(total_data, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2.5*cm, 5.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
 
-    story.append(Paragraph("10.4 Estimation CA HT S2 (basée sur prix moyen S1)", H2))
+    story.append(Paragraph("10.4 Estimation CA HT S2 (basée sur CA objectifs réels × taux atteinte S1)", H2))
     ca_forecast_data = [
-        ["Catégorie", "Prix moyen S1 (FCFA/t)", "🔴 Pess. CA (M FCFA)", "🟡 Real. CA (M FCFA)", "🟢 Opt. CA (M FCFA)"],
-        ["TOURTEAUX", "324 210", "8 022", "8 824", "9 872"],
-        ["CONCENTRES", "667 263", "4 737", "5 595", "6 821"],
-        ["ALIMENT COMPLET", "862 215", "302", "344", "410"],
-        ["INGREDIENTS", "1 559 956", "115", "206", "343"],
-        ["COMPLEMENT ALIM.", "1 331 123", "352", "359", "367"],
-        ["PREMIX", "1 852 792", "65", "76", "93"],
-        ["TOTAL", "—", "13 593", "15 404", "17 906"],
+        ["Catégorie", "CA obj S2 réel (M)", "🔴 Pess. CA (M)", "🟡 Real. CA (M)", "🟢 Opt. CA (M)"],
+        ["TOURTEAUX", "8 515", "7 452", "9 210", "10 227"],
+        ["CONCENTRES", "8 079", "5 593", "5 927", "7 268"],
+        ["ALIMENT COMPLET", "424", "403", "452", "504"],
+        ["INGREDIENTS", "792", "587", "663", "740"],
+        ["COMPLEMENT ALIM.", "16", "369", "410", "451"],
+        ["PREMIX", "109", "107", "122", "136"],
+        ["MATERIEL ELEVAGE", "187", "124", "142", "158"],
+        ["ALVEOLE", "89", "11", "13", "15"],
+        ["DIVERS", "5", "10", "12", "13"],
+        ["TOTAL", "18 215", "15 224", "16 950", "19 022"],
     ]
-    story.append(make_table(ca_forecast_data, col_widths=[3.5*cm, 3.2*cm, 3*cm, 3*cm, 3*cm], font_size=8))
+    story.append(make_table(ca_forecast_data, col_widths=[3.5*cm, 3*cm, 2.8*cm, 2.8*cm, 2.8*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>Conclusion forecast (méthode 1 — basée sur objectifs) :</b> le scénario réaliste projette un CA HT S2 2026 de <b>15,4 milliards FCFA</b>, "
-        "soit <b>-11% vs S1 réel</b> (17,3 Md). Le scénario optimiste atteindrait 17,9 Md FCFA (+3% vs S1), "
+        "<b>Conclusion forecast CA (basée sur CA objectifs réels × taux atteinte S1) :</b> "
+        "le scénario réaliste projette un CA HT S2 2026 de <b>16,95 milliards FCFA</b>, "
+        "soit <b>-2% vs S1 réel</b> (17,34 Md) et <b>93% de l'objectif S2</b> (18,22 Md). "
+        "Le scénario optimiste atteindrait 19,02 Md FCFA (104% de l'objectif S2), "
         "à condition que le plan d'action soit pleinement déployé et que la rupture concurrente se maintienne. "
-        "Le risque principal reste la sous-performance des CONCENTRES : sans redressement, le scénario pessimiste (-1,7 Md vs S1) est plausible.",
+        "Le risque principal reste les CONCENTRES : sans redressement, le scénario pessimiste (15,22 Md) est plausible.",
         BODY_BOLD
     ))
 
