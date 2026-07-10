@@ -524,7 +524,7 @@ def build_story():
         ["Catégorie", "Produits principaux", "Vol S1 2026 (t)", "CA S1 (M FCFA)", "% CA", "YoY vol"],
         ["TOURTEAUX", "T102 Soja 50Kg + formats", "29 062", "9 437", "54,4%", "+52,8%"],
         ["CONCENTRES", "C104 BELGO 10% Chair, C105 Porc, C103/C101 5%, etc.", "9 075", "6 064", "35,0%", "+4,7%"],
-        ["INGREDIENTS", "Maïs (M1051) + Lysine, Méthionine, Farine poisson, Bicarbonate, Sels minéraux, etc.", "2 382", "1 071", "5,8%", "+507,7%"],
+        ["INGREDIENTS", "Maïs (M1051) + Lysine, Méthionine, Farine poisson, Bicarbonate, etc.", "2 382", "1 071", "5,8%", "+507,7%"],
         ["ALIMENT COMPLET", "Chick Booster, Piglet Booster, BELGO Rabbit, BELGO Fish", "545", "471", "2,7%", "+118,2%"],
         ["COMPLEMENT ALIM.", "Additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.)", "3", "15", "0,0%", "-8,8%"],
         ["PREMIX", "P102N2 Chair, P104N2 Ponte, P109 Multi Rumi", "69", "126", "0,7%", "+54,1%"],
@@ -537,9 +537,13 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "Les CONCENTRÉS (BELGO 10% + BELGO 5%) représentent <b>la plus grosse partie de la marge</b> de BELGOCAM. "
-        "Les TOURTEAUX représentent le volume mais à faible marge unitaire. Le Maïs (1 892 t hors régularisation stock) est vendu en sacs de 50 kg. "
+        "Les TOURTEAUX représentent le volume mais à faible marge unitaire. Le Maïs (1 892 t¹) est vendu en sacs de 50 kg. "
         "Le matériel d'élevage, les alvéoles et divers sont évalués en CA uniquement (pas de volume en tonnes).",
         BODY
+    ))
+    story.append(Paragraph(
+        "<i>¹ Volume Maïs hors lignes de régularisation de stock sans facturation.</i>",
+        ParagraphStyle('footnote', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
     ))
 
     story.append(Paragraph("1.3 Méthodologie des analyses", H2))
@@ -739,7 +743,7 @@ def build_story():
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "<b>INGREDIENTS (398,4% — sur-performance massive) :</b> les ventes atteignent 2 382 t "
-        "contre 598 t d'objectif. Cette sur-performance est portée par le Maïs (M1051, 1 892 t hors régularisation stock SPC) "
+        "contre 598 t d'objectif. Cette sur-performance est portée par le Maïs (M1051, 1 892 t¹) "
         "qui n'était pas comptabilisé en volume auparavant (poids non spécifié dans la description, désormais corrigé à 50 kg/sac). "
         "Hors Maïs, les ingrédients classiques (Lysine, Méthionine, Farine de poisson, Bicarbonate, etc.) représentent ~490 t. "
         "Les objectifs INGREDIENTS doivent être révisés massivement à la hausse pour intégrer le Maïs. "
@@ -2106,7 +2110,7 @@ def build_story():
         "<b>Insights YoY clés :</b><br/>"
         "• <b>TOURTEAUX +39,8%</b> : la rupture concurrente a généré un gain exceptionnel de 8 845 tonnes en S1 2026.<br/>"
         "• <b>CONCENTRES -1,7%</b> : stagnation quasi parfaite — confirmant le caractère structurel du problème, pas conjoncturel.<br/>"
-        "• <b>INGREDIENTS +507,7% (Boom Maïs)</b> : croissance tirée par le Maïs (1 892 t vs ~250 t en 2025 hors régularisation). Vérifier la soutenabilité de cette croissance.<br/>"
+        "• <b>INGREDIENTS +507,7% (Boom Maïs)</b> : croissance tirée par le Maïs (1 892 t¹ vs ~250 t en 2025). Vérifier la soutenabilité de cette croissance.<br/>"
         "• <b>ALIMENT COMPLET +64%</b> : les Booster progressent bien — confirmer la synergie avec les concentrés.<br/>"
         "• <b>COMPLEMENT ALIMENTAIRE -60%</b> : déclin des additifs liquides BELGO (3 t vs 8 t en 2025). L'objectif (6 t) reste ambitieux — à surveiller.",
         BODY
@@ -2181,7 +2185,7 @@ def build_story():
         "Le problème identifié est un problème de VOLUME (pas de prix) — la dynamique commerciale n'est pas au rendez-vous. "
         "Cependant, baisser massivement l'objectif enverrait un contre-signal stratégique sur le cœur de marge de l'entreprise.<br/><br/>"
         "<b>3. INGREDIENTS en sur-performance massive (+507,7% YoY)</b> — l'objectif initial de 585 t ne tenait pas compte "
-        "du Maïs (1 892 t en S1 hors régularisation stock SPC). "
+        "du Maïs (1 892 t en S1¹). "
         "Le réalisé S1 atteint 2 382 t (398% de l'objectif), dont 1 892 t de Maïs et ~490 t d'ingrédients classiques (Lysine, Méthionine, Farine de poisson, etc.). "
         "Le recalibrage à 466 t reste très sous-estimé — à revoir massivement à la hausse pour 2027.<br/><br/>"
         "<b>4. COMPLEMENT ALIMENTAIRE — recalibrage suite à la reclassification produits</b> — la catégorie a été clarifiée : "
@@ -2222,7 +2226,7 @@ def build_story():
          "L'objectif recalibré reste +25,9% vs S2 2025 — volontariste. Le plan d'action identifie 1 243 t de potentiel. "
          "Les +2 t supplémentaires (vs recalibrage précédent à 11 650 t) proviennent du transfert depuis le PREMIX — choix stratégique assumé de prioriser le produit maison."],
         ["INGREDIENTS", "585", "466", "-20,3%",
-         "Ajustement réaliste : S1=2 382 t (dont 1 892 t de Maïs hors régularisation stock SPC et ~490 t d'ingrédients classiques), forecast S2=2 281 t. "
+         "Ajustement réaliste : S1=2 382 t (dont 1 892 t de Maïs¹ et ~490 t d'ingrédients classiques), forecast S2=2 281 t. "
          "L'objectif initial de 585 t ne tenait pas compte du Maïs. "
          "Le recalibrage reste sous le réel — à revoir à la hausse pour 2027."],
         ["ALIMENT COMPLET", "501", "532", "+6,3%",
