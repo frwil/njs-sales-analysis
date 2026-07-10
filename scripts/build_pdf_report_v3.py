@@ -743,8 +743,7 @@ def build_story():
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "<b>INGREDIENTS (398,4% — sur-performance massive) :</b> les ventes atteignent 2 382 t "
-        "contre 598 t d'objectif. Cette sur-performance est portée par le Maïs (M1051, 1 892 t¹) "
-        "qui n'était pas comptabilisé en volume auparavant (poids non spécifié dans la description, désormais corrigé à 50 kg/sac). "
+        "contre 598 t d'objectif. Cette sur-performance est portée par le Maïs (M1051, 1 892 t¹). "
         "Hors Maïs, les ingrédients classiques (Lysine, Méthionine, Farine de poisson, Bicarbonate, etc.) représentent ~490 t. "
         "Les objectifs INGREDIENTS doivent être révisés massivement à la hausse pour intégrer le Maïs. "
         "Aucune action corrective nécessaire — mais réviser les objectifs 2027 pour tenir compte du Maïs.",
@@ -811,7 +810,7 @@ def build_story():
         "• <b>TOURTEAUX</b> : progression continue Q1→Q2 (86% → 125%), soutenue par la rupture concurrente.<br/>"
         "• <b>CONCENTRES</b> : stagnation (66% → 71%), sous-performance structurelle sans signal d'amélioration.<br/>"
         "• <b>ALIMENT COMPLET</b> : amélioration modeste (74% → 86%), à surveiller.<br/>"
-        "• <b>INGREDIENTS</b> : sur-performance massive (~398%) — l'objectif n'inclut pas le Maïs.<br/>"
+        "• <b>INGREDIENTS</b> : sur-performance massive (~398%) — l'objectif reste sous le réalisé.<br/>"
         "• <b>PREMIX</b> : stagnation (~70%), à investiguer.",
         BODY
     ))
@@ -1291,7 +1290,6 @@ def build_story():
         "que les autres ingrédients (en moyenne ~1 450 000 FCFA/t pour les protéines et additifs). "
         "Le prix moyen INGREDIENTS de 449 600 FCFA/t est donc trompeur — "
         "il ne reflète que le prix du Maïs. Pour les analyses de prix, il faut séparer le Maïs des autres ingrédients. "
-        "L'objectif INGREDIENTS (598 t) ne semble pas inclure le Maïs — d'où l'écart massif (398% d'atteinte). "
         "Les objectifs 2027 doivent intégrer le Maïs dans le calcul.",
         BODY_BOLD
     ))
@@ -2184,9 +2182,8 @@ def build_story():
         "<b>2. CONCENTRÉS en stagnation (-1,0% YoY)</b> — malgré un objectif initial ambitieux de 12 242 t (+32% vs S2 2025). "
         "Le problème identifié est un problème de VOLUME (pas de prix) — la dynamique commerciale n'est pas au rendez-vous. "
         "Cependant, baisser massivement l'objectif enverrait un contre-signal stratégique sur le cœur de marge de l'entreprise.<br/><br/>"
-        "<b>3. INGREDIENTS en sur-performance massive (+507,7% YoY)</b> — l'objectif initial de 585 t ne tenait pas compte "
-        "du Maïs (1 892 t en S1¹). "
-        "Le réalisé S1 atteint 2 382 t (398% de l'objectif), dont 1 892 t de Maïs et ~490 t d'ingrédients classiques (Lysine, Méthionine, Farine de poisson, etc.). "
+        "<b>3. INGREDIENTS en sur-performance massive (+507,7% YoY)</b> — l'objectif initial de 585 t est très en-dessous du réalisé. "
+        "Le réalisé S1 atteint 2 382 t (398% de l'objectif), dont 1 892 t de Maïs¹ et ~490 t d'ingrédients classiques (Lysine, Méthionine, Farine de poisson, etc.). "
         "Le recalibrage à 466 t reste très sous-estimé — à revoir massivement à la hausse pour 2027.<br/><br/>"
         "<b>4. COMPLEMENT ALIMENTAIRE — recalibrage suite à la reclassification produits</b> — la catégorie a été clarifiée : "
         "seuls les additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.) restent dans cette catégorie, à ~3 t en S1. "
@@ -2227,7 +2224,6 @@ def build_story():
          "Les +2 t supplémentaires (vs recalibrage précédent à 11 650 t) proviennent du transfert depuis le PREMIX — choix stratégique assumé de prioriser le produit maison."],
         ["INGREDIENTS", "585", "466", "-20,3%",
          "Ajustement réaliste : S1=2 382 t (dont 1 892 t de Maïs¹ et ~490 t d'ingrédients classiques), forecast S2=2 281 t. "
-         "L'objectif initial de 585 t ne tenait pas compte du Maïs. "
          "Le recalibrage reste sous le réel — à revoir à la hausse pour 2027."],
         ["ALIMENT COMPLET", "501", "532", "+6,3%",
          "Confiance dans le pipeline produit. S1=420 t (84% obj), forecast S2=531 t. "
