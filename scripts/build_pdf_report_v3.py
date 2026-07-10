@@ -1277,7 +1277,7 @@ def build_story():
         ["Composant", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "Lecture"],
         ["Maïs (M1051)", "1 892", "426", "225 000", "Produit de volume, faible marge"],
         ["Autres ingrédients", "490", "645", "1 316 000", "BELGOFOS, BELGOTOX, Farine poisson, Lysine, Méthionine, etc."],
-        ["INGREDIENTS (mixte)", "2 382", "1 071", "449 600", "Le Maïs écrase le prix moyen"],
+        ["Total ingrédients", "2 382", "1 071", "449 600", "Le Maïs écrase le prix moyen"],
     ]
     story.append(make_table(mais_table, col_widths=[3.5*cm, 2*cm, 2.2*cm, 2.2*cm, 5.5*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
