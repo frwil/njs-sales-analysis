@@ -2516,6 +2516,211 @@ def build_story():
 
     story.append(PageBreak())
 
+    # ---------- SECTION 13.3 — DIAGNOSTIC TERRAIN ET PLAN D'ACTION OPÉRATIONNEL ----------
+    story.append(Paragraph("13.3 Diagnostic terrain et plan d'action opérationnel", H2))
+    story.append(Paragraph(
+        "Cette section synthétise les constats de terrain remontés par les coordinateurs régionaux et le SAV "
+        "lors de la revue commerciale S1 2026. Elle complète l'analyse quantitative par une lecture qualitative "
+        "des freins opérationnels qui limitent l'efficacité du plan d'action. "
+        "Chaque constat est accompagné d'une action corrective et d'un pilote identifié.",
+        BODY
+    ))
+
+    # 13.3.1 — Confiance client et promesses non tenues
+    story.append(Paragraph("13.3.1 Confiance client et promesses non tenues", H3))
+    story.append(Paragraph(
+        "<b>Constat :</b> des clients du Sud-Ouest expriment un sentiment d'avoir été trompés après des promesses de retour "
+        "de stock non honorées. Deux cas illustratifs ont été remontés :<br/>"
+        "• <b>Cas Talambé</b> (client majeur de Nuboya) : commande reclassée jusqu'à fin juillet sans information préalable du client. "
+        "Une requête a été déposée puis rejetée sans examen approfondi.<br/>"
+        "• <b>Cas Bouya</b> : nombreuses livraisons de poussins en retard, dates dépassées, reclassements répétés. "
+        "L'argument logistique avancé en interne est jugé insuffisant par le client.<br/><br/>"
+        "<b>Risque stratégique :</b> le concurrent récupère les clients mécontents <b>sans même les démarcher</b> — "
+        "le mécontentement fait le travail de conquête à la place du concurrent. "
+        "Cette dynamique est plus dangereuse que la concurrence tarifaire car elle détruit la confiance sur le long terme.<br/><br/>"
+        "<b>Principe posé :</b> ne promettre que ce qu'on est certain de pouvoir livrer. "
+        "Toute promesse de délai ou de réapprovisionnement doit être validée par la logistique avant d'être communiquée au client.",
+        BODY_BOLD
+    ))
+    story.append(Paragraph(
+        "<b>Action :</b> (1) Mettre en place un processus de validation des promesses client (logistique → commercial → client). "
+        "(2) Pour les cas Talambé et Bouya : RDV direct DG avec engagement de résolution sous 15 jours. "
+        "(3) Audit rétroactif des promesses non tenues sur S1 — identifier les clients à risque de churn confiance.",
+        BODY
+    ))
+
+    # 13.3.2 — Efficacité des techniciens SAV
+    story.append(Paragraph("13.3.2 Efficacité des techniciens SAV", H3))
+    story.append(Paragraph(
+        "<b>Constat :</b> les techniciens SAV sont actuellement en mode <b>« visite de présence »</b> — "
+        "ils entrent, sortent, sans diagnostic réel. Il y a un manque de formation technique : "
+        "incapacité à identifier les causes d'hétérogénéité du cheptel ou les problèmes de croissance.<br/><br/>"
+        "<b>Exemple concret :</b> la violation de formule (ex. farine de poisson dosée à 10% au lieu de la formule officielle) "
+        "entraîne des retards d'entrée en ponte de 5-6 semaines (23-24 semaines au lieu de 18). "
+        "Un technicien formé doit pouvoir identifier ce type de problème sur le terrain et alerter la direction produit.<br/><br/>"
+        "Les rapports de visite SAV existent mais leur qualité et leur utilisation restent insuffisantes — "
+        "ils sont remplis de manière mécanique sans valeur diagnostique.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Action :</b> (1) Former les techniciens à l'analyse terrain par type de problème constaté "
+        "(croissance, ponte, mortalité, homogénéité). (2) Refondre la trame de rapport de visite SAV — "
+        "passer d'un format déclaratif à un format diagnostique (observations → hypothèses → recommandations). "
+        "(3) Transmettre l'analyse produit sur les matières premières sensibles (farine de poisson, etc.) "
+        "et leurs impacts sur la croissance et la ponte. (4) Mettre en place un comité mensuel SAV/Direction Produit "
+        "pour traiter les signaux terrain remontés.",
+        BODY_BOLD
+    ))
+
+    # 13.3.3 — Manque d'effectif et de moyens commerciaux
+    story.append(Paragraph("13.3.3 Manque d'effectif et de moyens commerciaux", H3))
+    story.append(Paragraph(
+        "<b>Constat :</b> l'équipe commerciale souffre d'un sous-dimensionnement critique qui limite la couverture terrain :<br/>"
+        "• <b>Intérim forcé</b> : le coordonnateur régional du Centre est obligé d'assurer l'intérim du Chef d'agence de Messassi — "
+        "cette double casquette dilue son efficacité sur les deux postes et crée un risque de non-couverture sur l'une ou l'autre.<br/>"
+        "• <b>Moyens de déplacement insuffisants</b> : les commerciaux disposent de peu ou presque pas de moyens de se mouvoir "
+        "(frais de déplacement, moyens de locomotion). Un commercial qui ne peut pas se déplacer ne peut pas visiter les éleveurs "
+        "en zone rurale — or c'est précisément là que se trouve le potentiel de croissance des concentrés.<br/><br/>"
+        "<b>Impact :</b> ce manque de moyens explique en partie la sous-performance des CONCENTRÉS (72,4% de l'objectif S1) — "
+        "le plan d'action commercial ne peut pas être exécuté sans renforcer préalablement l'équipement et l'effectif.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Action :</b> (1) Pourvoir le poste de Chef d'agence de Messassi sous 30 jours pour libérer le coordonnateur régional. "
+        "(2) Réaliser un audit des moyens de locomotion par agence et établir un plan d'équipement prioritaire. "
+        "(3) Définir un budget de frais de déplacement commercial mensuel par agence. "
+        "(4) Évaluer le ratio commercial/clients par agence et identifier les sous-dimensionnements.",
+        BODY_BOLD
+    ))
+
+    # 13.3.4 — Équipement et disponibilité des équipes SAV
+    story.append(Paragraph("13.3.4 Équipement et disponibilité des équipes SAV", H3))
+    story.append(Paragraph(
+        "<b>Constat :</b> sur 15 employés SAV, seulement 7 sont actifs sur le terrain. "
+        "<b>53% de l'équipe n'a ni flotte téléphonique ni téléphone</b> — ce qui rend le suivi client impossible. "
+        "Le taux de disponibilité effective (55%) est très en-dessous de l'objectif de couverture (37%).<br/><br/>"
+        "<b>Cas spécifiques :</b><br/>"
+        "• <b>Emmanuel</b> : a acheté sa propre puce, toujours sans téléphone suite à un cambriolage.<br/>"
+        "• <b>Daniel</b> : sans bus ni téléphone depuis 4 mois, cas maladie reconnu par l'entreprise.<br/><br/>"
+        "<b>Décisions prises :</b> le matériel téléphonique sera géré par la direction (DG ou direction administrative). "
+        "Le matériel de Daniel sera réaffecté à un personnel actif ; Daniel sera affecté à une agence proche pour faciliter ses soins. "
+        "Un tableau récapitulatif des problèmes par agent sera envoyé à la direction avec le niveau de décision requis (DG, direction, agence).",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Action :</b> (1) Envoyer le tableau récapitulatif des problèmes matériels par agent à la direction sous 7 jours. "
+        "(2) Réaffecter le matériel de Daniel à un personnel actif sous 15 jours. "
+        "(3) Équiper les 8 agents sans téléphone sous 30 jours. "
+        "(4) Mettre en place un suivi mensuel du taux de couverture SAV par agence.",
+        BODY_BOLD
+    ))
+
+    # 13.3.5 — Gestion de la flotte MTN et comptes clients
+    story.append(Paragraph("13.3.5 Gestion de la flotte MTN et comptes clients", H3))
+    story.append(Paragraph(
+        "<b>Constat :</b> les puces MTN de la flotte sont enregistrées au nom des individus, pas au nom de l'entreprise. "
+        "Au départ d'un employé, le numéro reste lié à la personne — un cas vécu a confirmé ce risque : "
+        "un employé parti a réclamé son numéro, MTN a restitué la puce à l'individu.<br/><br/>"
+        "<b>Risque complémentaire :</b> les comptes clients inactifs (sans mouvement sur une période définie) "
+        "présentent un risque de détournement s'ils restent actifs sans contrôle.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Action :</b> (1) Vérifier les conditions contractuelles MTN avant de promettre une récupération des puces — "
+        "ne pas créer un nouveau problème juridique en voulant résoudre le problème opérationnel. "
+        "(2) Le changement d'opérateur est une décision au niveau de la holding, pas de l'entité locale — à remonter. "
+        "(3) Mettre en veille les comptes clients sans mouvement sur une période définie (ex: 6 mois). "
+        "(4) Établir un inventaire des numéros MTN et leur statut (actif/inactif/récupérable).",
+        BODY_BOLD
+    ))
+
+    # 13.3.6 — Gestion des réclamations clients
+    story.append(Paragraph("13.3.6 Gestion des réclamations clients", H3))
+    story.append(Paragraph(
+        "<b>Constat :</b> les réclamations remontant au niveau commercial sont essentiellement liées au prix et aux commandes. "
+        "Les réclamations techniques sont traitées directement par le gestionnaire de stock et le SAV — "
+        "sans remontée structurée vers la direction commerciale. "
+        "Cette séparation empêche d'avoir une vision globale de la satisfaction client.<br/><br/>"
+        "<b>Problème récurrent :</b> les changements de prix ne sont pas communiqués en interne ni aux clients — "
+        "source de friction récurrente. Un client qui découvre un prix différent à la facturation perd confiance.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Action :</b> (1) Catégoriser les réclamations (clientèle vs entités internes) dans un système unifié. "
+        "(2) Intégrer la communication de changement de prix dans la stratégie — tout changement doit être "
+        "communiqué aux commerciaux et aux clients avant application. (3) Mettre en place un suivi mensuel "
+        "des réclamations par catégorie et par agence.",
+        BODY_BOLD
+    ))
+
+    # 13.3.7 — Inventaires et écarts de stock
+    story.append(Paragraph("13.3.7 Inventaires et écarts de stock", H3))
+    story.append(Paragraph(
+        "<b>Constat :</b> les inventaires du mois n'ont pas été saisis à temps — les données ne sont pas concordantes "
+        "avec les dates de comptage. La procédure rappelée : justifier les écarts avant d'aligner les stocks, "
+        "ne jamais écraser sans justification.<br/><br/>"
+        "<b>Magasin électronique (poussins) :</b> environ 15 000 poussins en litige pour la région ; 40% justifiés à ce jour. "
+        "Les cas antérieurs à la mise en place des procédures sont à traiter séparément. "
+        "20 informations clients ont été traitées ; 10 cas résolus avec documents logistiques déposés au DG. "
+        "Les registres de réception d'agence sont en attente d'enregistrement depuis 2 semaines.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Action :</b> (1) Saisir les inventaires en retard sous 7 jours avec justification des écarts. "
+        "(2) Traiter les 60% restants de poussins en litige (15 000 × 60% = 9 000) sous 30 jours. "
+        "(3) Enregistrer les registres de réception d'agence sous 15 jours. "
+        "(4) Séparer le traitement des cas antérieurs aux procédures — comité ad hoc.",
+        BODY_BOLD
+    ))
+
+    # 13.3.8 — Production et procédures
+    story.append(Paragraph("13.3.8 Production et procédures commerciales", H3))
+    story.append(Paragraph(
+        "<b>Production :</b> 35% d'utilisation actuelle (14% en début de semaine). Quelques arrêts pour changement de matériaux, "
+        "sans changement majeur. Le programme est orienté sur les besoins de la réserve centrale.<br/><br/>"
+        "<b>Informatique :</b> réglementation interne mise en place (signature sur fond, fichiers en PDF). "
+        "La connexion OCO sur site est résolue. Le traitement des hauteurs Bouddha n'a pas encore été effectué par Jordan ; "
+        "une nouvelle frappe est prévue le 7 juin.<br/><br/>"
+        "<b>Procédures commerciales :</b> 3 volets en cours de finalisation (lien chefs d'agence/techniciens). "
+        "Mise en forme prévue avec une disponibilité de 2-3 jours demandée.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Action :</b> (1) Confirmer le statut du point de vente (dépôt ou agence) avant fin de journée — "
+        "déterminer la structure de gestion appropriée. (2) Lancer la nouvelle frappe sur les hauteurs Bouddha (Jordan) le 7 juin. "
+        "(3) Finaliser les 3 volets de procédures commerciales sous 3 jours. (4) Discuter avec les régionaux mardi "
+        "pour finaliser la stratégie de déploiement terrain — présentation finale mercredi ou jeudi.",
+        BODY_BOLD
+    ))
+
+    # 13.3.9 — Stratégie de récupération : Région Ouest
+    story.append(Paragraph("13.3.9 Stratégie de récupération — Région Ouest", H3))
+    story.append(Paragraph(
+        "<b>Constat :</b> BELGOCAM dispose actuellement d'un avantage sur le soja dans la région Ouest (rupture concurrente). "
+        "Cet avantage doit être exploité immédiatement, mais avec méthode.<br/><br/>"
+        "<b>Principes d'action :</b><br/>"
+        "• <b>Conditionner l'accès soja à l'achat de concentré</b> — transformer l'avantage soja en levier de cross-sell.<br/>"
+        "• <b>Benchmarking prix concurrent indispensable</b> avant toute approche des éleveurs — "
+        "ne pas se présenter sans connaître le positionnement tarifaire du concurrent.<br/>"
+        "• <b>Déploiement séquentiel par zone, pas simultané</b> — se donner un délai par agence pour ajuster en fonction des retours terrain.<br/>"
+        "• <b>Horizon maximal : 3 mois</b> pour implémenter les actions (pas 6 mois) — "
+        "objectif : récupérer au moins 50% des zones cibles d'ici fin du semestre.<br/><br/>"
+        "<b>⚠️ Risque majeur :</b> l'avantage concurrentiel n'est pas indéfini. Le concurrent peut reconstituer son stock à tout moment. "
+        "La fenêtre d'action est <b>limitée et imprévisible</b> — d'où l'urgence du déploiement sous 3 mois.",
+        BODY_BOLD
+    ))
+    story.append(Paragraph(
+        "<b>Scénarios de récupération sur les 14 clients top 20/80 :</b><br/>"
+        "• 4 récupérés → ~10% de récupération (scénario pessimiste)<br/>"
+        "• 8 récupérés → ~30% de récupération (scénario réaliste)<br/>"
+        "• 12 récupérés → ~60% de récupération (scénario optimiste)<br/><br/>"
+        "<b>Action :</b> déployer la stratégie Ouest en séquentiel : FAMLA en semaine 1 (7 clients 20/80 à réactiver), "
+        "DJELENG en semaine 2 (2 clients), puis extension vers les autres régions avec les apprentissages terrain.",
+        BODY
+    ))
+
+    story.append(PageBreak())
+
     # ---------- PAGE 19: SECTION 10 - CONCLUSION ----------
     story.append(Paragraph("14. Conclusion et prochaines étapes", H1))
     story.append(section_divider())
@@ -2566,6 +2771,22 @@ def build_story():
         "le taux de verrouillage contractuel, le taux de cross-sell Booster → Concentrés, "
         "et l'évolution du % de zéro achat par agence. Revue en comité de direction le 1er lundi de chaque mois.",
         BODY
+    ))
+    story.append(Paragraph(
+        "<b>4. Actions opérationnelles issues du diagnostic terrain :</b><br/>"
+        "• <b>Transmettre l'analyse produit sur les matières premières sensibles</b> (farine de poisson, etc.) "
+        "— communiquer les impacts formule sur la croissance et la ponte aux techniciens SAV.<br/>"
+        "• <b>Envoyer le tableau récapitulatif des problèmes matériels par agent à la direction</b> — "
+        "préciser pour chaque cas le niveau de décision requis (DG, direction, agence).<br/>"
+        "• <b>Confirmer le statut du point de vente</b> (dépôt ou agence) avant fin de journée — "
+        "déterminer la structure de gestion appropriée.<br/>"
+        "• <b>Vérifier les conditions contractuelles MTN</b> sur la récupération des puces flotte — "
+        "éviter de promettre une solution qui pourrait créer un nouveau problème juridique.<br/>"
+        "• <b>Discuter avec les régionaux mardi</b> pour finaliser la stratégie de déploiement terrain — "
+        "présentation finale mercredi ou jeudi avec les équipes.<br/>"
+        "• <b>Pourvoir le poste de Chef d'agence de Messassi</b> sous 30 jours pour libérer le coordonnateur régional du Centre.<br/>"
+        "• <b>Résoudre les cas Talambé et Bouya</b> en RDV direct DG sous 15 jours — restaurer la confiance client.",
+        BODY_BOLD
     ))
 
     story.append(PageBreak())
