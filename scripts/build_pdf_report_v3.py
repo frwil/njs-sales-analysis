@@ -1365,6 +1365,28 @@ def build_story():
     story.append(kpi_row(cards3))
     story.append(Spacer(1, 0.4*cm))
 
+    story.append(Paragraph(
+        "<b>État des lieux détaillé :</b> sur une base de 1 359 clients externes analysés, "
+        "<b>338 clients sont en zéro achat combiné (soja + concentré)</b> et <b>526 clients sont en zéro achat sur le concentré seul</b>. "
+        "L'écart entre ces deux chiffres (526 − 338 = 188) correspond aux clients qui ont acheté du soja mais pas de concentré — "
+        "ils représentent la cible prioritaire du bundle soja-concentrés. "
+        "Les <b>14 clients du top 20/80 en zéro achat</b> sont répartis géographiquement comme suit : "
+        "Douala/NDOBO (4), FAMLA (7), DJELENG (2), AHALA (1). "
+        "FAMLA concentre donc la moitié des clients prioritaires à réactiver — c'est l'agence où l'enjeu de sauvetage est le plus fort.",
+        BODY
+    ))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Lecture dynamique S1 :</b> le gap de volume sur le soja a été <b>rattrapé et dépassé</b> grâce à la rupture concurrente "
+        "(+46,5% YoY en volume TOURTEAUX). En revanche, le gap sur les concentrés <b>reste non comblé</b> — la dynamique positive du soja "
+        "ne s'est pas transmise aux concentrés malgré le potentiel de cross-sell. "
+        "<b>⚠️ Attention à la lecture de juin</b> : une légère amélioration est observée sur le nombre de clients zéro achat concentrés en juin, "
+        "mais elle est <b>trompeuse</b> — elle s'explique par le retour de certains clients chez BELGOCAM <b>faute de stock concurrent</b>, "
+        "non par une fidélisation réelle. Ces clients repartiront chez le concurrent dès que son stock sera reconstitué. "
+        "La fenêtre d'opportunité commerciale est donc <b>limitée dans le temps</b> — d'où l'urgence d'agir maintenant.",
+        BODY_BOLD
+    ))
+
     story.append(Paragraph("5.2 Top 14 clients 20/80 prioritaires à réactiver", H2))
     story.append(Paragraph(
         "Ces 14 clients font partie du top 20/80 (★) mais n'ont acheté AUCUN produit ciblé en Q1. Ils sont à recontacter en priorité absolue pendant la rupture concurrente de soja.",
@@ -1734,6 +1756,15 @@ def build_story():
         "<b>Excellent taux de cross-sell :</b> 78,7% des clients Chick achètent aussi des concentrés volaille. "
         "Reste <b>73 clients à convertir</b> — ce sont des éleveurs volaille qui démarrent leurs poussins avec le Chick Booster mais ne vont pas jusqu'au concentré. "
         "Cible parfaite pour un bundle \"Chick + Chair\" avec remise.",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>⚠️ Insight terrain critique :</b> sur les 343 clients Chick Booster, <b>263 (77%) ont continué avec les concentrés</b> — "
+        "mais <b>73% des clients Chick n'ont jamais repris le concentré après leur achat initial</b>, partis chez la concurrence. "
+        "Cela révèle un problème de <b>rétention</b> et non d'acquisition : le Chick Booster attire bien les éleveurs, "
+        "mais le suivi commercial post-vente est insuffisant pour les fidéliser sur les concentrés. "
+        "La liste des 73 clients Chick-only a été transmise au SAV pour identification et priorisation d'actions de reconquête.",
         BODY_BOLD
     ))
 
