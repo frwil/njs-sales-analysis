@@ -2719,6 +2719,120 @@ def build_story():
         BODY
     ))
 
+    # 13.3.10 — Revue de direction du 6 juillet 2026
+    story.append(Paragraph("13.3.10 Revue de direction du 6 juillet 2026 — décisions et actions", H3))
+    story.append(Paragraph(
+        "Cette sous-section synthétise les décisions et actions issues de la revue de direction du 6 juillet 2026, "
+        "qui a réuni l'ensemble des entités BELGOCAM autour du bilan S1 et du démarrage S2. "
+        "Elle formalise les engagements pris par chaque département et les alertes remontées par la Direction Générale.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Alerte DG — Sous-performance concentré et fin de l'avantage soja :</b> "
+        "la Direction Générale a interpellé le service commercial sur la sous-performance persistante des concentrés "
+        "et a exprimé son inquiétude sur la période post-avantage soja. "
+        "Le DG exhorte les équipes à fournir les efforts nécessaires pour qu'au moins l'objectif de juillet soit atteint. "
+        "Le message est clair : <b>l'avantage soja actuel est temporaire, la fenêtre d'action pour convertir les clients soja en clients concentrés est limitée</b>.",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph(
+        "<b>Difficulté identifiée — Procédures non formalisées :</b> "
+        "les difficultés liées au manque de procédures formalisées font de plus en plus surface. "
+        "La direction exige que tout soit mis en œuvre pour avoir les procédures écrites et approuvées. "
+        "Cette formalisation est un prérequis à la scalabilité du plan d'action commercial.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Difficulté identifiée — Clients zéro achat sous autre nom :</b> "
+        "certains clients comptés parmi les zéro achat effectuent en réalité leurs achats sous un autre nom. "
+        "Cela fausse l'analyse du portefeuille client et surestime le nombre de clients réellement inactifs. "
+        "Un audit de dédoublonnage des comptes clients est nécessaire pour fiabiliser la base.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Difficulté identifiée — Communication soja officieuse :</b> "
+        "la communication sur l'avantage du soja BELGOCAM reste officieuse — l'argumentaire dépend de la personne en face. "
+        "Un technicien sait mieux convaincre un éleveur, tandis qu'un commercial est plus à l'aise avec un provendier. "
+        "La journée de consultation en agence dépendra de chaque agence — d'où l'importance d'adapter le discours au profil de l'interlocuteur.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Suggestions adoptées en réunion :</b><br/>"
+        "• <b>Systématiser le transfert de contacts clients au SAV</b> : le commercial doit remettre systématiquement "
+        "les contacts des clients ayant acheté l'aliment de démarrage (Chick/Piglet Booster) au SAV, pour un suivi visant "
+        "à les amener à consommer le concentré. Cela transforme le SAV en relai de cross-sell post-vente.<br/>"
+        "• <b>Système d'alerte clients inactifs</b> : l'informatique et le commercial doivent concevoir un système d'alerte "
+        "pour les clients qui n'ont pas effectué d'achats pendant une durée déterminée. Détection précoce du churn.<br/>"
+        "• <b>Remplissage journalier de l'outil de collecte de données</b> : le contrôle de gestion doit insister "
+        "sur le remplissage journalier — sans données fiables et timely, le pilotage est impossible.",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph(
+        "<b>Actions planifiées par le Commercial :</b><br/>"
+        "• Pénétrer le réseau des grands éleveurs à Bafoussam (zone FAMLA/DJELENG).<br/>"
+        "• Mettre sur pied les plans d'actions en collaboration avec le SAV et les expérimenter sur 3 mois.<br/>"
+        "• Recenser avec l'appui du DG les manquements des entités sœurs sur la gestion des alvéoles.<br/>"
+        "• Se rendre sur le point de vente NJS de Maroua.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Actions planifiées par le SAV :</b><br/>"
+        "• Envoyer au service informatique le tableau récapitulatif des défauts de matériel.<br/>"
+        "• Discuter avec les régionaux SAV du déploiement terrain de l'équipe.<br/>"
+        "• Tenir une réunion avec l'équipe SAV pour mettre le déploiement sur pied.<br/>"
+        "• Voir l'administratrice des agences pour les registres de réception.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Actions planifiées par la Production :</b><br/>"
+        "• Produire le 5% ponte et tous les besoins du magasin central.<br/>"
+        "<b>Alerte production :</b> le mois de juin s'est achevé avec un encours de production et seulement 14% de réalisation "
+        "de l'objectif mensuel. Une panne tamis et marteau a été signalée. "
+        "De plus, l'hyster du magasin central est en panne — ce qui bloque le transfert des produits finis. "
+        "Ces contraintes production/logistique doivent être résolues en priorité pour ne pas pénaliser le plan d'action commercial.",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph(
+        "<b>Actions planifiées par l'Informatique :</b><br/>"
+        "• Attendre TMC pour le déploiement des routeurs.<br/>"
+        "• Checker et envoyer aux responsables SAV la liste des collaborateurs ayant droit aux téléphones.<br/>"
+        "• Confier le suivi des SIM MTN au consultant SAV.<br/>"
+        "• Rester disponible et traiter les tickets.<br/>"
+        "<b>Difficulté inventaires :</b> difficulté avec la remontée des inventaires — seuls les écarts ont été traités en système. "
+        "À corriger pour fiabiliser les stocks.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Actions planifiées par les RH :</b><br/>"
+        "• Boucler la paie (impression bulletins mai/juin + télédéclarations CNPS).<br/>"
+        "• Produire le rapport mensuel d'activité.<br/>"
+        "• Mettre à jour le tableau de collecte de données.<br/>"
+        "• Finaliser et virer les crédits scolaires.<br/>"
+        "<b>Note RH :</b> le service RH est actuellement seul — le personnel est exhorte à ne pas se limiter au mail : "
+        "un appel ou une visite au bureau permet d'agir plus rapidement.",
+        BODY
+    ))
+
+    story.append(Paragraph(
+        "<b>Actions planifiées par le Contrôle Interne :</b><br/>"
+        "• Rédiger et diffuser le rapport du CODI du 29-06-26 (fait).<br/>"
+        "• Continuer avec les travaux sur les procédures.<br/>"
+        "• Rédiger et transmettre le rapport du contrôle trimestriel.<br/>"
+        "Un audit est en cours à Bekoko. Passation de service et sondages des aliments poisson au magasin intrants. "
+        "Réception du spécimen de procédure commerciale — à valider et déployer.",
+        BODY
+    ))
+
     story.append(PageBreak())
 
     # ---------- PAGE 19: SECTION 10 - CONCLUSION ----------
@@ -2786,6 +2900,24 @@ def build_story():
         "présentation finale mercredi ou jeudi avec les équipes.<br/>"
         "• <b>Pourvoir le poste de Chef d'agence de Messassi</b> sous 30 jours pour libérer le coordonnateur régional du Centre.<br/>"
         "• <b>Résoudre les cas Talambé et Bouya</b> en RDV direct DG sous 15 jours — restaurer la confiance client.",
+        BODY_BOLD
+    ))
+    story.append(Paragraph(
+        "<b>5. Actions issues de la revue de direction du 6 juillet 2026 :</b><br/>"
+        "• <b>Systématiser le transfert de contacts clients Booster au SAV</b> — le commercial remet systématiquement "
+        "les contacts des clients ayant acheté Chick/Piglet Booster au SAV pour un suivi cross-sell vers les concentrés.<br/>"
+        "• <b>Concevoir un système d'alerte clients inactifs</b> (informatique + commercial) — détection précoce du churn "
+        "pour les clients sans achat pendant une durée déterminée.<br/>"
+        "• <b>Imposer le remplissage journalier de l'outil de collecte de données</b> (contrôle de gestion) — "
+        "sans données fiables et timely, le pilotage est impossible.<br/>"
+        "• <b>Formaliser les procédures commerciales</b> — le spécimen reçu par le contrôle interne doit être validé "
+        "et déployé sous 15 jours. Les procédures écrites et approuvées sont un prérequis à la scalabilité.<br/>"
+        "• <b>Auditer le dédoublonnage des comptes clients</b> — certains clients zéro achat achètent sous un autre nom. "
+        "Fiabiliser la base client avant d'engager des actions de réactivation massives.<br/>"
+        "• <b>Résoudre les pannes production prioritaires</b> — tamis, marteau, hyster magasin central. "
+        "Sans capacité de transfert des produits finis, le plan d'action commercial est bloqué.<br/>"
+        "• <b>Pénétrer le réseau des grands éleveurs à Bafoussam</b> — zone FAMLA/DJELENG, action commerciale ciblée.<br/>"
+        "• <b>Expérimenter les plans d'action commercial × SAV sur 3 mois</b> — approche test-and-learn avant généralisation.",
         BODY_BOLD
     ))
 
