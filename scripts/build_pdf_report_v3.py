@@ -2099,12 +2099,13 @@ def build_story():
         ["TOURTEAUX", "20 794", "29 061", "+39,8%", "28 627", "Effet rupture concurrente massif"],
         ["CONCENTRES", "9 251", "9 093", "-1,7%", "9 843", "Stagnation inquiétante (cœur de marge)"],
         ["ALIMENT COMPLET", "361", "528", "+46,2%", "424", "Belle progression (Chick/Piglet)"],
-        ["INGREDIENTS", "392", "2 382", "+507,7%", "1 243", "Boom Maïs (1 892 t hors régul.)"],
+        ["INGREDIENTS (hors Maïs)", "500", "490", "-1,9%", "571", "Stabilité des ingrédients classiques"],
+        ["MAÏS (M1051)", "4 154", "1 892", "-54,5%", "0", "Produit opportuniste — volume variable"],
         ["COMPLEMENT ALIM.", "8", "3", "-60,0%", "2", "Déclin des liquides BELGO"],
         ["PREMIX", "48", "69", "+44,3%", "66", "Bonne progression"],
-        ["TOTAL", "35 126", "41 148", "+17,1%", "39 535", "Croissance globale tirée par TOURTEAUX + Maïs"],
+        ["TOTAL", "35 126", "41 148", "+17,1%", "39 535", "Croissance globale tirée par TOURTEAUX"],
     ]
-    story.append(make_table(yoy_table, col_widths=[3.2*cm, 2.3*cm, 2.3*cm, 1.5*cm, 2.3*cm, 5*cm], font_size=8))
+    story.append(make_table(yoy_table, col_widths=[3.5*cm, 2.3*cm, 2.3*cm, 1.5*cm, 2.3*cm, 4.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
 
     # Chart F: YoY
@@ -2116,8 +2117,9 @@ def build_story():
         "<b>Insights YoY clés :</b><br/>"
         "• <b>TOURTEAUX +39,8%</b> : la rupture concurrente a généré un gain exceptionnel de 8 845 tonnes en S1 2026.<br/>"
         "• <b>CONCENTRES -1,7%</b> : stagnation quasi parfaite — confirmant le caractère structurel du problème, pas conjoncturel.<br/>"
-        "• <b>INGREDIENTS +507,7% (Boom Maïs)</b> : croissance tirée par le Maïs (1 892 t¹ vs ~250 t en 2025). Vérifier la soutenabilité de cette croissance.<br/>"
-        "• <b>ALIMENT COMPLET +64%</b> : les Booster progressent bien — confirmer la synergie avec les concentrés.<br/>"
+        "• <b>INGREDIENTS (hors Maïs) -1,9%</b> : les ingrédients classiques (Lysine, Méthionine, Farine de poisson, BELGOFOS, etc.) restent stables à ~490 t.<br/>"
+        "• <b>MAÏS -54,5%</b> : produit opportuniste — 4 154 t en S1 2025 vs 1 892 t¹ en S1 2026. La variation reflète la nature opportuniste du Maïs (disponibilité + demande), pas une tendance de marché.<br/>"
+        "• <b>ALIMENT COMPLET +46,2%</b> : les Booster progressent bien — confirmer la synergie avec les concentrés.<br/>"
         "• <b>COMPLEMENT ALIMENTAIRE -60%</b> : déclin des additifs liquides BELGO (3 t vs 8 t en 2025). L'objectif (6 t) reste ambitieux — à surveiller.",
         BODY
     ))
