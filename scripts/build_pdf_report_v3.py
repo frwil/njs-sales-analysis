@@ -1275,9 +1275,9 @@ def build_story():
     story.append(Paragraph("4.7.3 Séparation Maïs / autres ingrédients", H3))
     mais_table = [
         ["Composant", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "Lecture"],
-        ["Maïs (M1051)", "3 592", "426", "118 545", "Produit de volume, faible marge"],
-        ["Autres ingrédients", "167", "252", "1 510 582", "Lysine, méthionine, farine poisson — prix élevé"],
-        ["INGREDIENTS (mixte)", "2 382", "1 071", "449 600", "Le Maïs écrase le prix moyen (×10)"],
+        ["Maïs (M1051)", "1 892", "426", "225 000", "Produit de volume, faible marge"],
+        ["Autres ingrédients", "490", "645", "1 316 000", "BELGOFOS, BELGOTOX, Farine poisson, Lysine, Méthionine, etc."],
+        ["INGREDIENTS (mixte)", "2 382", "1 071", "449 600", "Le Maïs écrase le prix moyen"],
     ]
     story.append(make_table(mais_table, col_widths=[3.5*cm, 2*cm, 2.2*cm, 2.2*cm, 5.5*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
@@ -1287,12 +1287,19 @@ def build_story():
     story.append(Paragraph("Figure 30 — INGREDIENTS : séparation Maïs vs autres ingrédients (S1 2026)", CAPTION))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
-        "Le Maïs représente 79% du volume INGREDIENTS mais seulement 40% du CA. À 225 000 FCFA/t, il est 7× moins cher "
-        "que les autres ingrédients (en moyenne ~1 450 000 FCFA/t pour les protéines et additifs). "
+        "Le Maïs représente 79% du volume INGREDIENTS mais seulement 40% du CA. À 225 000 FCFA/t, il est 5,8× moins cher "
+        "que les autres ingrédients (~1 316 000 FCFA/t en moyenne). "
         "Le prix moyen INGREDIENTS de 449 600 FCFA/t est donc trompeur — "
         "il ne reflète que le prix du Maïs. Pour les analyses de prix, il faut séparer le Maïs des autres ingrédients. "
         "À noter que le Maïs est un produit opportuniste — son volume peut varier fortement d'une année à l'autre selon disponibilité et demande.",
         BODY_BOLD
+    ))
+    story.append(Paragraph(
+        "<b>Composition des \"autres ingrédients\" (490 t, 645 M FCFA) :</b> BELGOFOS (230 t, 309 M), BELGOTOX (72 t, 84 M), "
+        "Farine de poisson (72 t, 78 M), Lysine (32 t, 69 M), Méthionine (19 t, 76 M), Bicarbonate (28 t, 18 M), "
+        "Carbonate de calcium (23 t, 3 M), Sulfate de fer (8 t, 6 M), Sel (7 t, 1 M). "
+        "Les BELGOFOS et BELGOTOX représentent à eux seuls 61% du CA des autres ingrédients.",
+        BODY
     ))
 
     story.append(PageBreak())
