@@ -524,7 +524,7 @@ def build_story():
         ["Catégorie", "Produits principaux", "Vol S1 2026 (t)", "CA S1 (M FCFA)", "% CA", "YoY vol"],
         ["TOURTEAUX", "T102 Soja 50Kg + formats", "29 062", "9 437", "54,4%", "+52,8%"],
         ["CONCENTRES", "C104 BELGO 10% Chair, C105 Porc, C103/C101 5%, etc.", "9 075", "6 064", "35,0%", "+4,7%"],
-        ["INGREDIENTS", "Maïs, BELGOFOS, BELGOTOX, Lysine, Méthionine, Farine poisson, etc.", "2 382", "1 071", "5,8%", "+507,7%"],
+        ["INGREDIENTS", "Maïs (M1051) + Lysine, Méthionine, Farine poisson, Bicarbonate, Sels minéraux, etc.", "2 382", "1 071", "5,8%", "+507,7%"],
         ["ALIMENT COMPLET", "Chick Booster, Piglet Booster, BELGO Rabbit, BELGO Fish", "545", "471", "2,7%", "+118,2%"],
         ["COMPLEMENT ALIM.", "Additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.)", "3", "15", "0,0%", "-8,8%"],
         ["PREMIX", "P102N2 Chair, P104N2 Ponte, P109 Multi Rumi", "69", "126", "0,7%", "+54,1%"],
@@ -738,10 +738,11 @@ def build_story():
 
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>INGREDIENTS (678,9% — sur-performance massive) :</b> les ventes atteignent 4 060 t "
-        "contre 598 t d'objectif. Cette sur-performance est portée par le Maïs (M1051, 3 623 t) et les sels minéraux (BELGOFOS, BELGOTOX, ~300 t) "
+        "<b>INGREDIENTS (398,4% — sur-performance massive) :</b> les ventes atteignent 2 382 t "
+        "contre 598 t d'objectif. Cette sur-performance est portée par le Maïs (M1051, 1 892 t hors régularisation stock SPC) "
         "qui n'était pas comptabilisé en volume auparavant (poids non spécifié dans la description, désormais corrigé à 50 kg/sac). "
-        "Les objectifs INGREDIENTS doivent être révisés massivement à la hausse pour intégrer le Maïs et les sels minéraux (BELGOFOS, BELGOTOX). "
+        "Hors Maïs, les ingrédients classiques (Lysine, Méthionine, Farine de poisson, Bicarbonate, etc.) représentent ~490 t. "
+        "Les objectifs INGREDIENTS doivent être révisés massivement à la hausse pour intégrer le Maïs. "
         "Aucune action corrective nécessaire — mais réviser les objectifs 2027 pour tenir compte du Maïs.",
         BODY
     ))
@@ -806,7 +807,7 @@ def build_story():
         "• <b>TOURTEAUX</b> : progression continue Q1→Q2 (86% → 125%), soutenue par la rupture concurrente.<br/>"
         "• <b>CONCENTRES</b> : stagnation (66% → 71%), sous-performance structurelle sans signal d'amélioration.<br/>"
         "• <b>ALIMENT COMPLET</b> : amélioration modeste (74% → 86%), à surveiller.<br/>"
-        "• <b>INGREDIENTS</b> : sur-performance massive (~398%) — l'objectif n'inclut pas le Maïs ni les sels minéraux (BELGOFOS/BELGOTOX).<br/>"
+        "• <b>INGREDIENTS</b> : sur-performance massive (~398%) — l'objectif n'inclut pas le Maïs.<br/>"
         "• <b>PREMIX</b> : stagnation (~70%), à investiguer.",
         BODY
     ))
@@ -1283,10 +1284,10 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "Le Maïs représente 79% du volume INGREDIENTS mais seulement 40% du CA. À 225 000 FCFA/t, il est 7× moins cher "
-        "que les autres ingrédients (1 386 232 FCFA/t en moyenne pour les sels minéraux BELGOFOS/BELGOTOX et 1 510 582 FCFA/t pour les protéines). "
+        "que les autres ingrédients (en moyenne ~1 450 000 FCFA/t pour les protéines et additifs). "
         "Le prix moyen INGREDIENTS de 449 600 FCFA/t est donc trompeur — "
         "il ne reflète que le prix du Maïs. Pour les analyses de prix, il faut séparer le Maïs des autres ingrédients. "
-        "L'objectif INGREDIENTS (598 t) ne semble pas inclure le Maïs ni les sels minéraux (BELGOFOS/BELGOTOX, ~300 t) — d'où l'écart massif (398% d'atteinte). "
+        "L'objectif INGREDIENTS (598 t) ne semble pas inclure le Maïs — d'où l'écart massif (398% d'atteinte). "
         "Les objectifs 2027 doivent intégrer le Maïs dans le calcul.",
         BODY_BOLD
     ))
@@ -2088,7 +2089,7 @@ def build_story():
         ["TOURTEAUX", "20 794", "29 061", "+39,8%", "28 627", "Effet rupture concurrente massif"],
         ["CONCENTRES", "9 251", "9 093", "-1,7%", "9 843", "Stagnation inquiétante (cœur de marge)"],
         ["ALIMENT COMPLET", "361", "528", "+46,2%", "424", "Belle progression (Chick/Piglet)"],
-        ["INGREDIENTS", "392", "2 382", "+507,7%", "1 243", "Boom Maïs (1 892 t hors régul.) + sels minéraux"],
+        ["INGREDIENTS", "392", "2 382", "+507,7%", "1 243", "Boom Maïs (1 892 t hors régul.)"],
         ["COMPLEMENT ALIM.", "8", "3", "-60,0%", "2", "Déclin des liquides BELGO"],
         ["PREMIX", "48", "69", "+44,3%", "66", "Bonne progression"],
         ["TOTAL", "35 126", "41 148", "+17,1%", "39 535", "Croissance globale tirée par TOURTEAUX + Maïs"],
@@ -2105,7 +2106,7 @@ def build_story():
         "<b>Insights YoY clés :</b><br/>"
         "• <b>TOURTEAUX +39,8%</b> : la rupture concurrente a généré un gain exceptionnel de 8 845 tonnes en S1 2026.<br/>"
         "• <b>CONCENTRES -1,7%</b> : stagnation quasi parfaite — confirmant le caractère structurel du problème, pas conjoncturel.<br/>"
-        "• <b>INGREDIENTS +507,7% (Boom Maïs + sels minéraux)</b> : croissance tirée par le Maïs (1 892 t vs ~250 t en 2025 hors régularisation) et l'intégration des BELGOFOS/BELGOTOX. Vérifier la soutenabilité de cette croissance.<br/>"
+        "• <b>INGREDIENTS +507,7% (Boom Maïs)</b> : croissance tirée par le Maïs (1 892 t vs ~250 t en 2025 hors régularisation). Vérifier la soutenabilité de cette croissance.<br/>"
         "• <b>ALIMENT COMPLET +64%</b> : les Booster progressent bien — confirmer la synergie avec les concentrés.<br/>"
         "• <b>COMPLEMENT ALIMENTAIRE -60%</b> : déclin des additifs liquides BELGO (3 t vs 8 t en 2025). L'objectif (6 t) reste ambitieux — à surveiller.",
         BODY
@@ -2180,12 +2181,11 @@ def build_story():
         "Le problème identifié est un problème de VOLUME (pas de prix) — la dynamique commerciale n'est pas au rendez-vous. "
         "Cependant, baisser massivement l'objectif enverrait un contre-signal stratégique sur le cœur de marge de l'entreprise.<br/><br/>"
         "<b>3. INGREDIENTS en sur-performance massive (+507,7% YoY)</b> — l'objectif initial de 585 t ne tenait pas compte "
-        "du Maïs (1 892 t en S1 hors régularisation) ni des sels minéraux BELGOFOS/BELGOTOX (~300 t). "
-        "Le réalisé S1 atteint 2 382 t (398% de l'objectif). Le recalibrage à 466 t reste très sous-estimé — à revoir massivement à la hausse pour 2027.<br/><br/>"
+        "du Maïs (1 892 t en S1 hors régularisation stock SPC). "
+        "Le réalisé S1 atteint 2 382 t (398% de l'objectif), dont 1 892 t de Maïs et ~490 t d'ingrédients classiques (Lysine, Méthionine, Farine de poisson, etc.). "
+        "Le recalibrage à 466 t reste très sous-estimé — à revoir massivement à la hausse pour 2027.<br/><br/>"
         "<b>4. COMPLEMENT ALIMENTAIRE — recalibrage suite à la reclassification produits</b> — la catégorie a été clarifiée : "
-        "BELGOFOS et BELGOTOX (sels minéraux en sacs) migrent vers INGREDIENTS, la pierre à lécher migre vers DIVERS, "
-        "PONT_BASCULE et CONTRIBUTION_CARBURANT ont été ajoutés en DIVERS (état 'Validée' inclus). "
-        "Il ne reste que les additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.) à ~3 t en S1. "
+        "seuls les additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.) restent dans cette catégorie, à ~3 t en S1. "
         "L'objectif initial de 6 t (doublement vs S1) était ambitieux — le recalibrage à 3 t aligne sur le réalisé.",
         BODY
     ))
@@ -2222,8 +2222,8 @@ def build_story():
          "L'objectif recalibré reste +25,9% vs S2 2025 — volontariste. Le plan d'action identifie 1 243 t de potentiel. "
          "Les +2 t supplémentaires (vs recalibrage précédent à 11 650 t) proviennent du transfert depuis le PREMIX — choix stratégique assumé de prioriser le produit maison."],
         ["INGREDIENTS", "585", "466", "-20,3%",
-         "Ajustement réaliste : S1=2 382 t (avec Maïs hors régularisation), forecast S2=2 281 t. "
-         "L'objectif initial de 585 t ne tenait pas compte du Maïs ni des sels minéraux (BELGOFOS/BELGOTOX). "
+         "Ajustement réaliste : S1=2 382 t (dont 1 892 t de Maïs hors régularisation stock SPC et ~490 t d'ingrédients classiques), forecast S2=2 281 t. "
+         "L'objectif initial de 585 t ne tenait pas compte du Maïs. "
          "Le recalibrage reste sous le réel — à revoir à la hausse pour 2027."],
         ["ALIMENT COMPLET", "501", "532", "+6,3%",
          "Confiance dans le pipeline produit. S1=420 t (84% obj), forecast S2=531 t. "
@@ -2236,9 +2236,8 @@ def build_story():
          "renforcer la marque BELGOCAM (gamme BELGO 5%/10%) et la fidélisation client. Le PREMIX reste un produit d'accompagnement "
          "(cross-sell) qui suit mécaniquement la dynamique des CONCENTRÉS."],
         ["COMPLEMENT ALIM.", "6", "3", "-52,0%",
-         "Alignement sur le périmètre corrigé. Reclassification : BELGOFOS/BELGOTOX→INGREDIENTS, Pierre à lécher→DIVERS, "
-         "ajout PONT_BASCULE/CONTRIBUTION_CARBURANT en DIVERS (état 'Validée' inclus). "
-         "Il ne reste que les additifs liquides BELGO (3 t en S1). Recalibrage à 3 t = alignment sur le réalisé."],
+         "Alignement sur le périmètre corrigé — seuls les additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.) restent dans cette catégorie (3 t en S1). "
+         "Recalibrage à 3 t = alignement sur le réalisé."],
         ["TOTAL", "40 238", "40 239", "+0,0%",
          "Total stable — choix politique de maintenir l'ambition globale. "
          "Réallocation interne : +1 499 t sur les catégories en dynamique (TOURTEAUX, ALIM. COMPLET) "
