@@ -204,7 +204,7 @@ def draw_cover(canv, doc):
     canv.setFillColor(GRAY)
     canv.setFont('NotoSerifSC-Light', 8)
     canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "93,2% de l'objectif CA (hors pipeline)")
-    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "41 138 t réalisées vs 41 230 t")
+    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "41 139 t réalisées vs 41 230 t")
     canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 1.4*cm, "9 075 t vs 12 542 t objectif")
 
     # Author / redactor block at bottom
@@ -411,7 +411,7 @@ def build_story():
     story.append(Paragraph(
         "<i>Ce rapport présente l'analyse complète des ventes BELGOCAM SA sur la période Janvier-Juin 2026, "
         "après exclusion de 35 clients internes (filiales NJS, SPC, comptoirs d'agences et soldes comptables). "
-        "L'analyse porte sur 41 138 tonnes et 17,34 Md FCFA de ventes (Janvier-Juin 2026), "
+        "L'analyse porte sur 41 139 tonnes et 17,34 Md FCFA de ventes (Janvier-Juin 2026), "
         "1 359 clients externes (après exclusion de 35 clients internes pour les analyses clients), "
         "et 10 catégories de produits dont les CONCENTRÉS (cœur de marge) et les TOURTEAUX (volume).</i>",
         BODY_ITALIC
@@ -429,7 +429,7 @@ def build_story():
     # KPI row
     cards = [
         kpi_card("CA HT S1", "17,34 Md", "FCFA (93,2% obj)"),
-        kpi_card("Volume S1", "41 138 t", "(99,8% obj)"),
+        kpi_card("Volume S1", "41 139 t", "(99,8% obj)"),
         kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
         kpi_card("Bilan net Q1→Q2", "+276 M", "FCFA (ciblé)"),
     ]
@@ -444,7 +444,7 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>1. Volume global au-dessus de l'objectif, CA en dessous.</b> "
-        "Avec 41 138 tonnes en S1 2026, le volume atteint 99,8% de l'objectif (hors pipeline en cours). "
+        "Avec 41 139 tonnes en S1 2026, le volume atteint 99,8% de l'objectif (hors pipeline en cours). "
         "Mais en CA, l'objectif de 18,60 Md FCFA n'est atteint qu'à 93,2% (17,34 Md réalisé). "
         "L'écart provient principalement des CONCENTRES qui représentent à eux seuls 2 213 M FCFA de CA manquant.",
         BODY
@@ -531,7 +531,7 @@ def build_story():
         ["MATERIEL ELEVAGE", "Abreuvoirs, grillages, cages, radiants (évalués en CA)", "—", "129", "0,7%", "—"],
         ["ALVEOLE", "Cartons à œufs, caisses (évalués en CA)", "—", "14", "0,1%", "—"],
         ["DIVERS", "Manuels, sacs, contribution carburant, pont bascule", "—", "17", "0,1%", "—"],
-        ["TOTAL", "—", "41 138", "17 344", "100%", "+17,1%"],
+        ["TOTAL", "—", "41 139", "17 344", "100%", "+17,1%"],
     ]
     story.append(make_table(prod_data, col_widths=[2.8*cm, 5*cm, 2*cm, 2*cm, 1.2*cm, 1.5*cm], font_size=7.5))
     story.append(Spacer(1, 0.2*cm))
@@ -581,7 +581,7 @@ def build_story():
     story.append(Paragraph("2.1 Indicateurs business S1 2026", H2))
     cards2 = [
         kpi_card("CA HT S1", "17,34 Md", "FCFA (93,2% obj)"),
-        kpi_card("Volume S1", "41 138 t", "(99,8% obj)"),
+        kpi_card("Volume S1", "41 139 t", "(99,8% obj)"),
         kpi_card("Clients actifs", "1 359", "(20/80: 359)"),
         kpi_card("Clients 20/80 (★)", "359", "80% du CA clients"),
         kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
@@ -600,7 +600,7 @@ def build_story():
         ["PREMIX", "69", "61", "112,8%", "+54,1%", "126", "113", "111,6%"],
         ["MATERIEL ELEVAGE", "—", "0", "—", "—", "129", "170", "75,8%"],
         ["ALVEOLE", "—", "0", "—", "—", "14", "91", "15,1%"],
-        ["TOTAL", "41 138", "41 230", "99,8%", "+17,1%", "17 344", "18 604", "93,2%"],
+        ["TOTAL", "41 139", "41 230", "99,8%", "+17,1%", "17 344", "18 604", "93,2%"],
     ]
     story.append(make_table(perf_data, col_widths=[2.8*cm, 1.7*cm, 1.7*cm, 1.2*cm, 1.4*cm, 1.7*cm, 1.7*cm, 1.2*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
@@ -625,7 +625,7 @@ def build_story():
         ["VILLAGE", "949", "5,5%", "2 171", "127,8%"],
         ["BERTOUA", "834", "4,8%", "1 686", "97,0%"],
         ["Autres (6 agences)", "4 412", "25,4%", "9 773", "—"],
-        ["TOTAL", "17 344", "100%", "41 138", "99,8%"],
+        ["TOTAL", "17 344", "100%", "41 139", "99,8%"],
     ]
     story.append(make_table(ag_data, col_widths=[3.5*cm, 3*cm, 2*cm, 2.5*cm, 2*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
@@ -645,7 +645,7 @@ def build_story():
     story.append(Paragraph("3.1 Vue d'ensemble (S1 2026 — Janvier-Juin)", H2))
     story.append(Paragraph(
         "Les objectifs 2026 ont été définis par catégorie de produits et par agence. Sur le semestre 1 (Janvier-Juin 2026), "
-        "le volume total atteint est de <b>41 138 tonnes</b>, soit <b>99,8% de l'objectif S1</b> (41 230 tonnes). En incluant le pipeline de commandes en cours et validées (192,8 t), le total projeté atteint 41 341 t (102,3% de l'objectif). "
+        "le volume total atteint est de <b>41 139 tonnes</b>, soit <b>99,8% de l'objectif S1</b> (41 230 tonnes). En incluant le pipeline de commandes en cours et validées (192,8 t), le total projeté atteint 41 341 t (102,3% de l'objectif). "
         "En CA, l'objectif S1 est de <b>18,60 milliards FCFA</b>, atteint à <b>93,2%</b> (17,34 Md réalisé). "
         "La seule sous-performance majeure est les CONCENTRES : 72,5% en volume et 73,4% en CA — le cœur de marge.",
         BODY
@@ -662,7 +662,7 @@ def build_story():
         ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%", "+54,1%"],
         ["MATERIEL ELEVAGE", "0", "—", "—", "0", "—", "—", "0", "—", "—", "—"],
         ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%", "—"],
-        ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "21 227", "108,9%", "41 230", "41 138", "99,8%", "+17,1%"],
+        ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "21 227", "108,9%", "41 230", "41 139", "99,8%", "+17,1%"],
     ]
     story.append(make_table(cat_obj_data, col_widths=[2.7*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.2*cm], font_size=6))
     story.append(Spacer(1, 0.3*cm))
@@ -859,7 +859,7 @@ def build_story():
         ["BUEA", "1 771", "1 424", "80,4%", "+5,0%", "589,7", "-6,2%"],
         ["AHALA", "2 578", "2 038", "79,1%", "+50,0%", "967,8", "+29,8%"],
         ["NKOLBISSON", "617", "737", "119,5%", "+105,3%", "360,0", "+66,1%"],
-        ["TOTAL", "41 230", "41 138", "99,8%", "+17,1%", "17 344,4", "+7,8%"],
+        ["TOTAL", "41 230", "41 139", "99,8%", "+17,1%", "17 344,4", "+7,8%"],
     ]
     story.append(make_table(ag_full_data, col_widths=[2.8*cm, 2*cm, 2*cm, 1.7*cm, 1.5*cm, 2*cm, 1.5*cm], font_size=7))
     story.append(Spacer(1, 0.3*cm))
@@ -988,7 +988,7 @@ def build_story():
         ["Ouest", "FAMLA, DJELENG, MBOUDA", "15 896", "16 365", "102,9%", "+16,4%", "6 822", "+3,5%", "3 605", "4 870", "74,0%"],
         ["Centre", "MESSASSI, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON", "11 717", "10 723", "91,5%", "+50,7%", "5 039", "+30,0%", "3 003", "4 317", "69,6%"],
         ["Littoral", "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE", "13 540", "14 051", "103,8%", "+0,7%", "5 452", "-4,6%", "2 468", "3 322", "74,3%"],
-        ["TOTAL", "14 agences", "41 230", "41 138", "99,8%", "+17,1%", "17 313", "+7,8%", "9 075", "12 509", "72,5%"],
+        ["TOTAL", "14 agences", "41 230", "41 139", "99,8%", "+17,1%", "17 313", "+7,8%", "9 075", "12 509", "72,5%"],
     ]
     story.append(make_table(region_obj_table, col_widths=[1.5*cm, 4*cm, 1.5*cm, 1.5*cm, 1.1*cm, 1.2*cm, 1.6*cm, 1.2*cm, 1.4*cm, 1.4*cm, 1.1*cm], font_size=6.5))
     story.append(Paragraph(
@@ -1070,7 +1070,7 @@ def build_story():
         ["AHALA", "2 628", "2 038", "78%", "-590"],
         ["NKOLBISSON", "693", "737", "106%", "+44"],
         ["PK11", "1 348", "1 570", "117%", "+222"],
-        ["TOTAL", "41 230", "41 138", "99,8%", "-92"],
+        ["TOTAL", "41 230", "41 139", "99,8%", "-92"],
     ]
     story.append(make_table(ag_synth_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], font_size=7.5))
     story.append(Spacer(1, 0.3*cm))
@@ -1113,7 +1113,7 @@ def build_story():
         ["Ouest", "15 896", "16 365", "103%", "+469"],
         ["Centre", "11 717", "10 723", "92%", "-994"],
         ["Littoral", "13 540", "14 051", "104%", "+511"],
-        ["TOTAL", "41 230", "41 138", "99,8%", "-92"],
+        ["TOTAL", "41 230", "41 139", "99,8%", "-92"],
     ]
     story.append(make_table(region_synth_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -2147,7 +2147,7 @@ def build_story():
 
     total_data = [
         ["Scénario", "Volume S2 (t)", "vs Objectif S2", "vs S1 réel", "Hypothèses"],
-        ["S1 réel (référence)", "41 138", "—", "—", "Base observée Jan-Juin 2026"],
+        ["S1 réel (référence)", "41 139", "—", "—", "Base observée Jan-Juin 2026"],
         ["S2 objectif", "39 436", "100,0%", "+5,7%", "Objectif officiel BELGOCAM"],
         ["🔴 S2 Pessimiste", "32 563", "82,6%", "-12,8%", "Fin rupture concurrente, pas d'action"],
         ["🟡 S2 Réaliste", "36 442", "92,4%", "-2,4%", "Statu quo, actions partielles"],
@@ -2214,7 +2214,7 @@ def build_story():
         ["MAÏS (M1051)", "4 154", "1 892", "-54,5%", "0", "Produit opportuniste — volume variable"],
         ["COMPLEMENT ALIM.", "4", "3", "-27,9%", "3", "Déclin des liquides BELGO"],
         ["PREMIX", "48", "69", "+44,3%", "67", "Bonne progression"],
-        ["TOTAL", "35 112", "41 138", "+17,2%", "39 385", "Croissance globale tirée par TOURTEAUX"],
+        ["TOTAL", "35 112", "41 139", "+17,2%", "39 385", "Croissance globale tirée par TOURTEAUX"],
     ]
     story.append(make_table(yoy_table, col_widths=[3.5*cm, 2.3*cm, 2.3*cm, 1.5*cm, 2.3*cm, 4.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -2506,7 +2506,7 @@ def build_story():
         "L'essentiel du volume est sur les TOURTEAUX (163,8 t, 85% du pipeline) — ce qui confirme la dynamique forte de cette catégorie. "
         "Le CONCENTRÉS représente 25,5 t (13% du pipeline) — modeste mais non négligeable pour une catégorie en stagnation.<br/><br/>"
         "<b>Total projeté S1 2026 (Livré + Pipeline) :</b><br/>"
-        "• Volume : 41 138 + 193 = <b>41 341 t</b> (102,3% de l'objectif S1)<br/>"
+        "• Volume : 41 139 + 193 = <b>41 341 t</b> (102,3% de l'objectif S1)<br/>"
         "• CA HT : 17 344 + 74 = <b>17 418 M FCFA</b><br/><br/>"
         "<b>Conclusion :</b> avec le pipeline, le S1 2026 dépasse légèrement l'objectif volume (102,3%). "
         "La sous-performance sur les CONCENTRÉS (72,4%) est compensée par la sur-performance TOURTEAUX (108,9%) et INGREDIENTS (398%).",
