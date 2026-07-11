@@ -792,7 +792,7 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "Pour les TOURTEAUX, on observe un décrochage en février-mars (ventes réelles sous objectif) suivi d'un fort rebond à partir d'avril, "
-        "qui coïncide avec le début de la rupture concurrente. Le mois de juin atteint 6 930 t (objectif : 4 377 t, soit 158%). "
+        "qui coïncide avec le début de la rupture concurrente. Le mois de juin atteint 7 207 t (objectif : 4 377 t, soit 165%). "
         "Pour les CONCENTRES, les ventes restent constamment sous l'objectif tout au long du semestre, sans signe d'amélioration — "
         "ce qui confirme le caractère structurel de la sous-performance.",
         BODY
