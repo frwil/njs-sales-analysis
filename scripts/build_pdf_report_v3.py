@@ -325,19 +325,19 @@ def make_table(data, col_widths=None, header_row=True, font_size=9, align='LEFT'
 def kpi_card(label, value, sublabel=""):
     """Create a small KPI card as a Table."""
     data = [
-        [Paragraph(f'<b>{value}</b>', ParagraphStyle('kpi_v', fontName='NotoSerifSC-Bold', fontSize=18, textColor=NAVY, alignment=TA_CENTER, leading=22))],
-        [Paragraph(label, ParagraphStyle('kpi_l', fontName='NotoSerifSC', fontSize=9, textColor=GRAY, alignment=TA_CENTER, leading=11))],
+        [Paragraph(f'<b>{value}</b>', ParagraphStyle('kpi_v', fontName='NotoSerifSC-Bold', fontSize=13, textColor=NAVY, alignment=TA_CENTER, leading=16))],
+        [Paragraph(label, ParagraphStyle('kpi_l', fontName='NotoSerifSC', fontSize=8, textColor=GRAY, alignment=TA_CENTER, leading=10))],
     ]
     if sublabel:
-        data.append([Paragraph(sublabel, ParagraphStyle('kpi_s', fontName='NotoSerifSC-Light', fontSize=8, textColor=GRAY, alignment=TA_CENTER, leading=10))])
-    t = Table(data, colWidths=[5.2*cm])
+        data.append([Paragraph(sublabel, ParagraphStyle('kpi_s', fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, alignment=TA_CENTER, leading=9))])
+    t = Table(data, colWidths=[3.2*cm])
     t.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), GRAY_VLIGHT),
         ('LINEBELOW', (0, 0), (-1, 0), 0.5, GOLD),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
         ('BOX', (0, 0), (-1, -1), 0.3, GRAY_LIGHT),
     ]))
     return t
