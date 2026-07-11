@@ -1016,7 +1016,73 @@ def build_story():
 
     story.append(PageBreak())
 
-    # ---------- PAGE 20: SECTION 9 BIS - FOCUS CONCENTRÉS ----------
+    # ---------- 3.12 TENDANCE MENSUELLE PAR AGENCE (vs objectifs) ----------
+    story.append(Paragraph("3.12 Tendance mensuelle par agence — vs objectifs", H2))
+    story.append(Paragraph(
+        "Ce tableau présente l'évolution mois par mois du volume réalisé vs objectif pour chacune des 14 agences. "
+        "Il permet d'identifier les agences en dynamique de croissance et celles en difficulté structurelle.",
+        BODY
+    ))
+
+    ag_monthly_data = [
+        ["Agence", "M1 obj", "M1 réel", "M2 obj", "M2 réel", "M3 obj", "M3 réel", "M4 obj", "M4 réel", "M5 obj", "M5 réel", "M6 obj", "M6 réel", "S1 %"],
+        ["FAMLA", "1 987", "2 219", "1 764", "1 510", "1 974", "1 359", "1 598", "1 573", "1 754", "1 763", "1 781", "2 367", "99%"],
+        ["NDOBO", "1 216", "766", "1 081", "514", "1 209", "1 122", "979", "1 505", "1 075", "1 629", "1 091", "1 689", "109%"],
+        ["MESSASSI", "764", "680", "679", "510", "760", "504", "615", "581", "675", "779", "685", "865", "94%"],
+        ["DJELENG", "564", "594", "501", "417", "560", "433", "453", "403", "498", "532", "505", "808", "103%"],
+        ["MBOUDA", "358", "475", "317", "384", "356", "284", "287", "369", "315", "365", "320", "510", "122%"],
+        ["VILLAGE", "321", "349", "286", "313", "320", "294", "259", "430", "284", "380", "288", "405", "123%"],
+        ["BERTOUA", "329", "308", "292", "239", "327", "235", "265", "317", "290", "249", "295", "338", "94%"],
+        ["NKONGSAMBA", "358", "325", "317", "276", "356", "302", "287", "214", "315", "273", "320", "272", "85%"],
+        ["NKOABANG", "247", "243", "219", "140", "245", "171", "198", "178", "218", "204", "221", "288", "91%"],
+        ["NGAOUNDERE", "196", "198", "174", "192", "195", "149", "158", "184", "173", "176", "176", "224", "105%"],
+        ["BUEA", "335", "287", "297", "190", "332", "212", "269", "221", "295", "276", "300", "237", "78%"],
+        ["AHALA", "481", "322", "427", "276", "478", "364", "387", "348", "425", "323", "431", "405", "78%"],
+        ["NKOLBISSON", "127", "128", "113", "97", "126", "143", "102", "121", "112", "121", "114", "127", "106%"],
+        ["PK11", "247", "267", "219", "208", "245", "241", "198", "224", "218", "261", "222", "370", "117%"],
+        ["TOTAL", "7 528", "7 162", "6 687", "5 265", "7 483", "5 812", "6 057", "6 669", "6 649", "7 331", "6 750", "8 905", "100%"],
+    ]
+    story.append(make_table(ag_monthly_data, col_widths=[1.7*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm], font_size=6))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Insights tendance mensuelle par agence :</b><br/>"
+        "• <b>Dynamique de fin de semestre</b> : 12 des 14 agences dépassent leur objectif en juin (M6), dont 4 au-dessus de 130% (NDOBO 155%, DJELENG 160%, MBOUDA 159%, VILLAGE 141%).<br/>"
+        "• <b>Trou de mars (M3)</b> : seules 2 agences dépassent l'objectif en mars (NKOLBISSON 113%, FAMLA 69% seulement). Le mois de mars a été le plus faible du semestre.<br/>"
+        "• <b>BUEA et AHALA</b> sous-performent sur tout le semestre (78% cumul) — diagnostic terrain nécessaire.<br/>"
+        "• <b>MBOUDA</b> et <b>VILLAGE</b> sont les agences les plus dynamiques sur le semestre complet (122% et 123%).",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ---------- 3.13 TENDANCE MENSUELLE PAR RÉGION (vs objectifs) ----------
+    story.append(Paragraph("3.13 Tendance mensuelle par région — vs objectifs", H2))
+    story.append(Paragraph(
+        "Vue agrégée par région : volume objectif vs réalisé, mois par mois. Permet d'identifier les dynamiques régionales "
+        "et la saisonnalité.",
+        BODY
+    ))
+
+    region_monthly_data = [
+        ["Région", "M1 obj", "M1 réel", "% M1", "M2 obj", "M2 réel", "% M2", "M3 obj", "M3 réel", "% M3", "M4 obj", "M4 réel", "% M4", "M5 obj", "M5 réel", "% M5", "M6 obj", "M6 réel", "% M6"],
+        ["Ouest", "2 908", "3 288", "113%", "2 583", "2 311", "89%", "2 890", "2 076", "72%", "2 339", "2 346", "100%", "2 568", "2 660", "104%", "2 607", "3 684", "141%"],
+        ["Centre", "2 143", "1 879", "88%", "1 904", "1 453", "76%", "2 130", "1 565", "73%", "1 725", "1 729", "100%", "1 893", "1 853", "98%", "1 922", "2 246", "117%"],
+        ["Littoral", "2 477", "1 995", "81%", "2 200", "1 501", "68%", "2 462", "2 171", "88%", "1 992", "2 594", "130%", "2 188", "2 818", "129%", "2 221", "2 974", "134%"],
+        ["TOTAL", "7 528", "7 162", "95%", "6 687", "5 265", "79%", "7 483", "5 812", "78%", "6 057", "6 669", "110%", "6 649", "7 331", "110%", "6 750", "8 905", "132%"],
+    ]
+    story.append(make_table(region_monthly_data, col_widths=[1.5*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm], font_size=6.5))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Insights tendance mensuelle par région :</b><br/>"
+        "• <b>Trou de février-mars (M2-M3)</b> : toutes les régions sous l'objectif sur ces deux mois (Ouest 89%/72%, Centre 76%/73%, Littoral 68%/88%). Le semestre a démarré lentement.<br/>"
+        "• <b>Retournement d'avril (M4)</b> : à partir d'avril, les 3 régions atteignent ou dépassent l'objectif. Effet de la rupture concurrente qui s'installe.<br/>"
+        "• <b>Pic de juin (M6)</b> : explosion en juin (+32% global), portée par le Littoral (134%) et l'Ouest (141%). La rupture concurrente atteint son maximum.<br/>"
+        "• <b>L'Ouest</b> est la région la plus volatile : de 72% en mars à 141% en juin (écart de 69 points).<br/>"
+        "• <b>Le Centre</b> est la région la plus stable : entre 73% et 117% (écart de 44 points), mais reste sous l'objectif sur 4 des 6 mois.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
     story.append(Paragraph("4. Focus CONCENTRÉS — Cœur de marge", H1))
     story.append(section_divider())
 
