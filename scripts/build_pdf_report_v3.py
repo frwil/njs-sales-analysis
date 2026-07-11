@@ -988,9 +988,13 @@ def build_story():
         ["Ouest", "FAMLA, DJELENG, MBOUDA", "15 896", "16 365", "102,9%", "+16,4%", "6 822", "+3,5%", "3 605", "4 870", "74,0%"],
         ["Centre", "MESSASSI, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON", "11 717", "10 725", "91,5%", "+50,7%", "5 039", "+30,0%", "3 003", "4 317", "69,6%"],
         ["Littoral", "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE", "13 540", "14 052", "103,8%", "+0,7%", "5 452", "-4,6%", "2 468", "3 322", "74,3%"],
-        ["TOTAL", "14 agences", "41 153", "41 142", "100,0%", "+17,1%", "17 313", "+7,8%", "9 075", "12 509", "72,5%"],
+        ["TOTAL", "14 agences", "41 230", "41 148", "99,8%", "+17,1%", "17 313", "+7,8%", "9 075", "12 509", "72,5%"],
     ]
     story.append(make_table(region_obj_table, col_widths=[1.5*cm, 4*cm, 1.5*cm, 1.5*cm, 1.1*cm, 1.2*cm, 1.6*cm, 1.2*cm, 1.4*cm, 1.4*cm, 1.1*cm], font_size=6.5))
+    story.append(Paragraph(
+        "<i>Note : le total global inclut des ventes sans agence identifiée. La somme des 3 régions peut légèrement différer du total.</i>",
+        ParagraphStyle('fn2', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
     story.append(Spacer(1, 0.3*cm))
 
     story.append(icr_block(
@@ -1040,9 +1044,13 @@ def build_story():
         ["AHALA", "481", "322", "427", "276", "478", "364", "387", "348", "425", "323", "431", "405", "78%"],
         ["NKOLBISSON", "127", "128", "113", "97", "126", "143", "102", "121", "112", "121", "114", "127", "106%"],
         ["PK11", "247", "267", "219", "208", "245", "241", "198", "224", "218", "261", "222", "370", "117%"],
-        ["TOTAL", "7 528", "7 162", "6 687", "5 265", "7 483", "5 812", "6 057", "6 669", "6 649", "7 331", "6 750", "8 905", "100%"],
+        ["TOTAL", "7 528", "7 162", "6 687", "5 265", "7 483", "5 812", "6 057", "6 669", "6 649", "7 331", "6 750", "8 905", "99,8%"],
     ]
     story.append(make_table(ag_monthly_data, col_widths=[1.7*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm], font_size=6))
+    story.append(Paragraph(
+        "<i>Note : le total global (41 148 t) inclut des ventes sans agence identifiée. La somme des 14 agences peut légèrement différer.</i>",
+        ParagraphStyle('fn3', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
     story.append(Spacer(1, 0.3*cm))
 
     # Synthèse S1 par agence
@@ -1062,7 +1070,7 @@ def build_story():
         ["AHALA", "2 628", "2 038", "78%", "-590"],
         ["NKOLBISSON", "693", "737", "106%", "+44"],
         ["PK11", "1 348", "1 570", "117%", "+222"],
-        ["TOTAL", "41 153", "41 142", "100%", "-11"],
+        ["TOTAL", "41 230", "41 148", "99,8%", "-82"],
     ]
     story.append(make_table(ag_synth_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], font_size=7.5))
     story.append(Spacer(1, 0.3*cm))
@@ -1093,6 +1101,10 @@ def build_story():
         ["TOTAL", "7 528", "7 162", "95%", "6 687", "5 265", "79%", "7 483", "5 812", "78%", "6 057", "6 669", "110%", "6 649", "7 331", "110%", "6 750", "8 905", "132%"],
     ]
     story.append(make_table(region_monthly_data, col_widths=[1.5*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm], font_size=6.5))
+    story.append(Paragraph(
+        "<i>Note : le total global (41 148 t) inclut des ventes sans agence identifiée. La somme des 3 régions peut légèrement différer.</i>",
+        ParagraphStyle('fn4', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
     story.append(Spacer(1, 0.3*cm))
 
     # Synthèse S1 par région
@@ -1101,7 +1113,7 @@ def build_story():
         ["Ouest", "15 896", "16 365", "103%", "+469"],
         ["Centre", "11 717", "10 725", "92%", "-992"],
         ["Littoral", "13 540", "14 052", "104%", "+512"],
-        ["TOTAL", "41 153", "41 142", "100%", "-11"],
+        ["TOTAL", "41 230", "41 148", "99,8%", "-82"],
     ]
     story.append(make_table(region_synth_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
