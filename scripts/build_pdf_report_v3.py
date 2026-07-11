@@ -985,21 +985,21 @@ def build_story():
 
     region_obj_table = [
         ["Région", "Agences", "Vol obj (t)", "Vol réel (t)", "% vol", "YoY vol", "CA (M FCFA)", "YoY CA", "Conc vol (t)", "Conc obj (t)", "% conc"],
-        ["Ouest", "FAMLA, DJELENG, MBOUDA", "15 719", "16 365", "104,1%", "+16,4%", "6 822", "+3,5%", "3 605", "4 870", "74,0%"],
-        ["Centre", "MESSASSI, NDOBO, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON", "11 317", "10 725", "94,8%", "+50,7%", "5 039", "+30,0%", "3 020", "4 317", "69,9%"],
-        ["Littoral", "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE", "13 271", "14 159", "106,7%", "+0,7%", "4 811", "-4,6%", "2 150", "2 978", "72,2%"],
-        ["TOTAL", "14 agences", "40 307", "41 249", "102,3%", "+17,1%", "16 672", "+7,8%", "8 775", "12 165", "72,1%"],
+        ["Ouest", "FAMLA, DJELENG, MBOUDA", "15 896", "16 365", "102,9%", "+16,4%", "6 822", "+3,5%", "3 605", "4 870", "74,0%"],
+        ["Centre", "MESSASSI, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON", "11 717", "10 725", "91,5%", "+50,7%", "5 039", "+30,0%", "3 003", "4 317", "69,6%"],
+        ["Littoral", "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE", "13 540", "14 052", "103,8%", "+0,7%", "5 452", "-4,6%", "2 468", "3 322", "74,3%"],
+        ["TOTAL", "14 agences", "41 153", "41 142", "100,0%", "+17,1%", "17 313", "+7,8%", "9 075", "12 509", "72,5%"],
     ]
     story.append(make_table(region_obj_table, col_widths=[1.5*cm, 4*cm, 1.5*cm, 1.5*cm, 1.1*cm, 1.2*cm, 1.6*cm, 1.2*cm, 1.4*cm, 1.4*cm, 1.1*cm], font_size=6.5))
     story.append(Spacer(1, 0.3*cm))
 
     story.append(icr_block(
         insights=[
-            "L'Ouest (FAMLA + DJELENG + MBOUDA) est la première région en CA (6 822 M FCFA, 41% du total) et dépasse son objectif volume (104,1%) avec une croissance YoY +16,4%.",
-            "Le Centre est la région qui croît le plus vite (+50,7% YoY vol, +30,0% YoY CA) — portée par MESSASSI, NKOLBISSON et NGAOUNDERE. Pourtant elle reste sous l'objectif volume global (94,8%) — l'objectif était trop ambitieux au regard de la base 2025.",
-            "Le Littoral stagne YoY (+0,7% vol, -4,6% CA) — la chute de NDOBO (-16,1% YoY) pèse lourd. Mais la région sur-performe l'objectif (106,7%) car l'objectif était prudent.",
+            "L'Ouest (FAMLA + DJELENG + MBOUDA) est la première région en CA (6 822 M FCFA, 39% du total) et dépasse son objectif volume (102,9%) avec une croissance YoY +16,4%.",
+            "Le Centre est la région qui croît le plus vite (+50,7% YoY vol, +30,0% YoY CA) — portée par MESSASSI, NKOLBISSON et NGAOUNDERE. Pourtant elle reste sous l'objectif volume global (91,5%) — l'objectif était trop ambitieux au regard de la base 2025.",
+            "Le Littoral stagne YoY (+0,7% vol, -4,6% CA) — la chute de NDOBO (-16,1% YoY) pèse lourd. Mais la région sur-performe l'objectif (103,8%) car l'objectif était prudent.",
             "YoY CA global +7,8% (Centre +30,0% > Ouest +3,5% > Littoral -4,6%) — le Centre est le moteur de la croissance CA en 2026.",
-            "Aucune région n'atteint son objectif CONCENTRÉS (Ouest 74,0%, Centre 69,9%, Littoral 72,2%) — le problème est systémique et national.",
+            "Aucune région n'atteint son objectif CONCENTRÉS (Ouest 74,0%, Centre 69,6%, Littoral 74,3%) — le problème est systémique et national.",
         ],
         causes=[
             "Le Centre croît fortement (+50,7%) grâce aux agences en dynamique : NKOLBISSON (+105,3%), NGAOUNDERE (+84,4%), NKOABANG (+62,5%), AHALA (+50,0%), MESSASSI (+51,8%).",
@@ -1010,7 +1010,7 @@ def build_story():
             "Capitaliser sur la dynamique du Centre — région en forte croissance, investir en renforcement commercial pour accélérer.",
             "Au Littoral, diagnostiquer le repli de NDOBO — l'agence leader stagne, vérifier le portefeuille client et la concurrence.",
             "Dans l'Ouest, accompagner la croissance de MBOUDA et DJELENG tout en maintenant FAMLA (chef de file).",
-            "Le manque CONCENTRÉS est national (-3 390 t vs objectif) — le plan d'action doit être déployé dans toutes les régions, pas seulement celles sous l'objectif.",
+            "Le manque CONCENTRÉS est national (-3 434 t vs objectif) — le plan d'action doit être déployé dans toutes les régions, pas seulement celles sous l'objectif.",
         ],
     ))
 

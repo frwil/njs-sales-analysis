@@ -1,0 +1,32 @@
+{
+  "Ouest": {
+    "agences": "FAMLA, DJELENG, MBOUDA",
+    "vol_obj": 15896.039999999999,
+    "vol_real": 16364.876999999311,
+    "ca": 6822333432.450003,
+    "conc_vol": 3605.0000000000423,
+    "conc_obj": 4869.8,
+    "yoy_vol_pct": 16.403930150579306,
+    "yoy_ca_pct": 3.4898498177412898
+  },
+  "Centre": {
+    "agences": "MESSASSI, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON",
+    "vol_obj": 11716.933466843499,
+    "vol_real": 10725.22629999993,
+    "ca": 5038774775.64001,
+    "conc_vol": 3002.868000000078,
+    "conc_obj": 4317.016328116928,
+    "yoy_vol_pct": 50.73389343600129,
+    "yoy_ca_pct": 30.017248861773492
+  },
+  "Littoral": {
+    "agences": "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE",
+    "vol_obj": 13539.869999999995,
+    "vol_real": 14052.307699999574,
+    "ca": 5451628237.640004,
+    "conc_vol": 2467.536000000018,
+    "conc_obj": 3322.38,
+    "yoy_vol_pct": 0.716267486974985,
+    "yoy_ca_pct": -4.614514330068762
+  }
+}
