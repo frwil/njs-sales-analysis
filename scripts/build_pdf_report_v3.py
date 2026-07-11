@@ -602,7 +602,7 @@ def build_story():
         ["ALVEOLE", "—", "0", "—", "—", "14", "91", "15,1%"],
         ["TOTAL", "41 148", "41 230", "99,8%", "+17,1%", "17 344", "18 604", "93,2%"],
     ]
-    story.append(make_table(perf_data, col_widths=[2.8*cm, 1.7*cm, 1.7*cm, 1.2*cm, 1.4*cm, 1.7*cm, 1.7*cm, 1.2*cm], font_size=6))
+    story.append(make_table(perf_data, col_widths=[2.8*cm, 1.7*cm, 1.7*cm, 1.2*cm, 1.4*cm, 1.7*cm, 1.7*cm, 1.2*cm], font_size=8))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "Le volume global atteint 99,8% de l'objectif — légèrement sous, mais le pipeline en cours (192,8 t) le ferait passer à 102,3%. "
