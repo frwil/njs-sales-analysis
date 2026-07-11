@@ -1044,6 +1044,28 @@ def build_story():
     ]
     story.append(make_table(ag_monthly_data, col_widths=[1.7*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm], font_size=6))
     story.append(Spacer(1, 0.3*cm))
+
+    # Synthèse S1 par agence
+    ag_synth_data = [
+        ["Agence", "S1 obj (t)", "S1 réel (t)", "% atteinte", "Écart (t)"],
+        ["FAMLA", "10 860", "10 791", "99%", "-69"],
+        ["NDOBO", "6 651", "7 225", "109%", "+574"],
+        ["MESSASSI", "4 179", "3 919", "94%", "-260"],
+        ["DJELENG", "3 083", "3 187", "103%", "+104"],
+        ["MBOUDA", "1 954", "2 387", "122%", "+433"],
+        ["VILLAGE", "1 758", "2 171", "123%", "+413"],
+        ["BERTOUA", "1 797", "1 686", "94%", "-111"],
+        ["NKONGSAMBA", "1 954", "1 663", "85%", "-291"],
+        ["NKOABANG", "1 348", "1 223", "91%", "-125"],
+        ["NGAOUNDERE", "1 072", "1 123", "105%", "+51"],
+        ["BUEA", "1 830", "1 423", "78%", "-407"],
+        ["AHALA", "2 628", "2 038", "78%", "-590"],
+        ["NKOLBISSON", "693", "737", "106%", "+44"],
+        ["PK11", "1 348", "1 570", "117%", "+222"],
+        ["TOTAL", "41 153", "41 142", "100%", "-11"],
+    ]
+    story.append(make_table(ag_synth_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], font_size=7.5))
+    story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "<b>Insights tendance mensuelle par agence :</b><br/>"
         "• <b>Dynamique de fin de semestre</b> : 12 des 14 agences dépassent leur objectif en juin (M6), dont 4 au-dessus de 130% (NDOBO 155%, DJELENG 160%, MBOUDA 159%, VILLAGE 141%).<br/>"
@@ -1071,6 +1093,17 @@ def build_story():
         ["TOTAL", "7 528", "7 162", "95%", "6 687", "5 265", "79%", "7 483", "5 812", "78%", "6 057", "6 669", "110%", "6 649", "7 331", "110%", "6 750", "8 905", "132%"],
     ]
     story.append(make_table(region_monthly_data, col_widths=[1.5*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm], font_size=6.5))
+    story.append(Spacer(1, 0.3*cm))
+
+    # Synthèse S1 par région
+    region_synth_data = [
+        ["Région", "S1 obj (t)", "S1 réel (t)", "% atteinte", "Écart (t)"],
+        ["Ouest", "15 896", "16 365", "103%", "+469"],
+        ["Centre", "11 717", "10 725", "92%", "-992"],
+        ["Littoral", "13 540", "14 052", "104%", "+512"],
+        ["TOTAL", "41 153", "41 142", "100%", "-11"],
+    ]
+    story.append(make_table(region_synth_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "<b>Insights tendance mensuelle par région :</b><br/>"
