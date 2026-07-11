@@ -582,7 +582,7 @@ def build_story():
     cards2 = [
         kpi_card("CA HT S1", "17,34 Md", "FCFA (93,2% obj)"),
         kpi_card("Volume S1", "41 148 t", "(99,8% obj)"),
-        kpi_card("Clients actifs", "4 481", "(20/80: 359)"),
+        kpi_card("Clients actifs", "1 359", "(20/80: 359)"),
         kpi_card("Clients 20/80 (★)", "359", "80% du CA clients"),
         kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
     ]
