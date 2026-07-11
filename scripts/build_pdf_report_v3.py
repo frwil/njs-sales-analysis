@@ -602,7 +602,7 @@ def build_story():
         ["ALVEOLE", "—", "0", "—", "—", "14", "91", "15,1%"],
         ["TOTAL", "41 148", "41 230", "99,8%", "+17,1%", "17 344", "18 604", "93,2%"],
     ]
-    story.append(make_table(perf_data, col_widths=[2.8*cm, 1.7*cm, 1.7*cm, 1.2*cm, 1.4*cm, 1.7*cm, 1.7*cm, 1.2*cm], font_size=7))
+    story.append(make_table(perf_data, col_widths=[2.8*cm, 1.7*cm, 1.7*cm, 1.2*cm, 1.4*cm, 1.7*cm, 1.7*cm, 1.2*cm], font_size=6.5))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "Le volume global atteint 99,8% de l'objectif — légèrement sous, mais le pipeline en cours (192,8 t) le ferait passer à 102,3%. "
@@ -657,14 +657,14 @@ def build_story():
         ["TOURTEAUX", "14 068", "12 855", "91,4%", "12 617", "16 206", "128,4%", "26 685", "29 061", "108,9%", "+52,8%"],
         ["CONCENTRES", "6 612", "4 626", "70,0%", "5 930", "4 450", "75,0%", "12 542", "9 075", "72,4%", "+4,7%"],
         ["ALIMENT COMPLET", "271", "266", "98,2%", "243", "279", "114,8%", "514", "545", "106,1%", "+118,2%"],
-        ["INGREDIENTS (dont Maïs)", "315", "445", "141%", "283", "1 937", "684%", "598", "2 382", "398,4%", "+507,7%"],
+        ["INGREDIENTS (dt Maïs)", "315", "445", "141%", "283", "1 937", "684%", "598", "2 382", "398,4%", "+507,7%"],
         ["COMPLEMENT ALIM.", "3", "0,9", "30%", "3", "2,1", "70%", "6", "3,0", "49,3%", "-8,8%"],
         ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%", "+54,1%"],
         ["MATERIEL ELEVAGE", "0", "7", "—", "0", "3", "—", "0", "10", "—", "—"],
         ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%", "—"],
         ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "21 227", "108,9%", "41 230", "41 148", "99,8%", "+17,1%"],
     ]
-    story.append(make_table(cat_obj_data, col_widths=[2.7*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.2*cm], font_size=6.5))
+    story.append(make_table(cat_obj_data, col_widths=[2.7*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.2*cm], font_size=6))
     story.append(Spacer(1, 0.3*cm))
 
     # Chart A: Ventes vs Objectifs S1
