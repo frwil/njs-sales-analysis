@@ -896,78 +896,100 @@ def build_story():
 
     story.append(PageBreak())
 
-    # ===== 5.1.2 Évolution du portefeuille client =====
-    story.append(Paragraph("5.1.2 Évolution du portefeuille client — Matrice de transition", H3))
+    # ===== 5.1.2 Évolution du portefeuille client — Analyse par habitudes d'achat =====
+    story.append(Paragraph("5.1.2 Évolution du portefeuille client — Analyse par habitudes d'achat", H3))
     story.append(Paragraph(
-        "Les 605 clients actifs en juillet ne sont <b>pas tous nouveaux</b> — la grande majorité (588) sont des clients S1 "
-        "qui ont continué à acheter en juillet ('maintenus'). Seulement 17 sont de véritables nouveaux clients. "
-        "À l'inverse, 771 clients actifs en S1 n'ont pas (encore) acheté en juillet ('passés en zéro achat'). "
-        "Cette matrice permet de visualiser les flux exacts du portefeuille.",
+        "Nous ne sommes qu'au 12 juillet — il est normal que de nombreux clients n'aient pas encore commandé. "
+        "Une analyse pertinente doit croiser les habitudes d'achat de chaque client (jour habituel de commande en S1) "
+        "avec son activité juillet. Un client qui achète habituellement en début de mois et qui n'a pas commandé au 12/07 "
+        "doit attirer notre attention — un client qui achète en fin de mois n'est pas encore inquiétant.",
         BODY
     ))
 
-    transition_data = [
-        ["Segment", "Définition", "Nb clients", "CA (M FCFA)"],
-        ["Maintenus", "Clients actifs en S1 ET en juillet", "588", "12 250 (S1)"],
-        ["Passés en zéro achat", "Actifs en S1, pas d'achat en juillet (11j)", "771", "3 608 (S1)"],
-        ["Nouveaux clients", "Pas actifs en S1, achat en juillet", "17", "16 (juil)"],
-        ["TOTAL S1", "Base de référence", "1 359", "15 857"],
-        ["TOTAL JUILLET (11j)", "Portefeuille actif juillet", "605", "1 168"],
+    habitudes_data = [
+        ["Catégorie", "Définition", "Nb clients", "CA S1 (M)", "Action"],
+        ["✅ Maintenus", "Clients S1 ayant déjà acheté en juillet", "587", "12 229", "Aucune — base fidèle"],
+        ["🔴 À risque élevé", "Jour d'achat habituel ≤ 12, pas d'achat juillet", "220", "540", "Recontact immédiat"],
+        ["🟡 À surveiller", "Jour d'achat habituel 13-20, pas d'achat juillet", "399", "2 712", "À recontacter dès le 20/07"],
+        ["🟢 Pas encore inquiétant", "Jour d'achat habituel > 20, pas d'achat juillet", "153", "376", "Attendre fin juillet"],
+        ["TOTAL", "", "1 359", "15 857", ""],
     ]
-    story.append(make_table(transition_data, col_widths=[3.5*cm, 6*cm, 2.5*cm, 3.5*cm], font_size=8))
+    story.append(make_table(habitudes_data, col_widths=[3*cm, 5*cm, 1.8*cm, 2*cm, 4*cm], font_size=7.5))
+    story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<i>Note : 771 clients 'passés en zéro achat' en juillet n'ont simplement pas encore eu le temps de passer commande "
-        "en 11 jours. La projection à 31 jours (×31/11) donne ≈ 1 657 clients maintenus, soit un taux de maintien de 122% — "
-        "le rythme d'activité juillet est donc supérieur à la moyenne S1.</i>",
-        ParagraphStyle('fn3', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+        "<b>Lecture par habitudes d'achat :</b><br/>"
+        "• <b>587 clients maintenus (43%)</b> — ont déjà acheté en juillet. Base fidèle, CA S1 = 12 229 M.<br/>"
+        "• <b>220 clients à risque élevé</b> — ces clients achètent habituellement entre le 1er et le 12 du mois. "
+        "Au 12/07, ils auraient dû commander. <b>540 M FCFA de CA S1</b> sont potentiellement perdus. "
+        "Recontact immédiat nécessaire — vérifier s'ils sont partis chez la concurrence.<br/>"
+        "• <b>399 clients à surveiller</b> — achètent habituellement entre le 13 et le 20. "
+        "Leur CA S1 est plus important (2 712 M). À recontacter dès le 20/07 si pas d'achat.<br/>"
+        "• <b>153 clients pas encore inquiétants</b> — achètent en fin de mois (après le 20). "
+        "Attendre la fin juillet avant de s'inquiéter.",
+        BODY_BOLD
     ))
     story.append(Spacer(1, 0.3*cm))
 
-    # Bilan CA gagné / perdu
-    story.append(Paragraph("5.1.3 Bilan CA — gagné vs perdu", H3))
-    bilan_ca_data = [
-        ["Indicateur", "Juillet 11j (brut)", "Projection 31j", "Lecture"],
-        ["CA perdu (clients S1 → zéro achat juillet)", "3 608 M", "≈ 10 167 M", "À surveiller — ces clients n'ont pas encore commandé"],
-        ["CA gagné (nouveaux clients juillet)", "16 M", "≈ 45 M", "Acquisition faible — 17 nouveaux seulement"],
-        ["CA juillet clients maintenus", "1 153 M", "≈ 3 248 M", "Base fidèle qui continue d'acheter"],
-        ["Net (gagné - perdu)", "-3 592 M", "-6 919 M", "Négatif mais à relativiser (11j seulement)"],
+    # Top 10 clients à risque élevé
+    story.append(Paragraph("5.1.3 Top 10 clients à risque élevé — recontact immédiat", H3))
+    story.append(Paragraph(
+        "Ces clients achetaient habituellement en début de mois (jour moyen ≤ 12) mais n'ont pas commandé en juillet (au 12/07). "
+        "Ils représentent un CA S1 cumulé de 198 M FCFA pour les 10 premiers.",
+        BODY
+    ))
+
+    top_risque_data = [
+        ["#", "Client", "CA S1 (M)", "Jour moy.", "Nb achats S1", "Statut"],
+        ["1", "PANEBENG VICTOR", "45", "12", "8", "🔴 À recontacter"],
+        ["2", "FEEMDISPRO SARL", "34", "12", "62", "🔴 À recontacter"],
+        ["3", "SODIPE SARL", "20", "12", "35", "🔴 À recontacter"],
+        ["4", "FOTSO VINCENT", "18", "12", "11", "🔴 À recontacter"],
+        ["5", "MOHAMAED DJALLO", "17", "8", "17", "🔴 À recontacter"],
+        ["6", "MAKUETE Epse MANFOUO EDITH", "15", "9", "5", "🔴 À recontacter"],
+        ["7", "FIRST ELEVAGE", "14", "12", "13", "🔴 À recontacter"],
+        ["8", "Goubre épouse Fowongwang Sylvie", "13", "12", "36", "🔴 À recontacter"],
+        ["9", "ADAM MAHAMAT ABDOULAYE", "11", "9", "11", "🔴 À recontacter"],
+        ["10", "NINDJEE ELISE M. (CAMAGRO)", "11", "11", "13", "🔴 À recontacter"],
     ]
-    story.append(make_table(bilan_ca_data, col_widths=[5.5*cm, 2.8*cm, 2.8*cm, 5.5*cm], font_size=7.5))
+    story.append(make_table(top_risque_data, col_widths=[0.8*cm, 5*cm, 1.5*cm, 1.5*cm, 2*cm, 3.5*cm], font_size=7.5))
+    story.append(Paragraph(
+        "<b>Action :</b> ces 10 clients doivent être recontactés <b>aujourd'hui</b> par leur commercial. "
+        "FEEMDISPRO SARL (62 achats S1, jour moyen 12) et Goubre (36 achats) sont des clients très réguliers — "
+        "leur silence en juillet est anormal et doit déclencher une alerte.",
+        BODY_BOLD
+    ))
+
+    story.append(Spacer(1, 0.4*cm))
+
+    # Bilan CA gagné / perdu
+    story.append(Paragraph("5.1.4 Bilan CA — gagné vs perdu (lecture ajustée)", H3))
+    bilan_ca_data = [
+        ["Indicateur", "Juillet 11j", "Lecture"],
+        ["CA clients maintenus (déjà actifs juillet)", "1 153 M", "✅ Base fidèle, bon rythme"],
+        ["CA à risque élevé (clients début de mois, pas d'achat)", "540 M", "🔴 À récupérer immédiatement"],
+        ["CA à surveiller (clients mi-mois, pas d'achat)", "2 712 M", "🟡 À vérifier au 20/07"],
+        ["CA pas inquiétant (clients fin de mois)", "376 M", "🟢 Attendre fin juillet"],
+        ["CA gagné (nouveaux clients)", "16 M", "⚠️ Acquisition faible (17 clients)"],
+    ]
+    story.append(make_table(bilan_ca_data, col_widths=[6*cm, 2.5*cm, 7*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
 
     # Évolution concentrés
-    story.append(Paragraph("5.1.4 Évolution spécifique concentrés", H3))
+    story.append(Paragraph("5.1.5 Évolution spécifique concentrés", H3))
     conc_evol_data = [
         ["Indicateur", "S1 2026", "Juillet 11j", "Projection 31j"],
         ["Clients acheteurs concentrés", "1 016", "376", "≈ 1 059"],
-        ["Clients concentrés maintenus", "—", "360 (35,4%)", "≈ 1 015"],
-        ["Clients concentrés passés en zéro achat", "—", "656", "À surveiller"],
+        ["Clients concentrés maintenus", "—", "360 (35%)", "≈ 1 015"],
+        ["Clients concentrés à risque élevé (début de mois)", "—", "À calculer", "Recontact immédiat"],
         ["Nouveaux clients concentrés", "—", "16", "≈ 45"],
     ]
-    story.append(make_table(conc_evol_data, col_widths=[5*cm, 3*cm, 3*cm, 3*cm], font_size=8))
+    story.append(make_table(conc_evol_data, col_widths=[5.5*cm, 2.8*cm, 2.8*cm, 3.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
         "<b>Lecture concentrés :</b> sur 1 016 clients qui ont acheté des concentrés en S1, 360 (35%) ont déjà acheté en juillet "
         "(11 jours). La projection à 31 jours (≈ 1 015) suggère un maintien de la base, mais <b>aucune croissance</b> — "
-        "le plan d'action n'a pas encore généré de nouveaux acheteurs de concentrés (seulement 16 nouveaux).",
-        BODY_BOLD
-    ))
-
-    # Top 5 clients perdus
-    story.append(Spacer(1, 0.3*cm))
-    story.append(Paragraph("5.1.5 Top 5 clients à risque (S1 → pas d'achat juillet)", H3))
-    top_perdus_data = [
-        ["#", "Client", "CA S1 (M FCFA)", "Statut juillet"],
-        ["1", "SAGUEN DEFFO CHANCELIER RICHARD", "82", "Zéro achat"],
-        ["2", "ISSA OUMAROU", "82", "Zéro achat"],
-        ["3", "NKUE", "76", "Zéro achat"],
-        ["4", "TCHEUTCHOUA TCHINDA ERIC", "68", "Zéro achat"],
-        ["5", "GIC ESPOIR KELENG (POKAM MERLINE)", "63", "Zéro achat"],
-    ]
-    story.append(make_table(top_perdus_data, col_widths=[0.8*cm, 7*cm, 2.5*cm, 3*cm], font_size=8))
-    story.append(Paragraph(
-        "Ces 5 clients représentent 371 M FCFA de CA S1. Ils n'ont pas (encore) acheté en juillet — "
-        "à recontacter en priorité absolue pour vérifier s'ils sont partis chez la concurrence ou s'ils commanderont plus tard dans le mois.",
+        "le plan d'action n'a pas encore généré de nouveaux acheteurs de concentrés (seulement 16 nouveaux). "
+        "Les clients concentrés à risque élevé (habitude début de mois, pas d'achat) doivent être recontactés en priorité.",
         BODY_BOLD
     ))
 
@@ -981,7 +1003,10 @@ def build_story():
         "<b>Impact à surveiller :</b> ces hausses tarifaires pourraient expliquer en partie le ralentissement des TOURTEAUX "
         "(projection juillet -14% vs juin) et la bonne performance du PREMIX (+407% vs moyenne S1). "
         "Le risque est qu'une partie des clients sensibles au prix se tourne vers la concurrence, particulièrement si "
-        "le concurrent reconstitue ses stocks de soja. <b>Le suivi d'août devra vérifier si ces hausses entraînent une accélération du churn.</b>",
+        "le concurrent reconstitue ses stocks de soja. <b>Le suivi d'août devra vérifier si ces hausses entraînent une accélération du churn.</b><br/><br/>"
+        "<b>Croisement avec l'analyse des habitudes :</b> parmi les 220 clients à risque élevé (début de mois, pas d'achat), "
+        "il faut vérifier si la hausse du prix du soja est un facteur explicatif. Un appel téléphonique permet de distinguer "
+        "les clients partis chez la concurrence (prix) de ceux qui retardent simplement leur commande.",
         BODY_BOLD
     ))
 
