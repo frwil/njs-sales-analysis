@@ -939,19 +939,19 @@ def build_story():
     ))
 
     top_risque_data = [
-        ["#", "Client", "CA S1 (M)", "Jour moy.", "Nb achats S1", "Statut"],
-        ["1", "PANEBENG VICTOR", "45", "12", "8", "🔴 À recontacter"],
-        ["2", "FEEMDISPRO SARL", "34", "12", "62", "🔴 À recontacter"],
-        ["3", "SODIPE SARL", "20", "12", "35", "🔴 À recontacter"],
-        ["4", "FOTSO VINCENT", "18", "12", "11", "🔴 À recontacter"],
-        ["5", "MOHAMAED DJALLO", "17", "8", "17", "🔴 À recontacter"],
-        ["6", "MAKUETE Epse MANFOUO EDITH", "15", "9", "5", "🔴 À recontacter"],
-        ["7", "FIRST ELEVAGE", "14", "12", "13", "🔴 À recontacter"],
-        ["8", "Goubre épouse Fowongwang Sylvie", "13", "12", "36", "🔴 À recontacter"],
-        ["9", "ADAM MAHAMAT ABDOULAYE", "11", "9", "11", "🔴 À recontacter"],
-        ["10", "NINDJEE ELISE M. (CAMAGRO)", "11", "11", "13", "🔴 À recontacter"],
+        ["#", "Client", "Agence", "Région", "CA S1 (M)", "Jour moy.", "Nb achats"],
+        ["1", "PANEBENG VICTOR", "FAMLA", "Ouest", "45", "12", "8"],
+        ["2", "FEEMDISPRO SARL", "MESSASSI", "Centre", "34", "12", "62"],
+        ["3", "SODIPE SARL", "NDOBO", "Littoral", "20", "12", "35"],
+        ["4", "FOTSO VINCENT", "FAMLA", "Ouest", "18", "12", "11"],
+        ["5", "MOHAMAED DJALLO", "NDOBO", "Littoral", "17", "8", "17"],
+        ["6", "MAKUETE Epse MANFOUO EDITH", "NDOBO", "Littoral", "15", "9", "5"],
+        ["7", "FIRST ELEVAGE", "FAMLA", "Ouest", "14", "12", "13"],
+        ["8", "Goubre épouse Fowongwang", "MBOUDA", "Ouest", "13", "12", "36"],
+        ["9", "ADAM MAHAMAT ABDOULAYE", "VILLAGE", "Littoral", "11", "9", "11"],
+        ["10", "NINDJEE ELISE M. (CAMAGRO)", "NDOBO", "Littoral", "11", "11", "13"],
     ]
-    story.append(make_table(top_risque_data, col_widths=[0.8*cm, 5*cm, 1.5*cm, 1.5*cm, 2*cm, 3.5*cm], font_size=7.5))
+    story.append(make_table(top_risque_data, col_widths=[0.8*cm, 4.5*cm, 1.8*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm], font_size=7.5))
     story.append(Paragraph(
         "<b>Action :</b> ces 10 clients doivent être recontactés <b>aujourd'hui</b> par leur commercial. "
         "FEEMDISPRO SARL (62 achats S1, jour moyen 12) et Goubre (36 achats) sont des clients très réguliers — "
@@ -1012,7 +1012,78 @@ def build_story():
 
     story.append(Spacer(1, 0.4*cm))
 
-    # ===== 5.2 Tableau de bord — KPIs du plan d'action =====
+    # ===== 5.1.7 Corrélation Booster × Concentrés =====
+    story.append(Paragraph("5.1.7 Corrélation Chick/Piglet Booster × Concentrés — Évolution S1 → Juillet", H3))
+    story.append(Paragraph(
+        "Analyse du cross-sell entre les aliments complets (Chick/Piglet Booster) et les concentrés. "
+        "Permet de mesurer si le plan d'action de cross-sell produit des résultats.",
+        BODY
+    ))
+
+    booster_data = [
+        ["Indicateur", "S1 2026", "Juillet 11j", "Évolution"],
+        ["Clients Booster (ALIMENT COMPLET)", "492", "90", "—"],
+        ["Booster + Concentrés (cross-sell)", "386 (78%)", "55 (61%)", "⚠️ -17 points"],
+        ["Booster + Chair", "362", "48", "—"],
+        ["Booster + Ponte", "203", "20", "—"],
+        ["Booster + Porc", "254", "34", "—"],
+        ["Booster ONLY (pas de concentrés)", "106 (22%)", "35 (39%)", "⚠️ +17 points"],
+        ["✅ Booster-only S1 → ont commencé conc. en juillet", "—", "2", "Conversion faible"],
+        ["⚠️ Booster+Conc S1 → devenus booster-only en juillet", "—", "15", "Régression!"],
+    ]
+    story.append(make_table(booster_data, col_widths=[6*cm, 2.8*cm, 2.8*cm, 4*cm], font_size=7.5))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Lecture Booster × Concentrés :</b><br/>"
+        "• Le taux de cross-sell Booster→Concentrés chute de 78% à 61% en juillet — <b>régression préoccupante</b>.<br/>"
+        "• <b>15 clients</b> qui achetaient Booster + Concentrés en S1 n'achètent plus que le Booster en juillet — "
+        "ils abandonnent les concentrés. C'est l'effet inverse du plan d'action.<br/>"
+        "• Seulement <b>2 clients</b> Booster-only ont été convertis vers les concentrés — le cross-sell ne fonctionne pas encore.<br/>"
+        "• Le bundle Booster+Concentrés doit être renforcé en urgence, particulièrement auprès des 35 clients Booster-only de juillet.",
+        BODY_BOLD
+    ))
+
+    story.append(Spacer(1, 0.3*cm))
+
+    # ===== 5.1.8 Clients soja sans concentrés =====
+    story.append(Paragraph("5.1.8 Clients soja sans concentrés — Évolution du cross-sell", H3))
+    story.append(Paragraph(
+        "Suivi du taux de cross-sell soja→concentrés. C'est l'indicateur clé du bundle 3:1 — "
+        "chaque commande de soja doit inclure au moins 1 sac de concentré.",
+        BODY
+    ))
+
+    soja_conc_data = [
+        ["Indicateur", "S1 2026", "Juillet 11j", "Évolution"],
+        ["Clients acheteurs soja", "1 208", "502", "—"],
+        ["Soja + Concentrés (cross-sell)", "970 (80%)", "327 (65%)", "⚠️ -15 points"],
+        ["Soja ONLY (pas de concentrés)", "238 (20%)", "175 (35%)", "⚠️ +15 points"],
+        ["✅ Soja-only S1 → ont commencé concentrés en juillet", "—", "4", "Conversion très faible"],
+        ["⚠️ Soja+Conc S1 → arrêt concentrés en juillet", "—", "116", "Régression massive!"],
+    ]
+    story.append(make_table(soja_conc_data, col_widths=[6*cm, 2.8*cm, 2.8*cm, 4*cm], font_size=7.5))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Lecture soja → concentrés :</b><br/>"
+        "• <b>Le taux de cross-sell soja→concentrés s'effondre de 80% à 65%</b> (-15 points) — le bundle 3:1 n'est pas appliqué.<br/>"
+        "• <b>116 clients</b> qui achetaient soja + concentrés en S1 n'achètent plus que le soja en juillet — c'est une <b>régression massive</b>.<br/>"
+        "• Seulement <b>4 clients</b> soja-only ont été convertis vers les concentrés — le plan d'action cross-sell est inefficace à ce stade.<br/>"
+        "• <b>175 clients</b> achètent du soja sans concentrés en juillet — ce sont les cibles immédiates du bundle.<br/>"
+        "• La hausse du prix du soja (+1 000 FCFA) pourrait expliquer en partie cette régression : les clients viennent chercher le soja (produit d'appel) "
+        "mais ne veulent pas ou ne peuvent pas ajouter du concentré à leur commande.",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Conclusion comportement client (juillet) :</b> les deux indicateurs de cross-sell (Booster→Conc et Soja→Conc) "
+        "montrent une <b>dégradation significative</b>. Le bundle soja-concentrés 3:1, qui est l'action #1 du plan, "
+        "n'est manifestement <b>pas déployé en agence</b>. Les 116 clients en régression soja+conc→soja-only "
+        "représentent une perte directe de CA concentrés qui s'ajoute à la sous-performance structurelle. "
+        "<b>Vérification terrain urgente : le bundle est-il communiqué aux commerciaux ? Sont-ils outillés pour l'imposer ?</b>",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
     story.append(Paragraph("5.2 Tableau de bord — Efficacité du plan d'action", H2))
     story.append(Paragraph(
         "Ce tableau sera enrichi à chaque mise à jour mensuelle. Les colonnes 'Août', 'Septembre', etc. seront remplies "
