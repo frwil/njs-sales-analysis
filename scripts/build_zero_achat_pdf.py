@@ -845,73 +845,155 @@ def build_story():
     story.append(Paragraph("5. Suivi S2 2026 (Juil-Déc)", H1))
     story.append(section_divider())
 
-    story.append(Paragraph("5.1 Place-holder — suivi mensuel à compléter", H2))
+    story.append(Paragraph(
+        "Cette section suit l'évolution mensuelle des indicateurs zéro achat et l'efficacité du plan d'action. "
+        "À chaque mise à jour des données, les valeurs réelles sont comparées à la référence S1 2026 pour mesurer "
+        "l'impact des actions menées et ajuster le tir si nécessaire.",
+        BODY
+    ))
+
+    # ===== 5.1 Premier point de suivi — Juillet 2026 (au 11/07) =====
+    story.append(Paragraph("5.1 Premier point de suivi — Juillet 2026 (au 11/07)", H2))
+    story.append(Paragraph(
+        "<b>Données au 11 juillet 2026</b> — temps écoulé : 11 jours sur 31 (35% du mois). "
+        "Les comparaisons avec S1 2026 sont ajustées au prorata du temps écoulé pour assurer une lecture juste. "
+        "La projection juillet complet = réel 11 jours × (31/11).",
+        BODY_BOLD
+    ))
+
+    # Tableau d'évolution des ventes par catégorie
+    story.append(Paragraph("5.1.1 Évolution des ventes par catégorie — S1 vs Juillet", H3))
+    story.append(Paragraph(
+        "Comparaison du volume réalisé et du CA par catégorie entre la moyenne mensuelle S1 2026 et juillet 2026 (11 jours, projection 31 jours).",
+        BODY
+    ))
+
+    evol_ventes_data = [
+        ["Catégorie", "Moy. mensuelle S1 (t)", "Juil 11j (t)", "Projection Juil (t)", "vs S1 (%)", "Obj Juil (t)", "% ajusté*"],
+        ["TOURTEAUX", "4 844", "2 192", "6 178", "-14%", "3 834", "161%"],
+        ["CONCENTRES", "1 513", "536", "1 510", "0%", "1 802", "84%"],
+        ["ALIMENT COMPLET", "91", "30", "86", "-16%", "74", "116%"],
+        ["INGREDIENTS", "397", "24", "67", "-5%", "86", "78%"],
+        ["PREMIX", "11", "7", "20", "+407%", "9", "225%"],
+        ["COMPLEMENT ALIM.", "0,5", "0,3", "1", "+3%", "1", "78%"],
+        ["TOTAL", "6 857", "2 790", "7 862", "+15%", "5 806", "135%"],
+    ]
+    story.append(make_table(evol_ventes_data, col_widths=[3*cm, 2.5*cm, 2.2*cm, 2.5*cm, 1.8*cm, 2*cm, 1.8*cm], font_size=7.5))
+    story.append(Paragraph(
+        "<i>* % ajusté = réel 11j / (objectif mois × 35%) × 100. Un % ajusté ≥ 100% signifie que le rythme est conforme à l'objectif au prorata du temps écoulé.</i>",
+        ParagraphStyle('fn', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
     story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Lecture juillet 2026 :</b><br/>"
+        "• <b>Volume global à 135% ajusté</b> — le rythme de juillet est supérieur à l'objectif au prorata. Bon démarrage S2.<br/>"
+        "• <b>TOURTEAUX à 161% ajusté</b> — la dynamique de rupture concurrente se maintient. La projection (6 178 t) reste cependant en baisse de 14% vs juin (7 207 t) — ralentissement à surveiller.<br/>"
+        "• <b>CONCENTRES à 84% ajusté</b> — toujours sous l'objectif au prorata. La projection juillet (1 510 t) est quasiment identique à juin (1 511 t) — <b>la stagnation des concentrés se confirme en début de S2</b>. Le plan d'action doit accélérer.<br/>"
+        "• <b>PREMIX à 225% ajusté</b> — excellente performance, à confirmer sur le mois complet.<br/>"
+        "• <b>INGREDIENTS à 78% ajusté</b> — sous l'objectif, à surveiller.",
+        BODY_BOLD
+    ))
 
-    # Information box
-    info_box_data = [
-        [Paragraph(
-            "<b>Cette section sera complétée au fur et à mesure de la disponibilité des données S2 2026.</b><br/><br/>"
-            "Les indicateurs suivants seront suivis mensuellement :",
-            ParagraphStyle('infobox', fontName='NotoSerifSC', fontSize=11, textColor=NAVY,
-                          leading=16, alignment=TA_LEFT)
-        )],
+    story.append(PageBreak())
+
+    # ===== 5.1.2 Évolution clients =====
+    story.append(Paragraph("5.1.2 Évolution du portefeuille client", H3))
+    story.append(Paragraph(
+        "Suivi du nombre de clients actifs et du taux de couverture de la base S1 2026. "
+        "Attention : juillet n'ayant que 11 jours de données, le nombre de clients actifs est nécessairement inférieur à S1 (6 mois). "
+        "La projection 31 jours donne la vraie lecture.",
+        BODY
+    ))
+
+    evol_clients_data = [
+        ["Indicateur", "S1 2026 (6 mois)", "Juillet 11j (brut)", "Projection Juil (31j)", "Évolution vs S1"],
+        ["Clients actifs total", "1 359", "602", "≈ 1 697", "+25%"],
+        ["Clients acheteurs soja", "1 208", "502", "≈ 1 415", "+17%"],
+        ["Clients acheteurs concentrés", "1 016", "376", "≈ 1 059", "+4%"],
+        ["Nouveaux clients (pas en S1)", "—", "15", "≈ 42", "Acquisition faible"],
+        ["Taux de couverture base S1", "100%", "44%", "≈ 125%", "Au-dessus de 100%"],
     ]
-    info_box = Table(info_box_data, colWidths=[CONTENT_W])
-    info_box.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), GRAY_VLIGHT),
-        ('LINEBEFORE', (0, 0), (0, -1), 3, GOLD),
-        ('LEFTPADDING', (0, 0), (-1, -1), 15),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 15),
-        ('TOPPADDING', (0, 0), (-1, -1), 15),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 15),
-    ]))
-    story.append(info_box)
-    story.append(Spacer(1, 0.6*cm))
+    story.append(make_table(evol_clients_data, col_widths=[4.5*cm, 2.8*cm, 2.8*cm, 2.8*cm, 2.8*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Lecture client :</b><br/>"
+        "• Le taux de couverture projeté de 125% signifie que <b>le rythme d'activité de juillet est supérieur à la moyenne S1</b> — les clients sont actifs.<br/>"
+        "• <b>Seulement 15 nouveaux clients</b> en 11 jours (projection ~42 sur le mois) — l'acquisition de nouveaux clients reste faible. Le plan d'action doit intensifier la prospection.<br/>"
+        "• Le nombre d'acheteurs concentrés projeté (1 059) est légèrement supérieur à S1 (1 016) — <b>la base clients concentrés se maintient</b>, mais sans croissance significative.",
+        BODY_BOLD
+    ))
 
-    # KPIs to track
-    story.append(Paragraph("5.2 Indicateurs à suivre mensuellement", H2))
-    kpi_track_data = [
-        ["#", "Indicateur", "Description", "Fréquence", "Cible S2"],
-        ["1", "Nombre de clients zéro achat",
-         "Évolution mensuelle du nombre de clients sans achat de produits ciblés (16 produits)",
-         "Mensuel", "≤ 250 (vs 338 en Q1)"],
-        ["2", "Taux de récupération des 14 clients 20/80",
-         "% des 14 clients 20/80 en zéro achat Q1 réactivés sur S2",
-         "Mensuel", "≥ 60% (8 clients)"],
-        ["3", "Taux de reconquête des 192 churned",
-         "% des 192 clients churned Q1→Q2 reconquis sur S2",
-         "Mensuel", "≥ 30% (58 clients)"],
-        ["4", "CA récupéré sur clients réactivés",
-         "CA additionnel généré par les clients réactivés (zéro achat Q1 → actifs S2)",
-         "Mensuel", "≥ 300 M FCFA cumulés"],
-        ["5", "Évolution du bundle soja-concentrés",
-         "% des commandes soja incluant au moins 1 sac de concentré (ratio 3:1)",
-         "Hebdomadaire", "≥ 80% des commandes soja"],
+    story.append(Spacer(1, 0.4*cm))
+
+    # ===== 5.2 Tableau de bord — KPIs du plan d'action =====
+    story.append(Paragraph("5.2 Tableau de bord — Efficacité du plan d'action", H2))
+    story.append(Paragraph(
+        "Ce tableau sera enrichi à chaque mise à jour mensuelle. Les colonnes 'Août', 'Septembre', etc. seront remplies "
+        "au fur et à mesure de la disponibilité des données. L'objectif est de visualiser immédiatement si les actions "
+        "produisent les résultats attendus.",
+        BODY
+    ))
+
+    dashboard_data = [
+        ["KPI", "Référence S1", "Cible S2", "Juil (11j)", "Août", "Sept", "Oct", "Nov", "Déc"],
+        ["Clients zéro achat global", "338", "≤ 250", "À calculer*", "—", "—", "—", "—", "—"],
+        ["Top 14 clients 20/80 réactivés", "0/14", "≥ 8/14", "À suivre", "—", "—", "—", "—", "—"],
+        ["192 churned Q1→Q2 reconquis", "0", "≥ 58", "À suivre", "—", "—", "—", "—", "—"],
+        ["CA récupéré sur réactivés (M)", "0", "≥ 300", "À mesurer", "—", "—", "—", "—", "—"],
+        ["Bundle soja-concentrés (%)", "—", "≥ 80%", "À mesurer", "—", "—", "—", "—", "—"],
+        ["Volume CONCENTRES (t)", "1 513/mois", "≥ 1 942", "1 510 (proj.)", "—", "—", "—", "—", "—"],
+        ["Atteinte obj. CONCENTRES", "72%", "≥ 100%", "84% (ajusté)", "—", "—", "—", "—", "—"],
+        ["Nouveaux clients", "—", "Maximiser", "15 (11j)", "—", "—", "—", "—", "—"],
     ]
-    story.append(make_table(kpi_track_data, col_widths=[0.8*cm, 4.2*cm, 6*cm, 2.2*cm, 4*cm], font_size=8))
-    story.append(Spacer(1, 0.5*cm))
+    story.append(make_table(dashboard_data, col_widths=[4*cm, 2*cm, 2*cm, 2.2*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm], font_size=7))
+    story.append(Paragraph(
+        "<i>* Le calcul précis du nombre de clients zéro achat en juillet nécessite de définir la période de référence (juillet seul vs S1 cumulé). "
+        "Sera affiné dans la prochaine mise à jour.</i>",
+        ParagraphStyle('fn2', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
 
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Première lecture du plan d'action (juillet) :</b><br/>"
+        "• <b>CONCENTRES</b> : la projection juillet (1 510 t) est identique à juin (1 511 t) — <b>pas d'amélioration</b>. "
+        "Le plan d'action sur les concentrés n'a pas encore produit d'effet visible. Les actions critiques (bundle 3:1, sauvetage 14 clients 20/80, recontact 192 churned) doivent être accélérées.<br/>"
+        "• <b>TOURTEAUX</b> : la projection (6 178 t) est en baisse de 14% vs juin — la rupture concurrente pourrait s'essouffler. La fenêtre d'opportunité se referme potentiellement.<br/>"
+        "• <b>Nouveaux clients</b> : 15 en 11 jours (projection ~42/mois) — l'acquisition est insuffisante. La prospection des 118 jamais acquis doit être lancée.<br/>"
+        "• <b>Conclusion</b> : le démarrage S2 ne montre pas encore d'impact du plan d'action. Les prochaines mises à jour (fin juillet, août) seront décisives pour mesurer l'efficacité des actions déployées.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ===== 5.3 Calendrier de suivi =====
+    story.append(Paragraph("5.3 Calendrier de suivi et modalités", H2))
     story.append(Paragraph(
         "<b>Modalités de suivi :</b> revue mensuelle en comité de direction le 1er lundi de chaque mois. "
-        "Tableau de bord alimenté par le contrôle de gestion à partir des données de ventes journalières. "
+        "Le tableau de bord est alimenté par le contrôle de gestion à partir des données de ventes journalières. "
         "Alerte automatique si un indicateur s'écarte de plus de 15% de sa trajectoire cible.",
         BODY
     ))
-    story.append(Spacer(1, 0.3*cm))
-    story.append(Paragraph(
-        "<b>Prochaines échéances :</b><br/>"
-        "• <b>Fin juillet 2026</b> — premier point de suivi (15 jours après lancement du plan d'action)<br/>"
-        "• <b>Fin août 2026</b> — bilan mensuel n°1 S2<br/>"
-        "• <b>Fin septembre 2026</b> — revue trimestrielle Q3<br/>"
-        "• <b>Fin décembre 2026</b> — bilan global S2 et préparation du plan 2027",
-        BODY_BOLD
-    ))
+
+    cal_suivi_data = [
+        ["Échéance", "Données", "Action", "Responsable"],
+        ["Fin juillet 2026", "Ventes juillet complet (31j)", "1er bilan S2 — comparaison vs S1 et vs cibles", "Data Analyst + Direction Commerciale"],
+        ["Fin août 2026", "Ventes août complet", "Bilan n°1 — mesure d'impact du plan d'action 30 jours", "Data Analyst + Direction Commerciale"],
+        ["Fin septembre 2026", "Ventes Q3 (Juil-Sept)", "Revue trimestrielle Q3 — ajustement du plan", "Comité de direction"],
+        ["Fin octobre 2026", "Ventes octobre", "Bilan n°2 — mi-parcours S2", "Data Analyst + Direction Commerciale"],
+        ["Fin novembre 2026", "Ventes novembre", "Bilan n°3 — préparation clôture S2", "Data Analyst + Direction Commerciale"],
+        ["Fin décembre 2026", "Ventes S2 complet (Juil-Déc)", "Bilan global S2 et préparation du plan 2027", "Comité de direction"],
+    ]
+    story.append(make_table(cal_suivi_data, col_widths=[2.8*cm, 3.5*cm, 5.5*cm, 4.5*cm], font_size=8))
+
     story.append(Spacer(1, 0.4*cm))
     story.append(Paragraph(
-        "<i>Cette section sera enrichie mensuellement avec les valeurs réelles observées et l'analyse des écarts "
-        "par rapport aux cibles définies ci-dessus.</i>",
-        BODY_ITALIC
+        "<b>Questions à se poser à chaque mise à jour :</b><br/>"
+        "1. <b>Le nombre de clients zéro achat diminue-t-il ?</b> Si non, le plan de réactivation n'est pas efficace — ajuster l'approche.<br/>"
+        "2. <b>Les 14 clients 20/80 sont-ils réactivés ?</b> Si ≤ 4 sur 8 attendus, escalader au DG pour RDV direct.<br/>"
+        "3. <b>Le bundle soja-concentrés est-il déployé ?</b> Si le taux < 50%, le déploiement n'est pas effectif — vérifier l'application en agence.<br/>"
+        "4. <b>Le volume CONCENTRES progresse-t-il vs S1 ?</b> Si stagnation (cas de juillet), le plan d'action doit être renforcé.<br/>"
+        "5. <b>Les 192 churned sont-ils reconquis ?</b> Si < 10% reconquis après 30 jours, revoir la stratégie de recontact.",
+        BODY_BOLD
     ))
 
     # ---------- Final footer ----------
