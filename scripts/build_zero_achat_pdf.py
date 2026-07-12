@@ -571,19 +571,19 @@ def build_story():
     # ----- 2.3 Top 10 pertes par client -----
     story.append(Paragraph("2.3 Top 10 pertes par client (ciblé global)", H2))
     top10_data = [
-        ["N°", "Client", "Fréquence Q2", "Σ Moy. mens. (t)", "Perte Volume (t)", "Perte CA (FCFA)"],
-        ["1", "SIGHELO SARL", "0,33 (1 mois)", "74,00", "74,00", "23 680 000"],
-        ["2", "TEIKING JEAN MARIE", "0,67 (2 mois)", "30,50", "61,00", "19 632 000"],
-        ["3", "COMPAGNIE FERMIERE CAM.", "0,33 (1 mois)", "60,00", "60,00", "21 000 000"],
-        ["4", "FEUDJIO BACK ARMEL", "0,67 (2 mois)", "27,50", "55,00", "17 460 000"],
-        ["5", "KENMEGNE ALAIN", "0,33 (1 mois)", "50,00", "50,00", "16 600 000"],
-        ["6", "FOTSO VINCENT", "1,00 (3 mois)", "14,00", "42,00", "13 464 000"],
-        ["7", "DJOUSSI AURORE FLORINDA", "0,33 (1 mois)", "40,00", "40,00", "13 280 000"],
-        ["8", "STE SATI SARL", "0,33 (1 mois)", "40,00", "40,00", "13 600 000"],
-        ["9", "STE IPACAM & FILS", "1,00 (3 mois)", "12,25", "36,75", "14 754 000"],
-        ["10", "BAHO", "0,33 (1 mois)", "35,00", "35,00", "10 920 000"],
+        ["N°", "Client", "Agence", "Région", "Fréquence Q2", "Perte Vol. (t)", "Perte CA (FCFA)"],
+        ["1", "SIGHELO SARL", "NDOBO", "Littoral", "0,33 (1 mois)", "74,00", "23 680 000"],
+        ["2", "TEIKING JEAN MARIE", "FAMLA", "Ouest", "0,67 (2 mois)", "61,00", "19 632 000"],
+        ["3", "COMPAGNIE FERMIERE CAM.", "NDOBO", "Littoral", "0,33 (1 mois)", "60,00", "21 000 000"],
+        ["4", "FEUDJIO BACK ARMEL", "FAMLA", "Ouest", "0,67 (2 mois)", "55,00", "17 460 000"],
+        ["5", "KENMEGNE ALAIN", "FAMLA", "Ouest", "0,33 (1 mois)", "50,00", "16 600 000"],
+        ["6", "FOTSO VINCENT", "FAMLA", "Ouest", "1,00 (3 mois)", "42,00", "13 464 000"],
+        ["7", "DJOUSSI AURORE FLORINDA", "FAMLA", "Ouest", "0,33 (1 mois)", "40,00", "13 280 000"],
+        ["8", "STE SATI SARL", "NDOBO", "Littoral", "0,33 (1 mois)", "40,00", "13 600 000"],
+        ["9", "STE IPACAM & FILS", "MESSASSI", "Centre", "1,00 (3 mois)", "36,75", "14 754 000"],
+        ["10", "BAHO", "FAMLA", "Ouest", "0,33 (1 mois)", "35,00", "10 920 000"],
     ]
-    story.append(make_table(top10_data, col_widths=[0.8*cm, 5*cm, 3.2*cm, 3*cm, 2.7*cm, 3.6*cm], font_size=8))
+    story.append(make_table(top10_data, col_widths=[0.8*cm, 4*cm, 1.5*cm, 1.5*cm, 2.2*cm, 2*cm, 3*cm], font_size=7.5))
     story.append(Spacer(1, 0.3*cm))
     # Chart: Top 10 pertes
     chart_path = '/home/z/my-project/scripts/pdf_charts/chart3_top10_pertes.png'
