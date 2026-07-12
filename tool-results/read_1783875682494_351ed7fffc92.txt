@@ -1,0 +1,2002 @@
+     1→"""
+     2→BELGOCAM SA - Rapport d'analyse complete Janvier-Juin 2026
+     3→PDF generated via ReportLab
+     4→
+     5→Author/redactor: William Francis Fohom, Data Analyst, Administrateur National de Ventes
+     6→"""
+     7→import os
+     8→import sys
+     9→from reportlab.lib import colors
+    10→from reportlab.lib.pagesizes import A4
+    11→from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    12→from reportlab.lib.units import cm, mm
+    13→from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER, TA_JUSTIFY
+    14→from reportlab.pdfbase import pdfmetrics
+    15→from reportlab.pdfbase.ttfonts import TTFont
+    16→from reportlab.pdfbase.pdfmetrics import registerFontFamily
+    17→from reportlab.platypus import (
+    18→    SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle,
+    19→    Image, KeepTogether, NextPageTemplate, PageTemplate, Frame, BaseDocTemplate
+    20→)
+    21→from reportlab.platypus.flowables import HRFlowable
+    22→from reportlab.pdfgen import canvas
+    23→from reportlab.graphics.shapes import Drawing, Rect, String, Line
+    24→from reportlab.graphics.charts.barcharts import VerticalBarChart, HorizontalBarChart
+    25→from reportlab.graphics.charts.linecharts import HorizontalLineChart
+    26→from reportlab.graphics.charts.piecharts import Pie
+    27→from reportlab.graphics.charts.legends import Legend
+    28→from reportlab.graphics.charts.textlabels import Label
+    29→
+    30→# ===== FONTS =====
+    31→FONT_DIR = '/usr/share/fonts'
+    32→pdfmetrics.registerFont(TTFont('NotoSerifSC', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Regular.ttf'))
+    33→pdfmetrics.registerFont(TTFont('NotoSerifSC-Bold', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Bold.ttf'))
+    34→pdfmetrics.registerFont(TTFont('NotoSerifSC-Light', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Light.ttf'))
+    35→pdfmetrics.registerFont(TTFont('LibSans', f'{FONT_DIR}/truetype/chinese/LiberationSans-Regular.ttf'))
+    36→pdfmetrics.registerFont(TTFont('LibSans-Bold', f'{FONT_DIR}/truetype/liberation/LiberationSans-Bold.ttf'))
+    37→registerFontFamily('NotoSerifSC', normal='NotoSerifSC', bold='NotoSerifSC-Bold')
+    38→registerFontFamily('LibSans', normal='LibSans', bold='LibSans-Bold')
+    39→
+    40→# ===== COLORS (BELGOCAM corporate: navy + gold) =====
+    41→NAVY = colors.HexColor('#1F4E78')
+    42→NAVY_LIGHT = colors.HexColor('#2E75B6')
+    43→GOLD = colors.HexColor('#FFC000')
+    44→GOLD_DARK = colors.HexColor('#BF8F00')
+    45→RED = colors.HexColor('#C00000')
+    46→GREEN = colors.HexColor('#548235')
+    47→GRAY = colors.HexColor('#595959')
+    48→GRAY_LIGHT = colors.HexColor('#D9D9D9')
+    49→GRAY_VLIGHT = colors.HexColor('#F2F2F2')
+    50→WHITE = colors.white
+    51→BLACK = colors.black
+    52→
+    53→# ===== STYLES =====
+    54→styles = getSampleStyleSheet()
+    55→
+    56→# Title styles
+    57→H1 = ParagraphStyle('H1', parent=styles['Heading1'], fontName='NotoSerifSC-Bold', fontSize=20,
+    58→                    textColor=NAVY, spaceAfter=14, spaceBefore=10, alignment=TA_LEFT, leading=26)
+    59→H2 = ParagraphStyle('H2', parent=styles['Heading2'], fontName='NotoSerifSC-Bold', fontSize=14,
+    60→                    textColor=NAVY, spaceAfter=10, spaceBefore=14, alignment=TA_LEFT, leading=18,
+    61→                    keepWithNext=1)
+    62→H3 = ParagraphStyle('H3', parent=styles['Heading3'], fontName='NotoSerifSC-Bold', fontSize=12,
+    63→                    textColor=NAVY_LIGHT, spaceAfter=8, spaceBefore=10, alignment=TA_LEFT, leading=15,
+    64→                    keepWithNext=1)
+    65→
+    66→# Body styles
+    67→BODY = ParagraphStyle('Body', parent=styles['BodyText'], fontName='NotoSerifSC', fontSize=10,
+    68→                      textColor=BLACK, alignment=TA_JUSTIFY, leading=14, spaceAfter=8)
+    69→BODY_LEFT = ParagraphStyle('BodyLeft', parent=BODY, alignment=TA_LEFT)
+    70→BODY_BOLD = ParagraphStyle('BodyBold', parent=BODY, fontName='NotoSerifSC-Bold')
+    71→BODY_ITALIC = ParagraphStyle('BodyItalic', parent=BODY, fontName='NotoSerifSC-Light')
+    72→SMALL = ParagraphStyle('Small', parent=BODY, fontSize=9, leading=12, textColor=GRAY)
+    73→CAPTION = ParagraphStyle('Caption', parent=SMALL, alignment=TA_CENTER, fontName='NotoSerifSC-Light')
+    74→
+    75→# Cell styles
+    76→CELL = ParagraphStyle('Cell', fontName='NotoSerifSC', fontSize=9, leading=12, textColor=BLACK, alignment=TA_LEFT)
+    77→CELL_CENTER = ParagraphStyle('CellC', parent=CELL, alignment=TA_CENTER)
+    78→CELL_RIGHT = ParagraphStyle('CellR', parent=CELL, alignment=TA_RIGHT)
+    79→CELL_BOLD = ParagraphStyle('CellB', parent=CELL, fontName='NotoSerifSC-Bold')
+    80→CELL_WHITE = ParagraphStyle('CellW', parent=CELL, textColor=WHITE, fontName='NotoSerifSC-Bold', alignment=TA_CENTER)
+    81→CELL_WHITE_R = ParagraphStyle('CellWR', parent=CELL_WHITE, alignment=TA_RIGHT)
+    82→
+    83→# Bullet styles
+    84→BULLET = ParagraphStyle('Bullet', parent=BODY, leftIndent=18, bulletIndent=6, spaceAfter=4)
+    85→BULLET_BOLD = ParagraphStyle('BulletB', parent=BULLET, fontName='NotoSerifSC-Bold')
+    86→
+    87→# Insight/Cause/Recommandation block styles
+    88→INSIGHT_TITLE = ParagraphStyle('InsightT', fontName='NotoSerifSC-Bold', fontSize=10,
+    89→                               textColor=NAVY, spaceBefore=6, spaceAfter=4, leading=13)
+    90→INSIGHT_BODY = ParagraphStyle('InsightB', fontName='NotoSerifSC', fontSize=9,
+    91→                              textColor=BLACK, spaceAfter=3, leading=12, leftIndent=12,
+    92→                              alignment=TA_JUSTIFY)
+    93→CAUSE_TITLE = ParagraphStyle('CauseT', fontName='NotoSerifSC-Bold', fontSize=10,
+    94→                             textColor=colors.HexColor('#8B0000'), spaceBefore=6, spaceAfter=4, leading=13)
+    95→CAUSE_BODY = ParagraphStyle('CauseB', fontName='NotoSerifSC', fontSize=9,
+    96→                            textColor=BLACK, spaceAfter=3, leading=12, leftIndent=12,
+    97→                            alignment=TA_JUSTIFY)
+    98→RECO_TITLE = ParagraphStyle('RecoT', fontName='NotoSerifSC-Bold', fontSize=10,
+    99→                            textColor=colors.HexColor('#375623'), spaceBefore=6, spaceAfter=4, leading=13)
+   100→RECO_BODY = ParagraphStyle('RecoB', fontName='NotoSerifSC', fontSize=9,
+   101→                           textColor=BLACK, spaceAfter=3, leading=12, leftIndent=12,
+   102→                           alignment=TA_JUSTIFY)
+   103→
+   104→
+   105→def icr_block(insights, causes, recommandations):
+   106→    """Create an Insights / Causes / Recommandations block for underperformance sections.
+   107→    Each argument is a list of strings (bullet points)."""
+   108→    elements = []
+   109→    # Insights
+   110→    elements.append(Paragraph("Insights", INSIGHT_TITLE))
+   111→    for s in insights:
+   112→        elements.append(Paragraph(f"• {s}", INSIGHT_BODY))
+   113→    # Causes
+   114→    elements.append(Paragraph("Causes", CAUSE_TITLE))
+   115→    for s in causes:
+   116→        elements.append(Paragraph(f"• {s}", CAUSE_BODY))
+   117→    # Recommandations
+   118→    elements.append(Paragraph("Recommandations", RECO_TITLE))
+   119→    for s in recommandations:
+   120→        elements.append(Paragraph(f"• {s}", RECO_BODY))
+   121→    return KeepTogether(elements)
+   122→
+   123→# ===== PAGE SETUP =====
+   124→PAGE_W, PAGE_H = A4
+   125→MARGIN_L = 1.5*cm
+   126→MARGIN_R = 1.5*cm
+   127→MARGIN_T = 2.2*cm
+   128→MARGIN_B = 1.8*cm
+   129→CONTENT_W = PAGE_W - MARGIN_L - MARGIN_R  # ~17.8 cm (vs 16.8 before)
+   130→
+   131→# ===== COVER PAGE FUNCTION =====
+   132→def draw_cover(canv, doc):
+   133→    """Draw cover page elements directly on canvas."""
+   134→    canv.saveState()
+   135→
+   136→    # Background: full white
+   137→    canv.setFillColor(WHITE)
+   138→    canv.rect(0, 0, PAGE_W, PAGE_H, fill=1, stroke=0)
+   139→
+   140→    # Top navy band (full width)
+   141→    canv.setFillColor(NAVY)
+   142→    canv.rect(0, PAGE_H - 5*cm, PAGE_W, 5*cm, fill=1, stroke=0)
+   143→
+   144→    # Gold accent line
+   145→    canv.setFillColor(GOLD)
+   146→    canv.rect(0, PAGE_H - 5.3*cm, PAGE_W, 0.3*cm, fill=1, stroke=0)
+   147→
+   148→    # Company name (top left, in navy band)
+   149→    canv.setFillColor(WHITE)
+   150→    canv.setFont('NotoSerifSC-Bold', 22)
+   151→    canv.drawString(MARGIN_L, PAGE_H - 2.5*cm, "BELGOCAM SA")
+   152→    canv.setFont('NotoSerifSC', 11)
+   153→    canv.drawString(MARGIN_L, PAGE_H - 3.2*cm, "NJS GROUP — Cameroun")
+   154→    canv.setFont('NotoSerifSC-Light', 10)
+   155→    canv.drawString(MARGIN_L, PAGE_H - 4.0*cm, "Analyse Commerciale & Stratégique")
+   156→
+   157→    # Date (top right)
+   158→    canv.setFont('NotoSerifSC', 10)
+   159→    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Juillet 2026")
+   160→    canv.setFont('NotoSerifSC-Light', 9)
+   161→    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 3.2*cm, "Période analysée : Janvier - Juin 2026")
+   162→
+   163→    # Main title block (centered)
+   164→    canv.setFillColor(NAVY)
+   165→    canv.setFont('NotoSerifSC-Bold', 28)
+   166→    canv.drawString(MARGIN_L, PAGE_H - 9*cm, "Analyse Complète")
+   167→    canv.setFont('NotoSerifSC-Bold', 28)
+   168→    canv.drawString(MARGIN_L, PAGE_H - 10.2*cm, "Janvier - Juin 2026")
+   169→
+   170→    # Gold separator
+   171→    canv.setFillColor(GOLD)
+   172→    canv.rect(MARGIN_L, PAGE_H - 11*cm, 4*cm, 0.15*cm, fill=1, stroke=0)
+   173→
+   174→    # Subtitle
+   175→    canv.setFillColor(GRAY)
+   176→    canv.setFont('NotoSerifSC', 13)
+   177→    canv.drawString(MARGIN_L, PAGE_H - 12*cm, "Ventes vs objectifs, focus CONCENTRÉS,")
+   178→    canv.drawString(MARGIN_L, PAGE_H - 12.7*cm, "diagnostic zéro achat et plan d'action")
+   179→
+   180→    # Key figures box
+   181→    box_y = 8*cm
+   182→    box_h = 4.5*cm
+   183→    canv.setFillColor(GRAY_VLIGHT)
+   184→    canv.rect(MARGIN_L, box_y, CONTENT_W, box_h, fill=1, stroke=0)
+   185→    # Left gold border
+   186→    canv.setFillColor(GOLD)
+   187→    canv.rect(MARGIN_L, box_y, 0.2*cm, box_h, fill=1, stroke=0)
+   188→
+   189→    # 3 KPIs side by side
+   190→    canv.setFillColor(NAVY)
+   191→    canv.setFont('NotoSerifSC-Bold', 22)
+   192→    kpi_y = box_y + box_h - 1.5*cm
+   193→    col_w = CONTENT_W / 3
+   194→    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y, "17,34 Md")
+   195→    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y, "99,8%")
+   196→    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y, "72,4%")
+   197→
+   198→    canv.setFillColor(GRAY)
+   199→    canv.setFont('NotoSerifSC', 9)
+   200→    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 0.7*cm, "FCFA CA HT (6 mois)")
+   201→    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 0.7*cm, "objectif volume S1 atteint (hors pipeline)")
+   202→    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 0.7*cm, "objectif CONCENTRES (cœur de marge)")
+   203→
+   204→    canv.setFillColor(GRAY)
+   205→    canv.setFont('NotoSerifSC-Light', 8)
+   206→    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "93,2% de l'objectif CA (hors pipeline)")
+   207→    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "41 139 t réalisées vs 41 230 t")
+   208→    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 1.4*cm, "9 075 t vs 12 542 t objectif")
+   209→
+   210→    # Author / redactor block at bottom
+   211→    auth_y = 3.5*cm
+   212→    # Gold accent line above
+   213→    canv.setFillColor(GOLD)
+   214→    canv.rect(MARGIN_L, auth_y + 2.5*cm, 3*cm, 0.1*cm, fill=1, stroke=0)
+   215→
+   216→    canv.setFillColor(GRAY)
+   217→    canv.setFont('NotoSerifSC-Light', 9)
+   218→    canv.drawString(MARGIN_L, auth_y + 1.8*cm, "Rédigé par")
+   219→
+   220→    canv.setFillColor(NAVY)
+   221→    canv.setFont('NotoSerifSC-Bold', 14)
+   222→    canv.drawString(MARGIN_L, auth_y + 1.0*cm, "William Francis Fohom")
+   223→
+   224→    canv.setFillColor(GRAY)
+   225→    canv.setFont('NotoSerifSC', 10)
+   226→    canv.drawString(MARGIN_L, auth_y + 0.4*cm, "Data Analyst")
+   227→    canv.drawString(MARGIN_L, auth_y - 0.1*cm, "Administrateur National de Ventes")
+   228→
+   229→    # Bottom band
+   230→    canv.setFillColor(NAVY)
+   231→    canv.rect(0, 0, PAGE_W, 1.5*cm, fill=1, stroke=0)
+   232→    canv.setFillColor(WHITE)
+   233→    canv.setFont('NotoSerifSC', 9)
+   234→    canv.drawString(MARGIN_L, 0.55*cm, "BELGOCAM SA — Document confidentiel — Usage interne")
+   235→    canv.setFont('NotoSerifSC-Light', 8)
+   236→    canv.drawRightString(PAGE_W - MARGIN_R, 0.55*cm, "Rapport d'analyse commerciale — Juillet 2026")
+   237→
+   238→    canv.restoreState()
+   239→
+   240→
+   241→def draw_body_page(canv, doc):
+   242→    """Header/footer for body pages."""
+   243→    canv.saveState()
+   244→    # Top header line
+   245→    canv.setStrokeColor(NAVY)
+   246→    canv.setLineWidth(0.5)
+   247→    canv.line(MARGIN_L, PAGE_H - 1.3*cm, PAGE_W - MARGIN_R, PAGE_H - 1.3*cm)
+   248→    canv.setFillColor(NAVY)
+   249→    canv.setFont('NotoSerifSC-Bold', 9)
+   250→    canv.drawString(MARGIN_L, PAGE_H - 1.0*cm, "BELGOCAM SA")
+   251→    canv.setFillColor(GRAY)
+   252→    canv.setFont('NotoSerifSC', 9)
+   253→    canv.drawString(MARGIN_L + 3*cm, PAGE_H - 1.0*cm, "Analyse complète Janvier-Juin 2026")
+   254→    canv.setFillColor(GRAY)
+   255→    canv.setFont('NotoSerifSC-Light', 8)
+   256→    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 1.0*cm, "William Francis Fohom — Data Analyst")
+   257→
+   258→    # Footer
+   259→    canv.setStrokeColor(GRAY_LIGHT)
+   260→    canv.setLineWidth(0.3)
+   261→    canv.line(MARGIN_L, 1.3*cm, PAGE_W - MARGIN_R, 1.3*cm)
+   262→    canv.setFillColor(GRAY)
+   263→    canv.setFont('NotoSerifSC-Light', 8)
+   264→    canv.drawString(MARGIN_L, 0.9*cm, "BELGOCAM SA — Document confidentiel")
+   265→    page_num = canv.getPageNumber() - 1  # subtract cover
+   266→    canv.drawRightString(PAGE_W - MARGIN_R, 0.9*cm, f"Page {page_num}")
+   267→    canv.restoreState()
+   268→
+   269→
+   270→# ===== HELPER FUNCTIONS =====
+   271→def make_table(data, col_widths=None, header_row=True, font_size=9, align='LEFT'):
+   272→    """Create a styled table with BELGOCAM colors. Auto-scales to full content width."""
+   273→    if col_widths is None:
+   274→        n_cols = len(data[0])
+   275→        col_widths = [CONTENT_W / n_cols] * n_cols
+   276→    else:
+   277→        # Auto-scale: if sum of col_widths < CONTENT_W, scale up proportionally
+   278→        total = sum(col_widths)
+   279→        if total < CONTENT_W * 0.95:
+   280→            scale = CONTENT_W / total
+   281→            col_widths = [w * scale for w in col_widths]
+   282→
+   283→    # Wrap text cells in Paragraphs for proper wrapping
+   284→    # Use a font-size-aware cell style
+   285→    cell_style = ParagraphStyle('cell_fs', parent=CELL, fontSize=font_size, leading=font_size + 3)
+   286→    cell_style_r = ParagraphStyle('cell_r_fs', parent=CELL_RIGHT, fontSize=font_size, leading=font_size + 3)
+   287→    cell_style_c = ParagraphStyle('cell_c_fs', parent=CELL_CENTER, fontSize=font_size, leading=font_size + 3)
+   288→    cell_style_w = ParagraphStyle('cell_w_fs', parent=CELL_WHITE, fontSize=font_size, leading=font_size + 3)
+   289→
+   290→    wrapped = []
+   291→    for i, row in enumerate(data):
+   292→        wrapped_row = []
+   293→        for j, cell in enumerate(row):
+   294→            if isinstance(cell, str):
+   295→                if i == 0 and header_row:
+   296→                    style = cell_style_w
+   297→                else:
+   298→                    style = cell_style_r if align == 'RIGHT' else cell_style
+   299→                wrapped_row.append(Paragraph(cell, style))
+   300→            else:
+   301→                wrapped_row.append(cell)
+   302→        wrapped.append(wrapped_row)
+   303→
+   304→    t = Table(wrapped, colWidths=col_widths, repeatRows=1 if header_row else 0)
+   305→    ts = TableStyle([
+   306→        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+   307→        ('LEFTPADDING', (0, 0), (-1, -1), 5),
+   308→        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+   309→        ('TOPPADDING', (0, 0), (-1, -1), 3),
+   310→        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+   311→        ('GRID', (0, 0), (-1, -1), 0.4, GRAY_LIGHT),
+   312→    ])
+   313→    if header_row:
+   314→        ts.add('BACKGROUND', (0, 0), (-1, 0), NAVY)
+   315→        ts.add('TEXTCOLOR', (0, 0), (-1, 0), WHITE)
+   316→        ts.add('FONTNAME', (0, 0), (-1, 0), 'NotoSerifSC-Bold')
+   317→    # Banding
+   318→    for i in range(1, len(data)):
+   319→        if i % 2 == 0:
+   320→            ts.add('BACKGROUND', (0, i), (-1, i), GRAY_VLIGHT)
+   321→    t.setStyle(ts)
+   322→    return t
+   323→
+   324→
+   325→def kpi_card(label, value, sublabel=""):
+   326→    """Create a small KPI card as a Table."""
+   327→    data = [
+   328→        [Paragraph(f'<b>{value}</b>', ParagraphStyle('kpi_v', fontName='NotoSerifSC-Bold', fontSize=13, textColor=NAVY, alignment=TA_CENTER, leading=16))],
+   329→        [Paragraph(label, ParagraphStyle('kpi_l', fontName='NotoSerifSC', fontSize=8, textColor=GRAY, alignment=TA_CENTER, leading=10))],
+   330→    ]
+   331→    if sublabel:
+   332→        data.append([Paragraph(sublabel, ParagraphStyle('kpi_s', fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, alignment=TA_CENTER, leading=9))])
+   333→    t = Table(data, colWidths=[3.2*cm])
+   334→    t.setStyle(TableStyle([
+   335→        ('BACKGROUND', (0, 0), (-1, -1), GRAY_VLIGHT),
+   336→        ('LINEBELOW', (0, 0), (-1, 0), 0.5, GOLD),
+   337→        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+   338→        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+   339→        ('TOPPADDING', (0, 0), (-1, -1), 4),
+   340→        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+   341→        ('BOX', (0, 0), (-1, -1), 0.3, GRAY_LIGHT),
+   342→    ]))
+   343→    return t
+   344→
+   345→
+   346→def kpi_row(cards):
+   347→    """Place multiple KPI cards in a row."""
+   348→    n = len(cards)
+   349→    w = CONTENT_W / n
+   350→    t = Table([cards], colWidths=[w]*n)
+   351→    t.setStyle(TableStyle([
+   352→        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+   353→        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+   354→        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+   355→    ]))
+   356→    return t
+   357→
+   358→
+   359→def section_divider():
+   360→    return HRFlowable(width="100%", thickness=0.5, color=GOLD, spaceBefore=6, spaceAfter=10)
+   361→
+   362→
+   363→def heading_with_content(heading_text, content_flowables, level=2):
+   364→    """Create a heading that stays together with its first content element.
+   365→    Prevents orphan headings at the bottom of pages.
+   366→    level=2 for H2, level=3 for H3.
+   367→    """
+   368→    style = H2 if level == 2 else H3
+   369→    heading = Paragraph(heading_text, style)
+   370→    # Keep heading + first content together
+   371→    if isinstance(content_flowables, list):
+   372→        return KeepTogether([heading] + content_flowables[:2])
+   373→    else:
+   374→        return KeepTogether([heading, content_flowables])
+   375→
+   376→
+   377→# ===== BUILD CONTENT =====
+   378→def build_story():
+   379→    story = []
+   380→
+   381→    # ---------- PAGE 1: COVER (drawn by canvas) ----------
+   382→    story.append(Spacer(1, PAGE_H - MARGIN_T - MARGIN_B))  # fill the page
+   383→    story.append(PageBreak())
+   384→
+   385→    # ---------- PAGE 2: SOMMAIRE ----------
+   386→    story.append(Paragraph("Sommaire", H1))
+   387→    story.append(section_divider())
+   388→    story.append(Spacer(1, 0.3*cm))
+   389→
+   390→    toc_data = [
+   391→        ["Section", "Titre", "Page"],
+   392→        ["", "Synthèse exécutive", "3"],
+   393→        ["1", "État des lieux et méthodologie", "4"],
+   394→        ["2", "Chiffres clés et segmentation clients", "5"],
+   395→        ["3", "Ventes vs Objectifs 2026", "7"],
+   396→        ["4", "Focus CONCENTRÉS — Cœur de marge", "12"],
+   397→        ["5", "Analyse Zéro Achat Q1", "16"],
+   398→        ["6", "Pertes Q1 estimées (méthode fréquence)", "18"],
+   399→        ["7", "Transition Q1→Q2 et dynamique mensuelle", "20"],
+   400→        ["8", "Analyse Chick Booster & Piglet Booster", "22"],
+   401→        ["9", "Perspectives stratégiques — 5 axes", "24"],
+   402→        ["10", "Projection CA 6 mois (3 scénarios)", "26"],
+   403→        ["11", "Forecast S2 2026 (3 scénarios)", "27"],
+   404→        ["12", "Analyse YoY 2025-2026 et forecast affiné", "29"],
+   405→        ["13", "Recommandations et plan d'action priorisé", "33"],
+   406→        ["14", "Conclusion et prochaines étapes", "35"],
+   407→    ]
+   408→    t = make_table(toc_data, col_widths=[1.5*cm, 12*cm, 2.5*cm], header_row=True)
+   409→    story.append(t)
+   410→    story.append(Spacer(1, 0.6*cm))
+   411→    story.append(Paragraph(
+   412→        "<i>Ce rapport présente l'analyse complète des ventes BELGOCAM SA sur la période Janvier-Juin 2026, "
+   413→        "après exclusion de 35 clients internes (filiales NJS, SPC, comptoirs d'agences et soldes comptables). "
+   414→        "L'analyse porte sur 41 139 tonnes et 17,34 Md FCFA de ventes (Janvier-Juin 2026), "
+   415→        "1 359 clients externes (après exclusion de 35 clients internes pour les analyses clients), "
+   416→        "et 10 catégories de produits dont les CONCENTRÉS (cœur de marge) et les TOURTEAUX (volume).</i>",
+   417→        BODY_ITALIC
+   418→    ))
+   419→    story.append(Spacer(1, 0.4*cm))
+   420→    story.append(Paragraph(
+   421→        "<b>Glossaire des abréviations :</b> Q1 = Trimestre 1 (Janvier-Mars 2026) ; Q2 = Trimestre 2 (Avril-Juin 2026) ; "
+   422→        "S1 = Semestre 1 (Janvier-Juin 2026) ; S2 = Semestre 2 (Juillet-Décembre 2026) ; CA = Chiffre d'Affaires ; HT = Hors Taxes ; FCFA = Franc CFA.",
+   423→        SMALL
+   424→    ))
+   425→    # ---------- PAGE 3: SYNTHESE EXECUTIVE ----------
+   426→    story.append(Paragraph("Synthèse exécutive", H1))
+   427→    story.append(section_divider())
+   428→
+   429→    # KPI row
+   430→    cards = [
+   431→        kpi_card("CA HT S1", "17,34 Md", "FCFA (93,2% obj)"),
+   432→        kpi_card("Volume S1", "41 139 t", "(99,8% obj)"),
+   433→        kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
+   434→        kpi_card("Bilan net Q1→Q2", "+276 M", "FCFA (ciblé)"),
+   435→    ]
+   436→    story.append(kpi_row(cards))
+   437→    story.append(Spacer(1, 0.6*cm))
+   438→
+   439→    story.append(Paragraph("5 messages clés", H2))
+   440→    story.append(Paragraph(
+   441→        "<i>Note : Q1 = Trimestre 1 (Janvier-Mars 2026) ; Q2 = Trimestre 2 (Avril-Juin 2026). Glossaire complet en page 2.</i>",
+   442→        SMALL
+   443→    ))
+   444→    story.append(Spacer(1, 0.2*cm))
+   445→    story.append(Paragraph(
+   446→        "<b>1. Volume global au-dessus de l'objectif, CA en dessous.</b> "
+   447→        "Avec 41 139 tonnes en S1 2026, le volume atteint 99,8% de l'objectif (hors pipeline en cours). "
+   448→        "Mais en CA, l'objectif de 18,60 Md FCFA n'est atteint qu'à 93,2% (17,34 Md réalisé). "
+   449→        "L'écart provient principalement des CONCENTRES qui représentent à eux seuls 2 213 M FCFA de CA manquant.",
+   450→        BODY
+   451→    ))
+   452→    story.append(Paragraph(
+   453→        "<b>2. Les CONCENTRÉS sous-performent à 72,4% — c'est le coeur de marge.</b> "
+   454→        "Avec 9 075 t réalisées vs 12 542 t d'objectif, les concentrés accusent un déficit de 3 467 t. "
+   455→        "Aucune agence n'atteint son objectif concentrés — c'est un problème systémique. "
+   456→        "Le déclin YoY de -1,7% confirme le caractère structurel. Le C104 (BELGO 10% Chair), "
+   457→        "qui représente 50% du volume concentrés, décline de 3,2% en YoY.",
+   458→        BODY
+   459→    ))
+   460→    story.append(Paragraph(
+   461→        "<b>3. Les TOURTEAUX portent le résultat grâce à la rupture concurrente.</b> "
+   462→        "Les tourteaux de soja dépassent l'objectif de 8,9% en volume (29 062 t vs 26 685 t) "
+   463→        "et de 8,2% en CA (9 437 M vs 8 725 M). Cette sur-performance est entièrement liée à la "
+   464→        "rupture d'approvisionnement chez les concurrents — une fenêtre de tir temporaire qu'il faut "
+   465→        "verrouiller contractuellement.",
+   466→        BODY
+   467→    ))
+   468→    story.append(Paragraph(
+   469→        "<b>4. Diagnostic zéro achat : 338 clients n'ont pas acheté de produits ciblés en Q1.</b> "
+   470→        "L'analyse zéro achat révèle que 338 clients n'ont fait aucun achat de produits ciblés "
+   471→        "(soja + concentrés) en Janvier-Mars 2026, dont 14 clients du top 20/80. "
+   472→        "La perte Q1 estimée est de 1 599 tonnes et 581 millions FCFA. "
+   473→        "Ces clients constituent les cibles prioritaires du plan d'action.",
+   474→        BODY
+   475→    ))
+   476→    story.append(Paragraph(
+   477→        "<b>5. Le plan d'action repose sur 3 leviers + le SAV.</b> "
+   478→        "(a) Bundle soja-concentrés obligatoire (3 sacs soja pour 1 sac concentré) pour transformer "
+   479→        "le soja en moteur de cross-sell vers les concentrés. "
+   480→        "(b) Suivi SAV systématique des 850+ clients concentrés (appels mensuels, détection précoce). "
+   481→        "(c) Motivation de l'équipe commerciale par des primes liées aux ventes de concentrés. "
+   482→        "Le forecast S2 réaliste projette 16,95 Md FCFA de CA (93% de l'objectif S2).",
+   483→        BODY
+   484→    ))
+   485→
+   486→    story.append(Spacer(1, 0.5*cm))
+   487→    story.append(Paragraph(
+   488→        "<b>Recommandation immédiate :</b> déployer le bundle soja-concentrés (ratio 3:1) "
+   489→        "dès juillet 2026 dans toutes les agences, lancer le programme SAV sur les clients concentrés, "
+   490→        "et mettre en place le système de primes commerciales liées aux concentrés sous 30 jours.",
+   491→        BODY_BOLD
+   492→    ))
+   493→
+   494→    story.append(PageBreak())
+   495→
+   496→    # ---------- PAGE 4: SECTION 1 - ETAT DES LIEUX ----------
+   497→    story.append(Paragraph("1. État des lieux et méthodologie", H1))
+   498→    story.append(section_divider())
+   499→
+   500→    story.append(Paragraph("1.1 Périmètre de l'analyse", H2))
+   501→    story.append(Paragraph(
+   502→        "Cette analyse porte sur l'ensemble des ventes BELGOCAM SA sur la période Janvier-Juin 2026, soit 6 mois d'activité. "
+   503→        "Le fichier source contient 6 feuilles mensuelles (une par mois), totalisant 61 242 lignes de commandes après application du filtre \"État = Livrée\". "
+   504→        "Chaque ligne correspond à une ligne de commande caractérisée par 18 colonnes : référence produit, description, quantité, référence commande, tiers (client), date de commande, mode de règlement, montant HT, montant TTC, auteur, dates de création/modification/clôture, statut facturé, état, statut facture et agence.",
+   505→        BODY
+   506→    ))
+   507→    story.append(Paragraph(
+   508→        "Pour les besoins de l'analyse de transition, la période est divisée en deux trimestres : <b>Q1 = Trimestre 1 (Janvier-Mars 2026)</b> et <b>Q2 = Trimestre 2 (Avril-Juin 2026)</b>. "
+   509→        "Cette subdivision trimestrielle permet d'analyser les évolutions de comportement clients entre le début et la fin du semestre.",
+   510→        BODY
+   511→    ))
+   512→    story.append(Paragraph(
+   513→        "Le périmètre géographique couvre l'ensemble du Cameroun via 14 agences BELGOCAM : FAMLA, MESSASSI, NDOBO, DJELENG, NKONGSAMBA, AHALA, BERTOUA, NGAOUNDERE, BAMENDA-MBOUDA, VILLAGE, BUEA, NKOABANG, PK11, NKOLBISSON, ainsi que des points SPC. "
+   514→        "Les données 2025 (année complète) et les objectifs 2026 (par catégorie, par agence, en volume et en CA) ont également été intégrés pour permettre les comparaisons YoY et ventes vs objectifs.",
+   515→        BODY
+   516→    ))
+   517→
+   518→    story.append(Paragraph("1.2 Catégories de produits", H2))
+   519→    story.append(Paragraph(
+   520→        "L'analyse couvre 10 catégories de produits BELGOCAM, dont 2 catégories majeures représentant plus de 95% du volume :",
+   521→        BODY
+   522→    ))
+   523→    prod_data = [
+   524→        ["Catégorie", "Produits principaux", "Vol S1 2026 (t)", "CA S1 (M FCFA)", "% CA", "YoY vol"],
+   525→        ["TOURTEAUX", "T102 Soja 50Kg + formats", "29 062", "9 437", "54,4%", "+52,8%"],
+   526→        ["CONCENTRES", "C104 BELGO 10% Chair, C105 Porc, C103/C101 5%, etc.", "9 075", "6 064", "35,0%", "+4,7%"],
+   527→        ["INGREDIENTS", "Maïs (M1051) + Lysine, Méthionine, Farine poisson, Bicarbonate, etc.", "2 382", "1 071", "5,8%", "+507,7%"],
+   528→        ["ALIMENT COMPLET", "Chick Booster, Piglet Booster, BELGO Rabbit, BELGO Fish", "545", "471", "2,7%", "+118,2%"],
+   529→        ["COMPLEMENT ALIM.", "Additifs liquides BELGO (HARMONY, VIT, PROTECT, KILL, etc.)", "3", "15", "0,0%", "-8,8%"],
+   530→        ["PREMIX", "P102N2 Chair, P104N2 Ponte, P109 Multi Rumi", "69", "126", "0,7%", "+54,1%"],
+   531→        ["MATERIEL ELEVAGE", "Abreuvoirs, grillages, cages, radiants (évalués en CA)", "—", "129", "0,7%", "—"],
+   532→        ["ALVEOLE", "Cartons à œufs, caisses (évalués en CA)", "—", "14", "0,1%", "—"],
+   533→        ["DIVERS", "Manuels, sacs, contribution carburant, pont bascule", "—", "17", "0,1%", "—"],
+   534→        ["TOTAL", "—", "41 139", "17 344", "100%", "+17,1%"],
+   535→    ]
+   536→    story.append(make_table(prod_data, col_widths=[2.8*cm, 5*cm, 2*cm, 2*cm, 1.2*cm, 1.5*cm], font_size=7.5))
+   537→    story.append(Spacer(1, 0.2*cm))
+   538→    story.append(Paragraph(
+   539→        "Les CONCENTRÉS (BELGO 10% + BELGO 5%) représentent <b>la plus grosse partie de la marge</b> de BELGOCAM. "
+   540→        "Les TOURTEAUX représentent le volume mais à faible marge unitaire. Le Maïs (1 892 t¹) est vendu en sacs de 50 kg. "
+   541→        "Le matériel d'élevage, les alvéoles et divers sont évalués en CA uniquement (pas de volume en tonnes).",
+   542→        BODY
+   543→    ))
+   544→    story.append(Paragraph(
+   545→        "<i>¹ Volume Maïs hors lignes de régularisation de stock sans facturation.</i>",
+   546→        ParagraphStyle('footnote', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+   547→    ))
+   548→
+   549→    story.append(Paragraph("1.3 Méthodologie des analyses", H2))
+   550→    story.append(Paragraph(
+   551→        "<b>Ventes vs Objectifs</b> : comparaison du volume et du CA réalisés vs les objectifs par catégorie et par agence. "
+   552→        "Les objectifs CA sont fournis directement (pas calculés à partir du prix moyen). "
+   553→        "Le taux d'atteinte = (réalisé / objectif) × 100.",
+   554→        BODY
+   555→    ))
+   556→    story.append(Paragraph(
+   557→        "<b>Analyse YoY (Year-over-Year)</b> : comparaison S1 2026 vs S1 2025 (et S2 2025 pour le forecast). "
+   558→        "La croissance YoY = (S1 2026 - S1 2025) / S1 2025 × 100. "
+   559→        "Le forecast S2 2026 = S2 2025 × (1 + croissance YoY) ± ajustement scénario.",
+   560→        BODY
+   561→    ))
+   562→    story.append(Paragraph(
+   563→        "<b>Pareto 20/80</b> : les clients sont triés par CA HT décroissant. Le seuil 20/80 est atteint quand la somme cumulée des CA atteint 80% du CA total. "
+   564→        "Les clients au-dessus du seuil sont marqués ★ (359 clients sur 1 359).",
+   565→        BODY
+   566→    ))
+   567→    story.append(Paragraph(
+   568→        "<b>Note sur l'exclusion des clients internes</b> : 35 clients internes (filiales NJS, SPC, comptoirs d'agences, soldes comptables) "
+   569→        "sont exclus des analyses clients (zéro achat, transition, segmentation) pour obtenir une image fidèle du marché externe. "
+   570→        "Ils sont en revanche <b>inclus dans les ventes vs objectifs</b> car ils constituent des canaux de vente internes. "
+   571→        "Le détail de l'exclusion est présenté en section 5 (Analyse Zéro Achat).",
+   572→        BODY
+   573→    ))
+   574→
+   575→    story.append(PageBreak())
+   576→
+   577→    # ---------- PAGE 5: SECTION 2 - CHIFFRES CLES ----------
+   578→    story.append(Paragraph("2. Chiffres clés et performance globale", H1))
+   579→    story.append(section_divider())
+   580→
+   581→    story.append(Paragraph("2.1 Indicateurs business S1 2026", H2))
+   582→    cards2 = [
+   583→        kpi_card("CA HT S1", "17,34 Md", "FCFA (93,2% obj)"),
+   584→        kpi_card("Volume S1", "41 139 t", "(99,8% obj)"),
+   585→        kpi_card("Clients actifs", "1 359", "(20/80: 359)"),
+   586→        kpi_card("Clients 20/80 (★)", "359", "80% du CA clients"),
+   587→        kpi_card("CONCENTRES", "72,4%", "obj vol — coeur de marge"),
+   588→    ]
+   589→    story.append(kpi_row(cards2))
+   590→    story.append(Spacer(1, 0.5*cm))
+   591→
+   592→    story.append(Paragraph("2.2 Performance par catégorie (volume vs objectif)", H2))
+   593→    perf_data = [
+   594→        ["Catégorie", "Vol S1 (t)", "Obj vol (t)", "% vol", "YoY vol", "CA S1 (M)", "Obj CA (M)", "% CA"],
+   595→        ["TOURTEAUX", "29 062", "26 685", "108,9%", "+52,8%", "9 437", "8 725", "108,2%"],
+   596→        ["CONCENTRES", "9 075", "12 542", "72,4%", "+4,7%", "6 064", "8 277", "73,3%"],
+   597→        ["ALIMENT COMPLET", "545", "514", "106,1%", "+118,2%", "471", "435", "108,2%"],
+   598→        ["INGREDIENTS", "2 382", "598", "398,4%", "+507,7%", "1 071", "810", "132,2%"],
+   599→        ["COMPLEMENT ALIM.", "3", "6", "49,3%", "-8,8%", "15", "16", "96,2%"],
+   600→        ["PREMIX", "69", "61", "112,8%", "+54,1%", "126", "113", "111,6%"],
+   601→        ["MATERIEL ELEVAGE", "—", "0", "—", "—", "129", "170", "75,8%"],
+   602→        ["ALVEOLE", "—", "0", "—", "—", "14", "91", "15,1%"],
+   603→        ["TOTAL", "41 139", "41 230", "99,8%", "+17,1%", "17 344", "18 604", "93,2%"],
+   604→    ]
+   605→    story.append(make_table(perf_data, col_widths=[2.8*cm, 1.7*cm, 1.7*cm, 1.2*cm, 1.4*cm, 1.7*cm, 1.7*cm, 1.2*cm], font_size=8))
+   606→    story.append(Spacer(1, 0.2*cm))
+   607→    story.append(Paragraph(
+   608→        "Le volume global atteint 99,8% de l'objectif — légèrement sous, mais le pipeline en cours (192,8 t) le ferait passer à 102,3%. "
+   609→        "<b>YoY volume +17,1%</b> — croissance solide portée par les TOURTEAUX (+52,8%) et les INGREDIENTS (+507,7% — Boom Maïs). "
+   610→        "Les CONCENTRÉS progressent timidement (+4,7% YoY) mais restent très sous l'objectif (72,4%). "
+   611→        "Mais le CA n'atteint que 93,2% de l'objectif — l'écart de 1 260 M FCFA provient principalement des CONCENTRES "
+   612→        "(-2 213 M FCFA, 73,3% de l'objectif CA). Le matériel d'élevage et les alvéoles sous-performent en CA "
+   613→        "(75,8% et 15,1%) mais ne pèsent que marginalement sur le total.",
+   614→        BODY
+   615→    ))
+   616→
+   617→    story.append(Paragraph("2.3 Top agences par CA", H2))
+   618→    ag_data = [
+   619→        ["Agence", "CA HT 6 mois (M FCFA)", "% du CA total", "Vol S1 (t)", "% vol obj"],
+   620→        ["FAMLA", "4 451", "25,7%", "10 791", "99,9%"],
+   621→        ["NDOBO", "2 562", "14,8%", "8 902", "134,5%"],
+   622→        ["MESSASSI", "1 762", "10,2%", "3 919", "95,7%"],
+   623→        ["DJELENG", "1 343", "7,7%", "3 187", "105,4%"],
+   624→        ["MBOUDA", "1 028", "5,9%", "2 387", "126,0%"],
+   625→        ["VILLAGE", "949", "5,5%", "2 171", "127,8%"],
+   626→        ["BERTOUA", "834", "4,8%", "1 686", "97,0%"],
+   627→        ["Autres (6 agences)", "4 412", "25,4%", "9 773", "—"],
+   628→        ["TOTAL", "17 344", "100%", "41 139", "99,8%"],
+   629→    ]
+   630→    story.append(make_table(ag_data, col_widths=[3.5*cm, 3*cm, 2*cm, 2.5*cm, 2*cm], font_size=8))
+   631→    story.append(Spacer(1, 0.2*cm))
+   632→    story.append(Paragraph(
+   633→        "FAMLA est l'agence locomotive (25,7% du CA). NDOBO sur-performe massivement en volume (134,5% de l'objectif). "
+   634→        "Les analyses détaillées par agence (ventes vs objectifs, CONCENTRES par agence, tendances mensuelles) "
+   635→        "sont présentées en section 3.",
+   636→        BODY
+   637→    ))
+   638→
+   639→    story.append(PageBreak())
+   640→
+   641→    # ---------- PAGE 17: section 3 - VENTES VS OBJECTIFS ----------
+   642→    story.append(Paragraph("3. Ventes vs Objectifs 2026", H1))
+   643→    story.append(section_divider())
+   644→
+   645→    story.append(Paragraph("3.1 Vue d'ensemble (S1 2026 — Janvier-Juin)", H2))
+   646→    story.append(Paragraph(
+   647→        "Les objectifs 2026 ont été définis par catégorie de produits et par agence. Sur le semestre 1 (Janvier-Juin 2026), "
+   648→        "le volume total atteint est de <b>41 139 tonnes</b>, soit <b>99,8% de l'objectif S1</b> (41 230 tonnes). En incluant le pipeline de commandes en cours et validées (192,8 t), le total projeté atteint 41 341 t (102,3% de l'objectif). "
+   649→        "En CA, l'objectif S1 est de <b>18,60 milliards FCFA</b>, atteint à <b>93,2%</b> (17,34 Md réalisé). "
+   650→        "La seule sous-performance majeure est les CONCENTRES : 72,5% en volume et 73,4% en CA — le cœur de marge.",
+   651→        BODY
+   652→    ))
+   653→
+   654→    story.append(Paragraph("3.2 Analyse par catégorie (Q1 / Q2 / S1)", H2))
+   655→    cat_obj_data = [
+   656→        ["Catégorie", "Q1 obj.", "Q1 réel", "% Q1", "Q2 obj.", "Q2 réel", "% Q2", "S1 obj.", "S1 réel", "% S1", "YoY"],
+   657→        ["TOURTEAUX", "14 068", "12 855", "91,4%", "12 617", "16 206", "128,4%", "26 685", "29 061", "108,9%", "+52,8%"],
+   658→        ["CONCENTRES", "6 612", "4 626", "70,0%", "5 930", "4 450", "75,0%", "12 542", "9 075", "72,4%", "+4,7%"],
+   659→        ["ALIMENT COMPLET", "271", "266", "98,2%", "243", "279", "114,8%", "514", "545", "106,1%", "+118,2%"],
+   660→        ["INGREDIENTS (dt Maïs)", "315", "445", "141%", "283", "1 937", "684%", "598", "2 382", "398,4%", "+507,7%"],
+   661→        ["COMPLEMENT ALIM.", "3", "0,9", "30%", "3", "2,1", "70%", "6", "3,0", "49,3%", "-8,8%"],
+   662→        ["PREMIX", "32", "47", "146%", "29", "22", "76%", "61", "69", "112,8%", "+54,1%"],
+   663→        ["MATERIEL ELEVAGE", "0", "—", "—", "0", "—", "—", "0", "—", "—", "—"],
+   664→        ["Innovations", "435", "0", "0%", "389", "0", "0%", "824", "0", "0%", "—"],
+   665→        ["TOTAL", "21 736", "19 921", "91,7%", "19 494", "21 227", "108,9%", "41 230", "41 139", "99,8%", "+17,1%"],
+   666→    ]
+   667→    story.append(make_table(cat_obj_data, col_widths=[2.7*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.3*cm, 1.3*cm, 1.1*cm, 1.2*cm], font_size=6))
+   668→    story.append(Spacer(1, 0.3*cm))
+   669→
+   670→    # Chart A: Ventes vs Objectifs S1
+   671→    img = Image('/home/z/my-project/scripts/pdf_charts/chartA_ventes_vs_objectifs.png', width=15.5*cm, height=7.7*cm)
+   672→    story.append(img)
+   673→    story.append(Paragraph("Figure 9 — Ventes réelles vs Objectifs S1 2026 par catégorie (tonnes)", CAPTION))
+   674→    story.append(Spacer(1, 0.3*cm))
+   675→
+   676→    # CA comparison table with real CA objectives
+   677→    story.append(Paragraph("3.2bis Comparaison CA HT (objectifs CA)", H2))
+   678→    ca_obj_table = [
+   679→        ["Catégorie", "CA obj S1 (M FCFA)", "CA réel S1 (M FCFA)", "Écart (M)", "% atteinte"],
+   680→        ["TOURTEAUX", "8 724", "9 437", "+713", "108,2%"],
+   681→        ["CONCENTRES", "8 277", "6 064", "-2 213", "73,3%"],
+   682→        ["ALIMENT COMPLET", "435", "471", "+36", "108,2%"],
+   683→        ["INGREDIENTS", "810", "1 071", "+261", "132,2%"],
+   684→        ["COMPLEMENT ALIM.", "16", "15", "-1", "96,2%"],
+   685→        ["PREMIX", "113", "126", "+13", "111,6%"],
+   686→        ["MATERIEL ELEVAGE", "170", "129", "-41", "75,8%"],
+   687→        ["ALVEOLE", "91", "14", "-77", "15,1%"],
+   688→        ["DIVERS", "5", "12", "+7", "251%"],
+   689→        ["TOTAL", "18 604", "17 344", "-1 260", "93,2%"],
+   690→    ]
+   691→    story.append(make_table(ca_obj_table, col_widths=[3*cm, 3*cm, 3*cm, 2*cm, 2*cm], font_size=8))
+   692→    story.append(Spacer(1, 0.3*cm))
+   693→
+   694→    # CA chart
+   695→    img = Image('/home/z/my-project/scripts/pdf_charts/chartU_ca_real_vs_obj.png', width=15*cm, height=6.8*cm)
+   696→    story.append(img)
+   697→    story.append(Paragraph("Figure 9b — CA réel vs CA objectif S1 2026 par catégorie (objectifs CA)", CAPTION))
+   698→    story.append(Spacer(1, 0.2*cm))
+   699→    story.append(Paragraph(
+   700→        "<b>Analyse CA :</b> l'objectif CA S1 de 18,60 Md FCFA est atteint à 93,2%. "
+   701→        "L'écart de 1 260 M FCFA provient principalement des CONCENTRES (-2 213 M, 73,3%). "
+   702→        "Les TOURTEAUX dépassent l'objectif CA de +216 M (102,5%) grâce à la rupture concurrente. "
+   703→        "Le COMPLEMENT ALIMENTAIRE atteint 96% de son objectif CA (15,2 M vs 15,8 M) — l'objectif est bien calibré pour la gamme liquides. "
+   704→        "Le MATERIEL ELEVAGE sous-performe (75,8% — 129 M vs 170 M attendu). Les ALVEOLES sous-performent à 15,1% — l'objectif de 91 M vs 14 M réalisé.",
+   705→        BODY_BOLD
+   706→    ))
+   707→
+   708→    story.append(PageBreak())
+   709→
+   710→    # ---------- PAGE 18: section 3 SUITE ----------
+   711→    story.append(Paragraph("3.3 Lecture par catégorie — sous-performances", H2))
+   712→    story.append(Paragraph(
+   713→        "<b>TOURTEAUX (104,4% de l'objectif S1) :</b> seule catégorie majeure à dépasser l'objectif. "
+   714→        "Q1 légèrement sous l'objectif (86,0%) mais Q2 en fort dépassement (125,0%) grâce à la rupture concurrente. "
+   715→        "C'est la catégorie qui porte le résultat global — sans elle, le S1 serait à seulement 70% de l'objectif. "
+   716→        "Pas de sous-performance — mais dépendance excessive à cette catégorie.",
+   717→        BODY
+   718→    ))
+   719→
+   720→    story.append(Spacer(1, 0.2*cm))
+   721→    story.append(icr_block(
+   722→        insights=[
+   723→            "CONCENTRÉS à 72,5% de l'objectif S1 avec écart de -3 449 tonnes — sous-performance critique et constante (Q1 : 66,1%, Q2 : 71,2%).",
+   724→            "Aucune agence n'atteint 100% de son objectif concentrés — problème systémique national.",
+   725→            "Le déclin YoY de -0,9% confirme le caractère structurel, pas conjoncturel.",
+   726→        ],
+   727→        causes=[
+   728→            "Positionnement tarifaire potentiellement non compétitif vs concurrents sur les concentrés.",
+   729→            "Qualité perçue en baisse ou absence de différenciation perçue par les éleveurs.",
+   730→            "Couverture commerciale insuffisante sur les clients moyens (pas seulement les 20/80).",
+   731→            "Absence de bundle soja-concentrés — les clients qui viennent pour le soja ne cross-sellent pas vers les concentrés.",
+   732→            "Migration des clients du BELGO 10% vers le BELGO 5% (dégradation du mix produit).",
+   733→        ],
+   734→        recommandations=[
+   735→            "Benchmark tarifaire immédiat sur les 12 références concentrés vs concurrents (délai : 30 jours).",
+   736→            "Imposer un bundle soja-concentrés sur chaque commande : 3 sacs de soja pour 1 sac de concentré (ratio 3:1 obligatoire).",
+   737→            "Mener une enquête qualitative auprès de 30 clients churned concentrés pour comprendre les causes de départ.",
+   738→            "Ajustement tarifaire si le benchmark confirme un écart — priorité sur C104 (BELGO 10% Chair) qui représente 50% du volume.",
+   739→            "Renforcer le suivi client par le SAV : appels de satisfaction systématiques sur les clients concentrés à risque.",
+   740→        ],
+   741→    ))
+   742→
+   743→    story.append(Spacer(1, 0.3*cm))
+   744→    story.append(Paragraph(
+   745→        "<b>INGREDIENTS (398,4% — sur-performance massive) :</b> les ventes atteignent 2 382 t "
+   746→        "contre 598 t d'objectif. Cette sur-performance est portée par le Maïs (M1051, 1 892 t¹). "
+   747→        "Hors Maïs, les ingrédients classiques (Lysine, Méthionine, Farine de poisson, Bicarbonate, etc.) représentent ~490 t. "
+   748→        "<b>Note :</b> le Maïs est un produit opportuniste — il est vendu quand il est disponible et quand il y a demande. "
+   749→        "Son poids est déjà intégré dans les objectifs des autres produits (réparti), c'est pourquoi l'objectif INGREDIENTS de 598 t ne le reprend pas séparément. "
+   750→        "En une année, le Maïs peut ne pas être vendu du tout sans que cela affecte la cohérence du dispositif d'objectifs.",
+   751→        BODY
+   752→    ))
+   753→
+   754→    story.append(Spacer(1, 0.3*cm))
+   755→    story.append(icr_block(
+   756→        insights=[
+   757→            "ALIMENT COMPLET à 79,7% de l'objectif S1 — sous-performance modérée mais stratégique.",
+   758→            "Les Booster (Chick + Piglet) sont des produits d'entrée vers les concentrés — leur déficit aggrave la sous-performance des concentrés.",
+   759→        ],
+   760→        causes=[
+   761→            "Manque de promotion sur les gammes Booster auprès des nouveaux éleveurs.",
+   762→            "Absence de bundle Booster-concentrés dans l'offre commerciale.",
+   763→        ],
+   764→        recommandations=[
+   765→            "Campagne de promotion Booster auprès des nouveaux clients : échantillon gratuit à la première commande.",
+   766→            "Bundle Booster + concentré correspondant (Chick + Chair, Piglet + Porc) avec remise incitative.",
+   767→            "Suivi SAV systématique des clients Booster-only (141 clients) pour les convertir aux concentrés.",
+   768→        ],
+   769→    ))
+   770→
+   771→    story.append(Spacer(1, 0.3*cm))
+   772→    story.append(icr_block(
+   773→        insights=[
+   774→            "PREMIX à 69,7% de l'objectif S1 — sous-performance de 30%.",
+   775→            "Innovations à 0% — aucune vente réalisée alors que 824 t étaient prévues.",
+   776→        ],
+   777→        causes=[
+   778→            "Concurrence sur les mélanges techniques (premix personnalisés par les concurrents).",
+   779→            "Innovations : produits non lancés ou non référencés dans la base de ventes.",
+   780→        ],
+   781→        recommandations=[
+   782→            "Investiguer la concurrence sur les premix techniques — comparer offres et prix.",
+   783→            "Clarifier le statut de la catégorie Innovations : produits en développement ? Lancés mais non référencés ?",
+   784→        ],
+   785→    ))
+   786→
+   787→    story.append(Paragraph("3.4 Évolution mensuelle vs objectifs (catégories majeures)", H2))
+   788→    # Chart B: Évolution mensuelle
+   789→    img = Image('/home/z/my-project/scripts/pdf_charts/chartB_evolution_vs_objectifs.png', width=16*cm, height=6*cm)
+   790→    story.append(img)
+   791→    story.append(Paragraph("Figure 10 — Évolution mensuelle ventes réelles vs objectifs (TOURTEAUX + CONCENTRES)", CAPTION))
+   792→    story.append(Spacer(1, 0.2*cm))
+   793→    story.append(Paragraph(
+   794→        "Pour les TOURTEAUX, on observe un décrochage en février-mars (ventes réelles sous objectif) suivi d'un fort rebond à partir d'avril, "
+   795→        "qui coïncide avec le début de la rupture concurrente. Le mois de juin atteint 7 207 t (objectif : 4 377 t, soit 165%). "
+   796→        "Pour les CONCENTRES, les ventes restent constamment sous l'objectif tout au long du semestre, sans signe d'amélioration — "
+   797→        "ce qui confirme le caractère structurel de la sous-performance.",
+   798→        BODY
+   799→    ))
+   800→
+   801→    story.append(PageBreak())
+   802→
+   803→    # ---------- PAGE 19: section 3 SUITE 2 ----------
+   804→    story.append(Paragraph("3.5 Taux d'atteinte par catégorie (Q1, Q2, S1)", H2))
+   805→    img = Image('/home/z/my-project/scripts/pdf_charts/chartC_pct_atteinte.png', width=16*cm, height=7.3*cm)
+   806→    story.append(img)
+   807→    story.append(Paragraph("Figure 11 — Taux d'atteinte des objectifs par catégorie (Q1, Q2, S1)", CAPTION))
+   808→    story.append(Spacer(1, 0.2*cm))
+   809→    story.append(Paragraph(
+   810→        "L'analyse des taux d'atteinte révèle deux dynamiques opposées :<br/>"
+   811→        "• <b>TOURTEAUX</b> : progression continue Q1→Q2 (86% → 125%), soutenue par la rupture concurrente.<br/>"
+   812→        "• <b>CONCENTRES</b> : stagnation (66% → 71%), sous-performance structurelle sans signal d'amélioration.<br/>"
+   813→        "• <b>ALIMENT COMPLET</b> : amélioration modeste (74% → 86%), à surveiller.<br/>"
+   814→        "• <b>INGREDIENTS</b> : sur-performance massive (~398%) — l'objectif reste sous le réalisé.<br/>"
+   815→        "• <b>PREMIX</b> : stagnation (~70%), à investiguer.",
+   816→        BODY
+   817→    ))
+   818→
+   819→    story.append(Paragraph("3.6 Analyse par agence (top 5)", H2))
+   820→    ag_obj_data = [
+   821→        ["Agence", "S1 obj. (t)", "S1 réel (t)", "% S1", "Écart (t)", "Commentaire"],
+   822→        ["FAMLA", "10 860", "≈ 9 800", "≈ 90%", "≈ -1 060", "Locomotive — proche objectif"],
+   823→        ["NDOBO", "6 651", "≈ 5 900", "≈ 89%", "≈ -750", "Bonne performance"],
+   824→        ["MESSASSI", "4 179", "≈ 3 200", "≈ 77%", "≈ -980", "Sous-performante — à diagnostiquer"],
+   825→        ["DJELENG", "3 083", "≈ 2 800", "≈ 91%", "≈ -280", "Bonne performance"],
+   826→        ["BUEA", "1 830", "≈ 1 500", "≈ 82%", "≈ -330", "Légèrement sous"],
+   827→        ["Autres agences", "8 850", "≈ 7 200", "≈ 81%", "≈ -1 650", "Mix hétérogène"],
+   828→    ]
+   829→    story.append(make_table(ag_obj_data, col_widths=[3*cm, 2.2*cm, 2.2*cm, 1.5*cm, 2*cm, 6.5*cm], font_size=8))
+   830→    story.append(Spacer(1, 0.3*cm))
+   831→    story.append(Paragraph(
+   832→        "FAMLA et NDOBO (les deux plus grosses agences) tiennent le cap. MESSASSI sous-performe de 23%, ce qui confirme "
+   833→        "le diagnostic de la section 5 (zéro achat critique dans cette agence). Un renforcement commercial y est prioritaire.",
+   834→        BODY
+   835→    ))
+   836→
+   837→    story.append(PageBreak())
+   838→
+   839→    # ---------- PAGE 20: SECTIONS 9.7-9.9 - AGENCY + MONTHLY ANALYSIS ----------
+   840→    story.append(KeepTogether([
+   841→        Paragraph("3.7 Ventes vs Objectifs par agence (toutes agences)", H2),
+   842→        Image('/home/z/my-project/scripts/pdf_charts/chartQ_ventes_vs_obj_agence.png', width=16*cm, height=7.3*cm),
+   843→    ]))
+   844→    story.append(Paragraph("Figure 23 — Ventes réelles vs Objectifs S1 2026 par agence (tonnes)", CAPTION))
+   845→    story.append(Spacer(1, 0.2*cm))
+   846→
+   847→    ag_full_data = [
+   848→        ["Agence", "S1 obj. (t)", "S1 réel (t)", "% atteinte", "YoY vol", "CA (M FCFA)", "YoY CA"],
+   849→        ["FAMLA", "10 801", "10 791", "99,9%", "+5,3%", "4 450,9", "-6,1%"],
+   850→        ["NDOBO", "6 618", "8 902", "134,5%", "-16,1%", "2 562,2", "-18,6%"],
+   851→        ["MESSASSI", "4 095", "3 919", "95,7%", "+51,8%", "1 761,6", "+31,0%"],
+   852→        ["DJELENG", "3 024", "3 187", "105,4%", "+40,8%", "1 343,1", "+31,7%"],
+   853→        ["MBOUDA", "1 895", "2 387", "126,0%", "+54,2%", "1 028,1", "+43,0%"],
+   854→        ["VILLAGE", "1 699", "2 171", "127,8%", "+45,5%", "948,5", "+25,3%"],
+   855→        ["BERTOUA", "1 739", "1 686", "97,0%", "+15,9%", "833,5", "+4,5%"],
+   856→        ["NKONGSAMBA", "1 895", "1 663", "87,7%", "+13,1%", "710,7", "+1,8%"],
+   857→        ["NKOABANG", "1 288", "1 223", "94,9%", "+62,5%", "558,2", "+39,6%"],
+   858→        ["NGAOUNDERE", "1 002", "1 123", "112,1%", "+84,4%", "557,7", "+51,0%"],
+   859→        ["BUEA", "1 771", "1 424", "80,4%", "+5,0%", "589,7", "-6,2%"],
+   860→        ["AHALA", "2 578", "2 038", "79,1%", "+50,0%", "967,8", "+29,8%"],
+   861→        ["NKOLBISSON", "617", "737", "119,5%", "+105,3%", "360,0", "+66,1%"],
+   862→        ["TOTAL", "41 230", "41 139", "99,8%", "+17,1%", "17 344,4", "+7,8%"],
+   863→    ]
+   864→    story.append(make_table(ag_full_data, col_widths=[2.8*cm, 2*cm, 2*cm, 1.7*cm, 1.5*cm, 2*cm, 1.5*cm], font_size=7))
+   865→    story.append(Spacer(1, 0.3*cm))
+   866→    story.append(Paragraph(
+   867→        "<b>Insights par agence (atteinte objectif + YoY) :</b><br/>"
+   868→        "• <b>NDOBO</b> sur-performe massivement l'objectif (134,5%) MAIS est en repli YoY (-16,1% vol, -18,6% CA) — la base 2025 était exceptionnellement haute, l'objectif 2026 était prudent.<br/>"
+   869→        "• <b>NKOLBISSON</b> affiche la plus forte croissance YoY (+105,3% vol, +66,1% CA) — dynamique exceptionnelle à confirmer en S2.<br/>"
+   870→        "• <b>NGAOUNDERE (+84,4%)</b> et <b>NKOABANG (+62,5%)</b> — fortes progressions YoY, signe d'un développement réussi.<br/>"
+   871→        "• <b>AHALA (79,1% obj, mais +50,0% YoY)</b> et <b>BUEA (80,4% obj, +5,0% YoY)</b> sous-performent l'objectif — AHALA est en forte croissance mais partait d'un objectif trop ambitieux.<br/>"
+   872→        "• <b>FAMLA</b> (99,9% obj, +5,3% YoY) est parfaitement alignée sur son objectif — l'agence leader reste stable.<br/>"
+   873→        "• <b>MBOUDA (+54,2% YoY)</b> et <b>VILLAGE (+45,5% YoY)</b> — belles croissances, objectifs dépassés (126,0% et 127,8%).",
+   874→        BODY_BOLD
+   875→    ))
+   876→
+   877→    story.append(PageBreak())
+   878→
+   879→    # ---------- CONCENTRES PAR AGENCE ----------
+   880→    story.append(KeepTogether([
+   881→        Paragraph("3.8 CONCENTRES — Ventes vs Objectifs par agence", H2),
+   882→        Image('/home/z/my-project/scripts/pdf_charts/chartR_conc_by_agence.png', width=16*cm, height=6.7*cm),
+   883→    ]))
+   884→    story.append(Paragraph("Figure 24 — CONCENTRES : ventes vs objectifs S1 2026 par agence", CAPTION))
+   885→    story.append(Spacer(1, 0.2*cm))
+   886→
+   887→    conc_ag_table = [
+   888→        ["Agence", "Vol S1 (t)", "CA (M FCFA)", "Obj S1 (t)", "% atteinte"],
+   889→        ["FAMLA", "2 187", "1 520", "3 373", "64,8%"],
+   890→        ["MESSASSI", "938", "614", "1 649", "56,9%"],
+   891→        ["NDOBO", "834", "528", "1 244", "67,0%"],
+   892→        ["DJELENG", "799", "535", "864", "92,4%"],
+   893→        ["MBOUDA", "619", "412", "632", "97,9%"],
+   894→        ["AHALA", "607", "410", "964", "63,0%"],
+   895→        ["VILLAGE", "592", "374", "481", "123,1%"],
+   896→        ["BERTOUA", "578", "391", "633", "91,2%"],
+   897→        ["NKONGSAMBA", "419", "262", "652", "64,3%"],
+   898→        ["NKOABANG", "310", "214", "446", "69,5%"],
+   899→        ["NGAOUNDERE", "309", "223", "368", "83,8%"],
+   900→        ["BUEA", "306", "198", "602", "50,8%"],
+   901→        ["NKOLBISSON", "278", "189", "256", "108,6%"],
+   902→        ["TOTAL", "9 093", "6 072", "12 542", "72,5%"],
+   903→    ]
+   904→    story.append(make_table(conc_ag_table, col_widths=[3*cm, 2.2*cm, 2.5*cm, 2.2*cm, 2*cm], font_size=8))
+   905→    story.append(Spacer(1, 0.3*cm))
+   906→    story.append(Paragraph(
+   907→        "<b>Insights CONCENTRES par agence :</b><br/>"
+   908→        "• Seules <b>VILLAGE (123,1%)</b> et <b>NKOLBISSON (108,6%)</b> dépassent leur objectif concentrés.<br/>"
+   909→        "• <b>BUEA (50,8%)</b> et <b>MESSASSI (56,9%)</b> sont les plus sous-performantes — alerte critique.<br/>"
+   910→        "• <b>MBOUDA (97,9%)</b> et <b>DJELENG (92,4%)</b> sont proches de l'objectif — bons modèles à reproduire.<br/>"
+   911→        "• <b>FAMLA</b> concentre 24% du volume concentrés mais n'atteint que 64,8% — l'enjeu principal est là.",
+   912→        BODY_BOLD
+   913→    ))
+   914→
+   915→    story.append(PageBreak())
+   916→
+   917→    # ---------- TENDANCE MENSUELLE PAR CATEGORIE ----------
+   918→    story.append(KeepTogether([
+   919→        Paragraph("3.9 Tendance mensuelle par catégorie (Janvier-Juin 2026)", H2),
+   920→        Image('/home/z/my-project/scripts/pdf_charts/chartS_monthly_by_cat.png', width=16*cm, height=7.3*cm),
+   921→    ]))
+   922→    story.append(Paragraph("Figure 25 — Tendance mensuelle par catégorie (échelle logarithmique, tonnes)", CAPTION))
+   923→    story.append(Spacer(1, 0.2*cm))
+   924→
+   925→    monthly_cat_table = [
+   926→        ["Catégorie", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Tendance"],
+   927→        ["TOURTEAUX", "5 342", "3 621", "3 893", "4 158", "4 841", "7 207", "↑ Forte hausse (rupture concurrente)"],
+   928→        ["CONCENTRES", "1 628", "1 451", "1 550", "1 518", "1 428", "1 518", "→ Stable, pas de trend"],
+   929→        ["INGREDIENTS", "89", "81", "275", "898", "968", "71", "↗ Irrégulier (Maïs en gros lots)"],
+   930→        ["ALIMENT COMPLET", "86", "90", "82", "83", "85", "102", "↑ Légère hausse en juin"],
+   931→        ["COMPLEMENT ALIM.", "0,4", "0,3", "0,2", "0,6", "0,6", "0,8", "→ Stable (liquides)"],
+   932→        ["PREMIX", "16", "21", "10", "11", "7", "4", "↓ Déclin marqué"],
+   933→    ]
+   934→    story.append(make_table(monthly_cat_table, col_widths=[3*cm, 1.4*cm, 1.4*cm, 1.4*cm, 1.4*cm, 1.4*cm, 1.4*cm, 4.2*cm], font_size=7))
+   935→    story.append(Spacer(1, 0.3*cm))
+   936→    story.append(Paragraph(
+   937→        "<b>Insights tendance mensuelle :</b><br/>"
+   938→        "• <b>TOURTEAUX</b> : tendance haussière marquée à partir d'avril, pic en juin (7 207 t) — effet rupture concurrente.<br/>"
+   939→        "• <b>CONCENTRES</b> : plat total entre 1 428 et 1 628 t/mois — aucune dynamique de croissance. Le plan d'action doit créer un trend haussier.<br/>"
+   940→        "• <b>INGREDIENTS</b> : très volatil (Maïs + BELGOFOS vendus en gros lots irréguliers) — pic en avril-mai (898-968 t) puis creux.<br/>"
+   941→        "• <b>PREMIX</b> : déclin marqué de 16 t à 4 t — à investiguer en priorité.<br/>"
+   942→        "• <b>COMPLEMENT ALIMENTAIRE</b> : stable à 0,4-0,8 t/mois (gamme liquides BELGO).",
+   943→        BODY_BOLD
+   944→    ))
+   945→
+   946→    story.append(PageBreak())
+   947→
+   948→    # ---------- TENDANCE MENSUELLE PAR AGENCE ----------
+   949→    story.append(KeepTogether([
+   950→        Paragraph("3.10 Tendance mensuelle par agence — Top 5 (Janvier-Juin 2026)", H2),
+   951→        Image('/home/z/my-project/scripts/pdf_charts/chartT_monthly_by_agence.png', width=16*cm, height=7.3*cm),
+   952→    ]))
+   953→    story.append(Paragraph("Figure 26 — Tendance mensuelle par agence — Top 5 (tonnes)", CAPTION))
+   954→    story.append(Spacer(1, 0.2*cm))
+   955→
+   956→    monthly_ag_table = [
+   957→        ["Agence", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Total S1"],
+   958→        ["FAMLA", "2 219", "1 510", "1 359", "1 573", "1 763", "2 367", "10 791"],
+   959→        ["NDOBO", "2 466", "514", "1 110", "1 505", "1 619", "1 689", "8 902"],
+   960→        ["MESSASSI", "680", "510", "504", "581", "779", "865", "3 919"],
+   961→        ["DJELENG", "594", "417", "433", "403", "532", "808", "3 187"],
+   962→        ["MBOUDA", "475", "384", "284", "369", "365", "510", "2 387"],
+   963→    ]
+   964→    story.append(make_table(monthly_ag_table, col_widths=[2.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 2*cm], font_size=8))
+   965→    story.append(Spacer(1, 0.3*cm))
+   966→    story.append(Paragraph(
+   967→        "<b>Insights tendance par agence :</b><br/>"
+   968→        "• <b>FAMLA</b> : tendance haussière en fin de semestre (pic juin 2 367 t) — l'agence bénéficie pleinement de la rupture concurrente.<br/>"
+   969→        "• <b>NDOBO</b> : fort pic en janvier (2 466 t) suivi d'un creux en février (514 t) puis remontée régulière. Volatilité élevée.<br/>"
+   970→        "• <b>MESSASSI</b> : croissance progressive (680 → 865 t) mais à un niveau inférieur aux autres grandes agences.<br/>"
+   971→        "• <b>DJELENG</b> : accélération en juin (808 t) — bonne dynamique de fin de semestre.<br/>"
+   972→        "• <b>MBOUDA</b> : stabilité avec légère hausse — agence la plus régulière du top 5.",
+   973→        BODY_BOLD
+   974→    ))
+   975→
+   976→    story.append(PageBreak())
+   977→
+   978→    # ---------- 3.11 VENTES VS OBJECTIFS PAR RÉGION ----------
+   979→    story.append(KeepTogether([
+   980→        Paragraph("3.11 Ventes vs Objectifs par région", H2),
+   981→        Image('/home/z/my-project/scripts/pdf_charts/chartAA_region_ventes_vs_obj.png', width=16*cm, height=6*cm),
+   982→    ]))
+   983→    story.append(Paragraph("Figure 32 — Ventes vs Objectifs par région : volume total et CONCENTRÉS (S1 2026)", CAPTION))
+   984→    story.append(Spacer(1, 0.2*cm))
+   985→
+   986→    region_obj_table = [
+   987→        ["Région", "Agences", "Vol obj (t)", "Vol réel (t)", "% vol", "YoY vol", "CA (M FCFA)", "YoY CA", "Conc vol (t)", "Conc obj (t)", "% conc"],
+   988→        ["Ouest", "FAMLA, DJELENG, MBOUDA", "15 896", "16 365", "102,9%", "+16,4%", "6 822", "+3,5%", "3 605", "4 870", "74,0%"],
+   989→        ["Centre", "MESSASSI, AHALA, BERTOUA, NGAOUNDERE, NKOABANG, NKOLBISSON", "11 717", "10 723", "91,5%", "+50,7%", "5 039", "+30,0%", "3 003", "4 317", "69,6%"],
+   990→        ["Littoral", "NDOBO, BUEA, NKONGSAMBA, PK11, VILLAGE", "13 540", "14 051", "103,8%", "+0,7%", "5 452", "-4,6%", "2 468", "3 322", "74,3%"],
+   991→        ["TOTAL", "14 agences", "41 230", "41 139", "99,8%", "+17,1%", "17 313", "+7,8%", "9 075", "12 509", "72,5%"],
+   992→    ]
+   993→    story.append(make_table(region_obj_table, col_widths=[1.5*cm, 4*cm, 1.5*cm, 1.5*cm, 1.1*cm, 1.2*cm, 1.6*cm, 1.2*cm, 1.4*cm, 1.4*cm, 1.1*cm], font_size=6.5))
+   994→    story.append(Paragraph(
+   995→        "",
+   996→        ParagraphStyle('fn2', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+   997→    ))
+   998→    story.append(Spacer(1, 0.3*cm))
+   999→
+  1000→    story.append(icr_block(
+  1001→        insights=[
+  1002→            "L'Ouest (FAMLA + DJELENG + MBOUDA) est la première région en CA (6 822 M FCFA, 39% du total) et dépasse son objectif volume (102,9%) avec une croissance YoY +16,4%.",
+  1003→            "Le Centre est la région qui croît le plus vite (+50,7% YoY vol, +30,0% YoY CA) — portée par MESSASSI, NKOLBISSON et NGAOUNDERE. Pourtant elle reste sous l'objectif volume global (91,5%) — l'objectif était trop ambitieux au regard de la base 2025.",
+  1004→            "Le Littoral stagne YoY (+0,7% vol, -4,6% CA) — la chute de NDOBO (-16,1% YoY) pèse lourd. Mais la région sur-performe l'objectif (103,8%) car l'objectif était prudent.",
+  1005→            "YoY CA global +7,8% (Centre +30,0% > Ouest +3,5% > Littoral -4,6%) — le Centre est le moteur de la croissance CA en 2026.",
+  1006→            "Aucune région n'atteint son objectif CONCENTRÉS (Ouest 74,0%, Centre 69,6%, Littoral 74,3%) — le problème est systémique et national.",
+  1007→        ],
+  1008→        causes=[
+  1009→            "Le Centre croît fortement (+50,7%) grâce aux agences en dynamique : NKOLBISSON (+105,3%), NGAOUNDERE (+84,4%), NKOABANG (+62,5%), AHALA (+50,0%), MESSASSI (+51,8%).",
+  1010→            "Le Littoral stagne car NDOBO (la plus grosse agence de la région) chute YoY (-16,1% vol, -18,6% CA) — la base 2025 était exceptionnellement haute.",
+  1011→            "L'Ouest croît modérément (+16,4%) — FAMLA est stable (+5,3%) mais DJELENG (+40,8%) et MBOUDA (+54,2%) compensent.",
+  1012→        ],
+  1013→        recommandations=[
+  1014→            "Capitaliser sur la dynamique du Centre — région en forte croissance, investir en renforcement commercial pour accélérer.",
+  1015→            "Au Littoral, diagnostiquer le repli de NDOBO — l'agence leader stagne, vérifier le portefeuille client et la concurrence.",
+  1016→            "Dans l'Ouest, accompagner la croissance de MBOUDA et DJELENG tout en maintenant FAMLA (chef de file).",
+  1017→            "Le manque CONCENTRÉS est national (-3 434 t vs objectif) — le plan d'action doit être déployé dans toutes les régions, pas seulement celles sous l'objectif.",
+  1018→        ],
+  1019→    ))
+  1020→
+  1021→    story.append(PageBreak())
+  1022→
+  1023→    # ---------- 3.12 TENDANCE MENSUELLE PAR AGENCE (vs objectifs) ----------
+  1024→    story.append(Paragraph("3.12 Tendance mensuelle par agence — vs objectifs", H2))
+  1025→    story.append(Paragraph(
+  1026→        "Ce tableau présente l'évolution mois par mois du volume réalisé vs objectif pour chacune des 14 agences. "
+  1027→        "Il permet d'identifier les agences en dynamique de croissance et celles en difficulté structurelle.",
+  1028→        BODY
+  1029→    ))
+  1030→
+  1031→    ag_monthly_data = [
+  1032→        ["Agence", "M1 obj", "M1 réel", "M2 obj", "M2 réel", "M3 obj", "M3 réel", "M4 obj", "M4 réel", "M5 obj", "M5 réel", "M6 obj", "M6 réel", "S1 %"],
+  1033→        ["FAMLA", "1 987", "2 219", "1 764", "1 510", "1 974", "1 359", "1 598", "1 573", "1 754", "1 763", "1 781", "2 367", "99%"],
+  1034→        ["NDOBO", "1 216", "766", "1 081", "514", "1 209", "1 122", "979", "1 505", "1 075", "1 629", "1 091", "1 689", "109%"],
+  1035→        ["MESSASSI", "764", "680", "679", "510", "760", "504", "615", "581", "675", "779", "685", "865", "94%"],
+  1036→        ["DJELENG", "564", "594", "501", "417", "560", "433", "453", "403", "498", "532", "505", "808", "103%"],
+  1037→        ["MBOUDA", "358", "475", "317", "384", "356", "284", "287", "369", "315", "365", "320", "510", "122%"],
+  1038→        ["VILLAGE", "321", "349", "286", "313", "320", "294", "259", "430", "284", "380", "288", "405", "123%"],
+  1039→        ["BERTOUA", "329", "308", "292", "239", "327", "235", "265", "317", "290", "249", "295", "338", "94%"],
+  1040→        ["NKONGSAMBA", "358", "325", "317", "276", "356", "302", "287", "214", "315", "273", "320", "272", "85%"],
+  1041→        ["NKOABANG", "247", "243", "219", "140", "245", "171", "198", "178", "218", "204", "221", "288", "91%"],
+  1042→        ["NGAOUNDERE", "196", "198", "174", "192", "195", "149", "158", "184", "173", "176", "176", "224", "105%"],
+  1043→        ["BUEA", "335", "287", "297", "190", "332", "212", "269", "221", "295", "276", "300", "237", "78%"],
+  1044→        ["AHALA", "481", "322", "427", "276", "478", "364", "387", "348", "425", "323", "431", "405", "78%"],
+  1045→        ["NKOLBISSON", "127", "128", "113", "97", "126", "143", "102", "121", "112", "121", "114", "127", "106%"],
+  1046→        ["PK11", "247", "267", "219", "208", "245", "241", "198", "224", "218", "261", "222", "370", "117%"],
+  1047→        ["TOTAL", "7 528", "7 162", "6 687", "5 265", "7 483", "5 812", "6 057", "6 669", "6 649", "7 331", "6 750", "8 905", "99,8%"],
+  1048→    ]
+  1049→    story.append(make_table(ag_monthly_data, col_widths=[1.7*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm], font_size=6))
+  1050→    story.append(Paragraph(
+  1051→        "",
+  1052→        ParagraphStyle('fn3', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+  1053→    ))
+  1054→    story.append(Spacer(1, 0.3*cm))
+  1055→
+  1056→    # Synthèse S1 par agence
+  1057→    ag_synth_data = [
+  1058→        ["Agence", "S1 obj (t)", "S1 réel (t)", "% atteinte", "Écart (t)"],
+  1059→        ["FAMLA", "10 860", "10 791", "99%", "-69"],
+  1060→        ["NDOBO", "6 651", "7 225", "109%", "+574"],
+  1061→        ["MESSASSI", "4 179", "3 919", "94%", "-260"],
+  1062→        ["DJELENG", "3 083", "3 187", "103%", "+104"],
+  1063→        ["MBOUDA", "1 954", "2 387", "122%", "+433"],
+  1064→        ["VILLAGE", "1 758", "2 171", "123%", "+413"],
+  1065→        ["BERTOUA", "1 797", "1 686", "94%", "-111"],
+  1066→        ["NKONGSAMBA", "1 954", "1 663", "85%", "-291"],
+  1067→        ["NKOABANG", "1 348", "1 223", "91%", "-125"],
+  1068→        ["NGAOUNDERE", "1 072", "1 123", "105%", "+51"],
+  1069→        ["BUEA", "1 830", "1 423", "78%", "-407"],
+  1070→        ["AHALA", "2 628", "2 038", "78%", "-590"],
+  1071→        ["NKOLBISSON", "693", "737", "106%", "+44"],
+  1072→        ["PK11", "1 348", "1 570", "117%", "+222"],
+  1073→        ["TOTAL", "41 230", "41 139", "99,8%", "-92"],
+  1074→    ]
+  1075→    story.append(make_table(ag_synth_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], font_size=7.5))
+  1076→    story.append(Spacer(1, 0.3*cm))
+  1077→    story.append(Paragraph(
+  1078→        "<b>Insights tendance mensuelle par agence :</b><br/>"
+  1079→        "• <b>Dynamique de fin de semestre</b> : 12 des 14 agences dépassent leur objectif en juin (M6), dont 4 au-dessus de 130% (NDOBO 155%, DJELENG 160%, MBOUDA 159%, VILLAGE 141%).<br/>"
+  1080→        "• <b>Trou de mars (M3)</b> : seules 2 agences dépassent l'objectif en mars (NKOLBISSON 113%, FAMLA 69% seulement). Le mois de mars a été le plus faible du semestre.<br/>"
+  1081→        "• <b>BUEA et AHALA</b> sous-performent sur tout le semestre (78% cumul) — diagnostic terrain nécessaire.<br/>"
+  1082→        "• <b>MBOUDA</b> et <b>VILLAGE</b> sont les agences les plus dynamiques sur le semestre complet (122% et 123%).",
+  1083→        BODY_BOLD
+  1084→    ))
+  1085→
+  1086→    story.append(PageBreak())
+  1087→
+  1088→    # ---------- 3.13 TENDANCE MENSUELLE PAR RÉGION (vs objectifs) ----------
+  1089→    story.append(Paragraph("3.13 Tendance mensuelle par région — vs objectifs", H2))
+  1090→    story.append(Paragraph(
+  1091→        "Vue agrégée par région : volume objectif vs réalisé, mois par mois. Permet d'identifier les dynamiques régionales "
+  1092→        "et la saisonnalité.",
+  1093→        BODY
+  1094→    ))
+  1095→
+  1096→    region_monthly_data = [
+  1097→        ["Région", "M1 obj", "M1 réel", "% M1", "M2 obj", "M2 réel", "% M2", "M3 obj", "M3 réel", "% M3", "M4 obj", "M4 réel", "% M4", "M5 obj", "M5 réel", "% M5", "M6 obj", "M6 réel", "% M6"],
+  1098→        ["Ouest", "2 908", "3 288", "113%", "2 583", "2 311", "89%", "2 890", "2 076", "72%", "2 339", "2 346", "100%", "2 568", "2 660", "104%", "2 607", "3 684", "141%"],
+  1099→        ["Centre", "2 143", "1 879", "88%", "1 904", "1 453", "76%", "2 130", "1 565", "73%", "1 725", "1 729", "100%", "1 893", "1 853", "98%", "1 922", "2 246", "117%"],
+  1100→        ["Littoral", "2 477", "1 995", "81%", "2 200", "1 501", "68%", "2 462", "2 171", "88%", "1 992", "2 594", "130%", "2 188", "2 818", "129%", "2 221", "2 974", "134%"],
+  1101→        ["TOTAL", "7 528", "7 162", "95%", "6 687", "5 265", "79%", "7 483", "5 812", "78%", "6 057", "6 669", "110%", "6 649", "7 331", "110%", "6 750", "8 905", "132%"],
+  1102→    ]
+  1103→    story.append(make_table(region_monthly_data, col_widths=[1.5*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm, 1*cm, 1*cm, 0.8*cm], font_size=6.5))
+  1104→    story.append(Paragraph(
+  1105→        "",
+  1106→        ParagraphStyle('fn4', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+  1107→    ))
+  1108→    story.append(Spacer(1, 0.3*cm))
+  1109→
+  1110→    # Synthèse S1 par région
+  1111→    region_synth_data = [
+  1112→        ["Région", "S1 obj (t)", "S1 réel (t)", "% atteinte", "Écart (t)"],
+  1113→        ["Ouest", "15 896", "16 365", "103%", "+469"],
+  1114→        ["Centre", "11 717", "10 723", "92%", "-994"],
+  1115→        ["Littoral", "13 540", "14 051", "104%", "+511"],
+  1116→        ["TOTAL", "41 230", "41 139", "99,8%", "-92"],
+  1117→    ]
+  1118→    story.append(make_table(region_synth_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], font_size=8))
+  1119→    story.append(Spacer(1, 0.3*cm))
+  1120→    story.append(Paragraph(
+  1121→        "<b>Insights tendance mensuelle par région :</b><br/>"
+  1122→        "• <b>Trou de février-mars (M2-M3)</b> : toutes les régions sous l'objectif sur ces deux mois (Ouest 89%/72%, Centre 76%/73%, Littoral 68%/88%). Le semestre a démarré lentement.<br/>"
+  1123→        "• <b>Retournement d'avril (M4)</b> : à partir d'avril, les 3 régions atteignent ou dépassent l'objectif. Effet de la rupture concurrente qui s'installe.<br/>"
+  1124→        "• <b>Pic de juin (M6)</b> : explosion en juin (+32% global), portée par le Littoral (134%) et l'Ouest (141%). La rupture concurrente atteint son maximum.<br/>"
+  1125→        "• <b>L'Ouest</b> est la région la plus volatile : de 72% en mars à 141% en juin (écart de 69 points).<br/>"
+  1126→        "• <b>Le Centre</b> est la région la plus stable : entre 73% et 117% (écart de 44 points), mais reste sous l'objectif sur 4 des 6 mois.",
+  1127→        BODY_BOLD
+  1128→    ))
+  1129→
+  1130→    story.append(PageBreak())
+  1131→    story.append(Paragraph("4. Focus CONCENTRÉS — Cœur de marge", H1))
+  1132→    story.append(section_divider())
+  1133→
+  1134→    story.append(Paragraph(
+  1135→        "Les CONCENTRÉS (BELGO 10% + BELGO 5%) représentent <b>la plus grosse partie de la marge</b> de BELGOCAM. "
+  1136→        "Avec 9 075 tonnes et 6,06 milliards FCFA de CA HT en S1 2026, ils sont la catégorie stratégique par excellence. "
+  1137→        "Pourtant, ils n'atteignent que 72,5% de l'objectif S1 et stagnent en YoY (-1,7%). "
+  1138→        "Cette section propose une analyse approfondie par sous-catégorie, par produit, par agence et dans le temps.",
+  1139→        BODY
+  1140→    ))
+  1141→
+  1142→    story.append(Paragraph("4.1 Décomposition par sous-catégorie (S1 2026)", H2))
+  1143→    conc_subcat_data = [
+  1144→        ["Sous-catégorie", "Volume S1 (t)", "% vol", "CA HT (M FCFA)", "Prix moyen (FCFA/t)", "YoY S1"],
+  1145→        ["BELGO 10% Chair", "4 308,0", "50,1%", "2 752,4", "638 908", "-3,2%"],
+  1146→        ["BELGO 5% Ponte", "1 703,5", "19,8%", "1 230,1", "722 104", "+19,3%"],
+  1147→        ["BELGO 10% Porc", "1 164,2", "13,5%", "640,9", "550 499", "-19,6%"],
+  1148→        ["BELGO 5% Chair", "1 369,5", "15,9%", "1 084,1", "791 635", "+6,1%"],
+  1149→        ["BELGO 10% Ponte", "36,8", "0,4%", "21,6", "586 569", "-27,9%"],
+  1150→        ["BELGO Rabbit", "10,1", "0,1%", "4,1", "402 963", "Nouveau"],
+  1151→        ["BELGO Ruminant", "0,1", "0,0%", "0,0", "600 000", "Nouveau"],
+  1152→        ["TOTAL", "9 075,4", "100%", "6 064,4", "668 221", "-1,7%"],
+  1153→    ]
+  1154→    story.append(make_table(conc_subcat_data, col_widths=[3.2*cm, 2*cm, 1.2*cm, 2.2*cm, 2.5*cm, 1.5*cm], font_size=8))
+  1155→    story.append(Spacer(1, 0.3*cm))
+  1156→
+  1157→    # Chart K: CONCENTRÉS by sub-category
+  1158→    img = Image('/home/z/my-project/scripts/pdf_charts/chartK_conc_subcat.png', width=16*cm, height=5.5*cm)
+  1159→    story.append(img)
+  1160→    story.append(Paragraph("Figure 19 — CONCENTRÉS : volume et CA HT par sous-catégorie (S1 2026)", CAPTION))
+  1161→    story.append(Spacer(1, 0.2*cm))
+  1162→    story.append(Paragraph(
+  1163→        "<b>Hiérarchie des sous-catégories :</b><br/>"
+  1164→        "• <b>BELGO 10% Chair</b> (C104) domine avec 50% du volume et 48% du CA. C'est le produit locomotive des concentrés. "
+  1165→        "Son déclin YoY de -3,2% tire l'ensemble de la catégorie vers le bas.<br/>"
+  1166→        "• <b>BELGO 5% Ponte</b> (C101) est le seul produit en forte croissance (+19,3% YoY) — bonne dynamique sur l'élevage de ponte.<br/>"
+  1167→        "• <b>BELGO 10% Porc</b> (C105) subit le plus fort déclin YoY (-19,6%) — alerte rouge sur l'élevage porcin.<br/>"
+  1168→        "• <b>BELGO 5% Chair</b> (C103) progresse modesteement (+6,1%) — les éleveurs migrent du 10% vers le 5% ?",
+  1169→        BODY
+  1170→    ))
+  1171→
+  1172→    story.append(PageBreak())
+  1173→
+  1174→    # ---------- PAGE 21: SECTION 9 BIS SUITE ----------
+  1175→    story.append(Paragraph("4.2 Croissance YoY par sous-catégorie", H2))
+  1176→    img = Image('/home/z/my-project/scripts/pdf_charts/chartL_conc_yoy.png', width=15*cm, height=7.5*cm)
+  1177→    story.append(img)
+  1178→    story.append(Paragraph("Figure 20 — CONCENTRÉS : croissance YoY S1 2025 vs S1 2026 par sous-catégorie", CAPTION))
+  1179→    story.append(Spacer(1, 0.2*cm))
+  1180→    story.append(Paragraph(
+  1181→        "<b>Analyse YoY détaillée :</b><br/>"
+  1182→        "• <b>BELGO 10% Chair -3,2%</b> : déclin modéré mais inquiétant car c'est 50% du volume. "
+  1183→        "Perte de 143 tonnes YoY. À surveiller de près — c'est le produit qui fait le plus de marge.<br/>"
+  1184→        "• <b>BELGO 10% Porc -19,6%</b> : effondrement de 284 tonnes. L'élevage porcin semble en difficulté. "
+  1185→        "Vérifier si c'est une conjoncture (maladie, prix de l'aliment) ou structurel (concurrence).<br/>"
+  1186→        "• <b>BELGO 10% Ponte -27,9%</b> : chute de 14 tonnes (base faible). Quasi-disparition de ce produit.<br/>"
+  1187→        "• <b>BELGO 5% Ponte +19,3%</b> : seule vraie bonne nouvelle. +275 tonnes YoY. "
+  1188→        "L'élevage de ponte se porte bien et migre vers le BELGO 5%.<br/>"
+  1189→        "• <b>BELGO 5% Chair +6,1%</b> : croissance de 78 tonnes. Confirmation d'une migration 10%→5% Chair.",
+  1190→        BODY
+  1191→    ))
+  1192→
+  1193→    story.append(Paragraph("4.3 Évolution mensuelle 2026", H2))
+  1194→    img = Image('/home/z/my-project/scripts/pdf_charts/chartM_conc_monthly.png', width=15*cm, height=7.5*cm)
+  1195→    story.append(img)
+  1196→    story.append(Paragraph("Figure 21 — CONCENTRÉS : évolution mensuelle 2026 par sous-catégorie", CAPTION))
+  1197→    story.append(Spacer(1, 0.2*cm))
+  1198→    story.append(Paragraph(
+  1199→        "L'évolution mensuelle montre une <b>stabilité globale sans tendance haussière</b> : "
+  1200→        "le BELGO 10% Chair oscille entre 660 et 803 t/mois sans progression nette. "
+  1201→        "Le BELGO 5% Ponte est le seul à montrer une légère tendance haussière vers juin. "
+  1202→        "Le BELGO 10% Porc reste stable autour de 190-209 t/mois — pas de signal de redressement.",
+  1203→        BODY
+  1204→    ))
+  1205→
+  1206→    story.append(PageBreak())
+  1207→
+  1208→    # ---------- PAGE 22: SECTION 9 BIS SUITE 2 ----------
+  1209→    story.append(Paragraph("4.4 Répartition par agence (S1 2026)", H2))
+  1210→    img = Image('/home/z/my-project/scripts/pdf_charts/chartN_conc_by_agence.png', width=16*cm, height=7.3*cm)
+  1211→    story.append(img)
+  1212→    story.append(Paragraph("Figure 22 — CONCENTRÉS : volume S1 2026 par agence (tonnes)", CAPTION))
+  1213→    story.append(Spacer(1, 0.2*cm))
+  1214→
+  1215→    conc_agence_data = [
+  1216→        ["Agence", "Vol S1 (t)", "CA (M FCFA)", "% du total", "Objectif S1 (t)", "% atteinte"],
+  1217→        ["FAMLA", "2 107,1", "1 465,1", "24,5%", "≈ 3 200", "≈ 66%"],
+  1218→        ["MESSASSI", "871,7", "569,3", "10,1%", "≈ 1 400", "≈ 62%"],
+  1219→        ["NDOBO", "791,4", "500,1", "9,2%", "≈ 1 200", "≈ 66%"],
+  1220→        ["DJELENG", "778,5", "521,3", "9,1%", "≈ 1 100", "≈ 71%"],
+  1221→        ["MBOUDA", "619,3", "411,6", "7,2%", "≈ 900", "≈ 69%"],
+  1222→        ["AHALA", "572,7", "386,7", "6,7%", "≈ 800", "≈ 72%"],
+  1223→        ["Autres (7 agences)", "2 851,4", "1 979,1", "33,2%", "≈ 3 942", "≈ 72%"],
+  1224→        ["TOTAL", "9 075,4", "6 064,4", "100%", "12 542", "72,4%"],
+  1225→    ]
+  1226→    story.append(make_table(conc_agence_data, col_widths=[3*cm, 2*cm, 2.2*cm, 1.5*cm, 2.2*cm, 1.8*cm], font_size=8))
+  1227→    story.append(Spacer(1, 0.3*cm))
+  1228→    story.append(Paragraph(
+  1229→        "<b>Constat par agence :</b> FAMLA concentre 24,5% du volume concentrés mais n'atteint que 66% de son objectif. "
+  1230→        "MESSASSI sous-performe à 62% — confirmant les diagnostics précédents. "
+  1231→        "Aucune agence n'atteint 100% de son objectif concentrés — c'est un problème systémique, pas localisé.",
+  1232→        BODY_BOLD
+  1233→    ))
+  1234→
+  1235→    story.append(Paragraph("4.5 Focus produit : BELGO 10% Chair (C104) — la locomotive", H2))
+  1236→    story.append(Paragraph(
+  1237→        "Le C104 (BELGO 10% Chair 50Kg) est le produit stratégique numéro 1 de BELGOCAM : "
+  1238→        "<b>4 292 tonnes et 2,74 milliards FCFA de CA en S1 2026</b>, soit à lui seul 16% du CA total de l'entreprise. "
+  1239→        "Son prix moyen est de 638 721 FCFA/t. Son déclin YoY de -3,2% représente une perte de 143 tonnes et ~91 millions FCFA.",
+  1240→        BODY
+  1241→    ))
+  1242→    story.append(Paragraph(
+  1243→        "<b>Recommandation spécifique C104 :</b> ce produit doit faire l'objet d'un plan de sauvegarne dédié. "
+  1244→        "Les 143 tonnes perdues YoY correspondent à environ 5 700 sacs de 50Kg. "
+  1245→        "Identifier les clients qui ont arrêté d'acheter le C104 en 2026 vs 2025 et mener une enquête de satisfaction. "
+  1246→        "Vérifier la concurrence sur le segment Chair 10%.",
+  1247→        BODY_BOLD
+  1248→    ))
+  1249→
+  1250→    story.append(PageBreak())
+  1251→
+  1252→    # ---------- PRIX MOYEN ----------
+  1253→    story.append(KeepTogether([
+  1254→        Paragraph("4.6 Analyse du prix moyen — Diagnostic qualitatif et quantitatif", H2),
+  1255→        Paragraph(
+  1256→            "Le prix moyen (CA/volume) révèle le mix de vente : un prix élevé suggère plus de ventes en détail "
+  1257→            "(petits conditionnements, marges unitaires plus fortes), tandis qu'un prix bas suggère plus de ventes en gros "
+  1258→            "(grands volumes, marges unitaires plus faibles). Comparer le prix moyen réalisé avec l'objectif et avec 2025 "
+  1259→            "permet de détecter les changements de mix produit ou de stratégie tarifaire.",
+  1260→            BODY
+  1261→        ),
+  1262→    ]))
+  1263→    story.append(Spacer(1, 0.2*cm))
+  1264→
+  1265→    price_table = [
+  1266→        ["Catégorie", "Source", "Volume (t)", "CA (M FCFA)", "Prix moy (FCFA/t)", "Prix (USD/t)*", "Variation"],
+  1267→        ["TOURTEAUX", "Objectif 2026", "26 685", "8 725", "326 942", "545", "—"],
+  1268→        ["TOURTEAUX", "S1 2026", "29 061", "9 437", "324 740", "541", "vs obj: -0,7% | YoY: -4,0%"],
+  1269→        ["TOURTEAUX", "2025 (annuel)", "49 422", "16 723", "338 375", "564", "—"],
+  1270→        ["CONCENTRÉS", "Objectif 2026", "12 542", "8 277", "659 956", "1 100", "—"],
+  1271→        ["CONCENTRÉS", "S1 2026", "9 075", "6 064", "668 221", "1 114", "vs obj: +1,3% | YoY: +0,9%"],
+  1272→        ["CONCENTRÉS", "2025 (annuel)", "19 094", "12 648", "662 399", "1 104", "—"],
+  1273→        ["ALIMENT COMPLET", "Objectif 2026", "514", "435", "845 283", "1 409", "—"],
+  1274→        ["ALIMENT COMPLET", "S1 2026", "545", "471", "863 177", "1 439", "vs obj: +2,1% | YoY: -0,6%"],
+  1275→        ["ALIMENT COMPLET", "2025 (annuel)", "785", "682", "868 037", "1 447", "—"],
+  1276→    ]
+  1277→    story.append(make_table(price_table, col_widths=[3*cm, 2.5*cm, 2*cm, 2*cm, 2.2*cm, 1.5*cm, 3.5*cm], font_size=7))
+  1278→    story.append(Paragraph("* Taux de conversion : 1 USD ≈ 600 FCFA. Prix mondial du tourteau de soja : ~322 USD/t (mai 2026, source Macrotrends/USDA).", SMALL))
+  1279→    story.append(Spacer(1, 0.3*cm))
+  1280→
+  1281→    img = Image('/home/z/my-project/scripts/pdf_charts/chartV_price_analysis.png', width=15*cm, height=7.5*cm)
+  1282→    story.append(img)
+  1283→    story.append(Paragraph("Figure 27 — Prix moyen par catégorie : 2025 vs Objectif 2026 vs S1 2026 (milliers FCFA/t)", CAPTION))
+  1284→    story.append(Spacer(1, 0.2*cm))
+  1285→
+  1286→    story.append(icr_block(
+  1287→        insights=[
+  1288→            "TOURTEAUX : prix moyen en baisse YoY (-4,0%) — de 338 375 à 324 740 FCFA/t. Cette baisse suggère un shift vers plus de ventes en gros (grands volumes à prix unitaire plus bas), ce qui est cohérent avec l'effet rupture concurrente (les clients concurrents viennent chercher de gros volumes).",
+  1289→            "CONCENTRÉS : prix moyen légèrement en hausse YoY (+0,9%) et vs objectif (+1,3%) — de 662 399 à 668 221 FCFA/t. Cette stabilité/hausse légère suggère que le mix produit ne s'est pas dégradé : pas de migration massive vers les petits conditionnements. Le problème des concentrés est donc un problème de VOLUME, pas de prix.",
+  1290→            "ALIMENT COMPLET : prix moyen quasi stable YoY (-0,6%) mais légèrement au-dessus de l'objectif (+2,1%). Légère hausse vs objectif suggère un mix légèrement plus orienté détail (Booster 5Kg vs 25Kg).",
+  1291→            "Le prix des TOURTEAUX (324 740 FCFA/t ≈ 541 USD/t) est supérieur au prix mondial du soja (~322 USD/t). L'écart s'explique par les coûts d'importation et la marge BELGOCAM.",
+  1292→        ],
+  1293→        causes=[
+  1294→            "TOURTEAUX : la baisse YoY du prix moyen reflète la baisse du prix mondial du soja en 2025/26 (production mondiale record selon USDA) transmise au marché camerounais, combinée à un shift vers plus de gros volumes.",
+  1295→            "CONCENTRÉS : la stabilité du prix moyen indique que la sous-performance n'est PAS un problème de prix mais un problème de VOLUME (perte de clients, manque de cross-sell, concurrence).",
+  1296→            "Le soja étant un produit importé, son prix fluctue avec le marché mondial — BELGOCAM subit la volatilité sans pouvoir la contrôler entièrement.",
+  1297→        ],
+  1298→        recommandations=[
+  1299→            "CONCENTRÉS : ne pas baisser les prix (le prix moyen est stable et aligné avec l'objectif) — l'enjeu est le VOLUME, pas le prix. Concentrer les efforts sur la réactivation clients et le bundle soja-concentrés.",
+  1300→            "TOURTEAUX : surveiller l'évolution du prix mondial du soja (USDA WASDE mensuel) pour anticiper les ajustements tarifaires. La baisse actuelle du prix mondial est une opportunité pour gagner des marges supplémentaires si le prix de vente est maintenu.",
+  1301→            "ALIMENT COMPLET : le prix légèrement supérieur à l'objectif suggère un bon mix produit — maintenir la stratégie actuelle de conditionnement.",
+  1302→            "Mettre en place un suivi mensuel du prix moyen par catégorie (réalisé vs objectif vs YoY) comme indicateur avancé de changement de mix ou de pression concurrentielle.",
+  1303→        ],
+  1304→    ))
+  1305→
+  1306→    story.append(Spacer(1, 0.3*cm))
+  1307→    story.append(Paragraph(
+  1308→        "<b>Contexte marché international du soja :</b> selon le USDA (WASDE avril 2026) et Macrotrends, "
+  1309→        "le prix mondial du tourteau de soja est de ~322 USD/t (mai 2026), en baisse grâce à une production mondiale record "
+  1310→        "en 2025/26. Le USDA prévoit ~310 USD/t pour la saison. Le prix BELGOCAM (541 USD/t) est supérieur au prix mondial, "
+  1311→        "l'écart s'expliquant par les coûts d'importation et la marge. "
+  1312→        "La volatilité du soja à l'importation explique pourquoi cette catégorie a les prix les plus fluctuants — "
+  1313→        "contrairement aux concentrés dont les prix sont stables car fabriqués localement à partir de matières premières moins volatiles.",
+  1314→        BODY_BOLD
+  1315→    ))
+  1316→
+  1317→    story.append(PageBreak())
+  1318→
+  1319→    # ---------- 4.7 DEEP PRICE ANALYSIS ----------
+  1320→    story.append(KeepTogether([
+  1321→        Paragraph("4.7 Analyse prix approfondie — Sous-catégories, formats et régions", H2),
+  1322→        Paragraph(
+  1323→            "Approfondissement du diagnostic prix au niveau sous-catégorie, format produit et région. "
+  1324→            "Cette analyse révèle la structure tarifaire des concentrés et confirme la nature du problème (volume vs prix).",
+  1325→            BODY
+  1326→        ),
+  1327→    ]))
+  1328→    story.append(Spacer(1, 0.2*cm))
+  1329→
+  1330→    story.append(Paragraph("4.7.1 Prix par sous-catégorie de concentrés", H3))
+  1331→    conc_subcat_price = [
+  1332→        ["Sous-catégorie", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "Prix (USD/t)", "Lecture"],
+  1333→        ["BELGO 10% Chair", "4 539", "2 905", "640 047", "1 067", "Produit de volume — base"],
+  1334→        ["BELGO 5% Chair", "1 458", "1 156", "792 791", "1 321", "+24% vs 10% Chair — additifs premium"],
+  1335→        ["BELGO 10% Porc", "1 265", "699", "552 285", "920", "Le moins cher — segment porcin"],
+  1336→        ["BELGO 5% Ponte", "1 768", "1 278", "722 856", "1 205", "+23% vs 10% Ponte — additifs premium"],
+  1337→        ["BELGO 10% Ponte", "46", "27", "590 501", "984", "Quasi-disparu — faible volume"],
+  1338→    ]
+  1339→    story.append(make_table(conc_subcat_price, col_widths=[3*cm, 1.8*cm, 2*cm, 2.2*cm, 1.5*cm, 4.2*cm], font_size=7))
+  1340→    story.append(Spacer(1, 0.2*cm))
+  1341→
+  1342→    img = Image('/home/z/my-project/scripts/pdf_charts/chartW_conc_subcat_price.png', width=14*cm, height=7*cm)
+  1343→    story.append(img)
+  1344→    story.append(Paragraph("Figure 28 — Prix moyen par sous-catégorie de concentrés (S1 2026)", CAPTION))
+  1345→    story.append(Spacer(1, 0.2*cm))
+  1346→    story.append(Paragraph(
+  1347→        "<b>Insight clé — Le 5% est plus cher que le 10% :</b> le BELGO 5% Chair (792 791 FCFA/t) est 24% plus cher que le "
+  1348→        "BELGO 10% Chair (640 047 FCFA/t). Cette contre-intuition s'explique par la présence d'<b>additifs et ingrédients plus chers</b> "
+  1349→        "dans la formulation du 5%. Le 5% n'est pas un produit d'entrée de gamme — c'est un produit premium avec des additifs spécifiques "
+  1350→        "qui justifient le prix élevé. La migration observée du 10% vers le 5% (+6,1% YoY pour le 5% Chair vs -3,2% pour le 10% Chair) "
+  1351→        "est donc une <b>amélioration du mix marge</b> : les clients montent en gamme vers un produit plus cher. "
+  1352→        "C'est une bonne nouvelle que l'analyse volume seule ne capte pas.",
+  1353→        BODY_BOLD
+  1354→    ))
+  1355→
+  1356→    story.append(PageBreak())
+  1357→
+  1358→    # ---------- 4.7.2 C104 formats ----------
+  1359→    story.append(Paragraph("4.7.2 Prix par format — C104 (BELGO 10% Chair)", H3))
+  1360→    c104_fmt = [
+  1361→        ["Réf", "Format", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "% du volume C104"],
+  1362→        ["C104", "50 Kg", "4 509", "2 885", "639 717", "99,6%"],
+  1363→        ["C1044", "25 Kg", "11", "7", "675 829", "0,2%"],
+  1364→        ["C1043", "5 Kg", "15", "10", "690 115", "0,3%"],
+  1365→        ["C1042", "1 Kg", "4", "3", "730 784", "0,1%"],
+  1366→    ]
+  1367→    story.append(make_table(c104_fmt, col_widths=[1.5*cm, 1.5*cm, 2*cm, 2.2*cm, 2.2*cm, 2.5*cm], font_size=8))
+  1368→    story.append(Spacer(1, 0.2*cm))
+  1369→
+  1370→    img = Image('/home/z/my-project/scripts/pdf_charts/chartX_c104_format_price.png', width=13*cm, height=7.3*cm)
+  1371→    story.append(img)
+  1372→    story.append(Paragraph("Figure 29 — C104 : prix moyen par format (S1 2026)", CAPTION))
+  1373→    story.append(Spacer(1, 0.2*cm))
+  1374→    story.append(Paragraph(
+  1375→        "Le C104 est vendu à 99,6% en sacs de 50 Kg. Les formats plus petits (25 Kg, 5 Kg, 1 Kg) représentent moins de 1% du volume "
+  1376→        "mais affichent des prix supérieurs (+6% à +14% vs 50 Kg), ce qui reflète un coût de conditionnement plus élevé. "
+  1377→        "L'essentiel du volume C104 est donc en gros (50 Kg) — pas de problème de mix détail/gros sur ce produit. "
+  1378→        "L'opportunité serait de développer les petits formats pour les petits éleveurs, mais l'impact sur le CA serait marginal "
+  1379→        "compte tenu du volume actuel (< 30 t pour les petits formats vs 4 509 t en 50 Kg).",
+  1380→        BODY
+  1381→    ))
+  1382→
+  1383→    story.append(Spacer(1, 0.3*cm))
+  1384→
+  1385→    # ---------- 4.7.3 Maïs vs autres ----------
+  1386→    story.append(Paragraph("4.7.3 Séparation Maïs / autres ingrédients", H3))
+  1387→    mais_table = [
+  1388→        ["Composant", "Volume (t)", "CA (M FCFA)", "Prix (FCFA/t)", "Lecture"],
+  1389→        ["Maïs (M1051)", "1 892", "426", "225 000", "Produit de volume, faible marge"],
+  1390→        ["Autres ingrédients", "490", "645", "1 316 000", "BELGOFOS, BELGOTOX, Farine poisson, Lysine, Méthionine, etc."],
+  1391→        ["Total ingrédients", "2 382", "1 071", "449 600", "Le Maïs écrase le prix moyen"],
+  1392→    ]
+  1393→    story.append(make_table(mais_table, col_widths=[3.5*cm, 2*cm, 2.2*cm, 2.2*cm, 5.5*cm], font_size=8))
+  1394→    story.append(Spacer(1, 0.2*cm))
+  1395→
+  1396→    img = Image('/home/z/my-project/scripts/pdf_charts/chartY_mais_vs_other.png', width=13*cm, height=7.3*cm)
+  1397→    story.append(img)
+  1398→    story.append(Paragraph("Figure 30 — INGREDIENTS : séparation Maïs vs autres ingrédients (S1 2026)", CAPTION))
+  1399→    story.append(Spacer(1, 0.2*cm))
+  1400→    story.append(Paragraph(
+  1401→        "Le Maïs représente 79% du volume INGREDIENTS mais seulement 40% du CA. À 225 000 FCFA/t, il est 5,8× moins cher "
+  1402→        "que les autres ingrédients (~1 316 000 FCFA/t en moyenne). "
+  1403→        "Le prix moyen INGREDIENTS de 449 600 FCFA/t est donc trompeur — "
+  1404→        "il ne reflète que le prix du Maïs. Pour les analyses de prix, il faut séparer le Maïs des autres ingrédients. "
+  1405→        "À noter que le Maïs est un produit opportuniste — son volume peut varier fortement d'une année à l'autre selon disponibilité et demande.",
+  1406→        BODY_BOLD
+  1407→    ))
+  1408→    story.append(Paragraph(
+  1409→        "<b>Composition des \"autres ingrédients\" (490 t, 645 M FCFA) :</b> BELGOFOS (230 t, 309 M), BELGOTOX (72 t, 84 M), "
+  1410→        "Farine de poisson (72 t, 78 M), Lysine (32 t, 69 M), Méthionine (19 t, 76 M), Bicarbonate (28 t, 18 M), "
+  1411→        "Carbonate de calcium (23 t, 3 M), Sulfate de fer (8 t, 6 M), Sel (7 t, 1 M). "
+  1412→        "Les BELGOFOS et BELGOTOX représentent à eux seuls 61% du CA des autres ingrédients.",
+  1413→        BODY
+  1414→    ))
+  1415→
+  1416→    story.append(PageBreak())
+  1417→
+  1418→    # ---------- 4.7.4 Price by region ----------
+  1419→    story.append(Paragraph("4.7.4 Prix moyen par région", H3))
+  1420→    region_table = [
+  1421→        ["Région", "Vol (t)", "YoY vol", "CA (M)", "YoY CA", "Prix moy (FCFA/t)", "% CA", "Vol conc (t)", "Prix conc (FCFA/t)"],
+  1422→        ["Ouest", "16 365", "+16,4%", "6 822", "+3,5%", "416 881", "39,3%", "3 605", "684 073"],
+  1423→        ["Centre", "10 723", "+50,7%", "5 039", "+30,0%", "469 914", "29,1%", "3 003", "677 209"],
+  1424→        ["Littoral", "14 159", "+0,7%", "4 811", "-4,6%", "339 802", "27,7%", "2 150", "633 734"],
+  1425→        ["TOTAL", "41 247", "+17,1%", "16 672", "+7,8%", "404 302", "96,1%", "8 758", "671 614"],
+  1426→    ]
+  1427→    story.append(make_table(region_table, col_widths=[1.7*cm, 1.7*cm, 1.4*cm, 1.7*cm, 1.4*cm, 2.2*cm, 1.2*cm, 1.7*cm, 2.2*cm], font_size=7))
+  1428→    story.append(Spacer(1, 0.2*cm))
+  1429→
+  1430→    img = Image('/home/z/my-project/scripts/pdf_charts/chartZ_price_by_region.png', width=15*cm, height=5.6*cm)
+  1431→    story.append(img)
+  1432→    story.append(Paragraph("Figure 31 — Prix moyen par région : toutes catégories vs CONCENTRÉS (S1 2026)", CAPTION))
+  1433→    story.append(Spacer(1, 0.2*cm))
+  1434→
+  1435→    story.append(icr_block(
+  1436→        insights=[
+  1437→            "Le Littoral a le prix moyen global le plus bas (339 802 FCFA/t) — suggère un mix plus orienté volume/gros (Ndobo est la 2e agence en volume, très axée tourteaux).",
+  1438→            "Le Centre a le prix moyen global le plus élevé (469 914 FCFA/t) — suggère un mix plus orienté détail ou produits à plus forte valeur ajoutée.",
+  1439→            "L'Ouest (FAMLA + DJELENG + MBOUDA) représente 39,3% du CA — la région la plus importante en valeur, avec un prix moyen intermédiaire (416 881 FCFA/t).",
+  1440→            "Sur les CONCENTRÉS, l'Ouest a le prix le plus élevé (684 073 FCFA/t) vs Littoral (633 734 FCFA/t) — suggère un mix concentrés plus premium dans l'Ouest (plus de 5% Chair ?).",
+  1441→        ],
+  1442→        causes=[
+  1443→            "Les écarts de prix entre régions reflètent des mix produits différents : le Littoral vend proportionnellement plus de tourteaux (peu chers) tandis que le Centre vend plus de concentrés et compléments (plus chers).",
+  1444→            "L'Ouest, porté par FAMLA (plus grande agence), a un mix équilibré mais avec une part de concentrés premium (5%) plus importante.",
+  1445→        ],
+  1446→        recommandations=[
+  1447→            "Analyser le mix produit par région pour confirmer les écarts de prix — particulièrement vérifier si l'Ouest vend proportionnellement plus de BELGO 5% que les autres régions.",
+  1448→            "Le Littoral (prix bas) pourrait être une opportunité pour pousser le cross-sell vers les concentrés (passer d'un mix soja-dominated à un mix plus équilibré).",
+  1449→            "Standardiser le suivi du prix moyen par région et par catégorie comme KPI mensuel.",
+  1450→        ],
+  1451→    ))
+  1452→
+  1453→    story.append(PageBreak())
+  1454→
+  1455→    # ---------- 4.8 (was 4.7) Synthèse stratégique CONCENTRÉS ----------
+  1456→    story.append(Paragraph("4.8 Synthèse stratégique CONCENTRÉS", H2))
+  1457→    story.append(Paragraph(
+  1458→        "<b>1. Stagnation globale (-0,9% YoY, 72,5% de l'objectif S1).</b> "
+  1459→        "Le problème est structurel, pas conjoncturel. La rupture concurrente sur le soja n'a pas bénéficié aux concentrés — "
+  1460→        "les clients qui viennent pour le soja ne cross-sellent pas vers les concentrés.<br/><br/>"
+  1461→        "<b>2. Dynamiques contradictoires entre sous-catégories.</b> "
+  1462→        "Le BELGO 5% Ponte (+19,3%) et le BELGO 5% Chair (+6,1%) progressent, suggérant une migration des clients du 10% vers le 5%. "
+  1463→        "Mais le 10% Chair (-3,2%) et le 10% Porc (-19,6%) déclinent fortement. "
+  1464→        "Le mix produit se dégrade — migration vers des produits moins marginaux ?<br/><br/>"
+  1465→        "<b>3. Aucune agence n'atteint son objectif concentrés.</b> "
+  1466→        "C'est un problème systémique qui require une action au niveau national : "
+  1467→        "benchmark tarifaire, qualité perçue, argumentaire commercial, et peut-être une revisite du positionnement produit.<br/><br/>"
+  1468→        "<b>4. Le C104 (BELGO 10% Chair) est le produit critique.</b> "
+  1469→        "Avec 4 292 t et 2,74 Md FCFA, il représente à lui seul 16% du CA BELGOCAM. "
+  1470→        "Sa sauvegarde est prioritaire — un plan dédié doit être mis en place dès le S2 2026.",
+  1471→        BODY_BOLD
+  1472→    ))
+  1473→
+  1474→    story.append(PageBreak())
+  1475→
+  1476→    # ---------- PAGE 6: section 5 - ZERO ACHAT ----------
+  1477→    story.append(Paragraph("5. Analyse Zéro Achat Q1", H1))
+  1478→    story.append(section_divider())
+  1479→
+  1480→    story.append(Paragraph("5.1 Vue d'ensemble", H2))
+  1481→    cards3 = [
+  1482→        kpi_card("Zéro achat global Q1", "338", "clients (16 produits)"),
+  1483→        kpi_card("Zéro achat concentrés Q1", "526", "clients (12 concentrés)"),
+  1484→        kpi_card("20/80 en clients zéro achat Q1", "14", "clients prioritaires"),
+  1485→        kpi_card("Jamais acquis (6 mois)", "118", "clients persistants"),
+  1486→    ]
+  1487→    story.append(kpi_row(cards3))
+  1488→    story.append(Spacer(1, 0.4*cm))
+  1489→
+  1490→    story.append(Paragraph(
+  1491→        "<b>État des lieux détaillé :</b> sur une base de 1 359 clients externes analysés, "
+  1492→        "<b>338 clients sont en zéro achat combiné (soja + concentré)</b> et <b>526 clients sont en zéro achat sur le concentré seul</b>. "
+  1493→        "L'écart entre ces deux chiffres (526 − 338 = 188) correspond aux clients qui ont acheté du soja mais pas de concentré — "
+  1494→        "ils représentent la cible prioritaire du bundle soja-concentrés. "
+  1495→        "Les <b>14 clients du top 20/80 en zéro achat</b> sont répartis géographiquement comme suit : "
+  1496→        "Douala/NDOBO (4), FAMLA (7), DJELENG (2), AHALA (1). "
+  1497→        "FAMLA concentre donc la moitié des clients prioritaires à réactiver — c'est l'agence où l'enjeu de sauvetage est le plus fort.",
+  1498→        BODY
+  1499→    ))
+  1500→    story.append(Spacer(1, 0.2*cm))
+  1501→    story.append(Paragraph(
+  1502→        "<b>Lecture dynamique S1 :</b> le gap de volume sur le soja a été <b>rattrapé et dépassé</b> grâce à la rupture concurrente "
+  1503→        "(+46,5% YoY en volume TOURTEAUX). En revanche, le gap sur les concentrés <b>reste non comblé</b> — la dynamique positive du soja "
+  1504→        "ne s'est pas transmise aux concentrés malgré le potentiel de cross-sell. "
+  1505→        "<b>⚠️ Attention à la lecture de juin</b> : une légère amélioration est observée sur le nombre de clients zéro achat concentrés en juin, "
+  1506→        "mais elle est <b>trompeuse</b> — elle s'explique par le retour de certains clients chez BELGOCAM <b>faute de stock concurrent</b>, "
+  1507→        "non par une fidélisation réelle. Ces clients repartiront chez le concurrent dès que son stock sera reconstitué. "
+  1508→        "La fenêtre d'opportunité commerciale est donc <b>limitée dans le temps</b> — d'où l'urgence d'agir maintenant.",
+  1509→        BODY_BOLD
+  1510→    ))
+  1511→
+  1512→    story.append(Paragraph("5.2 Top 14 clients 20/80 prioritaires à réactiver", H2))
+  1513→    story.append(Paragraph(
+  1514→        "Ces 14 clients font partie du top 20/80 (★) mais n'ont acheté AUCUN produit ciblé en Q1. Ils sont à recontacter en priorité absolue pendant la rupture concurrente de soja.",
+  1515→        BODY
+  1516→    ))
+  1517→    top14_data = [
+  1518→        ["N°", "Client", "Agence", "CA 6 mois (FCFA)", "Perte Q1 (FCFA)", "Priorité"],
+  1519→        ["1", "SIGHELO SARL", "NDOBO", "23 680 000", "23 680 000", "ÉLEVÉE"],
+  1520→        ["2", "COMPAGNIE FERMIERE CAMEROUNAISE", "NDOBO", "21 000 000", "21 000 000", "ÉLEVÉE"],
+  1521→        ["3", "TEIKING JEAN MARIE", "FAMLA", "20 822 000", "19 632 000", "ÉLEVÉE"],
+  1522→        ["4", "FEUDJIO BACK ARMEL", "FAMLA", "17 460 000", "17 460 000", "ÉLEVÉE"],
+  1523→        ["5", "KENMEGNE ALAIN", "FAMLA", "20 584 000", "16 600 000", "ÉLEVÉE"],
+  1524→        ["6", "STE SATI SARL", "NDOBO", "13 600 000", "13 600 000", "ÉLEVÉE"],
+  1525→        ["7", "FOTSO VINCENT", "FAMLA", "17 589 000", "13 464 000", "ÉLEVÉE"],
+  1526→        ["8", "DJOUSSI AURORE FLORINDA", "FAMLA", "13 280 000", "13 280 000", "ÉLEVÉE"],
+  1527→        ["9", "SADO", "DJELENG", "12 320 000", "12 320 000", "ÉLEVÉE"],
+  1528→        ["10", "ETS MEKATALEO", "DJELENG", "12 424 250", "11 975 000", "ÉLEVÉE"],
+  1529→        ["11", "MAKOUGANG KEUMBOU HERMINE", "FAMLA", "12 377 600", "11 922 600", "ÉLEVÉE"],
+  1530→        ["12", "BAHO", "FAMLA", "14 234 500", "10 920 000", "ÉLEVÉE"],
+  1531→        ["13", "MAKUETE Epse MANFOUO EDITH", "NDOBO", "15 400 000", "—", "FAIBLE"],
+  1532→        ["14", "TChouabe siakam therese", "AHALA", "13 183 000", "—", "FAIBLE"],
+  1533→    ]
+  1534→    story.append(make_table(top14_data, col_widths=[0.8*cm, 5.5*cm, 2.5*cm, 3.2*cm, 3.2*cm, 2.6*cm], font_size=8))
+  1535→    story.append(Spacer(1, 0.2*cm))
+  1536→    story.append(Paragraph(
+  1537→        "<b>Concentration géographique :</b> FAMLA (6 clients), NDOBO (4 clients), DJELENG (2 clients), AHALA (1), NDOBO (1). "
+  1538→        "Perte Q1 cumulée des 12 premiers = 173 M FCFA. Action commerciale territoriale à organiser agence par agence.",
+  1539→        BODY_BOLD
+  1540→    ))
+  1541→
+  1542→    story.append(PageBreak())
+  1543→
+  1544→    # ---------- PAGE 7: section 5 SUITE ----------
+  1545→    story.append(Paragraph("5.3 Zéro achat par agence", H2))
+  1546→    story.append(Paragraph(
+  1547→        "Répartition des clients zéro achat Q1 (ciblé) par agence principale, avec décomposition 20/80 vs autres.",
+  1548→        BODY
+  1549→    ))
+  1550→    ag_za_data = [
+  1551→        ["Agence", "Total clients", "Actifs Q1", "Zéro achat 20/80", "Zéro achat autres", "Total zéro achat", "% zéro achat"],
+  1552→        ["FAMLA", "293", "237", "7", "49", "56", "19,1%"],
+  1553→        ["MESSASSI", "167", "111", "0", "56", "56", "33,5%"],
+  1554→        ["NDOBO", "154", "109", "4", "41", "45", "29,2%"],
+  1555→        ["DJELENG", "107", "80", "2", "25", "27", "25,2%"],
+  1556→        ["NGAOUNDERE", "91", "60", "0", "31", "31", "34,1%"],
+  1557→        ["Autres agences", "647", "525", "1", "121", "122", "18,9%"],
+  1558→        ["TOTAL", "1 359", "1 022", "14", "324", "338", "24,9%"],
+  1559→    ]
+  1560→    story.append(make_table(ag_za_data, col_widths=[3.2*cm, 1.8*cm, 1.6*cm, 2.2*cm, 2*cm, 2.2*cm, 1.6*cm]))
+  1561→    story.append(Spacer(1, 0.3*cm))
+  1562→    # Chart: Zero achat par agence
+  1563→    img = Image('/home/z/my-project/scripts/pdf_charts/chart4_zero_agence.png', width=15*cm, height=8.3*cm)
+  1564→    story.append(img)
+  1565→    story.append(Paragraph("Figure 2 — Répartition zéro achat Q1 (ciblé) par agence", CAPTION))
+  1566→    story.append(Spacer(1, 0.2*cm))
+  1567→    story.append(Paragraph(
+  1568→        "<b>Constat :</b> MESSASSI et NGAOUNDERE affichent un taux de zéro achat critique (≥33%), alors qu'aucun client 20/80 n'est en zéro achat dans ces agences. "
+  1569→        "Cela suggère un problème de couverture commerciale sur les clients moyens — potentiellement un sous-dimensionnement de l'effectif commercial ou un manque de visibilité locale. "
+  1570→        "FAMLA concentre la moitié des clients 20/80 en zéro achat (7 sur 14), ce qui en fait l'agence prioritaire pour l'action de sauvetage.",
+  1571→        BODY
+  1572→    ))
+  1573→
+  1574→    story.append(Paragraph("5.4 Zéro achat concentrés (analyse distincte)", H2))
+  1575→    story.append(Paragraph(
+  1576→        "526 clients n'ont acheté aucun concentré en Q1 (vs 338 sur le ciblé global). La différence (188 clients) correspond aux clients qui ont acheté du soja en Q1 mais pas de concentrés — "
+  1577→        "ce sont les cibles idéales pour une action de cross-sell vers les concentrés.",
+  1578→        BODY
+  1579→    ))
+  1580→    za_c_data = [
+  1581→        ["Catégorie", "Nb clients", "Dont 20/80", "Action"],
+  1582→        ["Zéro achat ciblé Q1 (16 produits)", "338", "14", "Réactivation complète (soja + concentrés)"],
+  1583→        ["Zéro achat concentrés Q1 (12 produits)", "526", "41", "Cross-sell concentrés (soja déjà acheté pour 188)"],
+  1584→        ["Jamais acheté de concentrés en 6 mois", "≈ 380", "—", "Prospection longue — offre découverte"],
+  1585→    ]
+  1586→    story.append(make_table(za_c_data, col_widths=[6*cm, 2.5*cm, 2.5*cm, 6.5*cm]))
+  1587→    story.append(Spacer(1, 0.3*cm))
+  1588→    story.append(Paragraph(
+  1589→        "<b>Insight stratégique :</b> les 188 clients qui achètent du soja mais pas de concentrés sont la cible #1 du cross-sell concentrés. "
+  1590→        "Ils connaissent déjà BELGOCAM, ils ont une activité d'élevage, mais ils ne consomment pas le produit le plus marginal. "
+  1591→        "Une offre bundle \"soja + concentrés préférentiels\" pourrait convertir une partie significative de ces 188 clients.",
+  1592→        BODY
+  1593→    ))
+  1594→
+  1595→    story.append(PageBreak())
+  1596→
+  1597→    # ---------- PAGE 8: section 6 - PERTES Q1 ----------
+  1598→    story.append(Paragraph("6. Pertes Q1 estimées (méthode fréquence)", H1))
+  1599→    story.append(section_divider())
+  1600→
+  1601→    story.append(Paragraph("6.1 Méthode de calcul", H2))
+  1602→    story.append(Paragraph(
+  1603→        "La perte Q1 estimée pour chaque client \"zéro achat\" est calculée à partir de son comportement Q2, en tenant compte de sa fréquence d'achat :",
+  1604→        BODY
+  1605→    ))
+  1606→    story.append(Paragraph(
+  1607→        "<b>Perte Q1 = Σ(moyenne mensuelle par produit en Q2) × Fréquence × 3 mois</b>",
+  1608→        BODY_BOLD
+  1609→    ))
+  1610→    story.append(Paragraph(
+  1611→        "où :<br/>"
+  1612→        "• <b>Moyenne mensuelle par produit P</b> = (volume total Q2 du produit P) / (nombre de mois Q2 où P a été acheté)<br/>"
+  1613→        "• <b>Fréquence</b> = (nombre de mois Q2 avec achat de la catégorie ciblée) / 3<br/>"
+  1614→        "• <b>3 mois</b> = nombre de mois \"perdus\" en Q1 (Jan-Mar)",
+  1615→        BODY
+  1616→    ))
+  1617→    story.append(Paragraph(
+  1618→        "Cette méthode permet de distinguer un client qui aurait acheté tous les mois (fréquence = 1, perte élevée) d'un client occasionnel qui n'aurait acheté qu'un mois sur trois (fréquence = 0,33, perte plus faible).",
+  1619→        BODY
+  1620→    ))
+  1621→
+  1622→    story.append(Paragraph("6.2 Résultats agrégés", H2))
+  1623→    pertes_data = [
+  1624→        ["Catégorie", "Clients concernés", "Volume perdu (t)", "CA perdu (FCFA)"],
+  1625→        ["Zero achat global (16 produits)", "338", "1 598,66", "580 819 762"],
+  1626→        ["Zero achat concentrés (12 produits)", "526", "296,20", "199 660 105"],
+  1627→        ["Dont clients 20/80 (zéro achat global)", "14", "≈ 600", "≈ 175 000 000"],
+  1628→    ]
+  1629→    story.append(make_table(pertes_data, col_widths=[6*cm, 3.5*cm, 3*cm, 4*cm]))
+  1630→    story.append(Spacer(1, 0.3*cm))
+  1631→    story.append(Paragraph(
+  1632→        "<b>581 millions FCFA</b> de CA potentiel perdu en Q1 sur les seuls clients zéro achat global. "
+  1633→        "C'est l'équivalent de 80% du CA total 6 mois de ces mêmes clients, ce qui démontre l'ampleur de l'opportunité commerciale.",
+  1634→        BODY_BOLD
+  1635→    ))
+  1636→
+  1637→    story.append(Paragraph("6.3 Top 10 pertes par client (ciblé global)", H2))
+  1638→    top10_data = [
+  1639→        ["N°", "Client", "Fréquence Q2", "Σ Moy. mens. (t)", "Perte Volume (t)", "Perte CA (FCFA)"],
+  1640→        ["1", "SIGHELO SARL", "0,33 (1 mois)", "74,00", "74,00", "23 680 000"],
+  1641→        ["2", "TEIKING JEAN MARIE", "0,67 (2 mois)", "30,50", "61,00", "19 632 000"],
+  1642→        ["3", "COMPAGNIE FERMIERE CAM.", "0,33 (1 mois)", "60,00", "60,00", "21 000 000"],
+  1643→        ["4", "FEUDJIO BACK ARMEL", "0,67 (2 mois)", "27,50", "55,00", "17 460 000"],
+  1644→        ["5", "KENMEGNE ALAIN", "0,33 (1 mois)", "50,00", "50,00", "16 600 000"],
+  1645→        ["6", "FOTSO VINCENT", "1,00 (3 mois)", "14,00", "42,00", "13 464 000"],
+  1646→        ["7", "DJOUSSI AURORE FLORINDA", "0,33 (1 mois)", "40,00", "40,00", "13 280 000"],
+  1647→        ["8", "STE SATI SARL", "0,33 (1 mois)", "40,00", "40,00", "13 600 000"],
+  1648→        ["9", "STE IPACAM & FILS", "1,00 (3 mois)", "12,25", "36,75", "14 754 000"],
+  1649→        ["10", "BAHO", "0,33 (1 mois)", "35,00", "35,00", "10 920 000"],
+  1650→    ]
+  1651→    story.append(make_table(top10_data, col_widths=[0.8*cm, 5*cm, 3.2*cm, 3*cm, 2.7*cm, 3.6*cm], font_size=8))
+  1652→    story.append(Spacer(1, 0.3*cm))
+  1653→    # Chart: Top 10 pertes
+  1654→    img = Image('/home/z/my-project/scripts/pdf_charts/chart3_top10_pertes.png', width=15*cm, height=8.3*cm)
+  1655→    story.append(img)
+  1656→    story.append(Paragraph("Figure 3 — Top 10 pertes Q1 (clients zéro achat global, en millions FCFA)", CAPTION))
+  1657→
+  1658→    story.append(PageBreak())
+  1659→
+  1660→    # ---------- PAGE 9: section 6 SUITE ----------
+  1661→    story.append(Paragraph("6.4 Lecture de l'impact de la fréquence", H2))
+  1662→    story.append(Paragraph(
+  1663→        "La comparaison entre SIGHELO SARL et FOTSO VINCENT illustre bien l'effet de la fréquence sur le calcul de perte :",
+  1664→        BODY
+  1665→    ))
+  1666→    freq_compare = [
+  1667→        ["Client", "Moy. mens. Q2", "Fréquence Q2", "Perte Q1 (t)", "Lecture"],
+  1668→        ["SIGHELO SARL", "74,00 t", "0,33 (1 mois/3)", "74,00 t", "Gros volume ponctuel — 1 mois aurait suffi"],
+  1669→        ["FOTSO VINCENT", "14,00 t", "1,00 (3 mois/3)", "42,00 t", "Petit volume régulier — 3 mois pleins auraient été faits"],
+  1670→        ["TEIKING JEAN MARIE", "30,50 t", "0,67 (2 mois/3)", "61,00 t", "Volume moyen régulier — 2 mois sur 3"],
+  1671→    ]
+  1672→    story.append(make_table(freq_compare, col_widths=[4*cm, 2.8*cm, 3*cm, 2.5*cm, 4.7*cm]))
+  1673→    story.append(Spacer(1, 0.3*cm))
+  1674→    story.append(Paragraph(
+  1675→        "<b>Insight :</b> un client à haute fréquence d'achat (FOTSO, 3/3 mois) est plus \"récupérable\" à court terme qu'un client à faible fréquence mais gros volume (SIGHELO, 1/3 mois). "
+  1676→        "Les actions de réactivation doivent donc prioriser en premier lieu les clients à forte fréquence Q2, qui démontrent un besoin d'achat récurrent.",
+  1677→        BODY
+  1678→    ))
+  1679→
+  1680→    story.append(Paragraph("6.5 Pertes sur concentrés uniquement", H2))
+  1681→    story.append(Paragraph(
+  1682→        "Sur les 526 clients zéro achat concentrés en Q1, la perte estimée est de 296 tonnes et 199 millions FCFA. "
+  1683→        "C'est moins que sur le ciblé global (car certains de ces clients ont quand même acheté du soja), mais c'est plus préoccupant stratégiquement car les concentrés sont le cœur de marge.",
+  1684→        BODY
+  1685→    ))
+  1686→    story.append(Paragraph(
+  1687→        "<b>Top 5 pertes sur concentrés :</b>",
+  1688→        BODY_BOLD
+  1689→    ))
+  1690→    top5_conc = [
+  1691→        ["Client", "Fréquence Q2", "Perte Volume (t)", "Perte CA (FCFA)"],
+  1692→        ["SOCIETE COOPERATIVE SIMPLIFIEE DATCHIO", "0,67", "15,80", "10 114 000"],
+  1693→        ["PROVENDERIE ELI EMONBA 2", "0,67", "10,00", "6 700 000"],
+  1694→        ["PVD LE GROSSISTE SARL", "1,00", "9,00", "5 940 000"],
+  1695→        ["STE IPACAM & FILS", "1,00", "9,00", "5 985 000"],
+  1696→        ["MOTSOU DJEUMAKOU VICTOR", "1,00", "8,40", "6 048 000"],
+  1697→    ]
+  1698→    story.append(make_table(top5_conc, col_widths=[6*cm, 3*cm, 3.5*cm, 4*cm]))
+  1699→    story.append(Spacer(1, 0.3*cm))
+  1700→    story.append(Paragraph(
+  1701→        "Ces 5 clients représentent à eux seuls 52 tonnes de perte concentrés, soit ~17% de la perte totale concentrés. "
+  1702→        "Les clients \"PVD LE GROSSISTE\" et \"STE IPACAM\" sont à fréquence maximale (1,00) et donc prioritaires pour réactivation.",
+  1703→        BODY
+  1704→    ))
+  1705→
+  1706→    story.append(PageBreak())
+  1707→
+  1708→    # ---------- PAGE 10: section 7 - TRANSITION ----------
+  1709→    story.append(Paragraph("7. Transition Q1→Q2 et dynamique mensuelle", H1))
+  1710→    story.append(section_divider())
+  1711→
+  1712→    story.append(Paragraph("7.1 Matrice de transition Q1→Q2 (16 produits ciblés)", H2))
+  1713→    matrice = [
+  1714→        ["", "Q2 : Zéro achat", "Q2 : Active", "Total Q1"],
+  1715→        ["Q1 : Zéro achat", "118 (persistants)", "234 (réactivés) ★", "352"],
+  1716→        ["Q1 : Active", "192 (churned) ⚠", "850 (retenus)", "1 042"],
+  1717→        ["Total Q2", "310", "1 084", "1 359"],
+  1718→    ]
+  1719→    story.append(make_table(matrice, col_widths=[3.5*cm, 4*cm, 4.5*cm, 3*cm]))
+  1720→    story.append(Spacer(1, 0.3*cm))
+  1721→    # Chart: Segments de transition
+  1722→    img = Image('/home/z/my-project/scripts/pdf_charts/chart2_segments.png', width=14*cm, height=7.9*cm)
+  1723→    story.append(img)
+  1724→    story.append(Paragraph("Figure 4 — Segments de transition Q1 → Q2 (16 produits ciblés)", CAPTION))
+  1725→    story.append(Spacer(1, 0.2*cm))
+  1726→    story.append(Paragraph(
+  1727→        "<b>Quatre segments :</b><br/>"
+  1728→        "• <b>Persistants (118)</b> : clients qui n'ont jamais acheté de ciblé sur 6 mois — opportunité non exploitée, à prospecter.<br/>"
+  1729→        "• <b>Réactivés (234)</b> : GAIN — clients sans achat Q1 qui ont acheté en Q2. CA généré : 549,7 M FCFA.<br/>"
+  1730→        "• <b>Retenus (850)</b> : STABLES — cœur de clientèle, achats Q1 et Q2.<br/>"
+  1731→        "• <b>Churned (192)</b> : PERTE — clients actifs Q1 devenus inactifs Q2. CA perdu : 273,3 M FCFA.",
+  1732→        BODY
+  1733→    ))
+  1734→
+  1735→    story.append(Paragraph("7.2 Volumes et CA par segment", H2))
+  1736→    seg_data = [
+  1737→        ["Segment", "Clients", "Vol Q1 (t)", "Vol Q2 (t)", "Δ Vol (t)", "CA Q1 (FCFA)", "CA Q2 (FCFA)"],
+  1738→        ["Persistants", "118", "0", "0", "0", "0", "0"],
+  1739→        ["Réactivés", "234", "0", "1 524,74", "+1 524,74", "0", "549 689 847"],
+  1740→        ["Retenus", "850", "16 720,86", "19 133,23", "+2 412,37", "7,02 Md", "7,66 Md"],
+  1741→        ["Churned", "192", "758,01", "0", "-758,01", "273,3 M", "0"],
+  1742→        ["TOTAL", "1 359", "17 478,87", "20 657,97", "+3 179,10", "17,3 Md", "17,9 Md"],
+  1743→    ]
+  1744→    story.append(make_table(seg_data, col_widths=[2.8*cm, 1.6*cm, 2.5*cm, 2.5*cm, 2.2*cm, 2.9*cm, 2.9*cm], font_size=8))
+  1745→
+  1746→    story.append(Paragraph("7.3 Bilan net Q1→Q2", H2))
+  1747→    bilan_data = [
+  1748→        ["", "Clients", "Volume (t)", "CA (FCFA)"],
+  1749→        ["GAIN — Réactivés (Q1 Zéro achat → Q2 Active)", "234", "+1 524,74", "+549 689 847"],
+  1750→        ["PERTE — Churned (Q1 Active → Q2 Zéro achat)", "192", "-758,01", "-273 296 995"],
+  1751→        ["BILAN NET", "+42", "+766,73", "+276 392 852"],
+  1752→    ]
+  1753→    story.append(make_table(bilan_data, col_widths=[7*cm, 2.5*cm, 3*cm, 3.5*cm]))
+  1754→    story.append(Spacer(1, 0.3*cm))
+  1755→    story.append(Paragraph(
+  1756→        "<b>Bilan positif :</b> BELGOCAM a gagné 276 millions FCFA nets sur les produits ciblés entre Q1 et Q2. "
+  1757→        "Le gain de réactivation (549 M) dépasse largement la perte par churn (273 M). "
+  1758→        "Cependant, ce bilan est principalement porté par le soja — le bilan concentrés seul est beaucoup plus fragile.",
+  1759→        BODY_BOLD
+  1760→    ))
+  1761→
+  1762→    story.append(PageBreak())
+  1763→
+  1764→    # ---------- PAGE 11: section 7 SUITE ----------
+  1765→    story.append(Paragraph("7.4 Comparatif Ciblé (16) vs Concentrés (12)", H2))
+  1766→    comp_data = [
+  1767→        ["Indicateur", "Ciblé (16 produits)", "Concentrés (12 produits)", "Écart"],
+  1768→        ["Clients zéro achat Q1", "352", "544", "+192 (ceux qui ont acheté soja mais pas conc.)"],
+  1769→        ["Clients Active Q1", "1 042", "850", "-192"],
+  1770→        ["Réactivés Q2", "234", "184", "-50"],
+  1771→        ["Churned Q2", "192", "178", "-14"],
+  1772→        ["Bilan net CA (FCFA)", "+276 M", "+52 M", "-224 M"],
+  1773→        ["Q1 Fidèles (3 mois)", "527", "381", "-146"],
+  1774→        ["Q1 Fidèles churned Q2", "10 (1,9%)", "12 (3,1%)", "+2"],
+  1775→    ]
+  1776→    story.append(make_table(comp_data, col_widths=[5*cm, 3.5*cm, 3.5*cm, 4.5*cm]))
+  1777→    story.append(Spacer(1, 0.3*cm))
+  1778→    # Chart: Bilan net Ciblé vs Concentrés
+  1779→    img = Image('/home/z/my-project/scripts/pdf_charts/chart5_bilan_net.png', width=14*cm, height=7.9*cm)
+  1780→    story.append(img)
+  1781→    story.append(Paragraph("Figure 6 — Bilan net Q1 → Q2 : Ciblé vs Concentrés (millions FCFA)", CAPTION))
+  1782→    story.append(Spacer(1, 0.2*cm))
+  1783→    story.append(Paragraph(
+  1784→        "<b>Insight clé :</b> le bilan net sur les concentrés (+52 M) est <b>5 fois plus faible</b> que sur le ciblé global (+276 M). "
+  1785→        "La dynamique positive Q1→Q2 est donc portée principalement par les tourteaux de soja, pas par les concentrés. "
+  1786→        "De plus, le taux de churn des fidèles Q1 est plus élevé sur concentrés (3,1%) que sur ciblé (1,9%) — les concentrés sont plus sensibles à l'attrition.",
+  1787→        BODY
+  1788→    ))
+  1789→
+  1790→    story.append(Paragraph("7.5 Destin des clients fidèles Q1", H2))
+  1791→    story.append(Paragraph(
+  1792→        "Sur les 527 clients fidèles en Q1 (3 mois d'achat ciblé), voici leur destin en Q2 :",
+  1793→        BODY
+  1794→    ))
+  1795→    fidel_data = [
+  1796→        ["Statut Q2", "Nb clients", "% des Q1 Fidèles", "Commentaire"],
+  1797→        ["Q2 Fidèle (3 mois)", "420", "79,7%", "Maintenus — cœur de clientèle stable"],
+  1798→        ["Q2 Semi-fidèle (1-2 mois)", "97", "18,4%", "Déclin de fréquence — à surveiller (risque churn)"],
+  1799→        ["Q2 Zéro achat (churned)", "10", "1,9%", "Perte sèche — anciens fidèles devenus inactifs"],
+  1800→    ]
+  1801→    story.append(make_table(fidel_data, col_widths=[5*cm, 2.5*cm, 3*cm, 6*cm]))
+  1802→    story.append(Spacer(1, 0.3*cm))
+  1803→    story.append(Paragraph(
+  1804→        "Les 97 fidèles en déclin (18,4%) sont un signal d'alerte pré-churn à traiter en priorité. "
+  1805→        "Une visite physique par le commercial dédié permettrait de comprendre la cause du déclin (insatisfaction, concurrence, changement d'activité) avant que le client ne churn totalement.",
+  1806→        BODY
+  1807→    ))
+  1808→
+  1809→    story.append(Paragraph("7.6 Dynamique mensuelle Q2 (Avril / Mai / Juin)", H2))
+  1810→    story.append(Paragraph(
+  1811→        "L'analyse mois par mois révèle le moment exact de (ré)activation ou du churn :",
+  1812→        BODY
+  1813→    ))
+  1814→    monthly_data = [
+  1815→        ["Mois", "Clients actifs (tous produits)", "Clients actifs ciblé", "Clients actifs concentrés"],
+  1816→        ["Janvier", "941", "815", "634"],
+  1817→        ["Février", "836", "690", "534"],
+  1818→        ["Mars", "859", "718", "560"],
+  1819→        ["Avril", "836", "705", "547"],
+  1820→        ["Mai", "853", "738", "573"],
+  1821→        ["Juin", "958", "856", "672"],
+  1822→    ]
+  1823→    story.append(make_table(monthly_data, col_widths=[2.8*cm, 4.9*cm, 4.9*cm, 4.9*cm]))
+  1824→    story.append(Spacer(1, 0.3*cm))
+  1825→    # Chart: Évolution mensuelle
+  1826→    img = Image('/home/z/my-project/scripts/pdf_charts/chart1_evolution.png', width=15*cm, height=8.4*cm)
+  1827→    story.append(img)
+  1828→    story.append(Paragraph("Figure 5 — Évolution mensuelle du nombre de clients actifs", CAPTION))
+  1829→    story.append(Spacer(1, 0.2*cm))
+  1830→    story.append(Paragraph(
+  1831→        "<b>Tendance :</b> juin 2026 marque un rebond net (+118 clients actifs ciblé vs mai), possiblement lié au début de la rupture concurrente sur le soja. "
+  1832→        "À confirmer sur les mois suivants.",
+  1833→        BODY
+  1834→    ))
+  1835→
+  1836→    story.append(PageBreak())
+  1837→
+  1838→    # ---------- PAGE 12: section 8 - CHICK & PIGLET ----------
+  1839→    story.append(Paragraph("8. Analyse Chick Booster & Piglet Booster", H1))
+  1840→    story.append(section_divider())
+  1841→
+  1842→    story.append(Paragraph("8.1 Ventes sur 6 mois par référence", H2))
+  1843→    ventes_data = [
+  1844→        ["Réf.", "Description", "Volume (t)", "CA HT (FCFA)", "Gamme"],
+  1845→        ["CB100", "CHICK BOOSTER 25 Kg", "172,03", "144 857 350", "Chick"],
+  1846→        ["CB101", "CHICK BOOSTER 5Kg", "1,12", "977 950", "Chick"],
+  1847→        ["SOUS-TOTAL CHICK", "", "173,15", "145 835 300", ""],
+  1848→        ["CB200", "PIGLET BOOSTER 25Kg", "191,05", "152 882 650", "Piglet"],
+  1849→        ["CB201", "PIGLET BOOSTER 5Kg", "1,52", "1 246 796", "Piglet"],
+  1850→        ["SOUS-TOTAL PIGLET", "", "192,57", "154 129 446", ""],
+  1851→        ["TOTAL BOOSTER", "", "365,72", "299 964 746", "≈ 1,7% CA total"],
+  1852→    ]
+  1853→    story.append(make_table(ventes_data, col_widths=[1.5*cm, 5.5*cm, 2.5*cm, 4*cm, 3.5*cm]))
+  1854→    story.append(Spacer(1, 0.3*cm))
+  1855→    story.append(Paragraph(
+  1856→        "<b>Insight :</b> Piglet Booster dépasse légèrement Chick Booster (154 M vs 146 M FCFA), mais les deux gammes sont proches. "
+  1857→        "Ensemble, les Booster représentent ~300 M FCFA, soit ~1,7% du CA total. "
+  1858→        "C'est peu en volume financier, mais stratégique car ce sont des <b>produits d'entrée</b> qui amènent les clients vers les concentrés (cœur de marge).",
+  1859→        BODY
+  1860→    ))
+  1861→
+  1862→    story.append(Paragraph("8.2 Synergie Chick Booster × Concentrés Chair/Ponte", H2))
+  1863→    story.append(Paragraph(
+  1864→        "Sur les 343 clients qui achètent du Chick Booster, combien achètent aussi des concentrés volaille (Chair ou Ponte) ?",
+  1865→        BODY
+  1866→    ))
+  1867→    syn_chick = [
+  1868→        ["Catégorie", "Nb clients", "% des clients Chick", "Commentaire"],
+  1869→        ["Total clients Chick Booster", "343", "100%", "Base de référence"],
+  1870→        ["Chick + Concentrés Chair (C104/C1042/C1043/C1044/C103)", "263", "76,7%", "Cross-sell Chair"],
+  1871→        ["Chick + Concentrés Ponte (C102/C1022/C101)", "147", "42,9%", "Cross-sell Ponte"],
+  1872→        ["Chick + Chair OU Ponte (cross-sell réussi)", "270", "78,7%", "✅ Cross-sell validé"],
+  1873→        ["Chick ONLY (pas de concentrés Chair/Ponte)", "73", "21,3%", "⚠️ Opportunité cross-sell énorme"],
+  1874→    ]
+  1875→    story.append(make_table(syn_chick, col_widths=[7*cm, 2*cm, 2.5*cm, 5.5*cm]))
+  1876→    story.append(Spacer(1, 0.3*cm))
+  1877→    story.append(Paragraph(
+  1878→        "<b>Excellent taux de cross-sell :</b> 78,7% des clients Chick achètent aussi des concentrés volaille. "
+  1879→        "Reste <b>73 clients à convertir</b> — ce sont des éleveurs volaille qui démarrent leurs poussins avec le Chick Booster mais ne vont pas jusqu'au concentré. "
+  1880→        "Cible parfaite pour un bundle \"Chick + Chair\" avec remise.",
+  1881→        BODY_BOLD
+  1882→    ))
+  1883→    story.append(Spacer(1, 0.2*cm))
+  1884→    story.append(Paragraph(
+  1885→        "<b>⚠️ Insight terrain critique :</b> sur les 343 clients Chick Booster, <b>263 (77%) ont continué avec les concentrés</b> — "
+  1886→        "mais <b>73% des clients Chick n'ont jamais repris le concentré après leur achat initial</b>, partis chez la concurrence. "
+  1887→        "Cela révèle un problème de <b>rétention</b> et non d'acquisition : le Chick Booster attire bien les éleveurs, "
+  1888→        "mais le suivi commercial post-vente est insuffisant pour les fidéliser sur les concentrés. "
+  1889→        "La liste des 73 clients Chick-only a été transmise au SAV pour identification et priorisation d'actions de reconquête.",
+  1890→        BODY_BOLD
+  1891→    ))
+  1892→
+  1893→    story.append(PageBreak())
+  1894→
+  1895→    # ---------- PAGE 13: section 8 SUITE ----------
+  1896→    story.append(Paragraph("8.3 Synergie Piglet Booster × Concentrés Porc", H2))
+  1897→    story.append(Paragraph(
+  1898→        "Sur les 230 clients qui achètent du Piglet Booster, combien achètent aussi des concentrés Porc (C105, C1053, C1054, C1055) ?",
+  1899→        BODY
+  1900→    ))
+  1901→    syn_piglet = [
+  1902→        ["Catégorie", "Nb clients", "% des clients Piglet", "Commentaire"],
+  1903→        ["Total clients Piglet Booster", "230", "100%", "Base de référence"],
+  1904→        ["Piglet + Concentrés Porc (cross-sell réussi)", "162", "70,4%", "✅ Cross-sell validé"],
+  1905→        ["Piglet ONLY (pas de concentrés Porc)", "68", "29,6%", "⚠️ Opportunité cross-sell énorme"],
+  1906→    ]
+  1907→    story.append(make_table(syn_piglet, col_widths=[7*cm, 2*cm, 2.5*cm, 5.5*cm]))
+  1908→    story.append(Spacer(1, 0.3*cm))
+  1909→    story.append(Paragraph(
+  1910→        "<b>68 clients Piglet-only à convertir sur Porc</b> — c'est une opportunité cross-sell majeure. "
+  1911→        "Le Piglet Booster est un produit d'entrée naturel pour l'élevage porcin, et ces clients devraient logiquement consommer aussi du concentré Porc. "
+  1912→        "Bundle \"Piglet + Porc\" à proposer systématiquement.",
+  1913→        BODY_BOLD
+  1914→    ))
+  1915→
+  1916→    story.append(Paragraph("8.4 Synthèse stratégique Booster × Concentrés", H2))
+  1917→    story.append(Paragraph(
+  1918→        "Sur 573 clients Booster (Chick + Piglet, sans doublons), 432 (75%) font déjà du cross-sell vers les concentrés. "
+  1919→        "Les 141 \"Booster-only\" représentent une <b>opportunité de cross-sell de première main</b> pour augmenter les ventes de concentrés sans avoir à chercher de nouveaux clients.",
+  1920→        BODY
+  1921→    ))
+  1922→    syn_glob = [
+  1923→        ["Gamme Booster", "Clients total", "Cross-sell réussi", "Booster-only (à convertir)"],
+  1924→        ["Chick Booster → Chair/Ponte", "343", "270 (78,7%)", "73 (21,3%)"],
+  1925→        ["Piglet Booster → Porc", "230", "162 (70,4%)", "68 (29,6%)"],
+  1926→        ["TOTAL Booster", "573 (sans doublons)", "432 (75,4%)", "141 (24,6%)"],
+  1927→    ]
+  1928→    story.append(make_table(syn_glob, col_widths=[5*cm, 3.5*cm, 4*cm, 4*cm]))
+  1929→    story.append(Spacer(1, 0.3*cm))
+  1930→    # Chart: Synergie Booster
+  1931→    img = Image('/home/z/my-project/scripts/pdf_charts/chart6_synergie_booster.png', width=16*cm, height=7.2*cm)
+  1932→    story.append(img)
+  1933→    story.append(Paragraph("Figure 7 — Synergie Chick/Piglet Booster × Concentrés", CAPTION))
+  1934→    story.append(Spacer(1, 0.2*cm))
+  1935→    story.append(Paragraph(
+  1936→        "<b>Conclusion stratégique :</b> les Booster sont des produits d'entrée qui amènent naturellement 75% de leurs acheteurs vers les concentrés. "
+  1937→        "Tout effort sur les Booster (promotion, échantillon) a un <b>effet multiplicateur</b> sur les ventes de concentrés (cœur de marge). "
+  1938→        "Les 141 clients Booster-only sont la cible #1 du cross-sell immédiat.",
+  1939→        BODY_BOLD
+  1940→    ))
+  1941→
+  1942→    story.append(PageBreak())
+  1943→
+  1944→    # ---------- PAGE 14: section 9 - PERSPECTIVES ----------
+  1945→    story.append(Paragraph("9. Perspectives stratégiques — 5 axes", H1))
+  1946→    story.append(section_divider())
+  1947→
+  1948→    story.append(Paragraph("9.1 Axe 1 — Conquête soja (rupture concurrentielle)", H2))
+  1949→    story.append(Paragraph(
+  1950→        "<b>Constat :</b> les concurrents sont en rupture de soja. Fenêtre de tir exceptionnelle : le soja représente 16 730 lignes / 6 mois (40% du volume). "
+  1951→        "CA additionnel potentiel : 300-600 M FCFA.",
+  1952→        BODY_BOLD
+  1953→    ))
+  1954→    story.append(Paragraph(
+  1955→        "<b>Cibles prioritaires :</b><br/>"
+  1956→        "• 14 clients 20/80 zéro achat Q1 (ciblé) — RDV direct commercial<br/>"
+  1957→        "• 192 clients churned Q1→Q2 (273 M FCFA perdus) — appel téléphonique<br/>"
+  1958→        "• 118 clients persistants zéro achat (jamais acquis) — offre découverte<br/>"
+  1959→        "• Clients concurrents en rupture — conquête pure",
+  1960→        BODY
+  1961→    ))
+  1962→    story.append(Paragraph(
+  1963→        "<b>Actions concrètes :</b> opération \"Soja disponible\" J+7 ; argumentaire \"BELGOCAM = sécurité d'approvisionnement\" ; "
+  1964→        "bundles soja + concentrés (-5% conc. si achat soja) ; vérification quotidienne stocks soja ; verrouillage contractuel 6 mois multi-produits.",
+  1965→        BODY
+  1966→    ))
+  1967→    story.append(Paragraph("<b>KPI :</b> Nb nouveaux clients soja, Volume soja additionnel (t), CA additionnel (FCFA), Taux de conversion par segment. <b>Délai :</b> 15 jours (urgence).", BODY))
+  1968→
+  1969→    story.append(Paragraph("9.2 Axe 2 — Défense concentrés (faiblesse structurelle)", H2))
+  1970→    story.append(Paragraph(
+  1971→        "<b>Constat :</b> bilan net Q1→Q2 concentrés fragile (+52 M FCFA vs +276 M ciblé). Segment \"retenu\" en déclin -248 t / -164 M FCFA. "
+  1972→        "Taux churn fidèles 3,1% (vs 1,9% ciblé). 526 clients jamais acquis concentrés.",
+  1973→        BODY_BOLD
+  1974→    ))
+  1975→    story.append(Paragraph(
+  1976→        "<b>Actions :</b> benchmark prix concurrents (12 références) ; enquête qualitative 30 clients churned ; ajustement tarifaire si nécessaire (C104, C103) ; "
+  1977→        "visite physique 97 fidèles en déclin ; bundle soja+concentrés obligatoire ; test nouveaux formats (1Kg, 5Kg, 25Kg).",
+  1978→        BODY
+  1979→    ))
+  1980→    story.append(Paragraph("<b>KPI :</b> Volume concentrés Q3 vs Q2, Taux de rétention fidèles, Prix moyen vs concurrents. <b>Délai :</b> 30-60 jours.", BODY))
+  1981→
+  1982→    story.append(Paragraph("9.3 Axe 3 — Stratégie par agence (disparités majeures)", H2))
+  1983→    story.append(Paragraph(
+  1984→        "<b>Constat :</b> disparités importantes — FAMLA (293 clients, 19% zéro achat) vs MESSASSI (167, 33,5% zéro achat) vs NGAOUNDERE (91, 34,1% zéro achat). "
+  1985→        "1 client sur 3 en zéro achat dans certaines agences = anomalie.",
+  1986→        BODY_BOLD
+  1987→    ))
+  1988→    story.append(Paragraph(
+  1989→        "<b>Actions :</b> diagnostic terrain MESSASSI + NGAOUNDERE ; renforcement effectif commercial si sous-dimensionné ; visibilité locale (PLV, événements) ; "
+  1990→        "plan marketing agence par agence ; objectifs commerciaux individualisés.",
+  1991→        BODY
+  1992→    ))
+  1993→    story.append(Paragraph("<b>KPI :</b> % zéro achat par agence (cible <25%), Nb nouveaux clients par agence/mois. <b>Délai :</b> 60-90 jours.", BODY))
+  1994→
+  1995→    story.append(PageBreak())
+  1996→
+  1997→    # ---------- PAGE 15: section 9 SUITE ----------
+  1998→    story.append(Paragraph("9.4 Axe 4 — Risques à surveiller", H2))
+  1999→    story.append(Paragraph(
+  2000→        "<b>Rupture concurrente temporaire :</b> risque de retour client si pas de verrouillage. "
+
+[showing lines 1-2000 of 3237; use offset=2001 with limit to continue reading]
