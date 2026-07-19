@@ -1,0 +1,119 @@
+{
+  "temps_ecoule": 58.06451612903226,
+  "clients": {
+    "s1_total": 1359,
+    "juil_mtd": 756,
+    "maintenus": 721,
+    "nouveaux": 35,
+    "risque_eleve": 440,
+    "a_surveiller": 157,
+    "pas_inquietant": 41
+  },
+  "ca": {
+    "risque_eleve": 1819070183.74,
+    "a_surveiller": 482720707.6,
+    "pas_inquietant": 42142503.73
+  },
+  "booster": {
+    "s1_total": 492,
+    "s1_booster_conc": 0,
+    "s1_booster_only": 492,
+    "juil_booster": 137,
+    "juil_booster_conc": 0,
+    "juil_booster_only": 137,
+    "regression": 0,
+    "conversion": 0
+  },
+  "soja": {
+    "s1_total": 1208,
+    "s1_soja_conc": 0,
+    "s1_soja_only": 1208,
+    "juil_soja": 640,
+    "juil_soja_conc": 0,
+    "juil_soja_only": 640,
+    "regression": 0,
+    "conversion": 0
+  },
+  "top_risque": [
+    {
+      "nom": " NKUE",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 75.7,
+      "jour_moyen": 17,
+      "nb_achats": 29
+    },
+    {
+      "nom": " TCHEUTCHOUA TCHINDA ERIC",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 68.2,
+      "jour_moyen": 14,
+      "nb_achats": 124
+    },
+    {
+      "nom": " GIC ESPOIR KELENG (POKAM MERLINE)",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 63.4,
+      "jour_moyen": 15,
+      "nb_achats": 33
+    },
+    {
+      "nom": " MALENDOMA DORIS TATIANA FLORE",
+      "agence": "Ndobo",
+      "region": "Littoral",
+      "ca_s1_m": 45.7,
+      "jour_moyen": 16,
+      "nb_achats": 25
+    },
+    {
+      "nom": " PANEBENG VICTOR",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 45.3,
+      "jour_moyen": 12,
+      "nb_achats": 8
+    },
+    {
+      "nom": " JEUGO ALICE",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 44.6,
+      "jour_moyen": 16,
+      "nb_achats": 62
+    },
+    {
+      "nom": " SOCIETE COOPÉRATIVE SIMPLIFIÉE DES PRODUCTEURS DE CACAO MARCHAND DE BALAMBA (SCOOPS_PROCAMB)",
+      "agence": "Ahala",
+      "region": "Centre",
+      "ca_s1_m": 43.8,
+      "jour_moyen": 16,
+      "nb_achats": 60
+    },
+    {
+      "nom": " FEEMDISPRO SARL (FEED MILL DISTRIBUTION PRODUCT SARL)",
+      "agence": "Messassi",
+      "region": "Centre",
+      "ca_s1_m": 33.5,
+      "jour_moyen": 12,
+      "nb_achats": 62
+    },
+    {
+      "nom": " SOP EVELYNE",
+      "agence": "Djeleng",
+      "region": "Ouest",
+      "ca_s1_m": 31.8,
+      "jour_moyen": 16,
+      "nb_achats": 36
+    },
+    {
+      "nom": " TSEUFFA EMMANUEL",
+      "agence": "Buea",
+      "region": "Littoral",
+      "ca_s1_m": 25.7,
+      "jour_moyen": 17,
+      "nb_achats": 44
+    }
+  ]
+}
