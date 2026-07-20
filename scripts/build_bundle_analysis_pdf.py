@@ -826,7 +826,7 @@ def build_story():
     # ----- 7.2 Recommandations -----
     story.append(Paragraph("7.2 Recommandations", H2))
     story.append(Paragraph(
-        "Plan d'action en 7 axes pour endiguer la dégradation du ratio et restaurer l'équilibre du bundle soja-concentrés.",
+        "Plan d'action en 9 axes pour endiguer la dégradation du ratio et restaurer l'équilibre du bundle soja-concentrés.",
         BODY
     ))
     reco_data = [
@@ -838,15 +838,122 @@ def build_story():
         ["5", "Capitaliser sur les bonnes pratiques du Centre (DJELENG, AHALA, NGAOUNDERE)", "Reproduire le modèle Centre", "60 jours"],
         ["6", "Comparer les prix des concentrés vs concurrents — si BELGOCAM est plus cher, facteur aggravant", "Direction produit + benchmark", "30 jours"],
         ["7", "Analyser le profil des clients à NDOBO — probablement plus de grossistes/provendiers sensibles au prix", "Data Analyst + commercial NDOBO", "45 jours"],
+        ["8", "Annulation des commandes ≥ 10 t en soja sauf si concentré en ratio ≥ 2,5:1 (voir 7.3)", "Système de facturation + commerciaux", "Immédiat"],
+        ["9", "Déployer les packs de bundle prédéfinis (voir 7.4) comme alternative aux commandes libres", "Toutes agences — argumentaire commercial", "15 jours"],
     ]
     story.append(make_table(reco_data, col_widths=[0.8*cm, 8*cm, 4.5*cm, 2.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
 
     story.append(Paragraph(
-        "<b>Priorisation :</b> les recommandations 1 et 4 sont à mener en parallèle et en urgence — "
-        "le verrouillage du ratio 3:1 (recommandation 1) ne produira d'effet que si les commerciaux terrain "
-        "sont mobilisés sur NDOBO et PK11 (recommandation 4). La remise bundle (recommandation 3) est le levier "
-        "structurel de moyen terme pour réconcilier la hausse du soja et le maintien des concentrés.",
+        "<b>Priorisation :</b> les recommandations 1, 8 et 9 sont à mener en parallèle et en urgence — "
+        "le verrouillage du ratio 3:1 (recommandation 1) et l'annulation des commandes ≥ 10 t sans concentré suffisant (recommandation 8) "
+        "ne produiront d'effet que si les commerciaux terrain sont mobilisés sur NDOBO et PK11 (recommandation 4) "
+        "et outillés avec les packs de bundle prédéfinis (recommandation 9). "
+        "La remise bundle (recommandation 3) est le levier structurel de moyen terme pour réconcilier "
+        "la hausse du soja et le maintien des concentrés.",
+        BODY_BOLD
+    ))
+
+    story.append(Spacer(1, 0.4*cm))
+
+    # ----- 7.3 Règle d'annulation des commandes ≥ 10 t en soja -----
+    story.append(Paragraph("7.3 Règle d'annulation — Commandes ≥ 10 t en soja sans concentré suffisant", H2))
+    story.append(Paragraph(
+        "<b>Règle opérationnelle :</b> toute commande de soja ≥ 10 tonnes doit obligatoirement inclure "
+        "des concentrés dans un ratio ≥ 2,5:1 (soja:conc). En dessous de ce ratio, la commande est annulée "
+        "ou suspendue jusqu'à ajustement par le client.<br/><br/>"
+        "<b>Logique :</b> 10 tonnes de soja représentent environ 200 sacs de 50 kg. "
+        "Avec un ratio minimum de 2,5:1, le client doit commander au minimum 80 sacs de concentrés "
+        "(4 t) pour valider sa commande de soja. Cela garantit un volume minimal de concentrés "
+        "sur les gros volumes de soja, qui sont précisément les commandes où le ratio se dégrade le plus.<br/><br/>"
+        "<b>Seuil de 10 t :</b> ce seuil cible les gros acheteurs (provendiers, éleveurs industriels) "
+        "qui représentent l'essentiel du volume soja mais aussi la plus grande déperdition de concentrés. "
+        "Les petites commandes (< 10 t) ne sont pas concernées par cette règle — le bundle 3:1 classique s'applique.",
+        BODY
+    ))
+
+    story.append(Paragraph("Tableau de référence — Ratio minimum 2,5:1 pour commandes ≥ 10 t de soja", H3))
+    seuil_data = [
+        ["Soja (t)", "Soja (sacs 50kg)", "Conc minimum (t)", "Conc minimum (sacs 50kg)", "Ratio imposé", "CA conc min (M FCFA)*"],
+        ["10", "200", "4,0", "80", "2,5:1", "2,4"],
+        ["15", "300", "6,0", "120", "2,5:1", "3,6"],
+        ["20", "400", "8,0", "160", "2,5:1", "4,8"],
+        ["25", "500", "10,0", "200", "2,5:1", "6,0"],
+        ["30", "600", "12,0", "240", "2,5:1", "7,2"],
+        ["50", "1 000", "20,0", "400", "2,5:1", "12,0"],
+    ]
+    story.append(make_table(seuil_data, col_widths=[1.8*cm, 2.8*cm, 2.5*cm, 3*cm, 2*cm, 3*cm], font_size=8))
+    story.append(Paragraph(
+        "<i>* CA concentrés minimum calculé à 30 000 FCFA/sac de 50 kg (prix moyen S1 2026).</i>",
+        ParagraphStyle('fn', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Impact estimé :</b> à NDOBO en juillet, 21 commandes avaient un ratio > 10:1 sur des volumes de soja significatifs. "
+        "En appliquant la règle des 2,5:1 minimum, ces 21 commandes auraient généré un volume supplémentaire "
+        "de concentrés estimé à ~15-20 t — soit +20 à +25% du volume concentrés réalisé en juillet à NDOBO.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    # ----- 7.4 Proposition de packs de bundle -----
+    story.append(Paragraph("7.4 Proposition de packs de bundle prédéfinis", H2))
+    story.append(Paragraph(
+        "Plutôt que de laisser le client composer sa commande librement (ce qui conduit à des ratios déséquilibrés), "
+        "les commerciaux proposent des <b>packs prédéfinis</b> avec un ratio soja:concentrés garanti. "
+        "Chaque pack correspond à un profil d'éleveur et à un volume d'activité. "
+        "Le client choisit un pack plutôt que de commander produit par produit.",
+        BODY
+    ))
+
+    story.append(Paragraph("7.4.1 Packs pour élevage volaille (Chair + Ponte)", H3))
+    packs_volaille = [
+        ["Pack", "Soja (t)", "Conc Chair (t)", "Conc Ponte (t)", "Total conc (t)", "Ratio soja:conc", "CA pack (M FCFA)*", "Profil client"],
+        ["Pack Découverte", "2,5", "0,5", "0,5", "1,0", "2,5:1", "1,6", "Petit éleveur (<500 sujets)"],
+        ["Pack Standard", "5,0", "1,0", "1,0", "2,0", "2,5:1", "3,2", "Éleveur moyen (500-2000)"],
+        ["Pack Confort", "5,0", "1,5", "1,0", "2,5", "2,0:1", "3,6", "Éleveur moyen+ (cross-sell renforcé)"],
+        ["Pack Pro", "10,0", "2,0", "2,0", "4,0", "2,5:1", "6,4", "Grand éleveur (2000-5000)"],
+        ["Pack Industrie", "20,0", "4,0", "4,0", "8,0", "2,5:1", "12,8", "Éleveur industriel (>5000)"],
+    ]
+    story.append(make_table(packs_volaille, col_widths=[2*cm, 1.5*cm, 1.8*cm, 1.8*cm, 1.5*cm, 1.8*cm, 2*cm, 3.5*cm], font_size=7))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("7.4.2 Packs pour élevage porcin", H3))
+    packs_porc = [
+        ["Pack", "Soja (t)", "Conc Porc (t)", "Ratio soja:conc", "CA pack (M FCFA)*", "Profil client"],
+        ["Pack Découverte Porc", "2,5", "1,0", "2,5:1", "1,6", "Petit élevage porcin (<100 têtes)"],
+        ["Pack Standard Porc", "5,0", "2,0", "2,5:1", "3,2", "Élevage moyen (100-500)"],
+        ["Pack Pro Porc", "10,0", "4,0", "2,5:1", "6,4", "Grand élevage (>500)"],
+    ]
+    story.append(make_table(packs_porc, col_widths=[3*cm, 1.5*cm, 1.8*cm, 2*cm, 2.5*cm, 4.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("7.4.3 Packs mixtes (multi-espèces)", H3))
+    packs_mixte = [
+        ["Pack", "Soja (t)", "Conc Chair (t)", "Conc Ponte (t)", "Conc Porc (t)", "Total conc (t)", "Ratio", "Profil client"],
+        ["Pack Mixte Standard", "5,0", "0,8", "0,7", "0,5", "2,0", "2,5:1", "Éleveur polyvalent"],
+        ["Pack Mixte Pro", "10,0", "1,5", "1,5", "1,0", "4,0", "2,5:1", "Ferme diversifiée"],
+        ["Pack Mixte Booster", "5,0", "1,0", "1,0", "0,5", "2,5", "2,0:1", "Avec Chick/Piglet Booster inclus"],
+    ]
+    story.append(make_table(packs_mixte, col_widths=[2.5*cm, 1.3*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.3*cm, 3.5*cm], font_size=7))
+    story.append(Paragraph(
+        "<i>* CA packs estimé à ~1 280 000 FCFA/t (soja à 18 000 F/sac + conc à 30 000 F/sac, mix 2,5:1).</i>",
+        ParagraphStyle('fn2', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
+
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Avantages des packs prédéfinis :</b><br/>"
+        "• <b>Ratio garanti</b> — le commercial ne négocie plus les quantités produit par produit, il propose un pack.<br/>"
+        "• <b>Simplicité</b> — le client comprend immédiatement ce qu'il achète et pourquoi.<br/>"
+        "• <b>Tarification transparente</b> — chaque pack a un prix global, pas de calcul ligne par ligne.<br/>"
+        "• <b>Cross-sell intégré</b> — les packs mixtes incluent naturellement plusieurs variétés de concentrés.<br/>"
+        "• <b>Suivi facilité</b> — le suivi des ventes par pack permet de mesurer l'adoption et l'efficacité.<br/><br/>"
+        "<b>Mise en œuvre :</b> les packs sont proposés systématiquement par les commerciaux. "
+        "Le client peut ajuster les quantités à la hausse (plus de concentrés = ratio plus favorable) "
+        "mais <b>pas à la baisse</b> en dessous du ratio 2,5:1. "
+        "Pour les commandes ≥ 10 t de soja, seul un pack est accepté (pas de commande libre).",
         BODY_BOLD
     ))
 
