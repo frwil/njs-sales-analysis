@@ -1,0 +1,24 @@
+{
+  "s1_monthly_t": {
+    "TOURTEAUX": 4844.0,
+    "CONCENTRES": 1513.0,
+    "INGREDIENTS": 84.0,
+    "ALIMENT COMPLET": 102.0,
+    "PREMIX": 12.0,
+    "MAÏS": 599.0
+  },
+  "juil_mtd_t": {
+    "CONCENTRES": 1240.0,
+    "TOURTEAUX": 5203.0,
+    "INGREDIENTS": 59.0,
+    "ALIMENT COMPLET": 86.0,
+    "PREMIX": 9.0
+  },
+  "juil_proj_t": {
+    "CONCENTRES": 1594.0,
+    "TOURTEAUX": 6689.0,
+    "INGREDIENTS": 76.0,
+    "ALIMENT COMPLET": 110.0,
+    "PREMIX": 12.0
+  }
+}
