@@ -852,44 +852,44 @@ def build_story():
         BODY
     ))
 
-    # ===== 5.1 Premier point de suivi — Juillet 2026 (au 24/07) =====
-    story.append(Paragraph("5.1 Premier point de suivi — Juillet 2026 (au 24/07)", H2))
+    # ===== 5.1 Premier point de suivi — Juillet 2026 (au 27/07) =====
+    story.append(Paragraph("5.1 Premier point de suivi — Juillet 2026 (au 27/07)", H2))
     story.append(Paragraph(
-        "<b>Données au 24 juillet 2026</b> — temps écoulé : 24 jours sur 31 (78% du mois, 21j ouvrables lun-sam sur 27). "
+        "<b>Données au 27 juillet 2026</b> — temps écoulé : 23 jours ouvrables (lun-sam) sur 27 (85% du mois). "
         "Les comparaisons avec S1 2026 sont ajustées au prorata du temps écoulé pour assurer une lecture juste. "
-        "La projection juillet complet = réel 24 jours × (31/24).",
+        "La projection juillet complet = réel 23 jours × (27/23).",
         BODY_BOLD
     ))
 
     # Tableau d'évolution des ventes par catégorie
     story.append(Paragraph("5.1.1 Évolution des ventes par catégorie — S1 vs Juillet", H3))
     story.append(Paragraph(
-        "Comparaison du volume réalisé et du CA par catégorie entre la moyenne mensuelle S1 2026 et juillet 2026 (24 jours, projection 31 jours). Le Maïs est séparé des autres ingrédients (produit opportuniste).",
+        "Comparaison du volume réalisé et du CA par catégorie entre la moyenne mensuelle S1 2026 et juillet 2026 (23 jours ouvrables, projection 27 jours). Le Maïs est séparé des autres ingrédients (produit opportuniste).",
         BODY
     ))
 
     evol_ventes_data = [
-        ["Catégorie", "Moy. mensuelle S1 (t)", "Juil 24j (t)", "Projection Juil (t)", "vs S1 (%)", "Obj Juil (t)", "% ajusté*"],
-        ["TOURTEAUX", "4 844", "5 203", "6 689", "+38%", "3 834", "174%"],
-        ["CONCENTRES", "1 513", "1 240", "1 594", "+5%", "1 802", "88%"],
-        ["ALIMENT COMPLET", "102", "86", "110", "+8%", "74", "149%"],
-        ["INGREDIENTS (hors Maïs)", "84", "59", "76", "-10%", "86", "88%"],
+        ["Catégorie", "Moy. mensuelle S1 (t)", "Juil 23j (t)", "Projection Juil (t)", "vs S1 (%)", "Obj Juil (t)", "% ajusté*"],
+        ["TOURTEAUX", "4 844", "5 465", "6 415", "+32%", "3 834", "169%"],
+        ["CONCENTRES", "1 513", "1 322", "1 551", "+3%", "1 802", "80%"],
+        ["ALIMENT COMPLET", "102", "92", "108", "+6%", "74", "141%"],
+        ["INGREDIENTS (hors Maïs)", "84", "64", "75", "-11%", "86", "86%"],
         ["MAÏS", "599", "0", "0", "-100%", "—", "—"],
-        ["PREMIX", "12", "9", "12", "0%", "9", "128%"],
-        ["TOTAL", "7 154", "6 597", "8 481", "+19%", "5 806", "146%"],
+        ["PREMIX", "12", "9", "11", "-8%", "9", "117%"],
+        ["TOTAL", "7 154", "6 952", "8 160", "+14%", "5 806", "136%"],
     ]
     story.append(make_table(evol_ventes_data, col_widths=[3*cm, 2.5*cm, 2.2*cm, 2.5*cm, 1.8*cm, 2*cm, 1.8*cm], font_size=7.5))
     story.append(Paragraph(
-        "<i>* % ajusté = réel 24j / (objectif mois × 78%) × 100. Un % ajusté ≥ 100% signifie que le rythme est conforme à l'objectif au prorata du temps écoulé.</i>",
+        "<i>* % ajusté = réel 23j / (objectif mois × 85%) × 100. Un % ajusté ≥ 100% signifie que le rythme est conforme à l'objectif au prorata du temps écoulé.</i>",
         ParagraphStyle('fn', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
     ))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>Lecture juillet 2026 (au 24/07) :</b><br/>"
-        "• <b>Volume global à 146% ajusté</b> — le rythme de juillet reste supérieur à l'objectif au prorata. Très bon démarrage S2.<br/>"
-        "• <b>TOURTEAUX à 174% ajusté</b> — la dynamique de rupture concurrente se maintient vigoureusement. La projection (6 689 t) reste très supérieure à la moyenne S1 (4 844 t).<br/>"
-        "• <b>CONCENTRES à 88% ajusté</b> — toujours sous l'objectif au prorata. La projection juillet (1 594 t) est légèrement supérieure à la moyenne S1 (1 513 t) — <b>amélioration timide vs début juillet</b>, mais le plan d'action doit accélérer.<br/>"
-        "• <b>PREMIX à 128% ajusté</b> — performance solide, conforme à l'objectif.<br/>"
+        "<b>Lecture juillet 2026 (au 27/07) :</b><br/>"
+        "• <b>Volume global à 136% ajusté</b> — le rythme de juillet reste supérieur à l'objectif au prorata mais <b>recule vs 24/07 (146%)</b> — l'effet prix commence à se manifester.<br/>"
+        "• <b>TOURTEAUX à 169% ajusté</b> — la dynamique de rupture concurrente se maintient mais <b>la projection a baissé de 6 689 t (24/07) à 6 415 t (27/07)</b>. La moyenne/jour est passée de 248 t à 238 t (-4%) — <b>la hausse +2 000 XAF/sac du 23/07 commence à ralentir la consommation</b>.<br/>"
+        "• <b>CONCENTRES à 80% ajusté</b> — sous l'objectif au prorata. La projection juillet (1 551 t) est quasi équivalente à la moyenne S1 (1 513 t) — <b>la stagnation des concentrés se confirme</b>.<br/>"
+        "• <b>PREMIX à 117% ajusté</b> — performance conforme à l'objectif.<br/>"
         "• <b>MAÏS à 0 t</b> — aucun achat en juillet (produit opportuniste, vendu uniquement sur disponibilité et demande).",
         BODY_BOLD
     ))
@@ -899,30 +899,30 @@ def build_story():
     # ===== 5.1.2 Évolution du portefeuille client — Analyse par habitudes d'achat =====
     story.append(Paragraph("5.1.2 Évolution du portefeuille client — Analyse par habitudes d'achat", H3))
     story.append(Paragraph(
-        "Nous sommes au 24 juillet — il est normal que certains clients n'aient pas encore commandé. "
+        "Nous sommes au 27 juillet — il est normal que certains clients n'aient pas encore commandé. "
         "Une analyse pertinente doit croiser les habitudes d'achat de chaque client (jour habituel de commande en S1) "
-        "avec son activité juillet. Un client qui achète habituellement en début de mois et qui n'a pas commandé au 24/07 "
+        "avec son activité juillet. Un client qui achète habituellement en début de mois et qui n'a pas commandé au 27/07 "
         "doit attirer notre attention — un client qui achète en fin de mois n'est pas encore inquiétant.",
         BODY
     ))
 
     habitudes_data = [
         ["Catégorie", "Définition", "Nb clients", "CA S1 (M)", "Action"],
-        ["✅ Maintenus", "Clients S1 ayant déjà acheté en juillet", "775", "14 560", "Aucune — base fidèle"],
-        ["🔴 À risque élevé", "Jour d'achat habituel ≤ 21, pas d'achat juillet", "497", "1 851", "Recontact immédiat"],
-        ["🟡 À surveiller", "Jour d'achat habituel 22-25, pas d'achat juillet", "56", "116", "À recontacter dès le 26/07"],
+        ["✅ Maintenus", "Clients S1 ayant déjà acheté en juillet", "789", "14 802", "Aucune — base fidèle"],
+        ["🔴 À risque élevé", "Jour d'achat habituel ≤ 21, pas d'achat juillet", "485", "1 772", "Recontact immédiat"],
+        ["🟡 À surveiller", "Jour d'achat habituel 22-25, pas d'achat juillet", "54", "112", "À recontacter dès le 26/07"],
         ["🟢 Pas encore inquiétant", "Jour d'achat habituel > 25, pas d'achat juillet", "41", "42", "Attendre fin juillet"],
-        ["TOTAL", "", "1 369", "16 569", ""],
+        ["TOTAL", "", "1 369", "16 728", ""],
     ]
     story.append(make_table(habitudes_data, col_widths=[3*cm, 5*cm, 1.8*cm, 2*cm, 4*cm], font_size=7.5))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>Lecture par habitudes d'achat (au 24/07) :</b><br/>"
-        "• <b>775 clients maintenus (57%)</b> — ont déjà acheté en juillet. Base fidèle, CA S1 = 14 560 M.<br/>"
-        "• <b>497 clients à risque élevé</b> — ces clients achètent habituellement avant le 21 du mois. "
-        "Au 24/07, ils auraient dû commander. <b>1 851 M FCFA de CA S1</b> sont potentiellement perdus. "
+        "<b>Lecture par habitudes d'achat (au 27/07) :</b><br/>"
+        "• <b>789 clients maintenus (58%)</b> — ont déjà acheté en juillet. Base fidèle, CA S1 = 14 802 M.<br/>"
+        "• <b>485 clients à risque élevé</b> — ces clients achètent habituellement avant le 21 du mois. "
+        "Au 27/07, ils auraient dû commander. <b>1 772 M FCFA de CA S1</b> sont potentiellement perdus. "
         "Recontact immédiat nécessaire — vérifier s'ils sont partis chez la concurrence.<br/>"
-        "• <b>56 clients à surveiller</b> — achètent habituellement entre le 22 et le 25. "
+        "• <b>54 clients à surveiller</b> — achètent habituellement entre le 22 et le 25. "
         "À recontacter dès le 26/07 si pas d'achat.<br/>"
         "• <b>41 clients pas encore inquiétants</b> — achètent en fin de mois (après le 25). "
         "Attendre la fin juillet avant de s'inquiéter.",
@@ -933,8 +933,8 @@ def build_story():
     # Top 10 clients à risque élevé
     story.append(Paragraph("5.1.3 Top 10 clients à risque élevé — recontact immédiat", H3))
     story.append(Paragraph(
-        "Ces clients achetaient habituellement avant le 21 du mois mais n'ont pas commandé en juillet (au 24/07). "
-        "Ils représentent un CA S1 cumulé de 69 M FCFA pour les 10 premiers.",
+        "Ces clients achetaient habituellement avant le 21 du mois mais n'ont pas commandé en juillet (au 27/07). "
+        "Ils représentent un CA S1 cumulé de 67 M FCFA pour les 10 premiers.",
         BODY
     ))
 
@@ -949,7 +949,7 @@ def build_story():
         ["7", "SOP EVELYNE", "DJELENG", "Ouest", "5", "16", "36"],
         ["8", "TSEUFFA EMMANUEL", "BUEA", "Littoral", "4", "18", "44"],
         ["9", "M. SONFACK FERDINAND (ETS ACCOUVEURS)", "NDOBO", "Littoral", "4", "12", "30"],
-        ["10", "GIC EMERGENCE", "BERTOUA", "Centre", "4", "19", "33"],
+        ["10", "SPC", "NDOBO", "Littoral", "4", "18", "—"],
     ]
     story.append(make_table(top_risque_data, col_widths=[0.8*cm, 4.5*cm, 1.8*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm], font_size=7.5))
     story.append(Paragraph(
@@ -964,12 +964,12 @@ def build_story():
     # Bilan CA gagné / perdu
     story.append(Paragraph("5.1.4 Bilan CA — gagné vs perdu (lecture ajustée)", H3))
     bilan_ca_data = [
-        ["Indicateur", "Juillet 24j", "Lecture"],
-        ["CA clients maintenus (déjà actifs juillet)", "14 560 M", "✅ Base fidèle, bon rythme"],
-        ["CA à risque élevé (clients début de mois, pas d'achat)", "1 851 M", "🔴 À récupérer immédiatement"],
-        ["CA à surveiller (clients mi-mois, pas d'achat)", "116 M", "🟡 À vérifier au 26/07"],
+        ["Indicateur", "Juillet 23j", "Lecture"],
+        ["CA clients maintenus (déjà actifs juillet)", "14 802 M", "✅ Base fidèle, bon rythme"],
+        ["CA à risque élevé (clients début de mois, pas d'achat)", "1 772 M", "🔴 À récupérer immédiatement"],
+        ["CA à surveiller (clients mi-mois, pas d'achat)", "112 M", "🟡 À vérifier au 26/07"],
         ["CA pas inquiétant (clients fin de mois)", "42 M", "🟢 Attendre fin juillet"],
-        ["CA gagné (nouveaux clients)", "—", "⚠️ 47 nouveaux clients en juillet"],
+        ["CA gagné (nouveaux clients)", "—", "⚠️ 48 nouveaux clients en juillet"],
     ]
     story.append(make_table(bilan_ca_data, col_widths=[6*cm, 2.5*cm, 7*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
@@ -977,17 +977,17 @@ def build_story():
     # Évolution concentrés
     story.append(Paragraph("5.1.5 Évolution spécifique concentrés", H3))
     conc_evol_data = [
-        ["Indicateur", "S1 2026", "Juillet 24j", "Projection 31j"],
-        ["Clients acheteurs concentrés", "1 016", "≈ 700", "≈ 900"],
-        ["Clients concentrés maintenus", "—", "≈ 660 (65%)", "≈ 850"],
-        ["Clients concentrés à risque élevé (début de mois)", "—", "≈ 360", "Recontact immédiat"],
-        ["Nouveaux clients concentrés", "—", "≈ 40", "≈ 50"],
+        ["Indicateur", "S1 2026", "Juillet 23j", "Projection 27j"],
+        ["Clients acheteurs concentrés", "1 016", "≈ 715", "≈ 840"],
+        ["Clients concentrés maintenus", "—", "≈ 680 (67%)", "≈ 800"],
+        ["Clients concentrés à risque élevé (début de mois)", "—", "≈ 340", "Recontact immédiat"],
+        ["Nouveaux clients concentrés", "—", "≈ 35", "≈ 41"],
     ]
     story.append(make_table(conc_evol_data, col_widths=[5.5*cm, 2.8*cm, 2.8*cm, 3.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>Lecture concentrés :</b> sur 1 016 clients qui ont acheté des concentrés en S1, environ 660 (65%) ont déjà acheté en juillet "
-        "(24 jours). La projection à 31 jours (≈ 850) suggère un léger recul vs S1 — <b>la base se maintient mais ne croît pas</b>. "
+        "<b>Lecture concentrés :</b> sur 1 016 clients qui ont acheté des concentrés en S1, environ 680 (67%) ont déjà acheté en juillet "
+        "(23 jours). La projection à 27 jours (≈ 800) suggère un recul de ~20% vs S1 — <b>la base se réduit légèrement</b>. "
         "Le plan d'action doit produire des conversions supplémentaires en fin de mois. "
         "Les clients concentrés à risque élevé (habitude début de mois, pas d'achat) doivent être recontactés en priorité.",
         BODY_BOLD
@@ -1000,11 +1000,10 @@ def build_story():
         "<b>⚠️ Augmentations tarifaires intervenues en juillet 2026 :</b><br/>"
         "• <b>Soja (tourteaux)</b> : hausse de <b>+1 000 FCFA</b> en début de mois, puis <b>+2 000 FCFA supplémentaires</b> par sac de 50 kg à partir du <b>23/07/2026</b> — soit <b>+3 000 FCFA/sac cumulé</b> au total sur juillet.<br/>"
         "• <b>PREMIX</b> : hausse de <b>+3 000 FCFA</b> sur tout le territoire<br/><br/>"
-        "<b>Impact observé (au 24/07) :</b> le prix moyen soja est passé de 16 198 FCFA/sac (S1) à 18 322 FCFA/sac en juillet (soit +13,1%), ce qui correspond à l'effet combiné des deux hausses sur 24 jours (les 2 derniers jours à +3 000 FCFA/sac). <br/>"
-        "<b>Risque :</b> la seconde hausse (effective 23/07) n'a pas encore produit son plein effet sur les volumes. "
-        "Le suivi de fin juillet et d'août devra vérifier si ces hausses entraînent une accélération du churn, particulièrement si "
-        "le concurrent reconstitue ses stocks de soja.<br/><br/>"
-        "<b>Croisement avec l'analyse des habitudes :</b> parmi les 497 clients à risque élevé (début de mois, pas d'achat), "
+        "<b>Impact observé (au 27/07) :</b> le prix moyen soja est passé de 16 198 FCFA/sac (S1) à 18 412 FCFA/sac en juillet (soit +13,7%), reflétant l'effet combiné des deux hausses (les 5 derniers jours à +3 000 FCFA/sac cumulé). <br/>"
+        "<b>Premier effet visible :</b> la moyenne/jour TOURTEAUX est passée de 248 t (au 24/07) à 238 t (au 27/07), soit <b>-4% en 3 jours</b>. La hausse +2 000 XAF/sac (effective 23/07) commence à ralentir la consommation soja — l'effet prix se manifeste enfin.<br/>"
+        "<b>Risque :</b> si cette tendance se confirme en août, le volume TOURTEAUX pourrait baisser significativement — particulièrement si le concurrent reconstitue ses stocks. Le suivi d'août devra vérifier si ces hausses entraînent une accélération du churn.<br/><br/>"
+        "<b>Croisement avec l'analyse des habitudes :</b> parmi les 485 clients à risque élevé (début de mois, pas d'achat), "
         "il faut vérifier si la hausse du prix du soja est un facteur explicatif. Un appel téléphonique permet de distinguer "
         "les clients partis chez la concurrence (prix) de ceux qui retardent simplement leur commande.",
         BODY_BOLD
@@ -1021,21 +1020,21 @@ def build_story():
     ))
 
     booster_data = [
-        ["Indicateur", "S1 2026", "Juillet 24j", "Évolution"],
-        ["Clients Booster (ALIMENT COMPLET)", "494", "171", "—"],
-        ["Booster + Concentrés (cross-sell)", "357 (72%)", "120 (70%)", "⚠️ -2 points"],
-        ["Booster ONLY (pas de concentrés)", "137 (28%)", "51 (30%)", "⚠️ +2 points"],
-        ["✅ Booster-only S1 → ont commencé conc. en juillet", "—", "8", "Conversion faible"],
+        ["Indicateur", "S1 2026", "Juillet 23j", "Évolution"],
+        ["Clients Booster (ALIMENT COMPLET)", "494", "174", "—"],
+        ["Booster + Concentrés (cross-sell)", "357 (72%)", "123 (71%)", "⚠️ -1 point"],
+        ["Booster ONLY (pas de concentrés)", "137 (28%)", "51 (29%)", "⚠️ +1 point"],
+        ["✅ Booster-only S1 → ont commencé conc. en juillet", "—", "9", "Conversion faible"],
         ["⚠️ Booster+Conc S1 → devenus booster-only en juillet", "—", "9", "Régression!"],
     ]
     story.append(make_table(booster_data, col_widths=[6*cm, 2.8*cm, 2.8*cm, 4*cm], font_size=7.5))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Lecture Booster × Concentrés :</b><br/>"
-        "• Le taux de cross-sell Booster→Concentrés chute de 72% à 70% en juillet — <b>régression légère mais contenue</b>.<br/>"
+        "• Le taux de cross-sell Booster→Concentrés est quasi-stable à 71-72% en juillet — <b>maintien de la discipline</b>.<br/>"
         "• <b>9 clients</b> qui achetaient Booster + Concentrés en S1 n'achètent plus que le Booster en juillet — "
         "ils abandonnent les concentrés.<br/>"
-        "• <b>8 clients</b> Booster-only ont été convertis vers les concentrés — le cross-sell fonctionne timidement.<br/>"
+        "• <b>9 clients</b> Booster-only ont été convertis vers les concentrés — le cross-sell fonctionne timidement.<br/>"
         "• Le bundle Booster+Concentrés doit être renforcé, particulièrement auprès des 51 clients Booster-only de juillet.",
         BODY_BOLD
     ))
@@ -1051,21 +1050,21 @@ def build_story():
     ))
 
     soja_conc_data = [
-        ["Indicateur", "S1 2026", "Juillet 24j", "Évolution"],
-        ["Clients acheteurs soja", "1 215", "704", "—"],
-        ["Soja + Concentrés (cross-sell)", "958 (79%)", "540 (77%)", "⚠️ -2 points"],
-        ["Soja ONLY (pas de concentrés)", "257 (21%)", "164 (23%)", "⚠️ +2 points"],
-        ["✅ Soja-only S1 → ont commencé concentrés en juillet", "—", "30", "Conversion en cours"],
+        ["Indicateur", "S1 2026", "Juillet 23j", "Évolution"],
+        ["Clients acheteurs soja", "1 215", "720", "—"],
+        ["Soja + Concentrés (cross-sell)", "958 (79%)", "557 (77%)", "⚠️ -2 points"],
+        ["Soja ONLY (pas de concentrés)", "257 (21%)", "163 (23%)", "⚠️ +2 points"],
+        ["✅ Soja-only S1 → ont commencé concentrés en juillet", "—", "33", "Conversion en cours"],
         ["⚠️ Soja+Conc S1 → arrêt concentrés en juillet", "—", "82", "Régression massive!"],
     ]
     story.append(make_table(soja_conc_data, col_widths=[6*cm, 2.8*cm, 2.8*cm, 4*cm], font_size=7.5))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Lecture soja → concentrés :</b><br/>"
-        "• <b>Le taux de cross-sell soja→concentrés chute de 79% à 77%</b> (-2 points) — le bundle 3:1 n'est que partiellement appliqué.<br/>"
+        "• <b>Le taux de cross-sell soja→concentrés reste à 77%</b> (-2 points vs S1) — le bundle 3:1 n'est que partiellement appliqué.<br/>"
         "• <b>82 clients</b> qui achetaient soja + concentrés en S1 n'achètent plus que le soja en juillet — c'est une <b>régression massive</b>.<br/>"
-        "• <b>30 clients</b> soja-only ont été convertis vers les concentrés — le plan d'action cross-sell commence à produire des résultats.<br/>"
-        "• <b>164 clients</b> achètent du soja sans concentrés en juillet — ce sont les cibles immédiates du bundle.<br/>"
+        "• <b>33 clients</b> soja-only ont été convertis vers les concentrés — le plan d'action cross-sell progresse (+3 conversions vs 24/07).<br/>"
+        "• <b>163 clients</b> achètent du soja sans concentrés en juillet — ce sont les cibles immédiates du bundle.<br/>"
         "• La hausse du prix du soja (+1 000 puis +2 000 FCFA/sac au 23/07) pourrait expliquer en partie cette régression : les clients viennent chercher le soja (produit d'appel) "
         "mais ne veulent pas ou ne peuvent pas ajouter du concentré à leur commande.",
         BODY_BOLD
@@ -1073,7 +1072,7 @@ def build_story():
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Conclusion comportement client (juillet) :</b> les deux indicateurs de cross-sell (Booster→Conc et Soja→Conc) "
-        "montrent une <b>dégradation modérée</b>. Le bundle soja-concentrés 3:1, qui est l'action #1 du plan, "
+        "montrent une <b>dégradation modérée mais stable</b>. Le bundle soja-concentrés 3:1, qui est l'action #1 du plan, "
         "n'est manifestement <b>pas encore pleinement déployé en agence</b>. Les 82 clients en régression soja+conc→soja-only "
         "représentent une perte directe de CA concentrés qui s'ajoute à la sous-performance structurelle. "
         "<b>Vérification terrain urgente : le bundle est-il communiqué aux commerciaux ? Sont-ils outillés pour l'imposer ?</b>",
@@ -1090,37 +1089,36 @@ def build_story():
     ))
 
     dashboard_data = [
-        ["KPI", "Réf S1", "Cible S2", "Juil (24j)", "Août", "Sept", "Oct", "Nov", "Déc"],
-        ["Clients maintenus (S1 → actifs)", "1 369", "Maximiser", "775 (57%)", "—", "—", "—", "—", "—"],
-        ["Nouveaux clients", "—", "Maximiser", "47", "—", "—", "—", "—", "—"],
-        ["Clients à risque élevé (habitude ≤21j)", "—", "Réduire", "497", "—", "—", "—", "—", "—"],
+        ["KPI", "Réf S1", "Cible S2", "Juil (23j)", "Août", "Sept", "Oct", "Nov", "Déc"],
+        ["Clients maintenus (S1 → actifs)", "1 369", "Maximiser", "789 (58%)", "—", "—", "—", "—", "—"],
+        ["Nouveaux clients", "—", "Maximiser", "48", "—", "—", "—", "—", "—"],
+        ["Clients à risque élevé (habitude ≤21j)", "—", "Réduire", "485", "—", "—", "—", "—", "—"],
         ["Top 14 clients 20/80 réactivés", "0/14", "≥ 8/14", "À suivre", "—", "—", "—", "—", "—"],
         ["192 churned Q1→Q2 reconquis", "0", "≥ 58", "À suivre", "—", "—", "—", "—", "—"],
         ["CA gagné nouveaux clients (M)", "—", "Maximiser", "—", "—", "—", "—", "—", "—"],
-        ["CA à risque élevé (M)", "—", "Récupérer", "1 851", "—", "—", "—", "—", "—"],
+        ["CA à risque élevé (M)", "—", "Récupérer", "1 772", "—", "—", "—", "—", "—"],
         ["Bundle soja-concentrés (%)", "79%", "≥ 80%", "77%", "—", "—", "—", "—", "—"],
-        ["Volume CONCENTRES (t)", "1 513/mois", "≥ 1 942", "1 594 (proj.)", "—", "—", "—", "—", "—"],
-        ["Atteinte obj. CONCENTRES", "72%", "≥ 100%", "88% (ajusté)", "—", "—", "—", "—", "—"],
-        ["Nouveaux clients concentrés", "—", "Maximiser", "≈ 40", "—", "—", "—", "—", "—"],
-        ["Cross-sell Booster→Conc (%)", "72%", "≥ 72%", "70%", "—", "—", "—", "—", "—"],
+        ["Volume CONCENTRES (t)", "1 513/mois", "≥ 1 942", "1 551 (proj.)", "—", "—", "—", "—", "—"],
+        ["Atteinte obj. CONCENTRES", "72%", "≥ 100%", "80% (ajusté)", "—", "—", "—", "—", "—"],
+        ["Nouveaux clients concentrés", "—", "Maximiser", "≈ 35", "—", "—", "—", "—", "—"],
+        ["Cross-sell Booster→Conc (%)", "72%", "≥ 72%", "71%", "—", "—", "—", "—", "—"],
         ["Prix soja (FCFA/sac)", "Stable", "—", "+1 000 puis +2 000 (23/07)", "—", "—", "—", "—", "—"],
         ["Prix PREMIX (FCFA/sac)", "Stable", "—", "+3 000", "—", "—", "—", "—", "—"],
     ]
     story.append(make_table(dashboard_data, col_widths=[4*cm, 2*cm, 2*cm, 2.6*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm], font_size=7))
     story.append(Paragraph(
-        "<i>* 497 clients S1 avec habitude d'achat ≤ 21j n'ont pas commandé au 24/07. À relativiser : 775 clients (57%) sont déjà actifs.</i>",
+        "<i>* 485 clients S1 avec habitude d'achat ≤ 21j n'ont pas commandé au 27/07. À relativiser : 789 clients (58%) sont déjà actifs.</i>",
         ParagraphStyle('fn2', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
     ))
 
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph(
-        "<b>Première lecture du plan d'action (au 24/07) :</b><br/>"
-        "• <b>CONCENTRES</b> : la projection juillet (1 594 t) est légèrement supérieure à la moyenne S1 (1 513 t) — <b>amélioration timide</b>. "
-        "Le plan d'action sur les concentrés commence à produire des effets mais reste sous l'objectif au prorata (88%). Les actions critiques (bundle 3:1, sauvetage 14 clients 20/80, recontact 192 churned) doivent être accélérées.<br/>"
-        "• <b>TOURTEAUX</b> : la projection (6 689 t) reste très supérieure à la moyenne S1 (4 844 t) — la rupture concurrente se maintient vigoureusement malgré la hausse tarifaire.<br/>"
-        "• <b>Nouveaux clients</b> : 47 en 24 jours (projection ~60/mois) — l'acquisition reste insuffisante. La prospection des 118 jamais acquis doit être lancée.<br/>"
-        "• <b>Cross-sell</b> : le taux soja→conc chute de 79% à 77% (-2 points). 82 clients ont arrêté les concentrés. Le bundle 3:1 n'est que partiellement déployé.<br/>"
-        "• <b>Conclusion</b> : à 24 jours, le plan d'action produit des effets visibles mais insuffisants sur les concentrés. La fenêtre d'opportunité (rupture concurrente) se maintient mais le temps presse — il reste 7 jours pour rattraper l'écart à l'objectif.",
+        "<b>Première lecture du plan d'action (au 27/07) :</b><br/>"
+        "• <b>CONCENTRES</b> : la projection juillet (1 551 t) est légèrement supérieure à la moyenne S1 (1 513 t) — <b>+3% mais sous l'objectif au prorata (80%)</b>. Le plan d'action peine à décoller. Les actions critiques (bundle 3:1, sauvetage 14 clients 20/80, recontact 192 churned) doivent être accélérées.<br/>"
+        "• <b>TOURTEAUX</b> : la projection (6 415 t) reste très supérieure à la moyenne S1 (4 844 t, +32%) — la rupture concurrente se maintient, mais <b>la moyenne/jour a baissé de 4% entre 24/07 et 27/07</b>, signe que la hausse +2 000 XAF/sac (effective 23/07) commence à ralentir la consommation.<br/>"
+        "• <b>Nouveaux clients</b> : 48 en 23 jours (projection ~56/mois) — l'acquisition reste insuffisante. La prospection des 118 jamais acquis doit être lancée.<br/>"
+        "• <b>Cross-sell</b> : le taux soja→conc reste à 77% (-2 pts vs S1). 82 clients ont arrêté les concentrés. Le bundle 3:1 n'est que partiellement déployé.<br/>"
+        "• <b>Conclusion</b> : à 23 jours (85% du mois), le plan d'action ne produit pas encore les effets attendus sur les concentrés (80% ajusté). La fenêtre d'opportunité (rupture concurrente) commence à se referner — <b>il ne reste que 4 jours ouvrables pour rattraper l'écart à l'objectif</b>.",
         BODY_BOLD
     ))
 

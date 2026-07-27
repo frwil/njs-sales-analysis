@@ -1,0 +1,50 @@
+{
+  "update_date": "27/07/2026",
+  "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (4).xlsx",
+  "rows_livree_new": 9337,
+  "rows_livree_prev": 8996,
+  "t1_new": {
+    "total_t": 5464.504,
+    "moy_jour_t": 237.5871304347826,
+    "days_elapsed": 23
+  },
+  "t1_prev": {
+    "total_t": 5202.664,
+    "moy_jour_t": 247.74590476190474,
+    "days_elapsed": 21
+  },
+  "t2_new": {
+    "cmds": 66,
+    "bundle": 50,
+    "soja_only": 16,
+    "ratio": "2.1:1"
+  },
+  "t2_prev": {
+    "cmds": 70,
+    "bundle": 62,
+    "soja_only": 8,
+    "ratio": "1.7:1"
+  },
+  "t3_new": {
+    "count": 16,
+    "total_t": 10.66
+  },
+  "t3_prev": {
+    "count": 8,
+    "total_t": 9.2
+  },
+  "t4_new": {
+    "rupture_date": "04/09/2026",
+    "jours_stock": 34,
+    "moy_jour_t": 237.5871304347826
+  },
+  "t4_prev": {
+    "rupture_date": "31/08/2026",
+    "jours_stock": 32,
+    "moy_jour_t": 247.74590476190474
+  },
+  "price_hike": {
+    "date": "23/07/2026",
+    "amount": "+2 000 XAF/sac 50kg"
+  }
+}
