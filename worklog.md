@@ -71,3 +71,50 @@ Stage Summary:
   - Centre meilleure region: ratio 2.4 -> 3.0, conc -13%
 - Outputs JSON de traceabilite: juillet_mtd_24.json, cross_sell_mtd_24.json, volumes_juillet_24.json, bundle_metrics_24.json, soja_juillet_24.json
 - Conclusion generale: l'effet plein de la hausse +2 000 XAF (effective 23/07) n'est pas encore visible sur 24j (seulement 2 jours a +3 000 XAF cumule). La consommation soja continue de progresser (+5 t/j) — la fenetre d'opportunité (rupture concurrente) l'emporte encore sur l'effet prix. Le ratio bundle s'ameliore le 24/07 (1.7:1) mais la tendance mensuelle reste degradee (3.5:1 vs 2.7:1 en S1).
+
+---
+Task ID: zero-achat-bundle-27
+Agent: main
+Task: Mettre a jour l'analyse zero achat et bundle soja-concentres avec la nouvelle extraction au 27/07/2026. Ajouter la regle premix (1 sac/tonne soja pour commandes soja-only).
+
+Work Log:
+- Identifie la nouvelle extraction: `NJS GROUP ERP - Lignes de commandes + multicompany (4).xlsx` (modifiee 27/07 08:09, couverture 01-27/07, 9337 lignes Livree).
+- Le 27/07 est une extraction matinale (85 lignes, 0 commande soja Livree) — utilise le 25/07 (samedi, 66 cmdes soja) pour T2/T3.
+- Temps ecoule: 23 jours ouvres (lun-sam) sur 27 = 85.2% du mois.
+- Script `update_soja_juillet.py` mis a jour pour pointer vers la nouvelle extraction (4) et utiliser 27/07 comme date de reference.
+- Script `compute_july_mtd_metrics.py` mis a jour pour la nouvelle extraction. Outputs renommes en *_27.json.
+- `build_zero_achat_pdf.py` — section 5 refraichie avec donnees au 27/07:
+  - 789 clients maintenus (58%), 485 a risque eleve, 48 nouveaux
+  - CA risque eleve: 1 772 M FCFA
+  - Cross-sell soja: 82 regressions, 33 conversions, taux 77% (-2 pts vs S1)
+  - Cross-sell booster: 9 regressions, 9 conversions, taux 71% (stable)
+  - Volumes: TOURTEAUX 5465/6415 t (proj +32% vs S1, mais moy/jour -4% vs 24/07 — effet prix commence a se manifester)
+  - CONCENTRES: 1322/1551 t (proj +3% vs S1, 80% ajuste)
+  - Note prix: double hausse +1 000 (debut mois) + +2 000 (23/07) = +3 000 FCFA/sac cumule
+- `build_bundle_analysis_pdf.py` — mis a jour avec donnees au 27/07:
+  - Global: 958 -> 557 clients bundle, ratio 2.7:1 -> 3.5:1, budget +37%, sacs soja +10%, sacs conc -16%
+  - 14 agences mises a jour (NDOBO 5.5:1, PK11 4.7:1, DJELENG 4.1:1 toujours critiques)
+  - Regions: Ouest ratio 2.8->3.7, Centre 2.4->3.0, Littoral 2.8->3.8
+  - Conclusions ajustees avec nouvelles valeurs
+- NOUVELLE SECTION 7.5 ajoutee — Regle premix pour commandes soja-only:
+  - Regle: 1 sac de premix (25 kg) minimum par tonne de soja pour les commandes soja-only sans concentre
+  - Impact analyse: 1087 commandes soja-only sans premix en juillet (39% des commandes soja)
+  - Volume soja concerne: 2860 t -> 2860 sacs premix requis (71.5 t)
+  - CA potentiel: 71.5 M FCFA/mois, 858 M FCFA annualise
+  - Top 10 commandes (SEPTENTRION VETERINAIRE 165 t cumulees, SAGUEN DEFFO 125 t)
+  - Recommandation 10 ajoutee au tableau des recommandations (10 axes au lieu de 9)
+  - Synergie avec regle 7.3 (annulation >= 10 t sans conc) mise en evidence
+
+Stage Summary:
+- analyse_soja_juillet.xlsx (4 feuilles, 11 Ko): au 27/07, moy/jour 237.6 t (-10 t/j vs 24/07), rupture probable 04/09/2026 (34j stock)
+- analyse_zero_achat.pdf (21 pages, 334 Ko): section 5 entierement refraichie au 27/07
+  - 789 clients maintenus (58%), 485 a risque eleve (CA 1772 M)
+  - Projection CONCENTRES juillet: 1551 t (+3% vs S1, 80% ajuste)
+  - Effet prix commence a se manifester: moy/jour TOURTEAUX -4% vs 24/07
+- analyse_bundle_soja_concentres.pdf (15 pages, 84 Ko): entierement refraichi + nouvelle section 7.5
+  - Global: 557 clients bundle, ratio 3.5:1, budget +37%
+  - 5 agences rouges (NDOBO 5.5:1, DJELENG 4.1:1, NKOABANG 3.8:1, NKOLBISSON, NKONGSAMBA)
+  - 4 agences vertes (BERTOUA, NGAOUNDERE, BUEA, AHALA)
+  - NOUVEAU: Section 7.5 regle premix — potentiel CA additionnel 71.5 M FCFA/mois
+- Outputs JSON: juillet_mtd_27.json, cross_sell_mtd_27.json, volumes_juillet_27.json, bundle_metrics_27.json, soja_juillet_27.json
+- Conclusion: la hausse +2 000 XAF/sac (effective 23/07) commence a ralentir la consommation soja (-4% en 3 jours). La fenetre d'opportunité (rupture concurrente) commence a se refermer. La nouvelle regle premix (1 sac/tonne pour soja-only) represente un levier immediate de 71.5 M FCFA/mois.

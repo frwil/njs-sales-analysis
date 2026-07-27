@@ -112,7 +112,7 @@ def draw_cover(canv, doc):
     canv.setFont('NotoSerifSC', 10)
     canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Juillet 2026")
     canv.setFont('NotoSerifSC-Light', 9)
-    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 3.2*cm, "Période analysée : S1 2026 vs Juillet 2026 (au 24/07)")
+    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 3.2*cm, "Période analysée : S1 2026 vs Juillet 2026 (au 27/07)")
 
     # Main title block (left aligned)
     canv.setFillColor(NAVY)
@@ -397,8 +397,8 @@ def build_story():
         BODY
     ))
     story.append(Paragraph(
-        "<b>Base de clients bundle :</b> 958 clients en moyenne mensuelle S1 2026 → 540 clients actifs en juillet 2026 "
-        "(au 24/07, projection partielle du mois).",
+        "<b>Base de clients bundle :</b> 958 clients en moyenne mensuelle S1 2026 → 557 clients actifs en juillet 2026 "
+        "(au 27/07, projection partielle du mois).",
         BODY_BOLD
     ))
 
@@ -406,7 +406,7 @@ def build_story():
     story.append(Paragraph(
         "Deux périodes sont comparées :<br/>"
         "• <b>S1 2026 (référence)</b> : moyenne mensuelle calculée sur la période Janvier-Juin 2026.<br/>"
-        "• <b>Juillet 2026</b> : données au 24/07, portant sur les commandes au statut <b>Livrée</b> "
+        "• <b>Juillet 2026</b> : données au 27/07, portant sur les commandes au statut <b>Livrée</b> "
         "(commandes fermes, hors panier/brouillon).",
         BODY
     ))
@@ -444,18 +444,18 @@ def build_story():
 
     story.append(Paragraph(
         "Vue agrégée des indicateurs bundle sur l'ensemble des 14 agences BELGOCAM, "
-        "comparant la moyenne mensuelle S1 2026 et les données Juillet 2026 (au 24/07).",
+        "comparant la moyenne mensuelle S1 2026 et les données Juillet 2026 (au 27/07).",
         BODY
     ))
 
     story.append(Paragraph("3.1 Tableau de bord global", H2))
     global_data = [
         ["Indicateur", "Moyenne S1", "Juillet", "Évolution", "Lecture"],
-        ["Prix soja/sac", "16 198", "18 322", "+13,1%", "Hausse cumulée +3 000 FCFA (1 000 + 2 000)"],
-        ["Prix conc/sac", "33 382", "33 560", "+0,5%", "Stabilité quasi totale"],
-        ["Budget/client", "2 974 944", "3 925 013", "+31,9%", "Les clients augmentent leur budget"],
-        ["Sacs soja/client", "132,7", "140,9", "+6,2%", "Achat massif de soja (rupture concurrente)"],
-        ["Sacs conc/client", "49,3", "40,0", "-18,9%", "Les concentrés reculent en volume par client"],
+        ["Prix soja/sac", "16 198", "18 412", "+13,7%", "Hausse cumulée +3 000 FCFA (1 000 + 2 000)"],
+        ["Prix conc/sac", "33 382", "33 621", "+0,7%", "Stabilité quasi totale"],
+        ["Budget/client", "2 974 944", "4 083 443", "+37,3%", "Les clients augmentent leur budget"],
+        ["Sacs soja/client", "132,7", "145,8", "+9,9%", "Achat massif de soja (rupture concurrente)"],
+        ["Sacs conc/client", "49,3", "41,6", "-15,6%", "Les concentrés reculent en volume par client"],
         ["Ratio soja/conc", "2,7:1", "3,5:1", "dégradation", "Dégradation du ratio au-delà de 3:1"],
     ]
     story.append(make_table(global_data, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 5.5*cm]))
@@ -463,24 +463,23 @@ def build_story():
 
     story.append(Paragraph("3.2 Lecture des résultats", H2))
     story.append(Paragraph(
-        "<b>Le prix du soja a augmenté comme attendu</b> (+13,1%, soit précisément +2 124 FCFA/sac en moyenne sur juillet, "
-        "reflétant l'effet combiné de la hausse de début de mois (+1 000) et de la hausse du 23/07 (+2 000) qui ne joue que sur 2 jours), "
-        "tandis que le prix des concentrés est resté stable (+0,5%). "
+        "<b>Le prix du soja a augmenté comme attendu</b> (+13,7%, soit précisément +2 214 FCFA/sac en moyenne sur juillet, "
+        "reflétant l'effet combiné de la hausse de début de mois (+1 000) et de la hausse du 23/07 (+2 000) qui joue sur 5 jours), "
+        "tandis que le prix des concentrés est resté stable (+0,7%). "
         "La première conséquence mécanique aurait dû être une <b>compression du budget client</b> "
         "ou une <b>réduction des volumes de soja</b>.",
         BODY
     ))
     story.append(Paragraph(
-        "<b>Or, c'est l'inverse qui se produit :</b> le budget client bondit de +31,9% et les sacs de soja par client "
-        "augmentent de +6,2%. Ce paradoxe s'explique par la <b>rupture de stock du concurrent</b> — "
+        "<b>Or, c'est l'inverse qui se produit :</b> le budget client bondit de +37,3% et les sacs de soja par client "
+        "augmentent de +9,9%. Ce paradoxe s'explique par la <b>rupture de stock du concurrent</b> — "
         "les clients viennent massivement chez BELGOCAM pour s'approvisionner en soja, malgré la hausse tarifaire. "
         "Le soja joue pleinement son rôle de produit d'appel.",
         BODY_BOLD
     ))
     story.append(Paragraph(
-        "<b>Côté concentrés :</b> les sacs par client reculent de <b>-18,9%</b>. La dégradation est plus prononcée "
-        "qu'au point précédent (18/07), ce qui confirme la dérive du bundle. Le différentiel de croissance "
-        "(soja +6,2% vs conc -18,9%) entraîne mécaniquement une <b>dégradation nette du ratio soja/conc</b>, "
+        "<b>Côté concentrés :</b> les sacs par client reculent de <b>-15,6%</b>. La dégradation se confirme "
+        "et le différentiel de croissance (soja +9,9% vs conc -15,6%) entraîne mécaniquement une <b>dégradation nette du ratio soja/conc</b>, "
         "qui passe de 2,7:1 à 3,5:1 — le ratio cible de 3:1 est franchi dans le mauvais sens.",
         BODY
     ))
@@ -509,20 +508,20 @@ def build_story():
 
     agence_data = [
         ["Agence", "Région", "Prix soja Δ%", "Budget Δ%", "Sacs conc Δ%", "Ratio S1", "Ratio Juil", "Verdict"],
-        ["Famla", "Ouest", "+13,7%", "+2,5%", "-16,4%", "3,2:1", "3,9:1", "⚠️ Ratio se dégrade"],
+        ["Famla", "Ouest", "+14,3%", "+2,5%", "-16,4%", "3,2:1", "3,9:1", "⚠️ Ratio se dégrade"],
         ["Ndobo", "Littoral", "+12,8%", "+5,7%", "-39,2%", "2,7:1", "5,5:1", "🔴 Conc en chute libre"],
-        ["Messassi", "Centre", "+12,9%", "-0,1%", "-22,1%", "2,6:1", "3,4:1", "⚠️ Ratio se dégrade"],
+        ["Messassi", "Centre", "+13,1%", "-0,1%", "-22,1%", "2,6:1", "3,4:1", "⚠️ Ratio se dégrade"],
         ["Djeleng", "Ouest", "+12,6%", "+1,0%", "-35,2%", "2,2:1", "4,1:1", "🔴 Conc en chute"],
-        ["Mbouda", "Ouest", "+13,9%", "+7,0%", "-11,7%", "2,6:1", "3,2:1", "⚠️ Conc stagnant"],
-        ["Village", "Littoral", "+12,8%", "-16,5%", "-24,9%", "2,7:1", "2,8:1", "⚠️ Budget en baisse"],
-        ["Bertoua", "Centre", "+9,7%", "+33,4%", "+3,9%", "2,0:1", "2,8:1", "✅ Bonne croissance"],
-        ["Nkongsamba", "Littoral", "+13,6%", "-34,0%", "-39,9%", "2,5:1", "2,5:1", "🔴 Budget et conc en baisse"],
-        ["Nkoabang", "Centre", "+12,1%", "-26,1%", "-39,5%", "3,1:1", "3,8:1", "🔴 Conc en chute"],
-        ["Ngaoundere", "Centre", "+12,6%", "+18,9%", "+15,3%", "2,2:1", "2,1:1", "✅ Excellente"],
-        ["Buea", "Littoral", "+15,1%", "-4,3%", "-1,4%", "3,5:1", "2,9:1", "✅ Ratio s'améliore"],
-        ["Ahala", "Centre", "+12,7%", "+19,1%", "-4,8%", "2,2:1", "2,9:1", "✅ Bonne croissance"],
+        ["Mbouda", "Ouest", "+15,4%", "+7,0%", "-11,7%", "2,6:1", "3,2:1", "⚠️ Conc stagnant"],
+        ["Village", "Littoral", "+13,9%", "-16,5%", "-24,9%", "2,7:1", "3,1:1", "⚠️ Budget en baisse"],
+        ["Bertoua", "Centre", "+10,3%", "+33,4%", "+3,9%", "2,0:1", "2,8:1", "✅ Bonne croissance"],
+        ["Nkongsamba", "Littoral", "+13,7%", "-34,0%", "-39,9%", "2,5:1", "2,2:1", "🔴 Budget et conc en baisse"],
+        ["Nkoabang", "Centre", "+12,7%", "-26,1%", "-39,5%", "3,1:1", "3,8:1", "🔴 Conc en chute"],
+        ["Ngaoundere", "Centre", "+13,2%", "+18,9%", "+15,3%", "2,2:1", "2,2:1", "✅ Excellente"],
+        ["Buea", "Littoral", "+15,3%", "-4,3%", "-1,4%", "3,5:1", "2,9:1", "✅ Ratio s'améliore"],
+        ["Ahala", "Centre", "+13,3%", "+19,1%", "-4,8%", "2,2:1", "2,9:1", "✅ Bonne croissance"],
         ["Nkolbisson", "Centre", "+14,3%", "-19,5%", "-30,0%", "2,1:1", "2,5:1", "🔴 Conc en baisse"],
-        ["Pk11", "Littoral", "+13,7%", "+31,6%", "-4,8%", "3,2:1", "4,5:1", "⚠️ Ratio se dégrade"],
+        ["Pk11", "Littoral", "+13,7%", "+31,6%", "-4,8%", "3,2:1", "4,7:1", "⚠️ Ratio se dégrade"],
     ]
     story.append(make_table(agence_data, col_widths=[2.2*cm, 1.6*cm, 1.8*cm, 1.8*cm, 1.8*cm, 1.6*cm, 1.6*cm, 3.4*cm], font_size=7.5))
     story.append(Spacer(1, 0.3*cm))
@@ -564,42 +563,42 @@ def build_story():
     # ----- 5.1 OUEST -----
     story.append(Paragraph("5.1 Région OUEST (3 agences : Famla, Djeleng, Mbouda)", H2))
     story.append(Paragraph(
-        "<b>Base clients bundle :</b> 1 106 clients S1 → 206 clients en Juillet (au 24/07).",
+        "<b>Base clients bundle :</b> 1 106 clients S1 → 214 clients en Juillet (au 27/07).",
         BODY_BOLD
     ))
     ouest_data = [
         ["Indicateur", "S1", "Juillet", "Évolution"],
-        ["Prix soja", "16 163", "18 341", "+13,5%"],
-        ["Prix conc", "34 190", "34 137", "-0,2%"],
-        ["Budget/client", "4 641 702", "4 760 536", "+2,6%"],
-        ["Sacs conc/client", "58,0", "46,2", "-20,3%"],
-        ["Ratio soja/conc", "2,8:1", "3,8:1", "dégradation"],
+        ["Prix soja", "16 163", "18 457", "+14,2%"],
+        ["Prix conc", "34 190", "34 222", "+0,1%"],
+        ["Budget/client", "4 641 702", "5 034 452", "+8,5%"],
+        ["Sacs conc/client", "58,0", "49,3", "-15,0%"],
+        ["Ratio soja/conc", "2,8:1", "3,7:1", "dégradation"],
     ]
     story.append(make_table(ouest_data, col_widths=[4.5*cm, 3.5*cm, 3.5*cm, 4*cm]))
     story.append(Spacer(1, 0.2*cm))
     story.append(insight_box(
-        "<b>Verdict OUEST :</b> Budget quasi-stable (+2,6%) — conc en chute (-20,3%) et ratio se dégrade fortement (2,8 → 3,8). DJELENG tire la région vers le bas (-35,2% conc)."
+        "<b>Verdict OUEST :</b> Budget en hausse (+8,5%) — conc en chute (-15,0%) et ratio se dégrade (2,8 → 3,7). DJELENG tire la région vers le bas (-35,2% conc)."
     ))
     story.append(Spacer(1, 0.3*cm))
 
     # ----- 5.2 CENTRE -----
     story.append(Paragraph("5.2 Région CENTRE (6 agences)", H2))
     story.append(Paragraph(
-        "<b>Base clients bundle :</b> 954 clients S1 → 166 clients en Juillet (au 24/07).",
+        "<b>Base clients bundle :</b> 954 clients S1 → 169 clients en Juillet (au 27/07).",
         BODY_BOLD
     ))
     centre_data = [
         ["Indicateur", "S1", "Juillet", "Évolution"],
-        ["Prix soja", "16 695", "18 712", "+12,1%"],
-        ["Prix conc", "33 750", "33 956", "+0,6%"],
-        ["Budget/client", "3 682 305", "3 941 327", "+7,0%"],
-        ["Sacs conc/client", "50,2", "43,8", "-12,7%"],
+        ["Prix soja", "16 695", "18 795", "+12,6%"],
+        ["Prix conc", "33 750", "34 000", "+0,7%"],
+        ["Budget/client", "3 682 305", "4 043 405", "+9,8%"],
+        ["Sacs conc/client", "50,2", "44,4", "-11,7%"],
         ["Ratio soja/conc", "2,4:1", "3,0:1", "dégradation modérée"],
     ]
     story.append(make_table(centre_data, col_widths=[4.5*cm, 3.5*cm, 3.5*cm, 4*cm]))
     story.append(Spacer(1, 0.2*cm))
     story.append(insight_box(
-        "<b>Verdict CENTRE :</b> ✅ Conc en baisse modérée (-12,7%), ratio limite (3,0:1). Meilleure région sur le bundle — NGAOUNDERE et BERTOUA tirent la région vers le haut."
+        "<b>Verdict CENTRE :</b> ✅ Conc en baisse modérée (-11,7%), ratio limite (3,0:1). Meilleure région sur le bundle — NGAOUNDERE et BERTOUA tirent la région vers le haut."
     ))
     story.append(Spacer(1, 0.3*cm))
 
@@ -608,39 +607,39 @@ def build_story():
     # ----- 5.3 LITTORAL -----
     story.append(Paragraph("5.3 Région LITTORAL (5 agences)", H2))
     story.append(Paragraph(
-        "<b>Base clients bundle :</b> 1 054 clients S1 → 168 clients en Juillet (au 24/07).",
+        "<b>Base clients bundle :</b> 1 054 clients S1 → 174 clients en Juillet (au 27/07).",
         BODY_BOLD
     ))
     littoral_data = [
         ["Indicateur", "S1", "Juillet", "Évolution"],
-        ["Prix soja", "15 773", "17 828", "+13,0%"],
-        ["Prix conc", "31 715", "31 825", "+0,3%"],
-        ["Budget/client", "3 014 013", "2 884 384", "-4,3%"],
-        ["Sacs conc/client", "39,5", "28,7", "-27,2%"],
+        ["Prix soja", "15 773", "17 875", "+13,3%"],
+        ["Prix conc", "31 715", "31 830", "+0,4%"],
+        ["Budget/client", "3 014 013", "2 952 699", "-2,0%"],
+        ["Sacs conc/client", "39,5", "29,5", "-25,2%"],
         ["Ratio soja/conc", "2,8:1", "3,8:1", "forte dégradation"],
     ]
     story.append(make_table(littoral_data, col_widths=[4.5*cm, 3.5*cm, 3.5*cm, 4*cm]))
     story.append(Spacer(1, 0.2*cm))
     story.append(insight_box(
-        "<b>Verdict LITTORAL :</b> 🔴 Conc en forte chute (-27,2%), ratio se dégrade fortement (2,8 → 3,8) ET budget en baisse (-4,3%). "
-        "Région la plus touchée — NDOBO (5,5:1), NKONGSAMBA (-39,9% conc) et PK11 (4,5:1) en sont les principaux contributeurs."
+        "<b>Verdict LITTORAL :</b> 🔴 Conc en forte chute (-25,2%), ratio se dégrade fortement (2,8 → 3,8) ET budget en baisse (-2,0%). "
+        "Région la plus touchée — NDOBO (5,5:1), NKONGSAMBA (-39,9% conc) et PK11 (4,7:1) en sont les principaux contributeurs."
     ))
     story.append(Spacer(1, 0.3*cm))
 
     story.append(Paragraph("5.4 Synthèse régionale comparée", H2))
     synth_region = [
         ["Région", "Budget Δ%", "Conc Δ%", "Ratio S1", "Ratio Juil", "Verdict"],
-        ["Ouest (3 agences)", "+2,6%", "-20,3%", "2,8:1", "3,8:1", "⚠️ Dégradation"],
-        ["Centre (6 agences)", "+7,0%", "-12,7%", "2,4:1", "3,0:1", "✅ Modéré"],
-        ["Littoral (5 agences)", "-4,3%", "-27,2%", "2,8:1", "3,8:1", "🔴 Forte dégradation"],
+        ["Ouest (3 agences)", "+8,5%", "-15,0%", "2,8:1", "3,7:1", "⚠️ Dégradation"],
+        ["Centre (6 agences)", "+9,8%", "-11,7%", "2,4:1", "3,0:1", "✅ Modéré"],
+        ["Littoral (5 agences)", "-2,0%", "-25,2%", "2,8:1", "3,8:1", "🔴 Forte dégradation"],
     ]
     story.append(make_table(synth_region, col_widths=[3.5*cm, 2.3*cm, 2.3*cm, 2.3*cm, 2.3*cm, 3.8*cm]))
     story.append(Spacer(1, 0.2*cm))
     story.append(Paragraph(
         "<b>Lecture comparée :</b> le Centre tire son épingle du jeu grâce à une baisse limitée des concentrés "
-        "(-12,7%), portée par NGAOUNDERE (+15,3%) et BERTOUA (+3,9%) qui sont les seules agences en croissance de concentrés. "
-        "Le Littoral est pénalisé par NDOBO, NKONGSAMBA et PK11 où les concentrés s'effondrent (-27,2% en moyenne). "
-        "L'Ouest présente un profil intermédiaire avec budget quasi-stable mais une dégradation nette du ratio.",
+        "(-11,7%), portée par NGAOUNDERE (+15,3%) et BERTOUA (+3,9%) qui sont les seules agences en croissance de concentrés. "
+        "Le Littoral est pénalisé par NDOBO, NKONGSAMBA et PK11 où les concentrés s'effondrent (-25,2% en moyenne). "
+        "L'Ouest présente un budget en hausse (+8,5%) mais une dégradation nette du ratio.",
         BODY_BOLD
     ))
 
@@ -798,14 +797,14 @@ def build_story():
         BODY
     ))
     story.append(Paragraph(
-        "<b>2. Mais il est PLUS PRONONCÉ à NDOBO</b> (ratio 5,5:1) <b>et PK11</b> (4,5:1). "
+        "<b>2. Mais il est PLUS PRONONCÉ à NDOBO</b> (ratio 5,5:1) <b>et PK11</b> (4,7:1). "
         "Ces deux agences du Littoral concentrent les cas les plus critiques, avec des clients qui réduisent "
         "massivement leurs achats de concentrés pour compenser la hausse du prix du soja.",
         BODY_BOLD
     ))
     story.append(Paragraph(
         "<b>3. Le Littoral est la région la plus touchée</b> — ratio 2,8:1 → 3,8:1, avec une chute des concentrés "
-        "de -27,2% (vs -12,7% au Centre et -20,3% à l'Ouest). La dynamique de dégradation y est structurelle.",
+        "de -25,2% (vs -11,7% au Centre et -15,0% à l'Ouest). La dynamique de dégradation y est structurelle.",
         BODY
     ))
     story.append(Paragraph(
@@ -815,7 +814,7 @@ def build_story():
     ))
     story.append(Paragraph(
         "<b>5. L'hypothèse « budget constant » est confirmée à NDOBO</b> (budget +5,7% seulement malgré +22,6% de soja) <b>mais pas globalement</b> "
-        "(+31,9% de budget toutes agences). À NDOBO, les clients arbitrent explicitement contre les concentrés ; "
+        "(+37,3% de budget toutes agences). À NDOBO, les clients arbitrent explicitement contre les concentrés ; "
         "ailleurs, ils acceptent d'augmenter leur budget mais privilégient tout de même le soja.",
         BODY_BOLD
     ))
@@ -825,31 +824,32 @@ def build_story():
     # ----- 7.2 Recommandations -----
     story.append(Paragraph("7.2 Recommandations", H2))
     story.append(Paragraph(
-        "Plan d'action en 9 axes pour endiguer la dégradation du ratio et restaurer l'équilibre du bundle soja-concentrés.",
+        "Plan d'action en 10 axes pour endiguer la dégradation du ratio et restaurer l'équilibre du bundle soja-concentrés.",
         BODY
     ))
     reco_data = [
         ["#", "Recommandation", "Cible / Périmètre", "Délai"],
         ["1", "Imposer le ratio 3:1 strictement — refuser les commandes avec ratio > 5:1", "Toutes agences — système de facturation", "Immédiat"],
-        ["2", "Surveiller les ratios > 10:1 (20% des commandes à NDOBO en juillet)", "NDOBO + PK11 en priorité", "Hebdomadaire"],
+        ["2", "Surveiller les ratios > 10:1 (15% des commandes à NDOBO en juillet)", "NDOBO + PK11 en priorité", "Hebdomadaire"],
         ["3", "Envisager une remise sur les concentrés dans le bundle pour compenser la hausse du soja", "Direction commerciale + produit", "30 jours"],
         ["4", "Focus terrain sur NDOBO et PK11 (agences les plus dégradées)", "Équipe commerciale Littoral", "15 jours"],
-        ["5", "Capitaliser sur les bonnes pratiques du Centre (DJELENG, AHALA, NGAOUNDERE)", "Reproduire le modèle Centre", "60 jours"],
+        ["5", "Capitaliser sur les bonnes pratiques du Centre (BERTOUA, AHALA, NGAOUNDERE)", "Reproduire le modèle Centre", "60 jours"],
         ["6", "Comparer les prix des concentrés vs concurrents — si BELGOCAM est plus cher, facteur aggravant", "Direction produit + benchmark", "30 jours"],
         ["7", "Analyser le profil des clients à NDOBO — probablement plus de grossistes/provendiers sensibles au prix", "Data Analyst + commercial NDOBO", "45 jours"],
         ["8", "Annulation des commandes ≥ 10 t en soja sauf si concentré en ratio ≥ 2,5:1 (voir 7.3)", "Système de facturation + commerciaux", "Immédiat"],
         ["9", "Déployer les packs de bundle prédéfinis (voir 7.4) comme alternative aux commandes libres", "Toutes agences — argumentaire commercial", "15 jours"],
+        ["10", "Imposer 1 sac de prémix (25 kg) par tonne de soja pour les commandes soja-only sans concentré (voir 7.5)", "Système de facturation + commerciaux", "Immédiat"],
     ]
     story.append(make_table(reco_data, col_widths=[0.8*cm, 8*cm, 4.5*cm, 2.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
 
     story.append(Paragraph(
-        "<b>Priorisation :</b> les recommandations 1, 8 et 9 sont à mener en parallèle et en urgence — "
-        "le verrouillage du ratio 3:1 (recommandation 1) et l'annulation des commandes ≥ 10 t sans concentré suffisant (recommandation 8) "
-        "ne produiront d'effet que si les commerciaux terrain sont mobilisés sur NDOBO et PK11 (recommandation 4) "
-        "et outillés avec les packs de bundle prédéfinis (recommandation 9). "
+        "<b>Priorisation :</b> les recommandations 1, 8, 9 et 10 sont à mener en parallèle et en urgence — "
+        "le verrouillage du ratio 3:1 (recommandation 1), l'annulation des commandes ≥ 10 t sans concentré suffisant (recommandation 8), "
+        "le déploiement des packs de bundle (recommandation 9) et l'imposition du prémix sur les commandes soja-only (recommandation 10) "
+        "ne produiront d'effet que si les commerciaux terrain sont mobilisés sur NDOBO et PK11 (recommandation 4). "
         "La remise bundle (recommandation 3) est le levier structurel de moyen terme pour réconcilier "
-        "la hausse du soja et le maintien des concentrés.",
+        "la hausse du soja et le maintien des concentrés. La règle prémix (recommandation 10) génère un CA additionnel estimé à <b>71,5 M FCFA/mois</b>.",
         BODY_BOLD
     ))
 
@@ -953,6 +953,107 @@ def build_story():
         "Le client peut ajuster les quantités à la hausse (plus de concentrés = ratio plus favorable) "
         "mais <b>pas à la baisse</b> en dessous du ratio 2,5:1. "
         "Pour les commandes ≥ 10 t de soja, seul un pack est accepté (pas de commande libre).",
+        BODY_BOLD
+    ))
+
+    story.append(Spacer(1, 0.4*cm))
+
+    # =====================================================================
+    # SECTION 7.5 — RÈGLE PRÉMIX POUR COMMANDES SOJA-ONLY
+    # =====================================================================
+    story.append(PageBreak())
+    story.append(Paragraph("7.5 Règle prémix — 1 sac de prémix par tonne de soja pour les commandes soja-only", H2))
+    story.append(Paragraph(
+        "<b>Règle opérationnelle :</b> toute commande de soja <b>sans concentré</b> doit obligatoirement inclure "
+        "au minimum <b>1 sac de prémix (25 kg) par tonne de soja</b> commandée. "
+        "En dessous de ce ratio, la commande est suspendue jusqu'à ajustement par le client.<br/><br/>"
+        "<b>Logique :</b> lorsqu'un client achète du soja sans concentré, il contourne le bundle 3:1. "
+        "Le prémix (P102N2, P104N2) est un complément technique essentiel à l'alimentation animale — "
+        "il contient les vitamines, minéraux et acides aminés indispensables que le soja seul ne fournit pas. "
+        "Imposer un minimum de prémix garantit que le client dispose d'une ration nutritionnellement équilibrée, "
+        "tout en générant un CA supplémentaire sur une catégorie à forte marge.<br/><br/>"
+        "<b>Calcul :</b> 1 tonne de soja = 20 sacs de 50 kg. Le ratio imposé est de 1 sac de prémix (25 kg) "
+        "pour 20 sacs de soja, soit un ratio soja:prémix de 20:1 en sacs (ou 40:1 en poids).",
+        BODY
+    ))
+
+    story.append(Paragraph("Tableau de référence — Prémix minimum pour commandes soja-only", H3))
+    premix_seuil_data = [
+        ["Soja (t)", "Soja (sacs 50kg)", "Prémix minimum (sacs 25kg)", "Prémix minimum (kg)", "CA prémix min (M FCFA)*"],
+        ["1", "20", "1", "25", "0,025"],
+        ["5", "100", "5", "125", "0,125"],
+        ["10", "200", "10", "250", "0,250"],
+        ["20", "400", "20", "500", "0,500"],
+        ["50", "1 000", "50", "1 250", "1,250"],
+        ["100", "2 000", "100", "2 500", "2,500"],
+    ]
+    story.append(make_table(premix_seuil_data, col_widths=[2*cm, 3*cm, 3.5*cm, 2.5*cm, 3.5*cm], font_size=8))
+    story.append(Paragraph(
+        "<i>* CA prémix minimum calculé à ~25 000 FCFA/sac de 25 kg (prix moyen S1 2026).</i>",
+        ParagraphStyle('fn_premix', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("Impact estimé — Données juillet 2026 (au 27/07)", H3))
+    story.append(insight_box(
+        "<b>1 087 commandes soja-only sans prémix</b> ont été enregistrées en juillet (sur 2 782 commandes soja au total, soit 39%). "
+        "Ces commandes représentent <b>2 860 tonnes de soja</b> — l'application de la règle aurait généré "
+        "<b>2 860 sacs de prémix (71,5 t)</b> supplémentaires, soit un <b>CA potentiel de ~71,5 M FCFA</b> sur le mois."
+    ))
+    story.append(Spacer(1, 0.2*cm))
+
+    impact_premix_data = [
+        ["Indicateur", "Valeur juillet 2026", "Impact règle prémix"],
+        ["Commandes soja total (Livrée)", "2 782", "—"],
+        ["Commandes soja + concentré (bundle)", "1 677 (60%)", "Non concernées"],
+        ["Commandes soja-only AVEC prémix", "18 (1%)", "Déjà conformes (vérifier ratio)"],
+        ["Commandes soja-only SANS prémix", "1 087 (39%)", "🔴 Cibles de la nouvelle règle"],
+        ["Volume soja concerné", "2 860 t", "Prémix requis : 2 860 sacs (71,5 t)"],
+        ["CA prémix potentiel", "—", "+71,5 M FCFA / mois"],
+        ["CA prémix potentiel annualisé", "—", "+858 M FCFA / an"],
+    ]
+    story.append(make_table(impact_premix_data, col_widths=[6*cm, 4.5*cm, 5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("Top 10 commandes soja-only sans prémix — Plus gros volumes (juillet 2026)", H3))
+    story.append(Paragraph(
+        "Ces 10 commandes représentent à elles seules <b>551 tonnes de soja</b> (19% du volume soja-only sans prémix), "
+        "soit un potentiel de <b>551 sacs de prémix</b> (13,8 t) et <b>~13,8 M FCFA</b> de CA supplémentaire.",
+        BODY
+    ))
+    top_premix_data = [
+        ["#", "N° commande", "Date", "Client", "Soja (t)", "Prémix requis (sacs)"],
+        ["1", "SO2607-122725", "09/07", "SEPTENTRION VETERINAIRE SARL", "112", "112"],
+        ["2", "SO2607-122202", "07/07", "SAGUEN DEFFO CHANCELIER", "75", "75"],
+        ["3", "SO2607-124128", "16/07", "SIGHELO SARL", "60", "60"],
+        ["4", "SO2607-124566", "18/07", "SEPTENTRION VETERINAIRE SARL", "53", "53"],
+        ["5", "SO2607-121599", "04/07", "KENMEGNE ALAIN", "50", "50"],
+        ["6", "SO2607-124154", "16/07", "SAGUEN DEFFO CHANCELIER", "50", "50"],
+        ["7", "SO2607-124562", "18/07", "MELI JEAN", "46", "46"],
+        ["8", "SO2607-121068", "01/07", "TIMENE JEAN (ZDCL00125)", "35", "35"],
+        ["9", "SO2607-121435", "03/07", "FOKO", "35", "35"],
+        ["10", "SO2607-122338", "08/07", "MEGUEM", "35", "35"],
+    ]
+    story.append(make_table(top_premix_data, col_widths=[0.8*cm, 2.8*cm, 1.5*cm, 5.5*cm, 1.8*cm, 2.8*cm], font_size=7.5))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph(
+        "<b>Observations clés :</b><br/>"
+        "• <b>SEPTENTRION VETERINAIRE SARL</b> apparaît 2 fois dans le top 10 (commandes 1 et 4) avec 165 t de soja cumulées "
+        "sans prémix — c'est un client bundle à fort potentiel de conversion.<br/>"
+        "• <b>SAGUEN DEFFO CHANCELIER</b> apparaît également 2 fois (125 t cumulées) — même profil.<br/>"
+        "• Ces gros volumes (≥ 35 t) représentent des provendiers ou éleveurs industriels qui ont les infrastructures "
+        "pour utiliser le prémix — la règle est techniquement justifiée et commercialement défendable.<br/>"
+        "• <b>SYNERGIE avec la règle 7.3 (annulation ≥ 10 t sans conc) :</b> les commandes ≥ 10 t sans concentré "
+        "sont précisément celles où la règle prémix aura le plus d'impact. Les deux règles se renforcent mutuellement.",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Mise en œuvre :</b> la règle s'applique à toutes les commandes soja-only, quelle que soit leur taille. "
+        "Le système de facturation doit bloquer toute commande soja sans prémix (et sans concentré) et afficher "
+        "le message : « Votre commande de soja sans concentré nécessite un minimum de X sacs de prémix (1 sac/tonne). ». "
+        "Le commercial peut ensuite proposer un pack bundle (7.4) ou ajouter le prémix manuellement.",
         BODY_BOLD
     ))
 
