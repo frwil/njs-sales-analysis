@@ -58,8 +58,10 @@ AGENCE_MAP = {
 REGION_ORDER = ['Ouest', 'Centre', 'Littoral']
 
 # Stock soja
-STOCK_SACS = 160000  # 160k sacs de 50kg
+STOCK_SACS = 160000  # 160k sacs de 50kg — stock physique au 21/07/2026
 STOCK_T = STOCK_SACS * 50 / 1000  # 8000 t
+STOCK_DATE = '21/07/2026'  # Date de référence du stock physique
+STOCK_DAY = 21  # jour du mois
 
 
 def load_livree(path):
@@ -267,40 +269,100 @@ def add_business_days(start_date, n_days):
     return current
 
 
-def compute_t4(t1, start_date_str='27/07/2026', price_hike_date='23/07/2026'):
-    """T4: Stock soja et rupture (with moy/jour from T1).
-    Jours stock = business days (lun-sam). Date rupture = start + business days."""
-    moy_sacs = t1['moy_jour_sacs']
-    moy_t = t1['moy_jour_t']
-    # Round to nearest whole day (matches previous convention)
-    days_realiste = round(STOCK_SACS / moy_sacs)
-    days_plus20 = round(STOCK_SACS / (moy_sacs * 1.2))
-    days_moins20 = round(STOCK_SACS / (moy_sacs * 0.8))
+def compute_t4_post_stock(rows, current_date_str='28/07/2026', stock_date_str='21/07/2026',
+                            price_hike_date='23/07/2026'):
+    """T4: Stock soja et rupture — méthode corrigée.
 
-    start = datetime.date(2026, 7, int(start_date_str[:2]))
+    Le stock physique (160 000 sacs) est mesuré au 21/07 (stock_date).
+    Les ventes 01→21/07 ont déjà été consommées et ne sont plus dans le stock.
+
+    Calcul correct:
+    1. Ventes post-stock = ventes soja du (stock_day+1) au current_date
+    2. Moy/jour post-stock = ventes_post_stock / nb_jours_ouvres_post_stock
+    3. Stock restant au current_date = stock_initial - ventes_post_stock (en sacs)
+    4. Jours de stock restants = stock_restant / moy_jour_post_stock
+    5. Date rupture = current_date + jours_stock (en jours ouvrables lun-sam)
+    """
+    stock_day = int(stock_date_str[:2])
+    current_day = int(current_date_str[:2])
+
+    # Jours ouvrables post-stock (du lendemain du stock_day au current_day)
+    post_stock_days = []
+    for d in range(stock_day + 1, current_day + 1):
+        dt = datetime.date(2026, 7, d)
+        if dt.weekday() < 6:  # lun-sam
+            post_stock_days.append(f'{d:02d}/07/2026')
+
+    # Ventes soja sur ces jours
+    post_stock_kg = 0
+    for r in rows:
+        ref = r[0]
+        if ref not in SOJA_REFS:
+            continue
+        date_str = str(r[6])[:10]
+        if date_str in post_stock_days:
+            qte = r[2] or 0
+            post_stock_kg += qte * SOJA_REFS[ref]
+
+    # Jours ouvrables post-stock (lun-sam)
+    nb_jours_post = len(post_stock_days)
+    if nb_jours_post == 0:
+        # Pas de ventes post-stock, utiliser moyenne globale comme fallback
+        moy_t_post = 240  # fallback
+        moy_sacs_post = moy_t_post * 20
+    else:
+        moy_t_post = (post_stock_kg / 1000) / nb_jours_post
+        moy_sacs_post = (post_stock_kg / 50) / nb_jours_post
+
+    # Stock restant au current_date
+    post_stock_sacs = post_stock_kg / 50
+    stock_restant_sacs = STOCK_SACS - post_stock_sacs
+    stock_restant_t = stock_restant_sacs * 50 / 1000
+
+    # Jours de stock restants
+    if moy_sacs_post > 0:
+        days_realiste = round(stock_restant_sacs / moy_sacs_post)
+        days_plus20 = round(stock_restant_sacs / (moy_sacs_post * 1.2))
+        days_moins20 = round(stock_restant_sacs / (moy_sacs_post * 0.8))
+    else:
+        days_realiste = days_plus20 = days_moins20 = 0
+
+    # Date de rupture = current_date + jours_stock (lun-sam)
+    start = datetime.date(2026, 7, current_day)
     rupture_realiste = add_business_days(start, days_realiste)
     rupture_plus20 = add_business_days(start, days_plus20)
     rupture_moins20 = add_business_days(start, days_moins20)
 
+    # Ventes totales juillet (pour info)
+    total_juillet_kg = 0
+    for r in rows:
+        ref = r[0]
+        if ref in SOJA_REFS:
+            total_juillet_kg += (r[2] or 0) * SOJA_REFS[ref]
+
     return {
-        'moy_sacs': moy_sacs,
-        'moy_t': moy_t,
+        'moy_sacs_post': moy_sacs_post,
+        'moy_t_post': moy_t_post,
         'scenarios': [
-            {'name': 'Realiste', 'sacs_jour': round(moy_sacs), 't_jour': moy_t,
+            {'name': 'Realiste', 'sacs_jour': round(moy_sacs_post), 't_jour': moy_t_post,
              'jours': days_realiste, 'date': rupture_realiste.strftime('%d/%m/%Y')},
-            {'name': 'Acceleration +20%', 'sacs_jour': round(moy_sacs * 1.2),
-             't_jour': moy_t * 1.2, 'jours': days_plus20, 'date': rupture_plus20.strftime('%d/%m/%Y')},
-            {'name': 'Ralentissement -20%', 'sacs_jour': round(moy_sacs * 0.8),
-             't_jour': moy_t * 0.8, 'jours': days_moins20, 'date': rupture_moins20.strftime('%d/%m/%Y')},
+            {'name': 'Acceleration +20%', 'sacs_jour': round(moy_sacs_post * 1.2),
+             't_jour': moy_t_post * 1.2, 'jours': days_plus20, 'date': rupture_plus20.strftime('%d/%m/%Y')},
+            {'name': 'Ralentissement -20%', 'sacs_jour': round(moy_sacs_post * 0.8),
+             't_jour': moy_t_post * 0.8, 'jours': days_moins20, 'date': rupture_moins20.strftime('%d/%m/%Y')},
         ],
-        'stock_sacs': STOCK_SACS,
-        'stock_t': STOCK_T,
-        'ventes_juillet_sacs': round(t1['total_kg'] / 50),
-        'ventes_juillet_t': t1['total_t'],
-        'moy_jour_sacs': round(moy_sacs),
-        'moy_jour_t': moy_t,
-        'jours_ouvrables': '6j/sem (lun-sam)',
-        'depart': start_date_str,
+        'stock_initial_sacs': STOCK_SACS,
+        'stock_initial_t': STOCK_T,
+        'stock_date': stock_date_str,
+        'post_stock_days': post_stock_days,
+        'nb_jours_post': nb_jours_post,
+        'post_stock_sacs': round(post_stock_sacs),
+        'post_stock_t': round(post_stock_kg / 1000, 1),
+        'stock_restant_sacs': round(stock_restant_sacs),
+        'stock_restant_t': round(stock_restant_t, 1),
+        'ventes_juillet_sacs': round(total_juillet_kg / 50),
+        'ventes_juillet_t': round(total_juillet_kg / 1000, 1),
+        'current_date': current_date_str,
         'price_hike_date': price_hike_date,
     }
 
@@ -571,10 +633,12 @@ def write_t3(ws, t3, t3_prev):
 def write_t4(ws, t4, t4_prev):
     ws['A1'] = 'TABLEAU 4 - Stock SOJA et date rupture'
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
-    ws['A2'] = f"160 000 sacs (8 000 t). Moy/jour sur juillet ({t4['moy_jour_t']:.1f} t/j, Livree). Mise a jour 28/07/2026."
+    ws['A2'] = (f"Stock physique au {t4['stock_date']}: {t4['stock_initial_sacs']:,} sacs ({int(t4['stock_initial_t'])} t). "
+                f"Methode corrigee: ventes post-stock {t4['stock_date']}→{t4['current_date']} deduites du stock. "
+                f"Mise a jour {t4['current_date']}.").replace(',', ' ')
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
-    headers = ['Scenario', 'Sacs/jour', 't/jour', 'Jours stock', 'Date rupture', 'Evolution date rupture']
+    headers = ['Scenario', 'Sacs/jour (post-stock)', 't/jour', 'Jours stock', 'Date rupture', 'Evolution date rupture']
     for i, h in enumerate(headers, 1):
         ws.cell(row=4, column=i, value=h)
     style_header_row(ws, 4, len(headers))
@@ -605,11 +669,12 @@ def write_t4(ws, t4, t4_prev):
     ws.cell(row=row, column=1).font = SUBHEAD_FONT
     row += 1
     params = [
-        ('Stock', f"{t4['stock_sacs']:,} sacs".replace(',', ' '), f"{int(t4['stock_t']):,} t".replace(',', ' ')),
-        ('Ventes juillet', f"{t4['ventes_juillet_sacs']:,} sacs".replace(',', ' '), f"{t4['ventes_juillet_t']:.1f} t"),
-        ('Moyenne/jour', f"{t4['moy_jour_sacs']:,} sacs".replace(',', ' '), f"{t4['moy_jour_t']:.1f} t"),
-        ('Jours ouvrables', t4['jours_ouvrables'], ''),
-        ('Depart', t4['depart'], ''),
+        ('Stock initial (au 21/07)', f"{t4['stock_initial_sacs']:,} sacs".replace(',', ' '), f"{int(t4['stock_initial_t'])} t"),
+        ('Ventes post-stock 22→28/07', f"{t4['post_stock_sacs']:,} sacs".replace(',', ' '), f"{t4['post_stock_t']} t"),
+        ('Stock restant au 28/07', f"{t4['stock_restant_sacs']:,} sacs".replace(',', ' '), f"{t4['stock_restant_t']} t"),
+        ('Jours ouvrables post-stock', f"{t4['nb_jours_post']} j (lun-sam)", ''),
+        ('Moyenne/jour post-stock', f"{int(t4['moy_sacs_post']):,} sacs".replace(',', ' '), f"{t4['moy_t_post']:.1f} t"),
+        ('Ventes juillet (total, info)', f"{t4['ventes_juillet_sacs']:,} sacs".replace(',', ' '), f"{t4['ventes_juillet_t']} t"),
         ('Hausse prix soja', f"+2 000 XAF/sac le {t4['price_hike_date']}", ''),
     ]
     for label, v1, v2 in params:
@@ -621,27 +686,30 @@ def write_t4(ws, t4, t4_prev):
         row += 1
 
     row += 2
-    ws.cell(row=row, column=1, value=f"ANALYSE: La moyenne journaliere est remontee a {t4['moy_jour_t']:.1f} t/j (vs {t4_prev['moy_jour_t']:.1f} t/j au 27/07).")
+    ws.cell(row=row, column=1, value=f"ANALYSE: Stock restant au {t4['current_date']} = {t4['stock_restant_sacs']:,} sacs ({t4['stock_restant_t']} t).".replace(',', ' '))
     ws.cell(row=row, column=1).font = Font(bold=True, size=10)
     row += 1
-    delta_moy = t4['moy_jour_t'] - t4_prev['moy_jour_t']
+    delta_moy = t4['moy_t_post'] - t4_prev['moy_t_post']
     if abs(delta_moy) < 2:
-        msg = f"Variation faible ({delta_moy:+.1f} t/j) — dans la marge de fluctuation hebdomadaire."
+        msg = f"Moy/jour post-stock stable ({delta_moy:+.1f} t/j vs precedent)."
     elif delta_moy < 0:
-        msg = f"Baisse de {abs(delta_moy):.1f} t/j — a surveiller (effet possible de la hausse de prix)."
+        msg = f"Baisse moy/jour post-stock ({delta_moy:+.1f} t/j) — effet possible de la hausse de prix."
     else:
-        msg = f"Hausse de {delta_moy:+.1f} t/j — pas d'effet visible de la hausse de prix pour le moment."
+        msg = f"Hausse moy/jour post-stock ({delta_moy:+.1f} t/j) — pas d'effet visible de la hausse de prix."
     ws.cell(row=row, column=1, value=msg)
     ws.cell(row=row, column=1).font = Font(italic=True, size=10, color='595959')
     row += 1
-    ws.cell(row=row, column=1, value="L'effet plein de la hausse +2 000 XAF/sac (effective 23/07) sera visible sur les jours a venir.")
-    ws.cell(row=row, column=1).font = Font(italic=True, size=10, color='C00000')
+    ws.cell(row=row, column=1, value=f"Methode corrigee: le stock de 160 000 sacs est mesure au 21/07. Les ventes 01→21/07 sont deja consommees.")
+    ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
     row += 1
-    ws.cell(row=row, column=1, value=f"Date de rupture probable: {t4['scenarios'][0]['date']} ({t4['scenarios'][0]['jours']} jours de stock).")
+    ws.cell(row=row, column=1, value=f"Seules les ventes 22→28/07 (post-stock) sont deduites du stock pour calculer le stock restant au 28/07.")
+    ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
+    row += 1
+    ws.cell(row=row, column=1, value=f"Date de rupture probable: {t4['scenarios'][0]['date']} ({t4['scenarios'][0]['jours']} jours de stock restant).")
     ws.cell(row=row, column=1).font = Font(bold=True, size=11, color='C00000')
 
-    ws.column_dimensions['A'].width = 30
-    ws.column_dimensions['B'].width = 18
+    ws.column_dimensions['A'].width = 32
+    ws.column_dimensions['B'].width = 22
     ws.column_dimensions['C'].width = 14
     ws.column_dimensions['D'].width = 14
     ws.column_dimensions['E'].width = 14
@@ -662,13 +730,15 @@ def main():
     # T2/T3: use 27/07 (last full business day with substantial soja data, since 28/07 is partial morning extraction)
     t2_new = compute_t2(rows_new, '27/07/2026')
     t3_new = compute_t3(rows_new, '27/07/2026')
-    t4_new = compute_t4(t1_new, start_date_str='28/07/2026')
+    # T4: méthode corrigée — stock physique au 21/07, ventes post-stock à déduire
+    t4_new = compute_t4_post_stock(rows_new, current_date_str='28/07/2026', stock_date_str='21/07/2026')
 
     # Compute tables for previous (au 27/07) - using the PREVIOUS extraction file
     t1_prev = compute_t1(rows_prev, '27/07/2026')
     t2_prev = compute_t2(rows_prev, '27/07/2026')
     t3_prev = compute_t3(rows_prev, '27/07/2026')
-    t4_prev = compute_t4(t1_prev, start_date_str='27/07/2026')
+    # T4 précédent: stock au 21/07, ventes 22-27/07 (post-stock)
+    t4_prev = compute_t4_post_stock(rows_prev, current_date_str='27/07/2026', stock_date_str='21/07/2026')
 
     print(f"\nT1 (au 28/07): {t1_new['total_t']:.1f} t, moy/jour {t1_new['moy_jour_t']:.1f} t ({t1_new['days_elapsed']}j)")
     print(f"T1 (au 27/07): {t1_prev['total_t']:.1f} t, moy/jour {t1_prev['moy_jour_t']:.1f} t ({t1_prev['days_elapsed']}j)")
@@ -676,7 +746,10 @@ def main():
     print(f"T2 (27/07 prev): {t2_prev['total']['cmds']} cmdes, ratio {t2_prev['total']['ratio_str']}")
     print(f"\nT3 (27/07): {len(t3_new['items'])} cmdes soja-only, {t3_new['total_kg']/1000:.1f} t")
     print(f"T3 (27/07 prev): {len(t3_prev['items'])} cmdes soja-only, {t3_prev['total_kg']/1000:.1f} t")
-    print(f"\nT4 (au 28/07): rupture realiste {t4_new['scenarios'][0]['date']} ({t4_new['scenarios'][0]['jours']}j)")
+    print(f"\nT4 (au 28/07): stock restant {t4_new['stock_restant_sacs']:,} sacs ({t4_new['stock_restant_t']} t)".replace(',', ' '))
+    print(f"  Ventes post-stock 22-28/07: {t4_new['post_stock_sacs']:,} sacs ({t4_new['post_stock_t']} t)".replace(',', ' '))
+    print(f"  Moy/jour post-stock: {t4_new['moy_t_post']:.1f} t/j ({int(t4_new['moy_sacs_post'])} sacs/j)")
+    print(f"  Rupture realiste: {t4_new['scenarios'][0]['date']} ({t4_new['scenarios'][0]['jours']}j)")
     print(f"T4 (au 27/07): rupture realiste {t4_prev['scenarios'][0]['date']} ({t4_prev['scenarios'][0]['jours']}j)")
 
     # Write Excel
@@ -710,8 +783,12 @@ def main():
         't2_prev': {'cmds': t2_prev['total']['cmds'], 'bundle': t2_prev['total']['bundle'], 'soja_only': t2_prev['total']['soja_only'], 'ratio': t2_prev['total']['ratio_str']},
         't3_new': {'count': len(t3_new['items']), 'total_t': t3_new['total_kg'] / 1000},
         't3_prev': {'count': len(t3_prev['items']), 'total_t': t3_prev['total_kg'] / 1000},
-        't4_new': {'rupture_date': t4_new['scenarios'][0]['date'], 'jours_stock': t4_new['scenarios'][0]['jours'], 'moy_jour_t': t4_new['moy_jour_t']},
-        't4_prev': {'rupture_date': t4_prev['scenarios'][0]['date'], 'jours_stock': t4_prev['scenarios'][0]['jours'], 'moy_jour_t': t4_prev['moy_jour_t']},
+        't4_new': {'rupture_date': t4_new['scenarios'][0]['date'], 'jours_stock': t4_new['scenarios'][0]['jours'],
+                    'moy_jour_t': t4_new['moy_t_post'], 'stock_restant_sacs': t4_new['stock_restant_sacs'],
+                    'stock_restant_t': t4_new['stock_restant_t'], 'post_stock_t': t4_new['post_stock_t']},
+        't4_prev': {'rupture_date': t4_prev['scenarios'][0]['date'], 'jours_stock': t4_prev['scenarios'][0]['jours'],
+                    'moy_jour_t': t4_prev['moy_t_post'], 'stock_restant_sacs': t4_prev['stock_restant_sacs'],
+                    'stock_restant_t': t4_prev['stock_restant_t'], 'post_stock_t': t4_prev['post_stock_t']},
         'price_hike': {'date': '23/07/2026', 'amount': '+2 000 XAF/sac 50kg'},
     }
     with open('/home/z/my-project/scripts/soja_juillet_28.json', 'w', encoding='utf-8') as f:

@@ -34,14 +34,20 @@
     "total_t": 0.0
   },
   "t4_new": {
-    "rupture_date": "03/09/2026",
-    "jours_stock": 32,
-    "moy_jour_t": 247.99641666666665
+    "rupture_date": "22/09/2026",
+    "jours_stock": 48,
+    "moy_jour_t": 149.23883333333333,
+    "stock_restant_sacs": 142091,
+    "stock_restant_t": 7104.6,
+    "post_stock_t": 895.4
   },
   "t4_prev": {
-    "rupture_date": "04/09/2026",
-    "jours_stock": 34,
-    "moy_jour_t": 237.5871304347826
+    "rupture_date": "07/10/2026",
+    "jours_stock": 62,
+    "moy_jour_t": 119.3646,
+    "stock_restant_sacs": 148064,
+    "stock_restant_t": 7403.2,
+    "post_stock_t": 596.8
   },
   "price_hike": {
     "date": "23/07/2026",
