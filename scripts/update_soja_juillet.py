@@ -367,6 +367,162 @@ def compute_t4_post_stock(rows, current_date_str='28/07/2026', stock_date_str='2
     }
 
 
+def compute_t5_trend(rows, end_date_str='28/07/2026'):
+    """T5: Tendance journalière soja et concentrés en juillet.
+    Retourne pour chaque jour ouvré (lun-sam): date, soja (t), conc (t), ratio soja:conc.
+    """
+    # Build dict date -> {soja_kg, conc_kg}
+    daily = defaultdict(lambda: {'soja_kg': 0, 'conc_kg': 0})
+    for r in rows:
+        ref = r[0]
+        date_str = str(r[6])[:10]
+        if not date_str.startswith('/') and len(date_str) >= 10:
+            qte = r[2] or 0
+            if ref in SOJA_REFS:
+                daily[date_str]['soja_kg'] += qte * SOJA_REFS[ref]
+            if ref in CONC_REFS:
+                daily[date_str]['conc_kg'] += qte * CONC_REFS[ref]
+
+    # Build sorted list of dates in July (01 → end_date)
+    end_day = int(end_date_str[:2])
+    items = []
+    for d in range(1, end_day + 1):
+        dt = datetime.date(2026, 7, d)
+        date_str = f'{d:02d}/07/2026'
+        is_ouvre = dt.weekday() < 6  # lun-sam
+        weekday_name = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'][dt.weekday()]
+        soja_t = daily.get(date_str, {}).get('soja_kg', 0) / 1000
+        conc_t = daily.get(date_str, {}).get('conc_kg', 0) / 1000
+        ratio = (daily.get(date_str, {}).get('soja_kg', 0) / 50) / (daily.get(date_str, {}).get('conc_kg', 0) / 50) if daily.get(date_str, {}).get('conc_kg', 0) > 0 else None
+        items.append({
+            'date': date_str,
+            'jour': d,
+            'weekday': weekday_name,
+            'is_ouvre': is_ouvre,
+            'soja_t': round(soja_t, 1),
+            'conc_t': round(conc_t, 1),
+            'ratio': round(ratio, 2) if ratio else None,
+        })
+    return {'items': items, 'end_date': end_date_str}
+
+
+def write_t5(ws, t5):
+    """T5: Feuille avec table des ventes journalières + graphique de tendance soja/concentrés."""
+    from openpyxl.chart import LineChart, Reference, BarChart
+    from openpyxl.chart.label import DataLabelList
+    from openpyxl.chart.layout import Layout, ManualLayout
+
+    ws['A1'] = 'TABLEAU 5 - Tendance journalière SOJA et CONCENTRÉS (Juillet 2026)'
+    ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
+    ws['A2'] = f"Données Livrées au {t5['end_date']}. Jours ouvrés (lun-sam) en couleur, dimanches en gris."
+    ws['A2'].font = Font(italic=True, size=10, color='595959')
+
+    headers = ['Date', 'Jour', 'Jour sem.', 'Soja (t)', 'Concentrés (t)', 'Ratio soja:conc']
+    for i, h in enumerate(headers, 1):
+        ws.cell(row=4, column=i, value=h)
+    style_header_row(ws, 4, len(headers))
+
+    row = 5
+    for it in t5['items']:
+        ws.cell(row=row, column=1, value=it['date'])
+        ws.cell(row=row, column=2, value=it['jour'])
+        ws.cell(row=row, column=3, value=it['weekday'])
+        ws.cell(row=row, column=4, value=it['soja_t'])
+        ws.cell(row=row, column=5, value=it['conc_t'])
+        ws.cell(row=row, column=6, value=f"{it['ratio']}:1" if it['ratio'] else '—')
+        # Highlight dimanches
+        if not it['is_ouvre']:
+            for c in range(1, len(headers) + 1):
+                ws.cell(row=row, column=c).fill = PatternFill('solid', fgColor='F2F2F2')
+                ws.cell(row=row, column=c).font = Font(italic=True, color='808080')
+        # Highlight hausse prix 23/07
+        if it['jour'] == 23:
+            for c in range(1, len(headers) + 1):
+                ws.cell(row=row, column=c).fill = PatternFill('solid', fgColor='FCE4D6')
+                ws.cell(row=row, column=c).font = Font(bold=True, color='C00000')
+        for c in range(1, len(headers) + 1):
+            ws.cell(row=row, column=c).border = BORDER
+        row += 1
+
+    # Line chart: Soja vs Concentrés
+    chart = LineChart()
+    chart.title = 'Tendance journalière — Soja vs Concentrés (Juillet 2026)'
+    chart.style = 12
+    chart.y_axis.title = 'Tonnes'
+    chart.x_axis.title = 'Date'
+    chart.height = 12  # cm
+    chart.width = 24
+
+    data = Reference(ws, min_col=4, min_row=4, max_col=5, max_row=row - 1)
+    cats = Reference(ws, min_col=1, min_row=5, max_row=row - 1)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+
+    # Style series
+    if len(chart.series) >= 2:
+        from openpyxl.chart.marker import Marker
+        from openpyxl.drawing.line import LineProperties
+        from openpyxl.drawing.colors import ColorChoice
+        # Soja = navy, Conc = gold
+        chart.series[0].graphicalProperties = openpyxl.chart.series.GraphicalProperties(solidFill='1F4E78')
+        chart.series[1].graphicalProperties = openpyxl.chart.series.GraphicalProperties(solidFill='C9A961')
+
+    ws.add_chart(chart, 'H4')
+
+    # Bar chart: Ratio soja:conc (only for days with ratio)
+    chart2 = BarChart()
+    chart2.type = 'col'
+    chart2.title = 'Ratio soja:concentrés par jour (objectif 3:1)'
+    chart2.style = 10
+    chart2.y_axis.title = 'Ratio (soja:conc)'
+    chart2.x_axis.title = 'Date'
+    chart2.height = 10
+    chart2.width = 24
+
+    # Filter ratio data (replace None with 0)
+    ratio_col = 7  # use a helper column for ratios
+    ws.cell(row=4, column=ratio_col, value='Ratio numérique')
+    style_header_row(ws, 4, ratio_col)
+    row2 = 5
+    for it in t5['items']:
+        ws.cell(row=row2, column=ratio_col, value=it['ratio'] if it['ratio'] else None)
+        row2 += 1
+
+    data2 = Reference(ws, min_col=ratio_col, min_row=4, max_row=row2 - 1)
+    cats2 = Reference(ws, min_col=1, min_row=5, max_row=row2 - 1)
+    chart2.add_data(data2, titles_from_data=True)
+    chart2.set_categories(cats2)
+    chart2.legend = None
+
+    ws.add_chart(chart2, 'H30')
+
+    # Notes
+    row_note = max(row, row2) + 3
+    ws.cell(row=row_note, column=1, value='NOTES DE LECTURE:')
+    ws.cell(row=row_note, column=1).font = Font(bold=True, size=11, color='1F4E78')
+    row_note += 1
+    notes = [
+        '• La ligne "Soja" (bleu) montre la consommation journalière de tourteaux de soja — impactée par la hausse +1 000 FCFA/sac (début juillet) puis +2 000 FCFA/sac (23/07).',
+        '• La ligne "Concentrés" (or) montre la consommation journalière de concentrés (BELGO Chair/Ponte/Porc).',
+        '• Le ratio soja:conc cible est 3:1 (objectif bundle). Un ratio supérieur signifie que les clients achètent plus de soja que de concentrés — dégradation du bundle.',
+        '• Les dimanches sont grisés (pas de ventes). Le 23/07 est surligné en rouge (date de la 2e hausse tarifaire +2 000 FCFA/sac).',
+        '• À observer: la tendance soja après le 23/07 vs avant — l\'effet prix devrait ralentir la consommation soja si les clients sont sensibles au prix.',
+    ]
+    for note in notes:
+        ws.cell(row=row_note, column=1, value=note)
+        ws.cell(row=row_note, column=1).font = Font(size=10)
+        row_note += 1
+
+    # Column widths
+    ws.column_dimensions['A'].width = 14
+    ws.column_dimensions['B'].width = 8
+    ws.column_dimensions['C'].width = 10
+    ws.column_dimensions['D'].width = 12
+    ws.column_dimensions['E'].width = 16
+    ws.column_dimensions['F'].width = 16
+    ws.column_dimensions['G'].width = 16
+
+
 # Style helpers
 HEAD_FILL = PatternFill('solid', fgColor='1F4E78')
 HEAD_FONT = Font(bold=True, color='FFFFFF', size=11)
@@ -767,6 +923,11 @@ def main():
 
     ws4 = wb.create_sheet('T4 - Stock soja et rupture')
     write_t4(ws4, t4_new, t4_prev)
+
+    # T5: tendance journalière soja + concentrés avec graphiques
+    t5_new = compute_t5_trend(rows_new, end_date_str='28/07/2026')
+    ws5 = wb.create_sheet('T5 - Tendance Juillet')
+    write_t5(ws5, t5_new)
 
     wb.save(OUT)
     print(f'\nSaved: {OUT}')
