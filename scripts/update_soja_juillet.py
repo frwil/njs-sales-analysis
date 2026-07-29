@@ -18,8 +18,8 @@ import datetime
 import copy
 import json
 
-SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (8) (1).xlsx'
-PREV_SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (4).xlsx'  # au 27/07
+SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (6).xlsx'
+PREV_SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (8) (1).xlsx'  # au 28/07
 OUT = '/home/z/my-project/download/analyse_soja_juillet.xlsx'
 PREV_OUT = '/home/z/my-project/download/analyse_soja_juillet.xlsx'  # previous output for comparison
 
@@ -558,10 +558,10 @@ def style_total_row(ws, row, n_cols):
 def write_t1(ws, t1, t1_prev):
     ws['A1'] = 'TABLEAU 1 - Moyenne journaliere SOJA juillet par agence/region'
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
-    ws['A2'] = f"01/07 au {t1['end_date']} ({t1['days_elapsed']}j). Livree. lun-sam. Mise a jour 28/07/2026."
+    ws['A2'] = f"01/07 au {t1['end_date']} ({t1['days_elapsed']}j). Livree. lun-sam. Mise a jour 29/07/2026."
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
-    headers = ['Agence', 'Region', 'Total soja (t)', 'Moy/jour (t)', 'Evolution vs 27/07']
+    headers = ['Agence', 'Region', 'Total soja (t)', 'Moy/jour (t)', 'Evolution vs 28/07']
     for i, h in enumerate(headers, 1):
         ws.cell(row=4, column=i, value=h)
     style_header_row(ws, 4, len(headers))
@@ -572,7 +572,7 @@ def write_t1(ws, t1, t1_prev):
         ws.cell(row=row, column=2, value=reg)
         ws.cell(row=row, column=3, value=round(t, 1))
         ws.cell(row=row, column=4, value=round(t / t1['days_elapsed'], 1))
-        # Evolution vs 27/07
+        # Evolution vs 28/07
         prev_match = next((p for p in t1_prev['items'] if p[0] == ag), None)
         if prev_match:
             prev_t_per_day = prev_match[2] / t1_prev['days_elapsed']
@@ -629,7 +629,7 @@ def write_t1(ws, t1, t1_prev):
     ws.cell(row=row, column=1, value=f"Moyenne/jour globale: {t1['moy_jour_t']:.1f} t/j ({int(t1['moy_jour_sacs'])} sacs) sur {t1['days_elapsed']}j.")
     ws.cell(row=row, column=1).font = Font(bold=True, size=10)
     row += 1
-    ws.cell(row=row, column=1, value=f"Precedent (27/07): {prev_total_moy:.1f} t/j ({int(t1_prev['moy_jour_sacs'])} sacs) sur {t1_prev['days_elapsed']}j.")
+    ws.cell(row=row, column=1, value=f"Precedent (28/07): {prev_total_moy:.1f} t/j ({int(t1_prev['moy_jour_sacs'])} sacs) sur {t1_prev['days_elapsed']}j.")
     ws.cell(row=row, column=1).font = Font(italic=True, size=10, color='595959')
 
     # Column widths
@@ -643,7 +643,7 @@ def write_t1(ws, t1, t1_prev):
 def write_t2(ws, t2, t2_prev):
     ws['A1'] = f"TABLEAU 2 - Commandes SOJA le {t2['date']} par agence"
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
-    ws['A2'] = 'Livree. Ratio en sacs 50kg-equivalent. Mise a jour 28/07/2026.'
+    ws['A2'] = 'Livree. Ratio en sacs 50kg-equivalent. Mise a jour 29/07/2026.'
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
     headers = ['Agence', 'Region', 'Cmds', 'Bundle', 'Soja-only', 'Ratio moy', 'Evolution cmdes vs 27/07']
@@ -719,7 +719,7 @@ def write_t2(ws, t2, t2_prev):
     ws.cell(row=row, column=1, value=f"Ratio global: {t2['total']['ratio_str']} (vs {t2_prev['total']['ratio_str']} le 27/07).")
     ws.cell(row=row, column=1).font = Font(bold=True, size=10)
     row += 2
-    ws.cell(row=row, column=1, value="Note: T2/T3 portent sur le 27/07 (dernier jour complet, 108 cmdes soja). Le 28/07 est une extraction matinale (11 lignes au total).")
+    ws.cell(row=row, column=1, value="Note: T2/T3 portent sur le 28/07 (dernier jour complet, 105 cmdes soja). Comparaison vs 27/07 (108 cmdes, extraction precedente matinale sans 28/07). Le 29/07 est aussi une extraction matinale (182 lignes au total).")
     ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
 
     ws.column_dimensions['A'].width = 30
@@ -826,8 +826,8 @@ def write_t4(ws, t4, t4_prev):
     row += 1
     params = [
         ('Stock initial (au 21/07)', f"{t4['stock_initial_sacs']:,} sacs".replace(',', ' '), f"{int(t4['stock_initial_t'])} t"),
-        ('Ventes post-stock 22→28/07', f"{t4['post_stock_sacs']:,} sacs".replace(',', ' '), f"{t4['post_stock_t']} t"),
-        ('Stock restant au 28/07', f"{t4['stock_restant_sacs']:,} sacs".replace(',', ' '), f"{t4['stock_restant_t']} t"),
+        ('Ventes post-stock 22→29/07', f"{t4['post_stock_sacs']:,} sacs".replace(',', ' '), f"{t4['post_stock_t']} t"),
+        ('Stock restant au 29/07', f"{t4['stock_restant_sacs']:,} sacs".replace(',', ' '), f"{t4['stock_restant_t']} t"),
         ('Jours ouvrables post-stock', f"{t4['nb_jours_post']} j (lun-sam)", ''),
         ('Moyenne/jour post-stock', f"{int(t4['moy_sacs_post']):,} sacs".replace(',', ' '), f"{t4['moy_t_post']:.1f} t"),
         ('Ventes juillet (total, info)', f"{t4['ventes_juillet_sacs']:,} sacs".replace(',', ' '), f"{t4['ventes_juillet_t']} t"),
@@ -858,7 +858,7 @@ def write_t4(ws, t4, t4_prev):
     ws.cell(row=row, column=1, value=f"Methode corrigee: le stock de 160 000 sacs est mesure au 21/07. Les ventes 01→21/07 sont deja consommees.")
     ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
     row += 1
-    ws.cell(row=row, column=1, value=f"Seules les ventes 22→28/07 (post-stock) sont deduites du stock pour calculer le stock restant au 28/07.")
+    ws.cell(row=row, column=1, value=f"Seules les ventes 22→29/07 (post-stock) sont deduites du stock pour calculer le stock restant au 29/07.")
     ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
     row += 1
     ws.cell(row=row, column=1, value=f"Date de rupture probable: {t4['scenarios'][0]['date']} ({t4['scenarios'][0]['jours']} jours de stock restant).")
@@ -873,40 +873,41 @@ def write_t4(ws, t4, t4_prev):
 
 
 def main():
-    print('Loading new extraction (au 28/07)...')
+    print('Loading new extraction (au 29/07)...')
     rows_new = load_livree(SRC)
     print(f'  {len(rows_new)} Livree rows')
-    print('Loading previous extraction (au 27/07)...')
+    print('Loading previous extraction (au 28/07)...')
     rows_prev = load_livree(PREV_SRC)
     print(f'  {len(rows_prev)} Livree rows')
 
-    # Compute tables for new (au 28/07)
-    # T1: aggregate 1-28/07 (24 days lun-sam)
-    t1_new = compute_t1(rows_new, '28/07/2026')
-    # T2/T3: use 27/07 (last full business day with substantial soja data, since 28/07 is partial morning extraction)
-    t2_new = compute_t2(rows_new, '27/07/2026')
-    t3_new = compute_t3(rows_new, '27/07/2026')
+    # Compute tables for new (au 29/07)
+    # T1: aggregate 1-29/07 (25 days lun-sam)
+    t1_new = compute_t1(rows_new, '29/07/2026')
+    # T2/T3: use 28/07 (last full business day with substantial soja data, since 29/07 is partial morning extraction)
+    t2_new = compute_t2(rows_new, '28/07/2026')
+    t3_new = compute_t3(rows_new, '28/07/2026')
     # T4: méthode corrigée — stock physique au 21/07, ventes post-stock à déduire
-    t4_new = compute_t4_post_stock(rows_new, current_date_str='28/07/2026', stock_date_str='21/07/2026')
+    t4_new = compute_t4_post_stock(rows_new, current_date_str='29/07/2026', stock_date_str='21/07/2026')
 
-    # Compute tables for previous (au 27/07) - using the PREVIOUS extraction file
-    t1_prev = compute_t1(rows_prev, '27/07/2026')
+    # Compute tables for previous (au 28/07) - using the PREVIOUS extraction file
+    # Note: PREV extraction was matinale on 28/07 (no Livrées for 28/07), so T2/T3 prev use 27/07
+    t1_prev = compute_t1(rows_prev, '28/07/2026')
     t2_prev = compute_t2(rows_prev, '27/07/2026')
     t3_prev = compute_t3(rows_prev, '27/07/2026')
-    # T4 précédent: stock au 21/07, ventes 22-27/07 (post-stock)
-    t4_prev = compute_t4_post_stock(rows_prev, current_date_str='27/07/2026', stock_date_str='21/07/2026')
+    # T4 précédent: stock au 21/07, ventes 22-28/07 (post-stock)
+    t4_prev = compute_t4_post_stock(rows_prev, current_date_str='28/07/2026', stock_date_str='21/07/2026')
 
-    print(f"\nT1 (au 28/07): {t1_new['total_t']:.1f} t, moy/jour {t1_new['moy_jour_t']:.1f} t ({t1_new['days_elapsed']}j)")
-    print(f"T1 (au 27/07): {t1_prev['total_t']:.1f} t, moy/jour {t1_prev['moy_jour_t']:.1f} t ({t1_prev['days_elapsed']}j)")
-    print(f"\nT2 (27/07): {t2_new['total']['cmds']} cmdes, ratio {t2_new['total']['ratio_str']}")
-    print(f"T2 (27/07 prev): {t2_prev['total']['cmds']} cmdes, ratio {t2_prev['total']['ratio_str']}")
-    print(f"\nT3 (27/07): {len(t3_new['items'])} cmdes soja-only, {t3_new['total_kg']/1000:.1f} t")
-    print(f"T3 (27/07 prev): {len(t3_prev['items'])} cmdes soja-only, {t3_prev['total_kg']/1000:.1f} t")
-    print(f"\nT4 (au 28/07): stock restant {t4_new['stock_restant_sacs']:,} sacs ({t4_new['stock_restant_t']} t)".replace(',', ' '))
-    print(f"  Ventes post-stock 22-28/07: {t4_new['post_stock_sacs']:,} sacs ({t4_new['post_stock_t']} t)".replace(',', ' '))
+    print(f"\nT1 (au 29/07): {t1_new['total_t']:.1f} t, moy/jour {t1_new['moy_jour_t']:.1f} t ({t1_new['days_elapsed']}j)")
+    print(f"T1 (au 28/07): {t1_prev['total_t']:.1f} t, moy/jour {t1_prev['moy_jour_t']:.1f} t ({t1_prev['days_elapsed']}j)")
+    print(f"\nT2 (28/07): {t2_new['total']['cmds']} cmdes, ratio {t2_new['total']['ratio_str']}")
+    print(f"T2 (28/07 prev): {t2_prev['total']['cmds']} cmdes, ratio {t2_prev['total']['ratio_str']}")
+    print(f"\nT3 (28/07): {len(t3_new['items'])} cmdes soja-only, {t3_new['total_kg']/1000:.1f} t")
+    print(f"T3 (28/07 prev): {len(t3_prev['items'])} cmdes soja-only, {t3_prev['total_kg']/1000:.1f} t")
+    print(f"\nT4 (au 29/07): stock restant {t4_new['stock_restant_sacs']:,} sacs ({t4_new['stock_restant_t']} t)".replace(',', ' '))
+    print(f"  Ventes post-stock 22-29/07: {t4_new['post_stock_sacs']:,} sacs ({t4_new['post_stock_t']} t)".replace(',', ' '))
     print(f"  Moy/jour post-stock: {t4_new['moy_t_post']:.1f} t/j ({int(t4_new['moy_sacs_post'])} sacs/j)")
     print(f"  Rupture realiste: {t4_new['scenarios'][0]['date']} ({t4_new['scenarios'][0]['jours']}j)")
-    print(f"T4 (au 27/07): rupture realiste {t4_prev['scenarios'][0]['date']} ({t4_prev['scenarios'][0]['jours']}j)")
+    print(f"T4 (au 28/07): rupture realiste {t4_prev['scenarios'][0]['date']} ({t4_prev['scenarios'][0]['jours']}j)")
 
     # Write Excel
     wb = openpyxl.Workbook()
@@ -915,17 +916,17 @@ def main():
     ws1 = wb.create_sheet('T1 - Moy jour soja par agence')
     write_t1(ws1, t1_new, t1_prev)
 
-    ws2 = wb.create_sheet('T2 - Commandes soja 27-07')
+    ws2 = wb.create_sheet('T2 - Commandes soja 28-07')
     write_t2(ws2, t2_new, t2_prev)
 
-    ws3 = wb.create_sheet('T3 - Soja-only 27-07')
+    ws3 = wb.create_sheet('T3 - Soja-only 28-07')
     write_t3(ws3, t3_new, t3_prev)
 
     ws4 = wb.create_sheet('T4 - Stock soja et rupture')
     write_t4(ws4, t4_new, t4_prev)
 
     # T5: tendance journalière soja + concentrés avec graphiques
-    t5_new = compute_t5_trend(rows_new, end_date_str='28/07/2026')
+    t5_new = compute_t5_trend(rows_new, end_date_str='29/07/2026')
     ws5 = wb.create_sheet('T5 - Tendance Juillet')
     write_t5(ws5, t5_new)
 
@@ -952,9 +953,9 @@ def main():
                     'stock_restant_t': t4_prev['stock_restant_t'], 'post_stock_t': t4_prev['post_stock_t']},
         'price_hike': {'date': '23/07/2026', 'amount': '+2 000 XAF/sac 50kg'},
     }
-    with open('/home/z/my-project/scripts/soja_juillet_28.json', 'w', encoding='utf-8') as f:
+    with open('/home/z/my-project/scripts/soja_juillet_29.json', 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
-    print('Summary saved: /home/z/my-project/scripts/soja_juillet_28.json')
+    print('Summary saved: /home/z/my-project/scripts/soja_juillet_29.json')
 
 
 if __name__ == '__main__':
