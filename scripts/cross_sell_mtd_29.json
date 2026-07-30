@@ -1,0 +1,30 @@
+{
+  "soja": {
+    "s1_total": 1215,
+    "s1_soja_conc": 958,
+    "s1_soja_conc_pct": 79.0,
+    "s1_soja_only": 257,
+    "s1_soja_only_pct": 21.0,
+    "juil_soja": 757,
+    "juil_soja_conc": 604,
+    "juil_soja_conc_pct": 80.0,
+    "juil_soja_only": 153,
+    "juil_soja_only_pct": 20.0,
+    "regression": 76,
+    "conversion": 42
+  },
+  "booster": {
+    "s1_total": 494,
+    "s1_booster_conc": 357,
+    "s1_booster_conc_pct": 72.0,
+    "s1_booster_only": 137,
+    "s1_booster_only_pct": 28.0,
+    "juil_booster": 192,
+    "juil_booster_conc": 137,
+    "juil_booster_conc_pct": 71.0,
+    "juil_booster_only": 55,
+    "juil_booster_only_pct": 29.0,
+    "regression": 11,
+    "conversion": 11
+  }
+}
