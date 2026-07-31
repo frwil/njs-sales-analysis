@@ -1,0 +1,102 @@
+{
+  "temps_ecoule_pct": 100.0,
+  "july_days_lun_sam": 27,
+  "july_total_days_lun_sam": 27,
+  "clients": {
+    "s1_total": 1369,
+    "juil_mtd": 902,
+    "maintenus": 840,
+    "nouveaux": 62,
+    "risque_eleve": 442,
+    "a_surveiller": 47,
+    "pas_inquietant": 40
+  },
+  "ca": {
+    "risque_eleve": 1522586578.0,
+    "a_surveiller": 80764675.0,
+    "pas_inquietant": 41932504.0,
+    "maintenus": 14923589777.0
+  },
+  "top_risque": [
+    {
+      "nom": "TCHEUTCHOUA TCHINDA ERIC",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 11.4,
+      "jour_moyen": 13.9,
+      "nb_achats": 124
+    },
+    {
+      "nom": "GIC ESPOIR KELENG (POKAM MERLINE)",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 10.6,
+      "jour_moyen": 14.6,
+      "nb_achats": 33
+    },
+    {
+      "nom": "MALENDOMA DORIS TATIANA FLORE",
+      "agence": "Ndobo",
+      "region": "Littoral",
+      "ca_s1_m": 7.6,
+      "jour_moyen": 15.8,
+      "nb_achats": 25
+    },
+    {
+      "nom": "METAFE GNITEYO SONYA M",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 7.5,
+      "jour_moyen": 20.5,
+      "nb_achats": 11
+    },
+    {
+      "nom": "JEUGO ALICE",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 7.4,
+      "jour_moyen": 15.6,
+      "nb_achats": 62
+    },
+    {
+      "nom": "SPC",
+      "agence": "Ndobo",
+      "region": "Littoral",
+      "ca_s1_m": 3.9,
+      "jour_moyen": 18.0,
+      "nb_achats": 5
+    },
+    {
+      "nom": "WAFIN JOUDOM GAELLE STEPHANIE (PROV WAFIN GAËLLE)",
+      "agence": "Messassi",
+      "region": "Centre",
+      "ca_s1_m": 3.8,
+      "jour_moyen": 14.2,
+      "nb_achats": 70
+    },
+    {
+      "nom": "MBEKAP MERIME",
+      "agence": "Messassi",
+      "region": "Centre",
+      "ca_s1_m": 3.4,
+      "jour_moyen": 14.7,
+      "nb_achats": 80
+    },
+    {
+      "nom": "YENDE MONGBET ZAKARIAOU",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 3.4,
+      "jour_moyen": 13.8,
+      "nb_achats": 34
+    },
+    {
+      "nom": "Dongmo Mboguia Ursule Florent",
+      "agence": "Djeleng",
+      "region": "Ouest",
+      "ca_s1_m": 3.4,
+      "jour_moyen": 16.8,
+      "nb_achats": 16
+    }
+  ]
+}
