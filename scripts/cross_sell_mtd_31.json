@@ -5,13 +5,13 @@
     "s1_soja_conc_pct": 79.0,
     "s1_soja_only": 257,
     "s1_soja_only_pct": 21.0,
-    "juil_soja": 784,
-    "juil_soja_conc": 636,
-    "juil_soja_conc_pct": 81.0,
-    "juil_soja_only": 148,
-    "juil_soja_only_pct": 19.0,
-    "regression": 72,
-    "conversion": 47
+    "juil_soja": 804,
+    "juil_soja_conc": 660,
+    "juil_soja_conc_pct": 82.0,
+    "juil_soja_only": 144,
+    "juil_soja_only_pct": 18.0,
+    "regression": 68,
+    "conversion": 49
   },
   "booster": {
     "s1_total": 494,
@@ -19,11 +19,11 @@
     "s1_booster_conc_pct": 72.0,
     "s1_booster_only": 137,
     "s1_booster_only_pct": 28.0,
-    "juil_booster": 204,
-    "juil_booster_conc": 148,
-    "juil_booster_conc_pct": 73.0,
-    "juil_booster_only": 56,
-    "juil_booster_only_pct": 27.0,
+    "juil_booster": 212,
+    "juil_booster_conc": 157,
+    "juil_booster_conc_pct": 74.0,
+    "juil_booster_only": 55,
+    "juil_booster_only_pct": 26.0,
     "regression": 11,
     "conversion": 12
   }

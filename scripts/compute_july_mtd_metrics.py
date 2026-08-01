@@ -15,9 +15,9 @@ import json
 
 # ===== CONFIG =====
 S1_FILE = '/home/z/my-project/upload/ventes janv a juin 2026.xlsx'
-JULY_FILE = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (8).xlsx'
+JULY_FILE = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (10) (1).xlsx'
 
-JULY_END_DAY = 31  # au 31/07/2026 — mois complet (27j lun-sam)
+JULY_END_DAY = 31  # au 31/07/2026 — bilan complet définitif (27j lun-sam)
 JULY_DAYS_LUN_SAM = sum(1 for d in range(1, JULY_END_DAY + 1) if datetime.date(2026, 7, d).weekday() < 6)
 JULY_TOTAL_DAYS_LUN_SAM = sum(1 for d in range(1, 32) if datetime.date(2026, 7, d).weekday() < 6)
 TEMPS_ECOULE_PCT = JULY_DAYS_LUN_SAM / JULY_TOTAL_DAYS_LUN_SAM * 100
