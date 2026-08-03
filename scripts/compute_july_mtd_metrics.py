@@ -15,7 +15,7 @@ import json
 
 # ===== CONFIG =====
 S1_FILE = '/home/z/my-project/upload/ventes janv a juin 2026.xlsx'
-JULY_FILE = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (10) (1).xlsx'
+JULY_FILE = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx'
 
 JULY_END_DAY = 31  # au 31/07/2026 — bilan complet définitif (27j lun-sam)
 JULY_DAYS_LUN_SAM = sum(1 for d in range(1, JULY_END_DAY + 1) if datetime.date(2026, 7, d).weekday() < 6)
@@ -111,11 +111,11 @@ def load_s1_data():
     for sn in wb.sheetnames:
         ws = wb[sn]
         for i, r in enumerate(ws.iter_rows(min_row=3, values_only=True)):
-            if not r or len(r) < 18:
+            if not r or len(r) < 14:
                 continue
             if r[0] == 'Total':
                 continue
-            if r[15] != 'Livrée':
+            if r[13] != 'Livrée' if len(r) <= 16 else r[15] != 'Livrée':
                 continue
             rows.append(r)
     return rows
@@ -127,11 +127,11 @@ def load_july_data():
     ws = wb['Sheet 1']
     rows = []
     for r in ws.iter_rows(min_row=3, values_only=True):
-        if not r or len(r) < 18:
+        if not r or len(r) < 14:
             continue
         if r[0] == 'Total':
             continue
-        if r[15] != 'Livrée':
+        if r[13] != 'Livrée' if len(r) <= 16 else r[15] != 'Livrée':
             continue
         rows.append(r)
     return rows
@@ -251,7 +251,7 @@ def compute_juillet_mtd_metrics(s1_rows, july_rows, internal_clients):
             day = int(date_str[:2])
         except:
             continue
-        agence_raw = r[17] or ''
+        agence_raw = r[15] or '' if len(r) <= 16 else r[17] or ''
         agence, region = AGENCE_MAP.get(agence_raw, (agence_raw, '?'))
         s1_clients[ck] = {'name': name, 'agence': agence, 'region': region}
         s1_client_days[ck].append(day)
@@ -537,7 +537,7 @@ def compute_bundle_metrics(s1_rows, july_rows, internal_clients):
         ref = r[0]
         qte = r[2] or 0
         ca = r[8] or 0
-        agence_raw = r[17] or ''
+        agence_raw = r[15] or '' if len(r) <= 16 else r[17] or ''
         agence, region = AGENCE_MAP.get(agence_raw, (agence_raw, '?'))
         key = (ck, month)
         if ref in SOJA_REFS:
@@ -566,7 +566,7 @@ def compute_bundle_metrics(s1_rows, july_rows, internal_clients):
         ref = r[0]
         qte = r[2] or 0
         ca = r[8] or 0
-        agence_raw = r[17] or ''
+        agence_raw = r[15] or '' if len(r) <= 16 else r[17] or ''
         agence, region = AGENCE_MAP.get(agence_raw, (agence_raw, '?'))
         if ref in SOJA_REFS:
             july_client[ck]['soja_sacs'] += qte * SOJA_REFS[ref] / 50

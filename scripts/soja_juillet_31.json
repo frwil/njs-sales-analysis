@@ -1,53 +1,53 @@
 {
   "update_date": "31/07/2026",
-  "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (3) (10) (1).xlsx",
-  "rows_livree_new": 11964,
-  "rows_livree_prev": 11466,
+  "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx",
+  "rows_livree_new": 12014,
+  "rows_livree_prev": 11964,
   "t1_new": {
+    "total_t": 7565.946,
+    "moy_jour_t": 280.2202222222222,
+    "days_elapsed": 27
+  },
+  "t1_prev": {
     "total_t": 7512.246,
     "moy_jour_t": 278.23133333333334,
     "days_elapsed": 27
   },
-  "t1_prev": {
-    "total_t": 7226.866,
-    "moy_jour_t": 267.6617037037037,
-    "days_elapsed": 27
-  },
   "t2_new": {
-    "cmds": 109,
-    "bundle": 96,
-    "soja_only": 13,
+    "cmds": 119,
+    "bundle": 105,
+    "soja_only": 14,
     "ratio": "2.6:1"
   },
   "t2_prev": {
-    "cmds": 81,
-    "bundle": 71,
-    "soja_only": 10,
-    "ratio": "2.7:1"
+    "cmds": 99,
+    "bundle": 85,
+    "soja_only": 14,
+    "ratio": "2.6:1"
   },
   "t3_new": {
-    "count": 13,
-    "total_t": 3.825
+    "count": 14,
+    "total_t": 3.925
   },
   "t3_prev": {
-    "count": 10,
-    "total_t": 4.8
+    "count": 14,
+    "total_t": 5.155
   },
   "t4_new": {
+    "rupture_date": "04/09/2026",
+    "jours_stock": 30,
+    "moy_jour_t": 203.16277777777776,
+    "stock_restant_sacs": 123431,
+    "stock_restant_t": 6171.5,
+    "post_stock_t": 1828.5
+  },
+  "t4_prev": {
     "rupture_date": "05/09/2026",
     "jours_stock": 31,
     "moy_jour_t": 200.785,
     "stock_restant_sacs": 123859,
     "stock_restant_t": 6192.9,
     "post_stock_t": 1807.1
-  },
-  "t4_prev": {
-    "rupture_date": "12/09/2026",
-    "jours_stock": 37,
-    "moy_jour_t": 175.065,
-    "stock_restant_sacs": 128488,
-    "stock_restant_t": 6424.4,
-    "post_stock_t": 1575.6
   },
   "price_hike": {
     "date": "23/07/2026",

@@ -18,8 +18,8 @@ import datetime
 import copy
 import json
 
-SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (10) (1).xlsx'
-PREV_SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (8).xlsx'  # au 31/07 (extraction matinale)
+SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx'
+PREV_SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (10) (1).xlsx'  # au 31/07 (extraction précédente)
 OUT = '/home/z/my-project/download/analyse_soja_juillet.xlsx'
 PREV_OUT = '/home/z/my-project/download/analyse_soja_juillet.xlsx'  # previous output for comparison
 
@@ -64,24 +64,51 @@ STOCK_DATE = '21/07/2026'  # Date de référence du stock physique
 STOCK_DAY = 21  # jour du mois
 
 
+def detect_column_indices(ws):
+    """Auto-detect column indices from header row (row 2).
+    Handles both 18-col format (with Date création/Date clôture) and 16-col format."""
+    header = None
+    for row in ws.iter_rows(min_row=2, max_row=2, values_only=True):
+        header = row
+        break
+    if not header:
+        return {'etat': 15, 'agence': 17}  # default old format
+    indices = {}
+    for i, h in enumerate(header):
+        if h == 'État':
+            indices['etat'] = i
+        elif h == 'agence':
+            indices['agence'] = i
+    # Defaults if not found
+    if 'etat' not in indices:
+        indices['etat'] = 13 if len(header) <= 16 else 15
+    if 'agence' not in indices:
+        indices['agence'] = 15 if len(header) <= 16 else 17
+    return indices
+
+
 def load_livree(path):
-    """Load only Livrée rows from the ERP extraction."""
+    """Load only Livrée rows from the ERP extraction. Auto-detects column format."""
     wb = openpyxl.load_workbook(path, read_only=True)
     ws = wb['Sheet 1']
+    col_idx = detect_column_indices(ws)
+    etat_col = col_idx['etat']
+    agence_col = col_idx['agence']
+    min_cols = max(etat_col, agence_col) + 1
     rows = list(ws.iter_rows(min_row=3, values_only=True))
     out = []
     for r in rows:
-        if not r or len(r) < 18:
+        if not r or len(r) < min_cols:
             continue
         if r[0] == 'Total':
             continue
-        if r[15] != 'Livrée':
+        if r[etat_col] != 'Livrée':
             continue
         out.append(r)
-    return out
+    return out, col_idx
 
 
-def cmd_soja_conc(rows, date_filter=None):
+def cmd_soja_conc(rows, date_filter=None, col_idx=None):
     """For each command, compute soja_kg, conc_kg, soja_sacs_50, conc_sacs_50.
     Returns dict {cmd_ref: {...}} of commands that contain soja OR conc.
     Bundle = both > 0, soja_only = soja > 0 & conc == 0, conc_only = conc > 0 & soja == 0.
@@ -97,7 +124,7 @@ def cmd_soja_conc(rows, date_filter=None):
         ref = r[0]
         qte = r[2] or 0
         cmd = r[3]
-        agence_raw = r[17] or ''
+        agence_raw = r[col_idx['agence']] or ''
         agence_short, region = AGENCE_MAP.get(agence_raw, (agence_raw, '?'))
         if ref in SOJA_REFS:
             cmds[cmd]['soja_kg'] += qte * SOJA_REFS[ref]
@@ -105,7 +132,7 @@ def cmd_soja_conc(rows, date_filter=None):
             cmds[cmd]['agence'] = agence_short
             cmds[cmd]['region'] = region
             cmds[cmd]['client'] = r[5]
-            cmds[cmd]['etat'] = r[15]
+            cmds[cmd]['etat'] = r[col_idx['etat']]
             cmds[cmd]['date'] = date
             cmds[cmd]['cmd_ref'] = cmd
         if ref in CONC_REFS:
@@ -114,14 +141,14 @@ def cmd_soja_conc(rows, date_filter=None):
             cmds[cmd]['agence'] = agence_short
             cmds[cmd]['region'] = region
             cmds[cmd]['client'] = r[5]
-            cmds[cmd]['etat'] = r[15]
+            cmds[cmd]['etat'] = r[col_idx['etat']]
             cmds[cmd]['date'] = date
             cmds[cmd]['cmd_ref'] = cmd
     # Keep commands that have soja OR conc
     return {k: v for k, v in cmds.items() if v['soja_kg'] > 0 or v['conc_kg'] > 0}
 
 
-def compute_t1(rows, end_date_str):
+def compute_t1(rows, end_date_str, col_idx=None):
     """T1: Moyenne journaliere soja par agence/region, 01/07 to end_date."""
     # Days elapsed (lun-sam)
     end_d = int(end_date_str[:2])
@@ -136,7 +163,7 @@ def compute_t1(rows, end_date_str):
     for r in rows:
         ref = r[0]
         qte = r[2] or 0
-        agence_raw = r[17] or ''
+        agence_raw = r[col_idx['agence']] or ''
         agence_short, region = AGENCE_MAP.get(agence_raw, (agence_raw, '?'))
         if ref in SOJA_REFS:
             soja_by_agence[agence_short]['kg'] += qte * SOJA_REFS[ref]
@@ -167,13 +194,13 @@ def compute_t1(rows, end_date_str):
     }
 
 
-def compute_t2(rows, date_str):
+def compute_t2(rows, date_str, col_idx=None):
     """T2: Commandes soja du jour par agence.
     cmds = commandes avec soja (soja_only + bundle).
     bundle = commandes avec soja ET conc.
     soja_only = commandes avec soja mais sans conc.
     ratio = total soja / total conc (toutes commandes incl. conc-only - portfolio mix)."""
-    cmds = cmd_soja_conc(rows, date_filter=date_str)
+    cmds = cmd_soja_conc(rows, date_filter=date_str, col_idx=col_idx)
     by_agence = defaultdict(lambda: {
         'cmds_soja': 0, 'bundle': 0, 'soja_only': 0,
         'soja_sacs_50': 0, 'conc_sacs_50': 0, 'region': None
@@ -243,9 +270,9 @@ def compute_t2(rows, date_str):
     }
 
 
-def compute_t3(rows, date_str):
+def compute_t3(rows, date_str, col_idx=None):
     """T3: List of soja-only commands on date (commands with soja but NO conc)."""
-    cmds = cmd_soja_conc(rows, date_filter=date_str)
+    cmds = cmd_soja_conc(rows, date_filter=date_str, col_idx=col_idx)
     soja_only = [c for c in cmds.values() if c['soja_kg'] > 0 and c['conc_kg'] == 0]
     soja_only.sort(key=lambda c: -c['soja_kg'])
     return {
@@ -269,7 +296,7 @@ def add_business_days(start_date, n_days):
     return current
 
 
-def compute_t4_post_stock(rows, current_date_str='28/07/2026', stock_date_str='21/07/2026',
+def compute_t4_post_stock(rows, col_idx=None, current_date_str='28/07/2026', stock_date_str='21/07/2026',
                             price_hike_date='23/07/2026'):
     """T4: Stock soja et rupture — méthode corrigée.
 
@@ -367,7 +394,7 @@ def compute_t4_post_stock(rows, current_date_str='28/07/2026', stock_date_str='2
     }
 
 
-def compute_t5_trend(rows, end_date_str='28/07/2026'):
+def compute_t5_trend(rows, end_date_str='31/07/2026', col_idx=None):
     """T5: Tendance journalière soja et concentrés en juillet.
     Retourne pour chaque jour ouvré (lun-sam): date, soja (t), conc (t), ratio soja:conc.
     """
@@ -874,27 +901,27 @@ def write_t4(ws, t4, t4_prev):
 
 def main():
     print('Loading new extraction (au 31/07 complet)...')
-    rows_new = load_livree(SRC)
-    print(f'  {len(rows_new)} Livree rows')
+    rows_new, col_idx_new = load_livree(SRC)
+    print(f'  {len(rows_new)} Livree rows (cols: etat={col_idx_new["etat"]}, agence={col_idx_new["agence"]})')
     print('Loading previous extraction (au 31/07 matinale)...')
-    rows_prev = load_livree(PREV_SRC)
-    print(f'  {len(rows_prev)} Livree rows')
+    rows_prev, col_idx_prev = load_livree(PREV_SRC)
+    print(f'  {len(rows_prev)} Livree rows (cols: etat={col_idx_prev["etat"]}, agence={col_idx_prev["agence"]})')
 
     # Compute tables for new (au 31/07 — bilan complet définitif)
     # T1: aggregate 1-31/07 (27 days lun-sam — mois complet)
-    t1_new = compute_t1(rows_new, '31/07/2026')
+    t1_new = compute_t1(rows_new, '31/07/2026', col_idx=col_idx_new)
     # T2/T3: use 31/07 (now complete with 109 soja commands Livrées)
-    t2_new = compute_t2(rows_new, '31/07/2026')
-    t3_new = compute_t3(rows_new, '31/07/2026')
+    t2_new = compute_t2(rows_new, '31/07/2026', col_idx=col_idx_new)
+    t3_new = compute_t3(rows_new, '31/07/2026', col_idx=col_idx_new)
     # T4: méthode corrigée — stock physique au 21/07, ventes post-stock à déduire
-    t4_new = compute_t4_post_stock(rows_new, current_date_str='31/07/2026', stock_date_str='21/07/2026')
+    t4_new = compute_t4_post_stock(rows_new, col_idx=col_idx_new, current_date_str='31/07/2026', stock_date_str='21/07/2026')
 
     # Compute tables for previous (extraction au 31/07 matinale — used 30/07 for T2/T3)
-    t1_prev = compute_t1(rows_prev, '31/07/2026')
-    t2_prev = compute_t2(rows_prev, '30/07/2026')
-    t3_prev = compute_t3(rows_prev, '30/07/2026')
+    t1_prev = compute_t1(rows_prev, '31/07/2026', col_idx=col_idx_prev)
+    t2_prev = compute_t2(rows_prev, '30/07/2026', col_idx=col_idx_prev)
+    t3_prev = compute_t3(rows_prev, '30/07/2026', col_idx=col_idx_prev)
     # T4 précédent: stock au 21/07, ventes 22-31/07 (post-stock)
-    t4_prev = compute_t4_post_stock(rows_prev, current_date_str='31/07/2026', stock_date_str='21/07/2026')
+    t4_prev = compute_t4_post_stock(rows_prev, col_idx=col_idx_prev, current_date_str='31/07/2026', stock_date_str='21/07/2026')
 
     print(f"\nT1 (au 31/07 complet): {t1_new['total_t']:.1f} t, moy/jour {t1_new['moy_jour_t']:.1f} t ({t1_new['days_elapsed']}j)")
     print(f"T1 (au 31/07 matinale): {t1_prev['total_t']:.1f} t, moy/jour {t1_prev['moy_jour_t']:.1f} t ({t1_prev['days_elapsed']}j)")
@@ -906,7 +933,7 @@ def main():
     print(f"  Ventes post-stock 22-31/07: {t4_new['post_stock_sacs']:,} sacs ({t4_new['post_stock_t']} t)".replace(',', ' '))
     print(f"  Moy/jour post-stock: {t4_new['moy_t_post']:.1f} t/j ({int(t4_new['moy_sacs_post'])} sacs/j)")
     print(f"  Rupture realiste: {t4_new['scenarios'][0]['date']} ({t4_new['scenarios'][0]['jours']}j)")
-    print(f"T4 (au 29/07): rupture realiste {t4_prev['scenarios'][0]['date']} ({t4_prev['scenarios'][0]['jours']}j)")
+    print(f"T4 (au 31/07 prev): rupture realiste {t4_prev['scenarios'][0]['date']} ({t4_prev['scenarios'][0]['jours']}j)")
 
     # Write Excel
     wb = openpyxl.Workbook()
@@ -925,7 +952,7 @@ def main():
     write_t4(ws4, t4_new, t4_prev)
 
     # T5: tendance journalière soja + concentrés avec graphiques
-    t5_new = compute_t5_trend(rows_new, end_date_str='31/07/2026')
+    t5_new = compute_t5_trend(rows_new, end_date_str='31/07/2026', col_idx=col_idx_new)
     ws5 = wb.create_sheet('T5 - Tendance Juillet')
     write_t5(ws5, t5_new)
 

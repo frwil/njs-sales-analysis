@@ -4,18 +4,18 @@
   "july_total_days_lun_sam": 27,
   "clients": {
     "s1_total": 1369,
-    "juil_mtd": 919,
-    "maintenus": 853,
+    "juil_mtd": 920,
+    "maintenus": 854,
     "nouveaux": 66,
-    "risque_eleve": 430,
+    "risque_eleve": 429,
     "a_surveiller": 46,
     "pas_inquietant": 40
   },
   "ca": {
-    "risque_eleve": 1475818114.0,
+    "risque_eleve": 1473112114.0,
     "a_surveiller": 76603175.0,
     "pas_inquietant": 41932504.0,
-    "maintenus": 14974519741.0
+    "maintenus": 14977225741.0
   },
   "top_risque": [
     {
