@@ -1072,7 +1072,45 @@ def build_story():
     ))
 
     story.append(PageBreak())
-    story.append(Paragraph("5.2 Tableau de bord — Efficacité du plan d'action", H2))
+
+    # ===== 5.2 Premier point de suivi — Août 2026 (au 04/08) =====
+    story.append(Paragraph("5.2 Premier point de suivi — Août 2026 (au 04/08)", H2))
+    story.append(Paragraph(
+        "<b>Données au 4 août 2026</b> — temps écoulé : 3 jours ouvrables (lun-sam) sur 27 (11% du mois). "
+        "Démarrage très partiel du mois — les chiffres ci-dessous sont indicatifs et seront consolidés en fin de mois.",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph("5.2.1 Évolution des ventes par catégorie — S1 vs Août (démarrage)", H3))
+    evol_aout_data = [
+        ["Catégorie", "Moy. mensuelle S1 (t)", "Août 3j (t)", "Projection Août (t)", "vs S1 (%)", "Obj Août (t)", "% ajusté*"],
+        ["TOURTEAUX", "4 844", "462", "4 003", "-17%", "3 834", "104%"],
+        ["CONCENTRES", "1 513", "176", "1 522", "+1%", "1 535", "99%"],
+        ["ALIMENT COMPLET", "102", "0", "0", "-100%", "70", "0%"],
+        ["INGREDIENTS (hors Maïs)", "84", "0", "0", "-100%", "85", "0%"],
+        ["MAÏS", "599", "0", "0", "-100%", "—", "—"],
+        ["PREMIX", "12", "0", "3", "-75%", "9", "33%"],
+        ["TOTAL", "7 154", "638", "5 528", "-23%", "5 533", "100%"],
+    ]
+    story.append(make_table(evol_aout_data, col_widths=[3*cm, 2.5*cm, 2.2*cm, 2.5*cm, 1.8*cm, 2*cm, 1.8*cm], font_size=7.5))
+    story.append(Paragraph(
+        "<i>* % ajusté = réel 3j / (objectif mois × 11%) × 100. Projection = réel 3j × (27/3).</i>",
+        ParagraphStyle('fn_aout', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Lecture août 2026 (au 04/08 — démarrage) :</b><br/>"
+        "• <b>Volume global à 100% ajusté</b> — démarrage conforme à l'objectif au prorata (3j sur 27j).<br/>"
+        "• <b>TOURTEAUX à 104% ajusté</b> — la dynamique de rupture concurrente se maintient malgré la hausse tarifaire (+3 000 FCFA/sac cumulé). Projection août : 4 003 t (vs 4 844 t S1, -17%).<br/>"
+        "• <b>CONCENTRES à 99% ajusté</b> — démarrage conforme à l'objectif. Projection août : 1 522 t (vs 1 513 t S1, +1%).<br/>"
+        "• <b>Prix soja</b> : 20 673 FCFA/sac (+27,6% vs S1) — reflète la hausse cumulée +3 000 FCFA/sac.<br/>"
+        "• <b>Bundle ratio</b> : 2,8:1 (vs 2,7:1 S1) — le ratio se maintient proche de l'objectif 3:1.<br/>"
+        "• <b>993 clients à risque élevé</b> (habitude début de mois, pas encore d'achat en août) — normal à ce stade (3 jours seulement).",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+    story.append(Paragraph("5.3 Tableau de bord — Efficacité du plan d'action", H2))
     story.append(Paragraph(
         "Ce tableau sera enrichi à chaque mise à jour mensuelle. Les colonnes 'Août', 'Septembre', etc. seront remplies "
         "au fur et à mesure de la disponibilité des données. L'objectif est de visualiser immédiatement si les actions "
@@ -1081,25 +1119,25 @@ def build_story():
     ))
 
     dashboard_data = [
-        ["KPI", "Réf S1", "Cible S2", "Juil (bilan)", "Août", "Sept", "Oct", "Nov", "Déc"],
-        ["Clients maintenus (S1 → actifs)", "1 369", "Maximiser", "853 (62%)", "—", "—", "—", "—", "—"],
-        ["Nouveaux clients", "—", "Maximiser", "66", "—", "—", "—", "—", "—"],
-        ["Clients churned (habitude ≤21j)", "—", "Réduire", "430", "—", "—", "—", "—", "—"],
-        ["Top 14 clients 20/80 réactivés", "0/14", "≥ 8/14", "À suivre", "—", "—", "—", "—", "—"],
-        ["192 churned Q1→Q2 reconquis", "0", "≥ 58", "À suivre", "—", "—", "—", "—", "—"],
+        ["KPI", "Réf S1", "Cible S2", "Juil (bilan)", "Août (3j)", "Sept", "Oct", "Nov", "Déc"],
+        ["Clients maintenus (S1 → actifs)", "1 369", "Maximiser", "853 (62%)", "229 (17%)", "—", "—", "—", "—"],
+        ["Nouveaux clients", "—", "Maximiser", "66", "13", "—", "—", "—", "—"],
+        ["Clients churned (habitude ≤21j)", "—", "Réduire", "430", "993*", "—", "—", "—", "—"],
+        ["Top 14 clients 20/80 réactivés", "0/14", "≥ 8/14", "À suivre", "À suivre", "—", "—", "—", "—"],
+        ["192 churned Q1→Q2 reconquis", "0", "≥ 58", "À suivre", "À suivre", "—", "—", "—", "—"],
         ["CA gagné nouveaux clients (M)", "—", "Maximiser", "—", "—", "—", "—", "—", "—"],
-        ["CA churned à risque élevé (M)", "—", "Récupérer", "1 476", "—", "—", "—", "—", "—"],
-        ["Bundle soja-concentrés (%)", "79%", "≥ 80%", "82%", "—", "—", "—", "—", "—"],
-        ["Volume CONCENTRES (t)", "1 513/mois", "≥ 1 715", "1 820", "—", "—", "—", "—", "—"],
-        ["Atteinte obj. CONCENTRES", "72%", "≥ 100%", "106%", "—", "—", "—", "—", "—"],
+        ["CA churned à risque élevé (M)", "—", "Récupérer", "1 476", "10 240*", "—", "—", "—", "—"],
+        ["Bundle soja-concentrés (%)", "79%", "≥ 80%", "82%", "94%", "—", "—", "—", "—"],
+        ["Volume CONCENTRES (t)", "1 513/mois", "≥ 1 535", "1 820", "1 522 (proj.)", "—", "—", "—", "—"],
+        ["Atteinte obj. CONCENTRES", "72%", "≥ 100%", "106%", "99% (ajusté)", "—", "—", "—", "—"],
         ["Nouveaux clients concentrés", "—", "Maximiser", "≈ 55", "—", "—", "—", "—", "—"],
-        ["Cross-sell Booster→Conc (%)", "72%", "≥ 72%", "74%", "—", "—", "—", "—", "—"],
-        ["Prix soja (FCFA/sac)", "Stable", "—", "+1 000 puis +2 000 (23/07)", "—", "—", "—", "—", "—"],
-        ["Prix PREMIX (FCFA/sac)", "Stable", "—", "+3 000", "—", "—", "—", "—", "—"],
+        ["Cross-sell Booster→Conc (%)", "72%", "≥ 72%", "74%", "38%", "—", "—", "—", "—"],
+        ["Prix soja (FCFA/sac)", "Stable", "—", "+3 000 cumulé", "+3 000 cumulé", "—", "—", "—", "—"],
+        ["Prix PREMIX (FCFA/sac)", "Stable", "—", "+3 000", "+3 000", "—", "—", "—", "—"],
     ]
     story.append(make_table(dashboard_data, col_widths=[4*cm, 2*cm, 2*cm, 2.6*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm], font_size=7))
     story.append(Paragraph(
-        "<i>* 430 clients S1 avec habitude d'achat ≤ 21j n'ont pas commandé en juillet. À relativiser : 853 clients (62%) sont restés actifs.</i>",
+        "<i>* 430 clients churned en juillet. En août, 993 clients S1 n'ont pas encore commandé au 04/08 (3j) — ce chiffre inclut la majorité des clients qui commanderont plus tard dans le mois. À surveiller en fin de mois.</i>",
         ParagraphStyle('fn2', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
     ))
 

@@ -15,11 +15,12 @@ import json
 
 # ===== CONFIG =====
 S1_FILE = '/home/z/my-project/upload/ventes janv a juin 2026.xlsx'
-JULY_FILE = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx'
+JULY_FILE = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (11) (1).xlsx'
 
-JULY_END_DAY = 31  # au 31/07/2026 — bilan complet définitif (27j lun-sam)
-JULY_DAYS_LUN_SAM = sum(1 for d in range(1, JULY_END_DAY + 1) if datetime.date(2026, 7, d).weekday() < 6)
-JULY_TOTAL_DAYS_LUN_SAM = sum(1 for d in range(1, 32) if datetime.date(2026, 7, d).weekday() < 6)
+JULY_END_DAY = 4  # au 04/08/2026 (3 jours ouvrables lun-sam: 01, 03, 04/08)
+JULY_MONTH = 8  # August
+JULY_DAYS_LUN_SAM = sum(1 for d in range(1, JULY_END_DAY + 1) if datetime.date(2026, JULY_MONTH, d).weekday() < 6)
+JULY_TOTAL_DAYS_LUN_SAM = sum(1 for d in range(1, 32) if datetime.date(2026, JULY_MONTH, d).weekday() < 6)
 TEMPS_ECOULE_PCT = JULY_DAYS_LUN_SAM / JULY_TOTAL_DAYS_LUN_SAM * 100
 
 # Product references (sac weight in kg)
@@ -722,9 +723,9 @@ def main():
     for i, c in enumerate(mtd['top_risque'], 1):
         print(f"  {i}. {c['nom'][:40]:40s} | {c['agence']:12s} | {c['region']:10s} | CA S1: {c['ca_s1_m']} M | jour moy: {c['jour_moyen']}")
 
-    with open('/home/z/my-project/scripts/juillet_mtd_31.json', 'w', encoding='utf-8') as f:
+    with open('/home/z/my-project/scripts/juillet_mtd_aout04.json', 'w', encoding='utf-8') as f:
         json.dump(mtd, f, indent=2, ensure_ascii=False)
-    print('Saved: juillet_mtd_31.json')
+    print('Saved: juillet_mtd_aout04.json')
 
     # 2. Cross-sell
     print('\n=== Cross-sell metrics ===')
@@ -734,9 +735,9 @@ def main():
     print(f"Booster: S1 {cs['booster']['s1_total']} ({cs['booster']['s1_booster_conc_pct']}% avec conc) → Juil {cs['booster']['juil_booster']} ({cs['booster']['juil_booster_conc_pct']}%)")
     print(f"  Régression: {cs['booster']['regression']}, Conversion: {cs['booster']['conversion']}")
 
-    with open('/home/z/my-project/scripts/cross_sell_mtd_31.json', 'w', encoding='utf-8') as f:
+    with open('/home/z/my-project/scripts/cross_sell_mtd_aout04.json', 'w', encoding='utf-8') as f:
         json.dump(cs, f, indent=2, ensure_ascii=False)
-    print('Saved: cross_sell_mtd_31.json')
+    print('Saved: cross_sell_mtd_aout04.json')
 
     # 3. Volumes by category
     print('\n=== Volumes by category ===')
@@ -748,9 +749,9 @@ def main():
         delta_pct = (proj - s1m) / s1m * 100 if s1m else 0
         print(f"  {cat}: S1 moy {s1m:.0f} t → Juil MTD {ju:.0f} t (proj {proj:.0f} t, {delta_pct:+.0f}%)")
 
-    with open('/home/z/my-project/scripts/volumes_juillet_31.json', 'w', encoding='utf-8') as f:
+    with open('/home/z/my-project/scripts/volumes_juillet_aout04.json', 'w', encoding='utf-8') as f:
         json.dump(vols, f, indent=2, ensure_ascii=False)
-    print('Saved: volumes_juillet_31.json')
+    print('Saved: volumes_juillet_aout04.json')
 
     # 4. Bundle metrics
     print('\n=== Bundle metrics ===')
@@ -768,9 +769,9 @@ def main():
             continue
         print(f"  {ag['agence']:15s} {ag['region']:10s} | S1 {ag['s1_clients']:3d}→Juil {ag['juil_clients']:3d} | ratio S1 {ag['s1_ratio']:.1f}→Juil {ag['juil_ratio']:.1f} | prix soja {ag['s1_price_soja']:>5.0f}→{ag['juil_price_soja']:>5.0f}")
 
-    with open('/home/z/my-project/scripts/bundle_metrics_31.json', 'w', encoding='utf-8') as f:
+    with open('/home/z/my-project/scripts/bundle_metrics_aout04.json', 'w', encoding='utf-8') as f:
         json.dump(bm, f, indent=2, ensure_ascii=False)
-    print('Saved: bundle_metrics_31.json')
+    print('Saved: bundle_metrics_aout04.json')
 
 
 if __name__ == '__main__':
