@@ -1,21 +1,21 @@
 {
-  "temps_ecoule_pct": 11.5,
-  "july_days_lun_sam": 3,
+  "temps_ecoule_pct": 19.2,
+  "july_days_lun_sam": 5,
   "july_total_days_lun_sam": 26,
   "clients": {
     "s1_total": 1369,
-    "juil_mtd": 242,
-    "maintenus": 229,
-    "nouveaux": 13,
-    "risque_eleve": 993,
-    "a_surveiller": 86,
-    "pas_inquietant": 61
+    "juil_mtd": 316,
+    "maintenus": 299,
+    "nouveaux": 17,
+    "risque_eleve": 928,
+    "a_surveiller": 84,
+    "pas_inquietant": 58
   },
   "ca": {
-    "risque_eleve": 10239906734.0,
-    "a_surveiller": 189334865.0,
-    "pas_inquietant": 103055990.0,
-    "maintenus": 6036575945.0
+    "risque_eleve": 8810668564.0,
+    "a_surveiller": 181487465.0,
+    "pas_inquietant": 89494990.0,
+    "maintenus": 7487222515.0
   },
   "top_risque": [
     {
@@ -33,22 +33,6 @@
       "ca_s1_m": 59.5,
       "jour_moyen": 15.1,
       "nb_achats": 42
-    },
-    {
-      "nom": "KAM APPOLINAIRE",
-      "agence": "Messassi",
-      "region": "Centre",
-      "ca_s1_m": 33.2,
-      "jour_moyen": 14.3,
-      "nb_achats": 224
-    },
-    {
-      "nom": "NGOMPE BRUNO",
-      "agence": "Famla",
-      "region": "Ouest",
-      "ca_s1_m": 16.7,
-      "jour_moyen": 15.9,
-      "nb_achats": 83
     },
     {
       "nom": "POUOMEGNE THIERRY (POUOMEGNE THIERRY)",
@@ -97,6 +81,22 @@
       "ca_s1_m": 12.3,
       "jour_moyen": 17.7,
       "nb_achats": 39
+    },
+    {
+      "nom": "SMI'S AGROINDUSTRIEL",
+      "agence": "Messassi",
+      "region": "Centre",
+      "ca_s1_m": 12.1,
+      "jour_moyen": 16.4,
+      "nb_achats": 58
+    },
+    {
+      "nom": "FECAM",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 12.0,
+      "jour_moyen": 16.5,
+      "nb_achats": 27
     }
   ]
 }
