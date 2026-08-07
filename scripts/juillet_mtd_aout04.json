@@ -1,21 +1,21 @@
 {
-  "temps_ecoule_pct": 19.2,
-  "july_days_lun_sam": 5,
+  "temps_ecoule_pct": 23.1,
+  "july_days_lun_sam": 6,
   "july_total_days_lun_sam": 26,
   "clients": {
     "s1_total": 1369,
-    "juil_mtd": 316,
-    "maintenus": 299,
-    "nouveaux": 17,
-    "risque_eleve": 928,
-    "a_surveiller": 84,
+    "juil_mtd": 359,
+    "maintenus": 339,
+    "nouveaux": 20,
+    "risque_eleve": 889,
+    "a_surveiller": 83,
     "pas_inquietant": 58
   },
   "ca": {
-    "risque_eleve": 8810668564.0,
-    "a_surveiller": 181487465.0,
+    "risque_eleve": 8006253487.0,
+    "a_surveiller": 178462965.0,
     "pas_inquietant": 89494990.0,
-    "maintenus": 7487222515.0
+    "maintenus": 8294662092.0
   },
   "top_risque": [
     {

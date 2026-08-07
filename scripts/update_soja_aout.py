@@ -18,7 +18,7 @@ import datetime
 import copy
 import json
 
-SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (11).xlsx'
+SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (12) (1).xlsx'
 # Pour août, pas d'extraction précédente — on compare vs juillet complet
 PREV_SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx'  # juillet complet (pour comparaison)
 OUT = '/home/z/my-project/download/analyse_soja_aout.xlsx'
@@ -767,7 +767,7 @@ def write_t2(ws, t2, t2_prev):
     ws.cell(row=row, column=1, value=f"Ratio global: {t2['total']['ratio_str']} (vs {t2_prev['total']['ratio_str']} le 31/07).")
     ws.cell(row=row, column=1).font = Font(bold=True, size=10)
     row += 2
-    ws.cell(row=row, column=1, value="Note: T2/T3 portent sur le 04/08 (dernier jour complet, 94 cmdes soja). Comparaison vs 31/07 (bilan juillet complet).")
+    ws.cell(row=row, column=1, value="Note: T2/T3 portent sur le 04/08 (dernier jour complet, 79 cmdes soja). Comparaison vs 31/07 (bilan juillet complet).")
     ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
 
     ws.column_dimensions['A'].width = 30
@@ -932,8 +932,8 @@ def main():
     # T1: aggregate 1-31/07 (27 days lun-sam — mois complet)
     t1_new = compute_t1(rows_new, '06/08/2026', col_idx=col_idx_new)
     # T2/T3: use 31/07 (now complete with 109 soja commands Livrées)
-    t2_new = compute_t2(rows_new, '05/08/2026', col_idx=col_idx_new)
-    t3_new = compute_t3(rows_new, '05/08/2026', col_idx=col_idx_new)
+    t2_new = compute_t2(rows_new, '06/08/2026', col_idx=col_idx_new)
+    t3_new = compute_t3(rows_new, '06/08/2026', col_idx=col_idx_new)
     # T4: méthode corrigée — stock physique au 21/07, ventes post-stock à déduire
     t4_new = compute_t4_post_stock(rows_new, col_idx=col_idx_new, current_date_str='06/08/2026', stock_date_str='01/08/2026')
 
@@ -946,9 +946,9 @@ def main():
 
     print(f"\nT1 (au 06/08): {t1_new['total_t']:.1f} t, moy/jour {t1_new['moy_jour_t']:.1f} t ({t1_new['days_elapsed']}j)")
     print(f"T1 (au 31/07): {t1_prev['total_t']:.1f} t, moy/jour {t1_prev['moy_jour_t']:.1f} t ({t1_prev['days_elapsed']}j)")
-    print(f"\nT2 (05/08): {t2_new['total']['cmds']} cmdes, ratio {t2_new['total']['ratio_str']}")
+    print(f"\nT2 (06/08): {t2_new['total']['cmds']} cmdes, ratio {t2_new['total']['ratio_str']}")
     print(f"T2 (31/07): {t2_prev['total']['cmds']} cmdes, ratio {t2_prev['total']['ratio_str']}")
-    print(f"\nT3 (05/08): {len(t3_new['items'])} cmdes soja-only, {t3_new['total_kg']/1000:.1f} t")
+    print(f"\nT3 (06/08): {len(t3_new['items'])} cmdes soja-only, {t3_new['total_kg']/1000:.1f} t")
     print(f"T3 (31/07): {len(t3_prev['items'])} cmdes soja-only, {t3_prev['total_kg']/1000:.1f} t")
     print(f"\nT4 (au 06/08): stock restant {t4_new['stock_restant_sacs']:,} sacs ({t4_new['stock_restant_t']} t)".replace(',', ' '))
     print(f"  Ventes post-stock 02-06/08: {t4_new['post_stock_sacs']:,} sacs ({t4_new['post_stock_t']} t)".replace(',', ' '))
@@ -963,10 +963,10 @@ def main():
     ws1 = wb.create_sheet('T1 - Moy jour soja par agence')
     write_t1(ws1, t1_new, t1_prev)
 
-    ws2 = wb.create_sheet('T2 - Commandes soja 05-08')
+    ws2 = wb.create_sheet('T2 - Commandes soja 06-08')
     write_t2(ws2, t2_new, t2_prev)
 
-    ws3 = wb.create_sheet('T3 - Soja-only 05-08')
+    ws3 = wb.create_sheet('T3 - Soja-only 06-08')
     write_t3(ws3, t3_new, t3_prev)
 
     ws4 = wb.create_sheet('T4 - Stock soja et rupture')
