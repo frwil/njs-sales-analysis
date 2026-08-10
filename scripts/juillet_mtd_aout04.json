@@ -1,21 +1,21 @@
 {
-  "temps_ecoule_pct": 26.9,
-  "july_days_lun_sam": 7,
+  "temps_ecoule_pct": 30.8,
+  "july_days_lun_sam": 8,
   "july_total_days_lun_sam": 26,
   "clients": {
     "s1_total": 1369,
-    "juil_mtd": 406,
-    "maintenus": 382,
-    "nouveaux": 24,
-    "risque_eleve": 848,
-    "a_surveiller": 81,
+    "juil_mtd": 429,
+    "maintenus": 403,
+    "nouveaux": 26,
+    "risque_eleve": 828,
+    "a_surveiller": 80,
     "pas_inquietant": 58
   },
   "ca": {
-    "risque_eleve": 7354316500.0,
-    "a_surveiller": 173219995.0,
+    "risque_eleve": 6930789984.0,
+    "a_surveiller": 172732035.0,
     "pas_inquietant": 89494990.0,
-    "maintenus": 8951842049.0
+    "maintenus": 9375856525.0
   },
   "top_risque": [
     {
@@ -33,14 +33,6 @@
       "ca_s1_m": 59.5,
       "jour_moyen": 15.1,
       "nb_achats": 42
-    },
-    {
-      "nom": "POUOMEGNE THIERRY (POUOMEGNE THIERRY)",
-      "agence": "Village",
-      "region": "Littoral",
-      "ca_s1_m": 13.8,
-      "jour_moyen": 12.3,
-      "nb_achats": 75
     },
     {
       "nom": "SAGUEN DEFFO CHANCELIER RICHARD",
@@ -75,14 +67,6 @@
       "nb_achats": 45
     },
     {
-      "nom": "KONGNE BRUNO UNIVERS DE L'ELEVAGE",
-      "agence": "Village",
-      "region": "Littoral",
-      "ca_s1_m": 12.3,
-      "jour_moyen": 17.7,
-      "nb_achats": 39
-    },
-    {
       "nom": "SMI'S AGROINDUSTRIEL",
       "agence": "Messassi",
       "region": "Centre",
@@ -97,6 +81,22 @@
       "ca_s1_m": 12.0,
       "jour_moyen": 16.5,
       "nb_achats": 27
+    },
+    {
+      "nom": "NZOUABET WOUAMI EMMANUEL",
+      "agence": "Ndobo",
+      "region": "Littoral",
+      "ca_s1_m": 11.6,
+      "jour_moyen": 16.2,
+      "nb_achats": 73
+    },
+    {
+      "nom": "G.B AGROPACAM (TAMATIO)",
+      "agence": "Ahala",
+      "region": "Centre",
+      "ca_s1_m": 11.4,
+      "jour_moyen": 13.6,
+      "nb_achats": 89
     }
   ]
 }
