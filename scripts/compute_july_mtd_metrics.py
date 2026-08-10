@@ -17,7 +17,7 @@ import json
 S1_FILE = '/home/z/my-project/upload/ventes janv a juin 2026.xlsx'
 JULY_FILE = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (12).xlsx'
 
-JULY_END_DAY = 10  # au 10/08/2026 (8 jours ouvrables lun-sam: 01,03,04,05,06,07,08,10/08)
+JULY_END_DAY = 8  # au 08/08/2026 (7 jours ouvrables lun-sam: 01,03,04,05,06,07,08/08)
 JULY_MONTH = 8  # August
 JULY_DAYS_LUN_SAM = sum(1 for d in range(1, JULY_END_DAY + 1) if datetime.date(2026, JULY_MONTH, d).weekday() < 6)
 JULY_TOTAL_DAYS_LUN_SAM = sum(1 for d in range(1, 32) if datetime.date(2026, JULY_MONTH, d).weekday() < 6)
