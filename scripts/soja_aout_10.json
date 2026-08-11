@@ -1,11 +1,11 @@
 {
   "update_date": "10/08/2026",
-  "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (12).xlsx",
-  "rows_livree_new": 2857,
+  "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (13).xlsx",
+  "rows_livree_new": 3370,
   "rows_livree_prev": 12014,
   "t1_new": {
-    "total_t": 1074.364,
-    "moy_jour_t": 134.2955,
+    "total_t": 1280.409,
+    "moy_jour_t": 160.051125,
     "days_elapsed": 8
   },
   "t1_prev": {
@@ -14,9 +14,9 @@
     "days_elapsed": 27
   },
   "t2_new": {
-    "cmds": 62,
-    "bundle": 54,
-    "soja_only": 8,
+    "cmds": 140,
+    "bundle": 117,
+    "soja_only": 23,
     "ratio": "2.4:1"
   },
   "t2_prev": {
@@ -26,20 +26,20 @@
     "ratio": "2.6:1"
   },
   "t3_new": {
-    "count": 8,
-    "total_t": 0.65
+    "count": 23,
+    "total_t": 14.915
   },
   "t3_prev": {
     "count": 14,
     "total_t": 3.925
   },
   "t4_new": {
-    "rupture_date": "12/10/2026",
-    "jours_stock": 54,
-    "moy_jour_t": 132.15342857142858,
-    "stock_restant_sacs": 141499,
-    "stock_restant_t": 7074.9,
-    "post_stock_t": 925.1
+    "rupture_date": "29/09/2026",
+    "jours_stock": 43,
+    "moy_jour_t": 160.37414285714286,
+    "stock_restant_sacs": 137548,
+    "stock_restant_t": 6877.4,
+    "post_stock_t": 1122.6
   },
   "t4_prev": {
     "rupture_date": "04/09/2026",

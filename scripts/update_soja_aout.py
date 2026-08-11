@@ -18,7 +18,7 @@ import datetime
 import copy
 import json
 
-SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (12).xlsx'
+SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (13).xlsx'
 # Pour août, pas d'extraction précédente — on compare vs juillet complet
 PREV_SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx'  # juillet complet (pour comparaison)
 OUT = '/home/z/my-project/download/analyse_soja_aout.xlsx'
@@ -932,8 +932,8 @@ def main():
     # T1: aggregate 1-31/07 (27 days lun-sam — mois complet)
     t1_new = compute_t1(rows_new, '10/08/2026', col_idx=col_idx_new)
     # T2/T3: use 31/07 (now complete with 109 soja commands Livrées)
-    t2_new = compute_t2(rows_new, '08/08/2026', col_idx=col_idx_new)
-    t3_new = compute_t3(rows_new, '08/08/2026', col_idx=col_idx_new)
+    t2_new = compute_t2(rows_new, '10/08/2026', col_idx=col_idx_new)
+    t3_new = compute_t3(rows_new, '10/08/2026', col_idx=col_idx_new)
     # T4: méthode corrigée — stock physique au 21/07, ventes post-stock à déduire
     t4_new = compute_t4_post_stock(rows_new, col_idx=col_idx_new, current_date_str='10/08/2026', stock_date_str='01/08/2026')
 
@@ -963,10 +963,10 @@ def main():
     ws1 = wb.create_sheet('T1 - Moy jour soja par agence')
     write_t1(ws1, t1_new, t1_prev)
 
-    ws2 = wb.create_sheet('T2 - Commandes soja 08-08')
+    ws2 = wb.create_sheet('T2 - Commandes soja 10-08')
     write_t2(ws2, t2_new, t2_prev)
 
-    ws3 = wb.create_sheet('T3 - Soja-only 08-08')
+    ws3 = wb.create_sheet('T3 - Soja-only 10-08')
     write_t3(ws3, t3_new, t3_prev)
 
     ws4 = wb.create_sheet('T4 - Stock soja et rupture')

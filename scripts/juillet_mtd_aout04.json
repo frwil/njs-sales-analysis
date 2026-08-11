@@ -1,21 +1,21 @@
 {
-  "temps_ecoule_pct": 26.9,
-  "july_days_lun_sam": 7,
+  "temps_ecoule_pct": 30.8,
+  "july_days_lun_sam": 8,
   "july_total_days_lun_sam": 26,
   "clients": {
     "s1_total": 1369,
-    "juil_mtd": 429,
-    "maintenus": 403,
-    "nouveaux": 26,
-    "risque_eleve": 828,
-    "a_surveiller": 80,
-    "pas_inquietant": 58
+    "juil_mtd": 480,
+    "maintenus": 448,
+    "nouveaux": 32,
+    "risque_eleve": 790,
+    "a_surveiller": 77,
+    "pas_inquietant": 54
   },
   "ca": {
-    "risque_eleve": 6930789984.0,
-    "a_surveiller": 172732035.0,
-    "pas_inquietant": 89494990.0,
-    "maintenus": 9375856525.0
+    "risque_eleve": 6441955235.0,
+    "a_surveiller": 169238365.0,
+    "pas_inquietant": 69199774.0,
+    "maintenus": 9888480160.0
   },
   "top_risque": [
     {
@@ -59,14 +59,6 @@
       "nb_achats": 16
     },
     {
-      "nom": "PRADU-COOP CA",
-      "agence": "Messassi",
-      "region": "Centre",
-      "ca_s1_m": 12.4,
-      "jour_moyen": 17.4,
-      "nb_achats": 45
-    },
-    {
       "nom": "SMI'S AGROINDUSTRIEL",
       "agence": "Messassi",
       "region": "Centre",
@@ -97,6 +89,14 @@
       "ca_s1_m": 11.4,
       "jour_moyen": 13.6,
       "nb_achats": 89
+    },
+    {
+      "nom": "TCHEUTCHOUA TCHINDA ERIC",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 11.4,
+      "jour_moyen": 13.9,
+      "nb_achats": 124
     }
   ]
 }
