@@ -1,21 +1,21 @@
 {
-  "temps_ecoule_pct": 30.8,
-  "july_days_lun_sam": 8,
+  "temps_ecoule_pct": 34.6,
+  "july_days_lun_sam": 9,
   "july_total_days_lun_sam": 26,
   "clients": {
     "s1_total": 1369,
-    "juil_mtd": 480,
-    "maintenus": 448,
-    "nouveaux": 32,
-    "risque_eleve": 790,
-    "a_surveiller": 77,
-    "pas_inquietant": 54
+    "juil_mtd": 534,
+    "maintenus": 500,
+    "nouveaux": 34,
+    "risque_eleve": 742,
+    "a_surveiller": 76,
+    "pas_inquietant": 51
   },
   "ca": {
-    "risque_eleve": 6441955235.0,
-    "a_surveiller": 169238365.0,
-    "pas_inquietant": 69199774.0,
-    "maintenus": 9888480160.0
+    "risque_eleve": 5541355088.0,
+    "a_surveiller": 167363615.0,
+    "pas_inquietant": 62726874.0,
+    "maintenus": 10797427957.0
   },
   "top_risque": [
     {
@@ -35,27 +35,11 @@
       "nb_achats": 42
     },
     {
-      "nom": "SAGUEN DEFFO CHANCELIER RICHARD",
-      "agence": "Famla",
-      "region": "Ouest",
-      "ca_s1_m": 13.6,
-      "jour_moyen": 17.8,
-      "nb_achats": 6
-    },
-    {
       "nom": "ISSA OUMAROU",
       "agence": "Mbouda",
       "region": "Ouest",
       "ca_s1_m": 13.6,
       "jour_moyen": 16.4,
-      "nb_achats": 16
-    },
-    {
-      "nom": "TIMENE JEAN (ZDCL00125)",
-      "agence": "Djeleng",
-      "region": "Ouest",
-      "ca_s1_m": 13.1,
-      "jour_moyen": 14.6,
       "nb_achats": 16
     },
     {
@@ -91,12 +75,28 @@
       "nb_achats": 89
     },
     {
-      "nom": "TCHEUTCHOUA TCHINDA ERIC",
+      "nom": "GIC ESPOIR KELENG (POKAM MERLINE)",
       "agence": "Famla",
       "region": "Ouest",
-      "ca_s1_m": 11.4,
-      "jour_moyen": 13.9,
-      "nb_achats": 124
+      "ca_s1_m": 10.6,
+      "jour_moyen": 14.6,
+      "nb_achats": 33
+    },
+    {
+      "nom": "TCHOMDJIE EUGENIE FLORE",
+      "agence": "Village",
+      "region": "Littoral",
+      "ca_s1_m": 10.5,
+      "jour_moyen": 16.9,
+      "nb_achats": 94
+    },
+    {
+      "nom": "MATENNE MBA CHANTAL OLGA",
+      "agence": "Famla",
+      "region": "Ouest",
+      "ca_s1_m": 9.2,
+      "jour_moyen": 12.0,
+      "nb_achats": 54
     }
   ]
 }
