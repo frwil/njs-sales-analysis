@@ -202,7 +202,13 @@ while current <= end_date:
 
 df = pd.DataFrame(dates_list)
 df['ds'] = pd.to_datetime(df['ds'])
-# Keep ds column - don't drop it
+
+# Prophet doesn't know about Sundays = 0 sales. We need to tell it.
+# Method: set capacity to 0 on Sundays (floor=0, cap=0) so Prophet predicts ~0
+# Better method: use a custom regressor "is_sunday" and add it as a regressor
+df['is_sunday'] = df['ds'].dt.weekday.eq(6).astype(int)  # 1 if Sunday, 0 otherwise
+# Also add is_saturday (lower sales on Saturdays)
+df['is_saturday'] = df['ds'].dt.weekday.eq(5).astype(int)
 
 print(f"  DataFrame: {len(df)} jours")
 print(f"  Période: {df['ds'].min().date()} → {df['ds'].max().date()}")
@@ -222,24 +228,38 @@ print("\n" + "=" * 80)
 print("3. MODÈLE PROPHET — TOURTEAUX")
 print("=" * 80)
 
-df_soja = df[['ds', 'TOURTEAUX', 'prix_soja']].rename(columns={'TOURTEAUX': 'y'})
+df_soja = df[['ds', 'TOURTEAUX', 'prix_soja', 'is_sunday', 'is_saturday']].rename(columns={'TOURTEAUX': 'y'})
 
 m_soja = Prophet(
     holidays=holidays,
     weekly_seasonality=True,
     yearly_seasonality=True,
     daily_seasonality=False,
-    changepoint_prior_scale=0.05,  # Plus flexible pour capturer la rupture concurrente
+    changepoint_prior_scale=0.05,
     seasonality_prior_scale=10,
     interval_width=0.8,
 )
 m_soja.add_regressor('prix_soja')
+m_soja.add_regressor('is_sunday')
+m_soja.add_regressor('is_saturday')
 m_soja.fit(df_soja)
 
 # Forecast 120 jours (Sep-Déc 2026)
 future_soja = m_soja.make_future_dataframe(periods=120, freq='D')
 future_soja['prix_soja'] = 1  # Hausse prix active
+future_soja['is_sunday'] = future_soja['ds'].dt.weekday.eq(6).astype(int)
+future_soja['is_saturday'] = future_soja['ds'].dt.weekday.eq(5).astype(int)
 forecast_soja = m_soja.predict(future_soja)
+
+# Clamp negative predictions to 0
+forecast_soja['yhat'] = forecast_soja['yhat'].clip(lower=0)
+forecast_soja['yhat_lower'] = forecast_soja['yhat_lower'].clip(lower=0)
+
+# Force Sundays to 0 (BELGOCAM doesn't sell on Sundays)
+sunday_mask_soja = forecast_soja['ds'].dt.weekday.eq(6)
+forecast_soja.loc[sunday_mask_soja, 'yhat'] = 0
+forecast_soja.loc[sunday_mask_soja, 'yhat_lower'] = 0
+forecast_soja.loc[sunday_mask_soja, 'yhat_upper'] = 0
 
 print(f"  Forecast: {len(forecast_soja)} jours")
 print(f"  Prédiction Sep-Déc 2026:")
@@ -255,7 +275,7 @@ print("\n" + "=" * 80)
 print("4. MODÈLE PROPHET — CONCENTRÉS")
 print("=" * 80)
 
-df_conc = df[['ds', 'CONCENTRES', 'prix_soja']].rename(columns={'CONCENTRES': 'y'})
+df_conc = df[['ds', 'CONCENTRES', 'prix_soja', 'is_sunday', 'is_saturday']].rename(columns={'CONCENTRES': 'y'})
 
 m_conc = Prophet(
     holidays=holidays,
@@ -267,11 +287,25 @@ m_conc = Prophet(
     interval_width=0.8,
 )
 m_conc.add_regressor('prix_soja')
+m_conc.add_regressor('is_sunday')
+m_conc.add_regressor('is_saturday')
 m_conc.fit(df_conc)
 
 future_conc = m_conc.make_future_dataframe(periods=120, freq='D')
 future_conc['prix_soja'] = 1
+future_conc['is_sunday'] = future_conc['ds'].dt.weekday.eq(6).astype(int)
+future_conc['is_saturday'] = future_conc['ds'].dt.weekday.eq(5).astype(int)
 forecast_conc = m_conc.predict(future_conc)
+
+# Clamp negative predictions to 0
+forecast_conc['yhat'] = forecast_conc['yhat'].clip(lower=0)
+forecast_conc['yhat_lower'] = forecast_conc['yhat_lower'].clip(lower=0)
+
+# Force Sundays to 0 (BELGOCAM doesn't sell on Sundays)
+sunday_mask_conc = forecast_conc['ds'].dt.weekday.eq(6)
+forecast_conc.loc[sunday_mask_conc, 'yhat'] = 0
+forecast_conc.loc[sunday_mask_conc, 'yhat_lower'] = 0
+forecast_conc.loc[sunday_mask_conc, 'yhat_upper'] = 0
 
 print(f"  Forecast: {len(forecast_conc)} jours")
 print(f"  Prédiction Sep-Déc 2026:")
