@@ -852,7 +852,7 @@ def style_total_row(ws, row, n_cols):
 def write_t1(ws, t1, t1_prev):
     ws['A1'] = 'TABLEAU 1 - Moyenne journaliere SOJA août par agence/region'
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
-    ws['A2'] = f"01/07 au {t1['end_date']} ({t1['days_elapsed']}j). Livree. lun-sam. Mise a jour 10/08/2026."
+    ws['A2'] = f"01/07 au {t1['end_date']} ({t1['days_elapsed']}j). Livree. lun-sam. Mise a jour 13/08/2026."
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
     headers = ['Agence', 'Region', 'Total soja (t)', 'Moy/jour (t)', 'Evolution vs 31/07']
@@ -937,7 +937,7 @@ def write_t1(ws, t1, t1_prev):
 def write_t2(ws, t2, t2_prev):
     ws['A1'] = f"TABLEAU 2 - Commandes SOJA le {t2['date']} par agence"
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
-    ws['A2'] = 'Livree. Ratio en sacs 50kg-equivalent. Mise a jour 10/08/2026.'
+    ws['A2'] = 'Livree. Ratio en sacs 50kg-equivalent. Mise a jour 13/08/2026.'
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
     headers = ['Agence', 'Region', 'Cmds', 'Bundle', 'Soja-only', 'Ratio moy', 'Evolution cmdes vs 31/07']
@@ -1176,7 +1176,7 @@ def main():
 
     # Compute tables for new (au 31/07 — bilan complet définitif)
     # T1: aggregate 1-31/07 (27 days lun-sam — mois complet)
-    t1_new = compute_t1(rows_new, '10/08/2026', col_idx=col_idx_new)
+    t1_new = compute_t1(rows_new, '13/08/2026', col_idx=col_idx_new)
     # T2/T3: use 13/08 (last complete day, 14/08 is matinal)
     t2_new = compute_t2(rows_new, '13/08/2026', col_idx=col_idx_new)
     t3_new = compute_t3(rows_new, '13/08/2026', col_idx=col_idx_new)
@@ -1218,7 +1218,7 @@ def main():
     write_t4_bekoko(ws4, t4_new)
 
     # T5: tendance journalière soja + concentrés avec graphiques
-    t5_new = compute_t5_trend(rows_new, end_date_str='10/08/2026', col_idx=col_idx_new)
+    t5_new = compute_t5_trend(rows_new, end_date_str='13/08/2026', col_idx=col_idx_new)
     ws5 = wb.create_sheet('T5 - Tendance Août')
     write_t5(ws5, t5_new)
 
@@ -1227,7 +1227,7 @@ def main():
 
     # Also save a summary JSON for traceability
     summary = {
-        'update_date': '10/08/2026',
+        'update_date': '13/08/2026',
         'source_file': SRC.split('/')[-1],
         'rows_livree_new': len(rows_new),
         'rows_livree_prev': len(rows_prev),

@@ -1,12 +1,12 @@
 {
-  "update_date": "10/08/2026",
+  "update_date": "13/08/2026",
   "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (15).xlsx",
   "rows_livree_new": 4721,
   "rows_livree_prev": 12014,
   "t1_new": {
     "total_t": 1799.177,
-    "moy_jour_t": 224.897125,
-    "days_elapsed": 8
+    "moy_jour_t": 163.56154545454544,
+    "days_elapsed": 11
   },
   "t1_prev": {
     "total_t": 7565.946,
