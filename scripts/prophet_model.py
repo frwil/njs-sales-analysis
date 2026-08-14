@@ -244,8 +244,8 @@ m_soja.add_regressor('is_sunday')
 m_soja.add_regressor('is_saturday')
 m_soja.fit(df_soja)
 
-# Forecast 120 jours (Sep-Déc 2026)
-future_soja = m_soja.make_future_dataframe(periods=120, freq='D')
+# Forecast 150 jours (jusqu'au 31/12/2026)
+future_soja = m_soja.make_future_dataframe(periods=150, freq='D')
 future_soja['prix_soja'] = 1  # Hausse prix active
 future_soja['is_sunday'] = future_soja['ds'].dt.weekday.eq(6).astype(int)
 future_soja['is_saturday'] = future_soja['ds'].dt.weekday.eq(5).astype(int)
@@ -291,7 +291,7 @@ m_conc.add_regressor('is_sunday')
 m_conc.add_regressor('is_saturday')
 m_conc.fit(df_conc)
 
-future_conc = m_conc.make_future_dataframe(periods=120, freq='D')
+future_conc = m_conc.make_future_dataframe(periods=150, freq='D')
 future_conc['prix_soja'] = 1
 future_conc['is_sunday'] = future_conc['ds'].dt.weekday.eq(6).astype(int)
 future_conc['is_saturday'] = future_conc['ds'].dt.weekday.eq(5).astype(int)
@@ -389,11 +389,19 @@ row = 5
 for _, fr in future_only.iterrows():
     date = fr['ds']
     mois = date.month
-    obj = obj_soja.get(str(mois), 0) / 30  # Daily objective
+    import calendar as cal_mod
+    days_lun_sam = sum(1 for d in range(1, cal_mod.monthrange(2026, mois)[1]+1) if datetime.date(2026, mois, d).weekday() < 6)
+    obj = obj_soja.get(str(mois), 0) / days_lun_sam if days_lun_sam > 0 else 0  # Daily objective (lun-sam only)
+    # Sundays: 0 objective (BELGOCAM doesn't sell on Sundays)
+    if date.weekday() == 6:
+        obj = 0
+        pct = 0
+    else:
+        pred = fr['yhat']
+        pct = pred / obj * 100 if obj > 0 else 0
     pred = fr['yhat']
     lower = fr['yhat_lower']
     upper = fr['yhat_upper']
-    pct = pred / obj * 100 if obj > 0 else 0
     
     ws1.cell(row=row, column=1, value=date.strftime('%d/%m/%Y')).border = BORDER
     ws1.cell(row=row, column=2, value=date.strftime('%a')).border = BORDER
@@ -449,11 +457,17 @@ row = 5
 for _, fr in future_conc_only.iterrows():
     date = fr['ds']
     mois = date.month
-    obj = obj_conc.get(str(mois), 0) / 30
+    days_lun_sam_c = sum(1 for d in range(1, cal_mod.monthrange(2026, mois)[1]+1) if datetime.date(2026, mois, d).weekday() < 6)
+    obj = obj_conc.get(str(mois), 0) / days_lun_sam_c if days_lun_sam_c > 0 else 0  # Daily objective (lun-sam only)
+    # Sundays: 0 objective (BELGOCAM doesn't sell on Sundays)
+    if date.weekday() == 6:
+        obj = 0
+        pct = 0
+    else:
+        pct = fr['yhat'] / obj * 100 if obj > 0 else 0
     pred = fr['yhat']
     lower = fr['yhat_lower']
     upper = fr['yhat_upper']
-    pct = pred / obj * 100 if obj > 0 else 0
     
     ws2.cell(row=row, column=1, value=date.strftime('%d/%m/%Y')).border = BORDER
     ws2.cell(row=row, column=2, value=date.strftime('%a')).border = BORDER
