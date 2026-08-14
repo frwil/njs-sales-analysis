@@ -1,21 +1,21 @@
 {
-  "temps_ecoule_pct": 34.6,
-  "july_days_lun_sam": 9,
+  "temps_ecoule_pct": 42.3,
+  "july_days_lun_sam": 11,
   "july_total_days_lun_sam": 26,
   "clients": {
     "s1_total": 1369,
-    "juil_mtd": 534,
-    "maintenus": 500,
-    "nouveaux": 34,
-    "risque_eleve": 742,
-    "a_surveiller": 76,
-    "pas_inquietant": 51
+    "juil_mtd": 592,
+    "maintenus": 549,
+    "nouveaux": 43,
+    "risque_eleve": 695,
+    "a_surveiller": 75,
+    "pas_inquietant": 50
   },
   "ca": {
-    "risque_eleve": 5541355088.0,
-    "a_surveiller": 167363615.0,
-    "pas_inquietant": 62726874.0,
-    "maintenus": 10797427957.0
+    "risque_eleve": 5080807226.0,
+    "a_surveiller": 166101615.0,
+    "pas_inquietant": 61536874.0,
+    "maintenus": 11260427819.0
   },
   "top_risque": [
     {
@@ -41,14 +41,6 @@
       "ca_s1_m": 13.6,
       "jour_moyen": 16.4,
       "nb_achats": 16
-    },
-    {
-      "nom": "SMI'S AGROINDUSTRIEL",
-      "agence": "Messassi",
-      "region": "Centre",
-      "ca_s1_m": 12.1,
-      "jour_moyen": 16.4,
-      "nb_achats": 58
     },
     {
       "nom": "FECAM",
@@ -97,6 +89,14 @@
       "ca_s1_m": 9.2,
       "jour_moyen": 12.0,
       "nb_achats": 54
+    },
+    {
+      "nom": "NDIA TATSINDA APOLLINAIRE ((PROVENDERIE LA CONFIANCE))",
+      "agence": "Ndobo",
+      "region": "Littoral",
+      "ca_s1_m": 9.0,
+      "jour_moyen": 17.1,
+      "nb_achats": 108
     }
   ]
 }
