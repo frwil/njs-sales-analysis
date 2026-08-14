@@ -58,6 +58,22 @@ AGENCE_MAP = {
 # Region order
 REGION_ORDER = ['Ouest', 'Centre', 'Littoral']
 
+# ===== STOCK SOJA — données physiques BEKOKO (à mettre à jour à chaque extraction) =====
+# Stock au 08/08/2026 — magasins centraux BEKOKO
+STOCK_BEKOKO = {
+    '50kg': 80384,   # sacs de 50kg (T102)
+    '1kg': 2245,     # sacs de 1kg (T1021)
+    '5kg': 4,        # sacs de 5kg (T1023)
+    '25kg': 1,       # sacs de 25kg (T1024)
+}
+STOCK_DATE = '08/08/2026'  # date de mesure du stock physique
+# Exclusion: sacs alloués à SPC (entité soeur)
+SPC_ALLOCATION = 9200  # sacs eq 50kg
+# Production concentrés (consommation interne de soja)
+PROD_CONC_MIN = 4500  # sacs/sem min
+PROD_CONC_MAX = 5300  # sacs/sem max
+PROD_CONC_MOY = 4900  # sacs/sem moyenne
+
 # Stock soja
 STOCK_SACS = 160000  # 160k sacs de 50kg — stock physique au 21/07/2026
 STOCK_T = STOCK_SACS * 50 / 1000  # 8000 t
@@ -296,6 +312,236 @@ def add_business_days(start_date, n_days):
         if current.weekday() < 6:  # Mon-Sat
             added += 1
     return current
+
+
+def compute_t4_bekoko(rows, col_idx=None, end_date_str='13/08/2026'):
+    """T4: Stock SOJA et rupture — méthode BEKOKO + SPC + production concentrés.
+
+    Stock physique mesuré au BEKOKO (données réelles fournies par l'utilisateur).
+    Exclusion des 9 200 sacs alloués à SPC (entité soeur).
+    Consommation = vente directe soja + production concentrés (4 500-5 300 sacs/sem).
+    """
+    import calendar
+
+    # Stock physique brut
+    stock_50 = STOCK_BEKOKO.get('50kg', 0)
+    stock_1 = STOCK_BEKOKO.get('1kg', 0)
+    stock_5 = STOCK_BEKOKO.get('5kg', 0)
+    stock_25 = STOCK_BEKOKO.get('25kg', 0)
+    stock_eq_50_brut = stock_50 + stock_1 * 1/50 + stock_5 * 5/50 + stock_25 * 25/50
+    stock_t_brut = stock_eq_50_brut * 50 / 1000
+
+    # Stock net (après exclusion SPC)
+    stock_eq_50_net = stock_eq_50_brut - SPC_ALLOCATION
+    stock_t_net = stock_eq_50_net * 50 / 1000
+
+    # Ventes soja (du 01/08 au end_date, Livrée)
+    end_day = int(end_date_str[:2])
+    end_month = int(end_date_str[3:5])
+    total_soja_kg = 0
+    for r in rows:
+        ref = r[0]
+        if ref not in SOJA_REFS:
+            continue
+        date_str = str(r[6])[:10]
+        # Filter August dates only, up to end_date
+        if not date_str.startswith(f'0') and not date_str.startswith('1'):
+            continue
+        if '/08/2026' not in date_str:
+            continue
+        day = int(date_str[:2])
+        if day > end_day:
+            continue
+        qte = r[2] or 0
+        total_soja_kg += qte * SOJA_REFS[ref]
+
+    # Calculate days elapsed (lun-sam)
+    days_elapsed = 0
+    for d in range(1, end_day + 1):
+        dt = datetime.date(2026, end_month, d)
+        if dt.weekday() < 6:
+            days_elapsed += 1
+
+    vente_sacs_jour = (total_soja_kg / 50) / days_elapsed if days_elapsed > 0 else 0
+    vente_sacs_sem = vente_sacs_jour * 6  # 6j lun-sam = 1 semaine
+
+    conso_min = vente_sacs_sem + PROD_CONC_MIN
+    conso_max = vente_sacs_sem + PROD_CONC_MAX
+    conso_moy = vente_sacs_sem + PROD_CONC_MOY
+
+    # Date de rupture (départ = end_date)
+    start = datetime.date(2026, end_month, end_day)
+    jours_min = stock_eq_50_net / conso_min * 7 if conso_min > 0 else 0
+    jours_moy = stock_eq_50_net / conso_moy * 7 if conso_moy > 0 else 0
+    jours_max = stock_eq_50_net / conso_max * 7 if conso_max > 0 else 0
+    rupture_min = start + datetime.timedelta(days=int(jours_min))
+    rupture_moy = start + datetime.timedelta(days=int(jours_moy))
+    rupture_max = start + datetime.timedelta(days=int(jours_max))
+
+    return {
+        'stock_bekoko': STOCK_BEKOKO,
+        'stock_date': STOCK_DATE,
+        'stock_eq_50_brut': stock_eq_50_brut,
+        'stock_t_brut': stock_t_brut,
+        'spc_allocation': SPC_ALLOCATION,
+        'stock_eq_50_net': stock_eq_50_net,
+        'stock_t_net': stock_t_net,
+        'vente_sacs_jour': vente_sacs_jour,
+        'vente_sacs_sem': vente_sacs_sem,
+        'conso_min': conso_min,
+        'conso_moy': conso_moy,
+        'conso_max': conso_max,
+        'prod_conc_min': PROD_CONC_MIN,
+        'prod_conc_moy': PROD_CONC_MOY,
+        'prod_conc_max': PROD_CONC_MAX,
+        'jours_min': jours_min,
+        'jours_moy': jours_moy,
+        'jours_max': jours_max,
+        'rupture_min': rupture_min,
+        'rupture_moy': rupture_moy,
+        'rupture_max': rupture_max,
+        'end_date': end_date_str,
+        'days_elapsed': days_elapsed,
+        'scenarios': [
+            {'name': 'Min', 'sacs': round(stock_eq_50_net), 'conso': round(conso_min),
+             'jours': round(jours_min), 'semaines': round(jours_min/7, 1),
+             'date': rupture_min.strftime('%d/%m/%Y')},
+            {'name': 'Moyen', 'sacs': round(stock_eq_50_net), 'conso': round(conso_moy),
+             'jours': round(jours_moy), 'semaines': round(jours_moy/7, 1),
+             'date': rupture_moy.strftime('%d/%m/%Y')},
+            {'name': 'Max', 'sacs': round(stock_eq_50_net), 'conso': round(conso_max),
+             'jours': round(jours_max), 'semaines': round(jours_max/7, 1),
+             'date': rupture_max.strftime('%d/%m/%Y')},
+        ],
+        'moy_t_post': conso_moy * 50 / 1000 / 7,  # for compatibility with write_t4
+    }
+
+
+def write_t4_bekoko(ws, t4):
+    """Write T4 feuille avec stock BEKOKO + SPC + production concentrés."""
+    ws['A1'] = 'TABLEAU 4 - Stock SOJA et date rupture (méthode BEKOKO + SPC + production concentrés)'
+    ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
+    ws['A2'] = (f"Stock physique au {t4['stock_date']} (magasins BEKOKO). "
+                f"Exclusion {t4['spc_allocation']:,} sacs SPC. "
+                f"Consommation = Vente + Production conc. "
+                f"Mise à jour {t4['end_date']}.").replace(',', ' ')
+    ws['A2'].font = Font(italic=True, size=10, color='595959')
+
+    row = 4
+    # Section 1: Stock physique
+    ws.cell(row=row, column=1, value=f"1. STOCK PHYSIQUE AU {t4['stock_date']} (magasins centraux BEKOKO)")
+    ws.cell(row=row, column=1).font = SUBHEAD_FONT
+    row += 1
+    for i, h in enumerate(['Format', 'Nb sacs', 'Poids (t)', 'Équivalent sacs 50kg'], 1):
+        cell = ws.cell(row=row, column=i, value=h)
+        cell.fill = HEAD_FILL; cell.font = HEAD_FONT; cell.border = BORDER
+    row += 1
+    bk = t4['stock_bekoko']
+    stock_data = [
+        ('Sacs de 50kg (T102)', bk.get('50kg', 0), round(bk.get('50kg', 0)*50/1000, 1), bk.get('50kg', 0)),
+        ('Sacs de 1kg (T1021)', bk.get('1kg', 0), round(bk.get('1kg', 0)*1/1000, 3), round(bk.get('1kg', 0)*1/50, 1)),
+        ('Sacs de 5kg (T1023)', bk.get('5kg', 0), round(bk.get('5kg', 0)*5/1000, 3), round(bk.get('5kg', 0)*5/50, 1)),
+        ('Sacs de 25kg (T1024)', bk.get('25kg', 0), round(bk.get('25kg', 0)*25/1000, 3), round(bk.get('25kg', 0)*25/50, 1)),
+    ]
+    for label, nb, t_val, eq in stock_data:
+        ws.cell(row=row, column=1, value=label).border = BORDER
+        ws.cell(row=row, column=2, value=nb).border = BORDER
+        ws.cell(row=row, column=3, value=t_val).border = BORDER
+        ws.cell(row=row, column=4, value=eq).border = BORDER
+        row += 1
+    ws.cell(row=row, column=1, value='STOCK BRUT TOTAL').font = Font(bold=True)
+    ws.cell(row=row, column=3, value=round(t4['stock_t_brut'], 1)).font = Font(bold=True)
+    ws.cell(row=row, column=4, value=round(t4['stock_eq_50_brut'], 0)).font = Font(bold=True)
+    for c in range(1, 5):
+        ws.cell(row=row, column=c).fill = TOTAL_FILL; ws.cell(row=row, column=c).border = BORDER
+    row += 1
+    ws.cell(row=row, column=1, value='Moins: allocation SPC (entité soeur)').font = Font(color='C00000')
+    ws.cell(row=row, column=3, value=round(t4['spc_allocation']*50/1000, 1)).font = Font(color='C00000')
+    ws.cell(row=row, column=4, value=t4['spc_allocation']).font = Font(color='C00000')
+    for c in range(1, 5):
+        ws.cell(row=row, column=c).border = BORDER
+    row += 1
+    ws.cell(row=row, column=1, value='STOCK NET DISPONIBLE BELGOCAM').font = Font(bold=True, size=11, color='1F4E78')
+    ws.cell(row=row, column=3, value=round(t4['stock_t_net'], 1)).font = Font(bold=True)
+    ws.cell(row=row, column=4, value=round(t4['stock_eq_50_net'], 0)).font = Font(bold=True)
+    for c in range(1, 5):
+        ws.cell(row=row, column=c).fill = PatternFill('solid', fgColor='C6EFCE'); ws.cell(row=row, column=c).border = BORDER
+    row += 2
+
+    # Section 2: Consommations
+    ws.cell(row=row, column=1, value='2. CONSOMMATION SOJA (vente directe + production concentrés)')
+    ws.cell(row=row, column=1).font = SUBHEAD_FONT
+    row += 1
+    for i, h in enumerate(['Flux', 'Sacs/sem (lun-sam)', 'Sacs/jour', 't/sem', 'Source'], 1):
+        cell = ws.cell(row=row, column=i, value=h); cell.fill = HEAD_FILL; cell.font = HEAD_FONT; cell.border = BORDER
+    row += 1
+    conso_data = [
+        ('Vente directe soja', round(t4['vente_sacs_sem'], 0), round(t4['vente_sacs_jour'], 0),
+         round(t4['vente_sacs_sem']*50/1000, 0), f"Ventes août {t4['days_elapsed']}j (Livrée)"),
+        ('Production concentrés (min)', t4['prod_conc_min'], round(t4['prod_conc_min']/6, 0),
+         round(t4['prod_conc_min']*50/1000, 0), 'Besoin production'),
+        ('Production concentrés (moy)', t4['prod_conc_moy'], round(t4['prod_conc_moy']/6, 0),
+         round(t4['prod_conc_moy']*50/1000, 0), 'Besoin production'),
+        ('Production concentrés (max)', t4['prod_conc_max'], round(t4['prod_conc_max']/6, 0),
+         round(t4['prod_conc_max']*50/1000, 0), 'Besoin production'),
+    ]
+    for label, sacs, j, t_val, src in conso_data:
+        ws.cell(row=row, column=1, value=label).border = BORDER
+        ws.cell(row=row, column=2, value=sacs).border = BORDER
+        ws.cell(row=row, column=3, value=j).border = BORDER
+        ws.cell(row=row, column=4, value=t_val).border = BORDER
+        ws.cell(row=row, column=5, value=src).border = BORDER
+        row += 1
+    for label, conso in [('TOTAL MIN', t4['conso_min']), ('TOTAL MOY', t4['conso_moy']), ('TOTAL MAX', t4['conso_max'])]:
+        ws.cell(row=row, column=1, value=label).font = Font(bold=True)
+        ws.cell(row=row, column=2, value=round(conso, 0)).font = Font(bold=True)
+        ws.cell(row=row, column=3, value=round(conso/6, 0)).font = Font(bold=True)
+        ws.cell(row=row, column=4, value=round(conso*50/1000, 0)).font = Font(bold=True)
+        for c in range(1, 6):
+            ws.cell(row=row, column=c).fill = TOTAL_FILL; ws.cell(row=row, column=c).border = BORDER
+        row += 1
+    row += 1
+
+    # Section 3: Rupture
+    ws.cell(row=row, column=1, value=f"3. DATE DE RUPTURE PROBABLE (stock net BELGOCAM, départ {t4['end_date']})")
+    ws.cell(row=row, column=1).font = SUBHEAD_FONT
+    row += 1
+    for i, h in enumerate(['Scénario', 'Stock net (sacs éq. 50kg)', 'Conso (sacs/sem)', 'Jours restants', 'Semaines', 'Date rupture'], 1):
+        cell = ws.cell(row=row, column=i, value=h); cell.fill = HEAD_FILL; cell.font = HEAD_FONT; cell.border = BORDER
+    row += 1
+    for s in t4['scenarios']:
+        ws.cell(row=row, column=1, value=s['name']).border = BORDER
+        ws.cell(row=row, column=2, value=s['sacs']).border = BORDER
+        ws.cell(row=row, column=3, value=s['conso']).border = BORDER
+        ws.cell(row=row, column=4, value=s['jours']).border = BORDER
+        ws.cell(row=row, column=5, value=s['semaines']).border = BORDER
+        ws.cell(row=row, column=6, value=s['date']).border = BORDER
+        ws.cell(row=row, column=6).font = Font(bold=True, color='C00000', size=11)
+        row += 1
+
+    row += 1
+    ws.cell(row=row, column=1, value=f"ANALYSE: Stock net BELGOCAM = {t4['stock_eq_50_net']:.0f} sacs ({t4['stock_t_net']:.0f} t) après exclusion {t4['spc_allocation']:,} sacs SPC.".replace(',', ' '))
+    ws.cell(row=row, column=1).font = Font(bold=True, size=10)
+    row += 1
+    ws.cell(row=row, column=1, value=f"Date de rupture probable: {t4['rupture_moy'].strftime('%d/%m/%Y')} ({int(t4['jours_moy'])} jours, {t4['jours_moy']/7:.1f} semaines).")
+    ws.cell(row=row, column=1).font = Font(bold=True, color='C00000', size=11)
+    row += 1
+    reappro = t4['rupture_moy'] - datetime.timedelta(days=10)
+    ws.cell(row=row, column=1, value=f"URGENCE: réapprovisionnement à prévoir avant le {reappro.strftime('%d/%m/%Y')} (10 jours de marge).")
+    ws.cell(row=row, column=1).font = Font(bold=True, color='C00000', size=11)
+    row += 1
+    ws.cell(row=row, column=1, value=f"Méthode: stock net = brut - {t4['spc_allocation']:,} sacs SPC. Consommation = vente directe + production concentrés ({t4['prod_conc_min']}-{t4['prod_conc_max']} sacs/sem).".replace(',', ' '))
+    ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
+    row += 1
+    ws.cell(row=row, column=1, value=f"Le stock inclut tous les formats (50kg, 1kg, 5kg, 25kg) convertis en équivalent 50kg. Ventes août au {t4['end_date']} ({t4['days_elapsed']}j).")
+    ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
+
+    ws.column_dimensions['A'].width = 38
+    ws.column_dimensions['B'].width = 18
+    ws.column_dimensions['C'].width = 14
+    ws.column_dimensions['D'].width = 18
+    ws.column_dimensions['E'].width = 14
+    ws.column_dimensions['F'].width = 16
 
 
 def compute_t4_post_stock(rows, col_idx=None, current_date_str='10/08/2026', stock_date_str='01/08/2026',
@@ -931,18 +1177,18 @@ def main():
     # Compute tables for new (au 31/07 — bilan complet définitif)
     # T1: aggregate 1-31/07 (27 days lun-sam — mois complet)
     t1_new = compute_t1(rows_new, '10/08/2026', col_idx=col_idx_new)
-    # T2/T3: use 31/07 (now complete with 109 soja commands Livrées)
+    # T2/T3: use 13/08 (last complete day, 14/08 is matinal)
     t2_new = compute_t2(rows_new, '13/08/2026', col_idx=col_idx_new)
     t3_new = compute_t3(rows_new, '13/08/2026', col_idx=col_idx_new)
-    # T4: méthode corrigée — stock physique au 21/07, ventes post-stock à déduire
-    t4_new = compute_t4_post_stock(rows_new, col_idx=col_idx_new, current_date_str='10/08/2026', stock_date_str='01/08/2026')
+    # T4: NOUVELLE MÉTHODE — stock BEKOKO + exclusion SPC + production concentrés
+    t4_new = compute_t4_bekoko(rows_new, col_idx=col_idx_new, end_date_str='13/08/2026')
 
     # Compute tables for previous (extraction au 31/07 matinale — used 30/07 for T2/T3)
     t1_prev = compute_t1(rows_prev, '31/07/2026', col_idx=col_idx_prev)
     t2_prev = compute_t2(rows_prev, '31/07/2026', col_idx=col_idx_prev)
     t3_prev = compute_t3(rows_prev, '31/07/2026', col_idx=col_idx_prev)
-    # T4 précédent: stock au 21/07, ventes 02-10/08 (post-stock)
-    t4_prev = compute_t4_post_stock(rows_prev, col_idx=col_idx_prev, current_date_str='31/07/2026', stock_date_str='21/07/2026')
+    # T4 précédent: pas de comparaison (nouvelle méthode BEKOKO)
+    t4_prev = {'scenarios': [], 'moy_t_post': 0}
 
     print(f"\nT1 (au 10/08): {t1_new['total_t']:.1f} t, moy/jour {t1_new['moy_jour_t']:.1f} t ({t1_new['days_elapsed']}j)")
     print(f"T1 (au 31/07): {t1_prev['total_t']:.1f} t, moy/jour {t1_prev['moy_jour_t']:.1f} t ({t1_prev['days_elapsed']}j)")
@@ -950,11 +1196,10 @@ def main():
     print(f"T2 (31/07): {t2_prev['total']['cmds']} cmdes, ratio {t2_prev['total']['ratio_str']}")
     print(f"\nT3 (06/08): {len(t3_new['items'])} cmdes soja-only, {t3_new['total_kg']/1000:.1f} t")
     print(f"T3 (31/07): {len(t3_prev['items'])} cmdes soja-only, {t3_prev['total_kg']/1000:.1f} t")
-    print(f"\nT4 (au 10/08): stock restant {t4_new['stock_restant_sacs']:,} sacs ({t4_new['stock_restant_t']} t)".replace(',', ' '))
-    print(f"  Ventes post-stock 02-10/08: {t4_new['post_stock_sacs']:,} sacs ({t4_new['post_stock_t']} t)".replace(',', ' '))
-    print(f"  Moy/jour post-stock: {t4_new['moy_t_post']:.1f} t/j ({int(t4_new['moy_sacs_post'])} sacs/j)")
-    print(f"  Rupture realiste: {t4_new['scenarios'][0]['date']} ({t4_new['scenarios'][0]['jours']}j)")
-    print(f"T4 (au 31/07): rupture realiste {t4_prev['scenarios'][0]['date']} ({t4_prev['scenarios'][0]['jours']}j)")
+    print(f"\nT4 (BEKOKO): stock net = {t4_new['stock_eq_50_net']:.0f} sacs ({t4_new['stock_t_net']:.0f} t)")
+    print(f"  Vente directe: {t4_new['vente_sacs_sem']:.0f} sacs/sem ({t4_new['vente_sacs_jour']:.0f} sacs/j)")
+    print(f"  Conso totale (moy): {t4_new['conso_moy']:.0f} sacs/sem")
+    print(f"  Rupture probable: {t4_new['rupture_moy'].strftime('%d/%m/%Y')} ({int(t4_new['jours_moy'])} jours)")
 
     # Write Excel
     wb = openpyxl.Workbook()
@@ -970,7 +1215,7 @@ def main():
     write_t3(ws3, t3_new, t3_prev)
 
     ws4 = wb.create_sheet('T4 - Stock soja et rupture')
-    write_t4(ws4, t4_new, t4_prev)
+    write_t4_bekoko(ws4, t4_new)
 
     # T5: tendance journalière soja + concentrés avec graphiques
     t5_new = compute_t5_trend(rows_new, end_date_str='10/08/2026', col_idx=col_idx_new)
@@ -992,17 +1237,15 @@ def main():
         't2_prev': {'cmds': t2_prev['total']['cmds'], 'bundle': t2_prev['total']['bundle'], 'soja_only': t2_prev['total']['soja_only'], 'ratio': t2_prev['total']['ratio_str']},
         't3_new': {'count': len(t3_new['items']), 'total_t': t3_new['total_kg'] / 1000},
         't3_prev': {'count': len(t3_prev['items']), 'total_t': t3_prev['total_kg'] / 1000},
-        't4_new': {'rupture_date': t4_new['scenarios'][0]['date'], 'jours_stock': t4_new['scenarios'][0]['jours'],
-                    'moy_jour_t': t4_new['moy_t_post'], 'stock_restant_sacs': t4_new['stock_restant_sacs'],
-                    'stock_restant_t': t4_new['stock_restant_t'], 'post_stock_t': t4_new['post_stock_t']},
-        't4_prev': {'rupture_date': t4_prev['scenarios'][0]['date'], 'jours_stock': t4_prev['scenarios'][0]['jours'],
-                    'moy_jour_t': t4_prev['moy_t_post'], 'stock_restant_sacs': t4_prev['stock_restant_sacs'],
-                    'stock_restant_t': t4_prev['stock_restant_t'], 'post_stock_t': t4_prev['post_stock_t']},
+        't4_new': {'rupture_date': t4_new['rupture_moy'].strftime('%d/%m/%Y'), 'jours_stock': int(t4_new['jours_moy']),
+                    'stock_net_sacs': round(t4_new['stock_eq_50_net']), 'stock_net_t': round(t4_new['stock_t_net']),
+                    'conso_moy_sacs_sem': round(t4_new['conso_moy'])},
+        't4_prev': {},
         'price_hike': {'date': '23/07/2026', 'amount': '+2 000 XAF/sac 50kg'},
     }
-    with open('/home/z/my-project/scripts/soja_aout_10.json', 'w', encoding='utf-8') as f:
+    with open('/home/z/my-project/scripts/soja_aout_14.json', 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
-    print('Summary saved: /home/z/my-project/scripts/soja_aout_10.json')
+    print('Summary saved: /home/z/my-project/scripts/soja_aout_14.json')
 
 
 if __name__ == '__main__':
