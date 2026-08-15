@@ -118,3 +118,53 @@ Stage Summary:
   - NOUVEAU: Section 7.5 regle premix — potentiel CA additionnel 71.5 M FCFA/mois
 - Outputs JSON: juillet_mtd_27.json, cross_sell_mtd_27.json, volumes_juillet_27.json, bundle_metrics_27.json, soja_juillet_27.json
 - Conclusion: la hausse +2 000 XAF/sac (effective 23/07) commence a ralentir la consommation soja (-4% en 3 jours). La fenetre d'opportunité (rupture concurrente) commence a se refermer. La nouvelle regle premix (1 sac/tonne pour soja-only) represente un levier immediate de 71.5 M FCFA/mois.
+
+---
+Task ID: aout-update-15
+Agent: main
+Task: Mettre a jour l'analyse zero achat, bundle soja-concentres et soja_aout avec la nouvelle extraction au 14/08/2026. Fournir le point performance CONCENTRES d'aout dans la conversation.
+
+Work Log:
+- Identifie la nouvelle extraction: `NJS GROUP ERP - Lignes de commandes + multicompany (5) (1).xlsx` (modifiee 15/08 10:06, 5 087 lignes Livree).
+- Couverture: 01/08 au 15/08. Le 15/08 est une extraction matinale (22 lignes Livree) — exclue comme partielle. Donnees utilisees: 01/08 au 14/08 (5 065 lignes Livree externes).
+- 12 jours ouvres (lun-sam) sur 26 (46% du mois).
+- Script `inspect_new_extraction.py` — verification couverture, header sur row 2 (16 colonnes, format identique au precedent).
+- Script `compute_aout_mtd_metrics.py` — calcul des metriques August MTD:
+  - TOURTEAUX: 1 840 t (moy 153 t/j, proj 3 986 t, obj 3 850 -> 104% ajuste)
+  - CONCENTRES: 717 t (moy 59,7 t/j, proj 1 553 t, obj 1 480 -> 105% ajuste)
+  - Bundle ratio: 2,6:1 (vs 3,5:1 juillet) — retour sous cible 3:1
+  - Cross-sell: 95% bundle (880/924 cmds soja), 44 soja-only (5%)
+  - Dist ratios: 65% <= 3:1, 33% 3-5:1, 2% >5:1
+  - Stock BEKOKO net: 71 230 sacs (3 561 t), rupture probable 04/09/2026 (21 jours)
+  - Churned: 405 clients S1 sans achat aout a 12j (vs 993 au 04/08)
+- Script `update_soja_aout.py` mis a jour pour la nouvelle extraction (5)(1):
+  - SRC -> (5) (1).xlsx
+  - end_date -> 14/08/2026 (12j)
+  - Output: /home/z/my-project/download/analyse_soja_aout.xlsx (5 feuilles T1-T5, 16 Ko)
+- Script `build_zero_achat_pdf.py` mis a jour:
+  - Section 5.2 "Premier point de suivi — Août 2026 (au 04/08)" -> "Point de suivi — Août 2026 (au 14/08)"
+  - Tableau evol_aout: complete avec juillet et moyenne/jour
+  - Dashboard: mise a jour Août (12j) avec nouveaux KPIs (95% bundle, 2,6:1 ratio, 71 230 sacs, 04/09 rupture)
+  - Bilan intermediaire mi-aout: TOURTEAUX effet prix visible (-45% vs juillet), CONCENTRES dynamique positive, bundle ameliore
+  - Output: /home/z/my-project/download/analyse_zero_achat.pdf (21 pages, 337 Ko)
+- Script `build_bundle_analysis_pdf.py` mis a jour:
+  - Section 8 "Premier point de suivi — Août 2026 (au 04/08)" -> "Point de suivi — Août 2026 (au 14/08)"
+  - Tableau 8.1: ajout lignes projection, stock, commandes detail
+  - NOUVEAU Tableau 8.2: distribution des ratios bundle (65% <= 3:1, 33% 3-5:1, 2% >5:1)
+  - Lecture mi-aout complete avec 6 points cles
+  - Output: /home/z/my-project/download/analyse_bundle_soja_concentres.pdf (17 pages, 90 Ko)
+- Outputs JSON de traceabilite: aout_mtd_15.json, soja_aout_15.json
+
+Stage Summary:
+- analyse_soja_aout.xlsx (5 feuilles T1-T5, 16 Ko): au 14/08, moy/j soja 153 t (vs 158 t/j au 13/08), rupture probable 04/09/2026 (21j stock net)
+- analyse_zero_achat.pdf (21 pages, 337 Ko): section 5.2 entierement refraichie au 14/08
+  - 514 clients maintenus (37% du S1 actif), 95 nouveaux, 405 churned (a 12j, vs 993 au 04/08)
+  - Projection CONCENTRES août: 1 553 t (105% ajuste)
+  - Projection TOURTEAUX août: 3 986 t (104% ajuste)
+  - Bundle ratio 2,6:1 (vs 3,5:1 juillet) — retour sous cible 3:1
+  - Stock soja critique: 71 230 sacs net (3 561 t), rupture probable 04/09/2026
+- analyse_bundle_soja_concentres.pdf (17 pages, 90 Ko): section 8 entierement refraichie
+  - Tableau de bord global: ratio 2,6:1, 95% bundle, 880/924 cmds soja en bundle
+  - NOUVEAU tableau distribution des ratios: 65% <= 3:1, 33% 3-5:1, 2% >5:1
+  - Conclusion mi-aout: plan d'action bundle produit ses effets, CONCENTRES tiennent le cap
+- Conclusion generale: la combinaison hausse tarifaire (+3 000 FCFA/sac cumul) + plan d'action bundle produit la trajectoire attendue. Les CONCENTRES sont en passe d'atteindre l'objectif pour le 2e mois consecutif (105% ajuste vs 106% en juillet). Le ratio bundle s'est nettement ameliore (2,6:1 vs 3,5:1). Le volume TOURTEAUX se normalise apres le pic de juillet (153 t/j vs 280 t/j, -45%) — effet prix visible. Le stock soja est critique (rupture probable 04/09) — reapprovisionnement a programmer avant le 25/08.

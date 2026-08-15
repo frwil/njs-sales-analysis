@@ -1060,41 +1060,61 @@ def build_story():
     story.append(Spacer(1, 0.4*cm))
 
     # =====================================================================
-    # SECTION 8 — PREMIER POINT DE SUIVI AOÛT 2026
+    # SECTION 8 — POINT DE SUIVI AOÛT 2026 (au 14/08)
     # =====================================================================
     story.append(PageBreak())
-    story.append(Paragraph("8. Premier point de suivi — Août 2026 (au 04/08)", H1))
+    story.append(Paragraph("8. Point de suivi — Août 2026 (au 14/08)", H1))
     story.append(section_divider())
 
     story.append(Paragraph(
-        "<b>Données au 4 août 2026</b> — 3 jours ouvrables (lun-sam) sur 27 (11% du mois). "
-        "Démarrage très partiel — les chiffres ci-dessous sont indicatifs et seront consolidés en fin de mois. "
+        "<b>Données au 14 août 2026</b> — 12 jours ouvrables (lun-sam) sur 26 (46% du mois). "
+        "L'extraction du 15/08 matin (22 lignes Livrées) a été exclue comme partielle. "
+        "Les projections sont désormais représentatives — la consolidation définitive se fera en fin de mois. "
         "Comparaison vs bilan juillet complet (au 31/07) et vs moyenne S1.",
         BODY_BOLD
     ))
 
-    story.append(Paragraph("8.1 Tableau de bord — Août (démarrage) vs Juillet vs S1", H2))
+    story.append(Paragraph("8.1 Tableau de bord — Août MTD (12j) vs Juillet vs S1", H2))
     aout_global_data = [
-        ["Indicateur", "Moyenne S1", "Juillet complet", "Août 3j", "Projection Août", "Lecture"],
-        ["Prix soja/sac", "16 198", "18 787", "20 673", "20 673", "Hausse cumulée +3 000 FCFA/sac"],
-        ["Budget/client", "2 974 944", "4 901 448", "1 621 561", "—", "Démarrage lent (-45% vs S1)"],
-        ["Sacs soja/client", "132,7", "172,1", "49,7", "—", "Démarrage (-63% vs S1)"],
-        ["Sacs conc/client", "49,3", "49,8", "17,5", "—", "Démarrage (-65% vs S1)"],
-        ["Ratio soja/conc", "2,7:1", "3,5:1", "2,8:1", "—", "Amélioration vs juillet (3,5→2,8)"],
-        ["Bundle soja→conc (%)", "79%", "82%", "94%", "—", "✅ Amélioration notable"],
+        ["Indicateur", "Moyenne S1", "Juil complet", "Août 12j", "Proj Août", "Lecture"],
+        ["Sacs soja total", "—", "—", "36 790", "79 712", "Projection août"],
+        ["Sacs conc total", "—", "—", "14 339", "31 068", "Projection août"],
+        ["Ratio soja/conc", "2,7:1", "3,5:1", "2,6:1", "2,6:1", "✅ Retour sous cible 3:1"],
+        ["Bundle soja→conc (%)", "79%", "82%", "95%", "—", "✅ Amélioration nette"],
+        ["Commandes soja total", "—", "—", "924", "—", "Sur 12 jours"],
+        ["dont Bundle (soja+conc)", "—", "—", "880 (95%)", "—", "Plan d'action produit ses effets"],
+        ["dont Soja-only", "—", "—", "44 (5%)", "—", "✅ Faible — objectif atteint"],
+        ["Volume TOURTEAUX (t)", "4 844/mois", "7 512", "1 840", "3 986", "104% obj (effet prix)"],
+        ["Volume CONCENTRES (t)", "1 513/mois", "1 820", "717", "1 553", "105% obj ✅"],
+        ["Stock soja net (sacs)", "—", "—", "71 230 (08/08)", "—", "Rupture 04/09 probable"],
+        ["Prix soja/sac", "16 198", "18 787", "+3 000 cumulé", "—", "Hausse 1 000 + 2 000 (23/07)"],
     ]
-    story.append(make_table(aout_global_data, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 2.5*cm, 4.5*cm], font_size=7.5))
+    story.append(make_table(aout_global_data, col_widths=[3.5*cm, 2.3*cm, 2.3*cm, 2.2*cm, 2.2*cm, 4.3*cm], font_size=7.5))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("8.2 Distribution des ratios bundle — Août MTD (au 14/08)", H2))
+    dist_data = [
+        ["Ratio soja:conc", "Nb commandes", "% du total", "Lecture"],
+        ["≤ 3:1 (cible)", "574", "65%", "✅ Objectif atteint pour 65% des commandes"],
+        ["3-5:1 (acceptable)", "287", "33%", "À surveiller — proche de la cible"],
+        ["5-10:1 (à corriger)", "15", "2%", "Action commerciale requise"],
+        ["10-20:1 ( critique)", "2", "0%", "Cas isolés — recontact individuel"],
+        ["> 20:1 (urgent)", "2", "0%", "Action immédiate — appliquer règle prémix"],
+        ["TOTAL BUNDLE", "880", "100%", "95% des commandes soja sont en bundle"],
+    ]
+    story.append(make_table(dist_data, col_widths=[3.5*cm, 2.5*cm, 2*cm, 8.5*cm], font_size=8))
     story.append(Spacer(1, 0.3*cm))
 
     story.append(Paragraph(
-        "<b>Premières observations (au 04/08 — 3 jours) :</b><br/>"
-        "• <b>Bundle ratio s'améliore</b> : 2,8:1 en août (vs 3,5:1 en juillet complet) — retour proche de la cible 3:1.<br/>"
-        "• <b>Cross-sell soja→conc à 94%</b> (vs 82% en juillet, vs 79% en S1) — <b>excellente dynamique de démarrage</b>.<br/>"
-        "• <b>Prix soja moyen</b> : 20 673 FCFA/sac (+27,6% vs S1) — reflète la hausse cumulée +3 000 FCFA/sac (1 000 + 2 000 du 23/07).<br/>"
-        "• <b>Projection CONCENTRES août</b> : 1 522 t (vs objectif 1 535 t, 99%) — démarrage conforme.<br/>"
-        "• <b>Projection TOURTEAUX août</b> : 4 003 t (vs 4 844 t S1, -17%) — la hausse tarifaire pourrait enfin ralentir la consommation soja après la dynamique exceptionnelle de juillet (+55%).<br/><br/>"
-        "<b>⚠️ Attention :</b> ces projections sont basées sur seulement 3 jours ouvrables. Une consolidation sur 7-10 jours sera nécessaire pour confirmer les tendances. "
-        "Le ratio bundle amélioré (2,8:1) est encourageant mais peut s'expliquer par un biais de démarrage (petites commandes au début du mois).",
+        "<b>Lecture Août MTD (au 14/08 — 46% du mois) :</b><br/>"
+        "• <b>Bundle ratio 2,6:1 ✅</b> — retour sous la cible 3:1 (vs 3,5:1 en juillet complet, vs 2,7:1 en S1). C'est la trajectoire attendue de l'effet combiné <b>hausse tarifaire + plan d'action bundle</b>.<br/>"
+        "• <b>Cross-sell à 95%</b> (880 bundle / 924 soja cmds) — <b>amélioration majeure</b> vs 82% en juillet et 79% en S1. Seulement 44 commandes soja-only (5%), vs 30% attendu sans action.<br/>"
+        "• <b>Distribution des ratios</b> : 65% des commandes bundle sont ≤ 3:1 (cible), 33% sont en 3-5:1 (acceptable). Seulement 4% dépassent 5:1 — cas à traiter individuellement.<br/>"
+        "• <b>Projection CONCENTRES août</b> : 1 553 t (vs obj 1 480 t, 105% ajusté) — <b>objectif en passe d'être atteint</b> pour le 2e mois consécutif après juillet (106%).<br/>"
+        "• <b>Projection TOURTEAUX août</b> : 3 986 t (vs obj 3 850 t, 104% ajusté). La moy/jour a chuté à 153 t/j (vs 280 t/j juillet, -45%) — <b>la hausse +3 000 FCFA/sac produit son effet prix</b> et la fenêtre de rupture concurrente se referme.<br/>"
+        "• <b>Stock soja critique</b> : 71 230 sacs net (3 561 t) au 08/08 — rupture probable <b>04/09/2026</b> (21 jours de stock). Réapprovisionnement à programmer avant le 25/08.<br/><br/>"
+        "<b>✅ Conclusion mi-août :</b> le plan d'action bundle produit ses effets — ratio 2,6:1 (vs 3,5:1 en juillet), 95% de cross-sell, distribution des ratios saine. Les CONCENTRES tiennent le cap. "
+        "Le défi des 15 prochains jours : maintenir la dynamique CONCENTRES pendant que le volume TOURTEAUX se normalise, et préparer le réapprovisionnement soja pour éviter la rupture mi-septembre.",
         BODY_BOLD
     ))
 
