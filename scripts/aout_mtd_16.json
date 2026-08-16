@@ -1,0 +1,197 @@
+{
+  "update_date": "15/08/2026",
+  "days_elapsed": 13,
+  "total_days_aug": 26,
+  "pct_elapsed": 50.0,
+  "volumes": {
+    "TOURTEAUX": {
+      "t": 1932.9,
+      "moy_t_j": 148.7,
+      "proj_t": 3866.0,
+      "obj_t": 3850,
+      "pct_obj": 100.0
+    },
+    "CONCENTRES": {
+      "t": 751.8,
+      "moy_t_j": 57.8,
+      "proj_t": 1504.0,
+      "obj_t": 1480,
+      "pct_obj": 102.0
+    },
+    "INGREDIENTS": {
+      "t": 8.8,
+      "moy_t_j": 0.7,
+      "proj_t": 18.0,
+      "obj_t": 320,
+      "pct_obj": 6.0
+    },
+    "MAIS": {
+      "t": 0.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0,
+      "obj_t": 130,
+      "pct_obj": 0.0
+    },
+    "PREMIX": {
+      "t": 0.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0,
+      "obj_t": 0,
+      "pct_obj": 0.0
+    }
+  },
+  "bundle": {
+    "total_soja_sacs": 38658.0,
+    "total_conc_sacs": 15036.0,
+    "ratio": 2.6,
+    "cmds_soja": 968,
+    "cmds_bundle": 918,
+    "cmds_soja_only": 50,
+    "cmds_conc_only": 56,
+    "pct_bundle": 95.0,
+    "dist": {
+      "<= 3:1": 600,
+      "3-5:1": 299,
+      "5-10:1": 15,
+      "10-20:1": 2,
+      "> 20:1": 2
+    }
+  },
+  "stock": {
+    "date": "08/08/2026",
+    "brut_sacs": 80430.0,
+    "brut_t": 4021.0,
+    "net_sacs": 71230.0,
+    "net_t": 3561.0,
+    "spc_exclu": 9200,
+    "vente_sacs_jour": 2974.0,
+    "vente_sacs_sem": 17842.0,
+    "conso_moy_sacs_sem": 22742.0,
+    "jours_stock": 21,
+    "rupture_date": "05/09/2026"
+  },
+  "zero_achat": {
+    "s1_clients": 919,
+    "aout_clients": 629,
+    "churned": 388,
+    "new_aout": 98
+  },
+  "cross_sell": {
+    "s1_soja": 804,
+    "s1_conc": 703,
+    "aout_soja": 522,
+    "aout_conc": 526,
+    "s1_bundle": 661,
+    "aout_bundle": 504,
+    "soja_to_conc_aout": 425,
+    "soja_no_conc_aout": 379,
+    "pct_soja_with_conc_aout": 53.0
+  },
+  "conc_by_agence": [
+    {
+      "agence": "Ngaoundere",
+      "conc_t": 28600.0,
+      "soja_t": 47700.0,
+      "moy_t_j": 2200.0,
+      "proj_t": 57200.0
+    },
+    {
+      "agence": "Nkolbisson",
+      "conc_t": 21000.0,
+      "soja_t": 45150.0,
+      "moy_t_j": 1615.4,
+      "proj_t": 42000.0
+    },
+    {
+      "agence": "Messassi",
+      "conc_t": 89550.0,
+      "soja_t": 247100.0,
+      "moy_t_j": 6888.5,
+      "proj_t": 179100.0
+    },
+    {
+      "agence": "Mbouda",
+      "conc_t": 58200.0,
+      "soja_t": 133450.0,
+      "moy_t_j": 4476.9,
+      "proj_t": 116400.0
+    },
+    {
+      "agence": "Famla",
+      "conc_t": 162750.0,
+      "soja_t": 420550.0,
+      "moy_t_j": 12519.2,
+      "proj_t": 325500.0
+    },
+    {
+      "agence": "Nkongsamba",
+      "conc_t": 25995.0,
+      "soja_t": 75980.0,
+      "moy_t_j": 1999.6,
+      "proj_t": 51990.0
+    },
+    {
+      "agence": "Pk11",
+      "conc_t": 35000.0,
+      "soja_t": 94350.0,
+      "moy_t_j": 2692.3,
+      "proj_t": 70000.0
+    },
+    {
+      "agence": "Nkoabang",
+      "conc_t": 22875.0,
+      "soja_t": 71850.0,
+      "moy_t_j": 1759.6,
+      "proj_t": 45750.0
+    },
+    {
+      "agence": "Ndobo",
+      "conc_t": 59350.0,
+      "soja_t": 159100.0,
+      "moy_t_j": 4565.4,
+      "proj_t": 118700.0
+    },
+    {
+      "agence": "Bertoua",
+      "conc_t": 44150.0,
+      "soja_t": 102250.0,
+      "moy_t_j": 3396.2,
+      "proj_t": 88300.0
+    },
+    {
+      "agence": "Buea",
+      "conc_t": 28325.0,
+      "soja_t": 74400.0,
+      "moy_t_j": 2178.8,
+      "proj_t": 56650.0
+    },
+    {
+      "agence": "Ahala",
+      "conc_t": 48450.0,
+      "soja_t": 122250.0,
+      "moy_t_j": 3726.9,
+      "proj_t": 96900.0
+    },
+    {
+      "agence": "Djeleng",
+      "conc_t": 88650.0,
+      "soja_t": 238450.0,
+      "moy_t_j": 6819.2,
+      "proj_t": 177300.0
+    },
+    {
+      "agence": "Village",
+      "conc_t": 38900.0,
+      "soja_t": 86300.0,
+      "moy_t_j": 2992.3,
+      "proj_t": 77800.0
+    },
+    {
+      "agence": "AGENCE MAROUA",
+      "conc_t": 0,
+      "soja_t": 14000.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0
+    }
+  ]
+}

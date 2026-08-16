@@ -1,12 +1,12 @@
 """Compute August MTD metrics (au 14/08/2026) for the zero-achat and bundle PDFs."""
 import openpyxl
 from collections import defaultdict, Counter
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import json
 import re
 
 # Sources
-AOUT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (5) (1).xlsx"
+AOUT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (14) (1).xlsx"
 JUIN_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx"  # juillet complet (for S1 + juillet comparison)
 JUILLET_FULL_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx"
 
@@ -120,22 +120,22 @@ def is_internal_client(client_str):
 
 
 # === Compute August metrics ===
-print("Loading August extraction (5)(1).xlsx...")
+print("Loading August extraction (3)(14)(1).xlsx...")
 rows_aout, col_idx_aout = load_livree(AOUT_SRC)
 print(f"  {len(rows_aout)} Livree rows")
 
-# Filter only complete days (exclude 15/08 - matinal extraction with 22 rows)
+# Filter only complete days (15/08 now has 217 rows - complete day, not matinal)
 aout_complete = []
 for r in rows_aout:
     d = parse_date(r[6])
-    if d == '15/08/2026':
-        continue  # exclude partial
+    if d == '16/08/2026':  # in case of any partial data
+        continue
     aout_complete.append(r)
-print(f"  {len(aout_complete)} Livree rows (excluding 15/08 matinal)")
+print(f"  {len(aout_complete)} Livree rows (excluding 16/08 if any)")
 
-# Days elapsed (lun-sam) — Aug 1-14
+# Days elapsed (lun-sam) — Aug 1-15
 days_elapsed = 0
-for d in range(1, 15):  # 1-14
+for d in range(1, 16):  # 1-15
     dt = date(2026, 8, d)
     if dt.weekday() < 6:
         days_elapsed += 1
@@ -302,9 +302,7 @@ vente_soja_sacs_jour = vol_sacs['TOURTEAUX'] / days_elapsed
 vente_soja_sacs_sem = vente_soja_sacs_jour * 6
 conso_moy = vente_soja_sacs_sem + PROD_CONC['moy']
 jours_stock_moy = stock_eq_50_net / conso_moy * 7
-rupture_date = date(2026, 8, 14) + (date(2026, 8, 14) - date(2026, 8, 14))  # add days
-from datetime import timedelta
-rupture_date = date(2026, 8, 14) + timedelta(days=int(jours_stock_moy))
+rupture_date = date(2026, 8, 15) + timedelta(days=int(jours_stock_moy))
 
 print(f"\n=== STOCK SOJA (BEKOKO au {STOCK_DATE}) ===")
 print(f"  Stock brut: {stock_eq_50_brut:.0f} sacs ({stock_t_brut:.0f} t)")
@@ -382,7 +380,7 @@ print(f"  Dont n'ont pas acheté conc en août: {len(s1_soja_no_conc_aout)}")
 
 # Save summary
 summary = {
-    'update_date': '14/08/2026',
+    'update_date': '15/08/2026',
     'days_elapsed': days_elapsed,
     'total_days_aug': total_days_aug,
     'pct_elapsed': round(pct_elapsed, 1),
@@ -439,6 +437,6 @@ summary = {
                        if c > 0 or s > 0]
 }
 
-with open('/home/z/my-project/scripts/aout_mtd_15.json', 'w', encoding='utf-8') as f:
+with open('/home/z/my-project/scripts/aout_mtd_16.json', 'w', encoding='utf-8') as f:
     json.dump(summary, f, indent=2, ensure_ascii=False, default=str)
-print(f"\nSaved summary: /home/z/my-project/scripts/aout_mtd_15.json")
+print(f"\nSaved summary: /home/z/my-project/scripts/aout_mtd_16.json")
