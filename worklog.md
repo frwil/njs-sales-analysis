@@ -248,3 +248,25 @@ Stage Summary:
 - analyse_zero_achat.pdf (22 pages, 338 Ko): section 5.2 refraichie au 17/08
 - analyse_bundle_soja_concentres.pdf (17 pages, 90 Ko): section 8 refraichie au 17/08
 - Conclusion: leffet prix +3 000 FCFA/sac produit son plein effet (TOURTEAUX -48% vs juillet), la fenetre de rupture concurrente est refermee. Les CONCENTRES tiennent le cap (101% ajuste) malgre la baisse generale. Bundle 2,5:1 — amelioration continue. Stock soja critique (rupture 08/09).
+
+---
+Task ID: aout-corr-1534
+Agent: main
+Task: Correction de l'objectif CONCENTRES août (1480 -> 1534 t) suite à retour utilisateur.
+
+Work Log:
+- Correction de l'objectif CONCENTRES août dans compute_aout_mtd_metrics.py: 1480 -> 1534 t (somme des objectifs agence, deja utilisee dans compute_concentres_regional.py).
+- Recalcul des metriques August MTD (au 17/08, 14j):
+  - CONCENTRES: proj 1 496 t / obj 1 534 t = 98% ajuste (au lieu de 101% annonce precedemment)
+  - TOURTEAUX: proj 3 812 t / obj 3 850 t = 99% ajuste (inchangé)
+  - Bundle ratio 2,5:1, cross-sell 95% (inchangés)
+- Mise a jour des PDFs:
+  - build_zero_achat_pdf.py: tableau evol_aout (obj CONCENTRES 1534, % 98%), dashboard (obj CONCENTRES 1534, % 98%), lecture et bilan intermediaire ajustes
+  - build_bundle_analysis_pdf.py: tableau 8.1 (CONCENTRES 98% obj), projection CONCENTRES ajustee, conclusion mi-aout ajustee
+- Output: analyse_zero_achat.pdf (22 pages, 338 Ko), analyse_bundle_soja_concentres.pdf (17 pages, 90 Ko)
+
+Stage Summary:
+- Correction importante: l'objectif CONCENTRES août est 1 534 t (et non 1 480 t utilise par erreur dans le script principal).
+- Performance reelle au 17/08: CONCENTRES a 98% de l'objectif (projection 1 496 t vs 1 534 t), ecart -38 t.
+- Sans rattrapage FAMLA (-78 t) et NDOBO (-63 t), l'objectif sera manque de ~38 t (-2,5%).
+- Si FAMLA et NDOBO rattrapent partiellement (50% de leur ecart), l'objectif sera atteint.

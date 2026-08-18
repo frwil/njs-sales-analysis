@@ -1084,7 +1084,7 @@ def build_story():
         ["dont Bundle (soja+conc)", "—", "—", "977 (95%)", "—", "Plan d'action produit ses effets"],
         ["dont Soja-only", "—", "—", "52 (5%)", "—", "✅ Faible — objectif atteint"],
         ["Volume TOURTEAUX (t)", "4 844/mois", "7 512", "2 052", "3 812", "99% obj (effet prix plein)"],
-        ["Volume CONCENTRES (t)", "1 513/mois", "1 820", "806", "1 496", "101% obj ✅"],
+        ["Volume CONCENTRES (t)", "1 513/mois", "1 820", "806", "1 496", "98% obj (sous cible)"],
         ["Stock soja net (sacs)", "—", "—", "71 230 (08/08)", "—", "Rupture 08/09 probable"],
         ["Prix soja/sac", "16 198", "18 787", "+3 000 cumulé", "—", "Hausse 1 000 + 2 000 (23/07)"],
     ]
@@ -1109,11 +1109,11 @@ def build_story():
         "• <b>Bundle ratio 2,5:1 ✅</b> — amélioration continue (vs 2,6:1 au 15/08, vs 3,5:1 en juillet complet, vs 2,7:1 en S1). L'effet combiné <b>hausse tarifaire + plan d'action bundle</b> produit la trajectoire attendue.<br/>"
         "• <b>Cross-sell à 95%</b> (977 bundle / 1 029 soja cmds) — <b>amélioration majeure</b> vs 82% en juillet et 79% en S1. Seulement 52 commandes soja-only (5%), vs 30% attendu sans action.<br/>"
         "• <b>Distribution des ratios</b> : 66% des commandes bundle sont ≤ 3:1 (cible), 32% sont en 3-5:1 (acceptable). Seulement 4% dépassent 5:1 — cas à traiter individuellement.<br/>"
-        "• <b>Projection CONCENTRES août</b> : 1 496 t (vs obj 1 480 t, 101% ajusté) — <b>objectif en passe d'être atteint</b> pour le 2e mois consécutif après juillet (106%).<br/>"
+        "• <b>Projection CONCENTRES août</b> : 1 496 t (vs obj 1 534 t, 98% ajusté, écart -38 t) — <b>juste sous la cible</b>. La dynamique se maintient (moy/jour 57,6 t > moyenne S1 50,4 t/j, +14%) mais un rattrapage est nécessaire en 2e quinzaine, notamment via FAMLA et NDOBO qui sous-performent.<br/>"
         "• <b>Projection TOURTEAUX août</b> : 3 812 t (vs obj 3 850 t, 99% ajusté). La moy/jour a chuté à 147 t/j (vs 280 t/j juillet, <b>-48%</b>) — <b>la hausse +3 000 FCFA/sac produit son plein effet prix</b> et la fenêtre de rupture concurrente est refermée.<br/>"
         "• <b>Stock soja critique</b> : 71 230 sacs net (3 561 t) au 08/08 — rupture probable <b>08/09/2026</b> (22 jours de stock). Réapprovisionnement à programmer avant le 28/08.<br/><br/>"
-        "<b>✅ Conclusion mi-août avancée :</b> le plan d'action bundle produit ses effets — ratio 2,5:1 (vs 3,5:1 en juillet), 95% de cross-sell, distribution des ratios saine. Les CONCENTRES tiennent le cap (101% ajusté). "
-        "Le défi des 12 prochains jours : maintenir la dynamique CONCENTRES pendant que le volume TOURTEAUX se normalise, et préparer le réapprovisionnement soja pour éviter la rupture début septembre.",
+        "<b>✅ Conclusion mi-août avancée :</b> le plan d'action bundle produit ses effets — ratio 2,5:1 (vs 3,5:1 en juillet), 95% de cross-sell, distribution des ratios saine. Les CONCENTRES restent <b>juste sous l'objectif (98%)</b> — rattrapage FAMLA (-78 t) et NDOBO (-63 t) nécessaire en 2e quinzaine pour atteindre les 1 534 t. "
+        "Le défi des 12 prochains jours : relancer FAMLA et NDOBO pendant que le volume TOURTEAUX se normalise, et préparer le réapprovisionnement soja pour éviter la rupture début septembre.",
         BODY_BOLD
     ))
 

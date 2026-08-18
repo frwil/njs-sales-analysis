@@ -51,10 +51,10 @@ AGENCE_MAP = {
 # Internal clients to exclude (SPC/PDC/Comptoir)
 INTERNAL_CLIENT_PATTERNS = ['SPC', 'PDC', 'COMPTOIR', 'EMANA']
 
-# Objectives (monthly targets) — August
+# Objectives (monthly targets) — August (CORRECTION: CONCENTRES = 1534 t, somme des objectifs agence)
 OBJ = {
     'TOURTEAUX': 3850,  # t
-    'CONCENTRES': 1480,  # t
+    'CONCENTRES': 1534,  # t (objectif réel août, somme des objectifs agence)
     'MAIS': 130,  # t
     'INGREDIENTS': 320,  # t
 }
