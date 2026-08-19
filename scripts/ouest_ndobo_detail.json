@@ -1,0 +1,834 @@
+[
+  {
+    "client": "MOUKAM JOSEPH",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 505.0,
+          "tonnes": 25.2,
+          "ca_m_fcfa": 8.59,
+          "cmds": 1,
+          "refs": {
+            "T102": 505
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 505
+          },
+          "dates": [
+            "02/07/2026"
+          ],
+          "etats": {
+            "En cours": 2
+          }
+        },
+        "AUTRES": {
+          "sacs": 0,
+          "tonnes": 0.0,
+          "ca_m_fcfa": 0.25,
+          "cmds": 1,
+          "refs": {
+            "CONTRIBUTION_CARBURANT": 2481.53
+          },
+          "produits": {
+            "CONTRIBUTION CARBURANT": 2481.53
+          },
+          "dates": [
+            "02/07/2026"
+          ],
+          "etats": {
+            "En cours": 1
+          }
+        }
+      },
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 400.0,
+          "tonnes": 20.0,
+          "ca_m_fcfa": 8.0,
+          "cmds": 2,
+          "refs": {
+            "T102": 400
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 400
+          },
+          "dates": [
+            "08/08/2026",
+            "11/08/2026"
+          ],
+          "etats": {
+            "Validée": 3
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 195.0,
+          "tonnes": 9.8,
+          "ca_m_fcfa": 6.74,
+          "cmds": 2,
+          "refs": {
+            "C103": 67,
+            "C104": 48,
+            "C101": 50,
+            "C105": 30
+          },
+          "produits": {
+            "BELGO 5% CHAIR 50 Kg": 67,
+            "BELGO 10% CHAIR 50Kg": 48,
+            "BELGO 5% PONTE 50 Kg": 50,
+            "BELGO 10% PORC 50 Kg": 30
+          },
+          "dates": [
+            "08/08/2026",
+            "11/08/2026"
+          ],
+          "etats": {
+            "Validée": 6
+          }
+        },
+        "AUTRES": {
+          "sacs": 0,
+          "tonnes": 0.0,
+          "ca_m_fcfa": 0.25,
+          "cmds": 1,
+          "refs": {
+            "CONTRIBUTION_CARBURANT": 2481.53
+          },
+          "produits": {
+            "CONTRIBUTION CARBURANT": 2481.53
+          },
+          "dates": [
+            "11/08/2026"
+          ],
+          "etats": {
+            "Validée": 1
+          }
+        }
+      }
+    }
+  },
+  {
+    "client": "CU2605-14465 -  FONDA CHRISTIAN CHO",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 70.0,
+          "tonnes": 3.5,
+          "ca_m_fcfa": 1.19,
+          "cmds": 1,
+          "refs": {
+            "T102": 70
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 70
+          },
+          "dates": [
+            "03/07/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 3.0,
+          "tonnes": 0.1,
+          "ca_m_fcfa": 0.12,
+          "cmds": 1,
+          "refs": {
+            "C103": 3
+          },
+          "produits": {
+            "BELGO 5% CHAIR 50 Kg": 3
+          },
+          "dates": [
+            "03/07/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        }
+      },
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 40.0,
+          "tonnes": 2.0,
+          "ca_m_fcfa": 0.8,
+          "cmds": 1,
+          "refs": {
+            "T102": 40
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 40
+          },
+          "dates": [
+            "03/08/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 10.0,
+          "tonnes": 0.5,
+          "ca_m_fcfa": 0.33,
+          "cmds": 1,
+          "refs": {
+            "C103": 5,
+            "C105": 5
+          },
+          "produits": {
+            "BELGO 5% CHAIR 50 Kg": 5,
+            "BELGO 10% PORC 50 Kg": 5
+          },
+          "dates": [
+            "03/08/2026"
+          ],
+          "etats": {
+            "Livrée": 2
+          }
+        }
+      }
+    }
+  },
+  {
+    "client": "CU2407-00676 -  KAMGO",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 105.0,
+          "tonnes": 5.2,
+          "ca_m_fcfa": 1.9,
+          "cmds": 5,
+          "refs": {
+            "T102": 105
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 105
+          },
+          "dates": [
+            "04/07/2026",
+            "07/07/2026",
+            "14/07/2026",
+            "22/07/2026",
+            "31/07/2026"
+          ],
+          "etats": {
+            "Livrée": 5
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 31.0,
+          "tonnes": 1.6,
+          "ca_m_fcfa": 0.98,
+          "cmds": 4,
+          "refs": {
+            "C104": 31
+          },
+          "produits": {
+            "BELGO 10% CHAIR 50Kg": 31
+          },
+          "dates": [
+            "04/07/2026",
+            "14/07/2026",
+            "22/07/2026",
+            "31/07/2026"
+          ],
+          "etats": {
+            "Livrée": 4
+          }
+        },
+        "AUTRES": {
+          "sacs": 0,
+          "tonnes": 0.0,
+          "ca_m_fcfa": 0.2,
+          "cmds": 3,
+          "refs": {
+            "P105": 4,
+            "P102N2": 1
+          },
+          "produits": {
+            "BELGOFOS 25Kg": 4,
+            "PREMIX 0.5% CHAIR N2 25 Kg": 1
+          },
+          "dates": [
+            "04/07/2026",
+            "14/07/2026",
+            "31/07/2026"
+          ],
+          "etats": {
+            "Livrée": 3
+          }
+        }
+      },
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 20.0,
+          "tonnes": 1.0,
+          "ca_m_fcfa": 0.4,
+          "cmds": 1,
+          "refs": {
+            "T102": 20
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 20
+          },
+          "dates": [
+            "17/08/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 8.0,
+          "tonnes": 0.4,
+          "ca_m_fcfa": 0.25,
+          "cmds": 1,
+          "refs": {
+            "C104": 8
+          },
+          "produits": {
+            "BELGO 10% CHAIR 50Kg": 8
+          },
+          "dates": [
+            "17/08/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        }
+      }
+    }
+  },
+  {
+    "client": "CU2407-00288 -  LIDEL SARL",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 100.0,
+          "tonnes": 5.0,
+          "ca_m_fcfa": 1.8,
+          "cmds": 1,
+          "refs": {
+            "T102": 100
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 100
+          },
+          "dates": [
+            "17/07/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        }
+      },
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 350.0,
+          "tonnes": 17.5,
+          "ca_m_fcfa": 7.0,
+          "cmds": 2,
+          "refs": {
+            "T102": 350
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 350
+          },
+          "dates": [
+            "01/08/2026"
+          ],
+          "etats": {
+            "En cours": 1,
+            "Livrée": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 115.0,
+          "tonnes": 5.8,
+          "ca_m_fcfa": 3.86,
+          "cmds": 2,
+          "refs": {
+            "C104": 55,
+            "C101": 60
+          },
+          "produits": {
+            "BELGO 10% CHAIR 50Kg": 55,
+            "BELGO 5% PONTE 50 Kg": 60
+          },
+          "dates": [
+            "01/08/2026"
+          ],
+          "etats": {
+            "En cours": 1,
+            "Livrée": 1
+          }
+        }
+      }
+    }
+  },
+  {
+    "client": "CU2407-00780 -  MELI JEAN",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 920.0,
+          "tonnes": 46.0,
+          "ca_m_fcfa": 16.56,
+          "cmds": 1,
+          "refs": {
+            "T102": 920
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 920
+          },
+          "dates": [
+            "18/07/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        }
+      },
+      "08": {}
+    }
+  },
+  {
+    "client": "CU2604-14447 -  KOUOKAM ALPHONSE STEPHANE",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 600.0,
+          "tonnes": 30.0,
+          "ca_m_fcfa": 10.98,
+          "cmds": 1,
+          "refs": {
+            "T102": 600
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 600
+          },
+          "dates": [
+            "20/07/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        }
+      },
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 200.0,
+          "tonnes": 10.0,
+          "ca_m_fcfa": 4.0,
+          "cmds": 1,
+          "refs": {
+            "T102": 200
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 200
+          },
+          "dates": [
+            "06/08/2026"
+          ],
+          "etats": {
+            "Validée": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 67.0,
+          "tonnes": 3.4,
+          "ca_m_fcfa": 2.11,
+          "cmds": 1,
+          "refs": {
+            "C104": 67
+          },
+          "produits": {
+            "BELGO 10% CHAIR 50Kg": 67
+          },
+          "dates": [
+            "06/08/2026"
+          ],
+          "etats": {
+            "Validée": 1
+          }
+        }
+      }
+    }
+  },
+  {
+    "client": "CU2509-14118 -  FEUDJO JEAN CLOVIS (ETS ESPOIR DU CAMEROUN)",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 40.0,
+          "tonnes": 2.0,
+          "ca_m_fcfa": 0.72,
+          "cmds": 1,
+          "refs": {
+            "T102": 40
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 40
+          },
+          "dates": [
+            "21/07/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 10.0,
+          "tonnes": 0.5,
+          "ca_m_fcfa": 0.32,
+          "cmds": 1,
+          "refs": {
+            "C104": 10
+          },
+          "produits": {
+            "BELGO 10% CHAIR 50Kg": 10
+          },
+          "dates": [
+            "21/07/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        }
+      },
+      "08": {}
+    }
+  },
+  {
+    "client": "CU2407-00658 -  INGRID BANDJA",
+    "months": {
+      "07": {
+        "CONCENTRES": {
+          "sacs": 58.0,
+          "tonnes": 2.9,
+          "ca_m_fcfa": 1.69,
+          "cmds": 1,
+          "refs": {
+            "C1053": 1400,
+            "C105": 30
+          },
+          "produits": {
+            "BELGO 10% PORC 1KG": 1400,
+            "BELGO 10% PORC 50 Kg": 30
+          },
+          "dates": [
+            "21/07/2026"
+          ],
+          "etats": {
+            "Livrée": 2
+          }
+        }
+      },
+      "08": {}
+    }
+  },
+  {
+    "client": "CU2407-00266 -  EMMANUEL WIRSENYUY",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 600.0,
+          "tonnes": 30.0,
+          "ca_m_fcfa": 12.0,
+          "cmds": 2,
+          "refs": {
+            "T102": 600
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 600
+          },
+          "dates": [
+            "27/07/2026"
+          ],
+          "etats": {
+            "Livrée": 5
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 200.0,
+          "tonnes": 10.0,
+          "ca_m_fcfa": 5.4,
+          "cmds": 2,
+          "refs": {
+            "C105": 200
+          },
+          "produits": {
+            "BELGO 10% PORC 50 Kg": 200
+          },
+          "dates": [
+            "27/07/2026"
+          ],
+          "etats": {
+            "Livrée": 4
+          }
+        }
+      },
+      "08": {}
+    }
+  },
+  {
+    "client": "CU2408-01042 -  CLIENT AGROCAM (INTERNAL)",
+    "months": {
+      "07": {
+        "AUTRES": {
+          "sacs": 0,
+          "tonnes": 0.0,
+          "ca_m_fcfa": 0.3,
+          "cmds": 1,
+          "refs": {
+            "S0020": 3000
+          },
+          "produits": {
+            "SAC EN REEMPLOI": 3000
+          },
+          "dates": [
+            "29/07/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        }
+      },
+      "08": {}
+    }
+  },
+  {
+    "client": "CU2407-00558 -  DUBOIS SARL",
+    "months": {
+      "07": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 125.0,
+          "tonnes": 6.2,
+          "ca_m_fcfa": 2.5,
+          "cmds": 1,
+          "refs": {
+            "T102": 125
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 125
+          },
+          "dates": [
+            "31/07/2026"
+          ],
+          "etats": {
+            "En cours": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 38.0,
+          "tonnes": 1.9,
+          "ca_m_fcfa": 1.03,
+          "cmds": 1,
+          "refs": {
+            "C105": 38
+          },
+          "produits": {
+            "BELGO 10% PORC 50 Kg": 38
+          },
+          "dates": [
+            "31/07/2026"
+          ],
+          "etats": {
+            "En cours": 1
+          }
+        }
+      },
+      "08": {}
+    }
+  },
+  {
+    "client": "CU2407-00989 -  NSUH EDWIN CHEO (ETS GILLI BROWN CONSTRUCTION)",
+    "months": {
+      "07": {},
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 60.0,
+          "tonnes": 3.0,
+          "ca_m_fcfa": 1.2,
+          "cmds": 1,
+          "refs": {
+            "T102": 60
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 60
+          },
+          "dates": [
+            "05/08/2026"
+          ],
+          "etats": {
+            "Livrée": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 20.0,
+          "tonnes": 1.0,
+          "ca_m_fcfa": 0.59,
+          "cmds": 1,
+          "refs": {
+            "C105": 8,
+            "C104": 11,
+            "C1054": 10
+          },
+          "produits": {
+            "BELGO 10% PORC 50 Kg": 8,
+            "BELGO 10% CHAIR 50Kg": 11,
+            "BELGO 10% PORC 5Kg": 10
+          },
+          "dates": [
+            "05/08/2026"
+          ],
+          "etats": {
+            "Livrée": 3
+          }
+        }
+      }
+    }
+  },
+  {
+    "client": "CU2407-00875 -  NOUMSI BLAISE",
+    "months": {
+      "07": {},
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 200.0,
+          "tonnes": 10.0,
+          "ca_m_fcfa": 4.0,
+          "cmds": 1,
+          "refs": {
+            "T102": 200
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 200
+          },
+          "dates": [
+            "06/08/2026"
+          ],
+          "etats": {
+            "Validée": 3
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 66.0,
+          "tonnes": 3.3,
+          "ca_m_fcfa": 2.3,
+          "cmds": 1,
+          "refs": {
+            "C104": 32,
+            "C103": 30,
+            "C105": 4
+          },
+          "produits": {
+            "BELGO 10% CHAIR 50Kg": 32,
+            "BELGO 5% CHAIR 50 Kg": 30,
+            "BELGO 10% PORC 50 Kg": 4
+          },
+          "dates": [
+            "06/08/2026"
+          ],
+          "etats": {
+            "Validée": 3
+          }
+        }
+      }
+    }
+  },
+  {
+    "client": "CU2407-00815 -  NGADEU BRICE",
+    "months": {
+      "07": {},
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 200.0,
+          "tonnes": 10.0,
+          "ca_m_fcfa": 4.0,
+          "cmds": 1,
+          "refs": {
+            "T102": 200
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 200
+          },
+          "dates": [
+            "07/08/2026"
+          ],
+          "etats": {
+            "Validée": 1
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 66.0,
+          "tonnes": 3.3,
+          "ca_m_fcfa": 2.3,
+          "cmds": 1,
+          "refs": {
+            "C104": 32,
+            "C103": 30,
+            "C105": 4
+          },
+          "produits": {
+            "BELGO 10% CHAIR 50Kg": 32,
+            "BELGO 5% CHAIR 50 Kg": 30,
+            "BELGO 10% PORC 50 Kg": 4
+          },
+          "dates": [
+            "07/08/2026"
+          ],
+          "etats": {
+            "Validée": 3
+          }
+        }
+      }
+    }
+  },
+  {
+    "client": "CU2407-00783 -  METAFE GNITEYO SONYA M",
+    "months": {
+      "07": {},
+      "08": {
+        "TOURTEAUX/SOJA": {
+          "sacs": 300.0,
+          "tonnes": 15.0,
+          "ca_m_fcfa": 6.0,
+          "cmds": 2,
+          "refs": {
+            "T102": 300
+          },
+          "produits": {
+            "TOURTEAUX DE SOJA 50 KG": 300
+          },
+          "dates": [
+            "13/08/2026",
+            "17/08/2026"
+          ],
+          "etats": {
+            "Validée": 3
+          }
+        },
+        "CONCENTRES": {
+          "sacs": 96.0,
+          "tonnes": 4.8,
+          "ca_m_fcfa": 3.41,
+          "cmds": 2,
+          "refs": {
+            "C101": 96
+          },
+          "produits": {
+            "BELGO 5% PONTE 50 Kg": 96
+          },
+          "dates": [
+            "13/08/2026",
+            "17/08/2026"
+          ],
+          "etats": {
+            "Validée": 2
+          }
+        }
+      }
+    }
+  }
+]
