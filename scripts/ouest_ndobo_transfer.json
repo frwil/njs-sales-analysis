@@ -1,0 +1,500 @@
+[
+  {
+    "client": "CU2407-00290 -  M. SONFACK FERDINANDETS LES ACCOUVEURS REUNIS",
+    "s1_famla_sacs": 1136.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 200,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 4.5,
+    "ndobo_aout_sacs": 0,
+    "ndobo_aout_cmds": 0,
+    "ndobo_aout_ca_m": 0.0,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 200,
+      "PREMIX 0.5% CHAIR N2 25 Kg": 10
+    },
+    "ndobo_products_aout": {},
+    "ndobo_refs_juil": {
+      "T102": 200,
+      "P102N2": 10
+    },
+    "ndobo_refs_aout": {},
+    "ndobo_dates_juil": [
+      "25/07/2026"
+    ],
+    "ndobo_dates_aout": []
+  },
+  {
+    "client": "CU2407-00676 -  KAMGO",
+    "s1_famla_sacs": 262.0,
+    "s1_djeleng_sacs": 149.0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 151.0,
+    "ndobo_juil_sacs": 136,
+    "ndobo_juil_cmds": 5,
+    "ndobo_juil_ca_m": 3.1,
+    "ndobo_aout_sacs": 28,
+    "ndobo_aout_cmds": 1,
+    "ndobo_aout_ca_m": 0.7,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 105,
+      "BELGO 10% CHAIR 50Kg": 31,
+      "BELGOFOS 25Kg": 4,
+      "PREMIX 0.5% CHAIR N2 25 Kg": 1
+    },
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 20,
+      "BELGO 10% CHAIR 50Kg": 8
+    },
+    "ndobo_refs_juil": {
+      "T102": 105,
+      "C104": 31,
+      "P105": 4,
+      "P102N2": 1
+    },
+    "ndobo_refs_aout": {
+      "T102": 20,
+      "C104": 8
+    },
+    "ndobo_dates_juil": [
+      "04/07/2026",
+      "07/07/2026",
+      "14/07/2026",
+      "22/07/2026",
+      "31/07/2026"
+    ],
+    "ndobo_dates_aout": [
+      "17/08/2026"
+    ]
+  },
+  {
+    "client": "CU2509-14118 -  FEUDJO JEAN CLOVIS (ETS ESPOIR DU CAMEROUN)",
+    "s1_famla_sacs": 0.0,
+    "s1_djeleng_sacs": 60.0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 50,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 1.0,
+    "ndobo_aout_sacs": 0,
+    "ndobo_aout_cmds": 0,
+    "ndobo_aout_ca_m": 0.0,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 40,
+      "BELGO 10% CHAIR 50Kg": 10
+    },
+    "ndobo_products_aout": {},
+    "ndobo_refs_juil": {
+      "T102": 40,
+      "C104": 10
+    },
+    "ndobo_refs_aout": {},
+    "ndobo_dates_juil": [
+      "21/07/2026"
+    ],
+    "ndobo_dates_aout": []
+  },
+  {
+    "client": "CU2407-00780 -  MELI JEAN",
+    "s1_famla_sacs": 0.0,
+    "s1_djeleng_sacs": 20.0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 920,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 16.6,
+    "ndobo_aout_sacs": 0,
+    "ndobo_aout_cmds": 0,
+    "ndobo_aout_ca_m": 0.0,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 920
+    },
+    "ndobo_products_aout": {},
+    "ndobo_refs_juil": {
+      "T102": 920
+    },
+    "ndobo_refs_aout": {},
+    "ndobo_dates_juil": [
+      "18/07/2026"
+    ],
+    "ndobo_dates_aout": []
+  },
+  {
+    "client": "CU2408-01042 -  CLIENT AGROCAM (INTERNAL)",
+    "s1_famla_sacs": 0.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 0,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 0.3,
+    "ndobo_aout_sacs": 0,
+    "ndobo_aout_cmds": 0,
+    "ndobo_aout_ca_m": 0.0,
+    "ndobo_products_juil": {
+      "SAC EN REEMPLOI": 3000
+    },
+    "ndobo_products_aout": {},
+    "ndobo_refs_juil": {
+      "S0020": 3000
+    },
+    "ndobo_refs_aout": {},
+    "ndobo_dates_juil": [
+      "29/07/2026"
+    ],
+    "ndobo_dates_aout": []
+  },
+  {
+    "client": "CU2407-00989 -  NSUH EDWIN CHEO (ETS GILLI BROWN CONSTRUCTION)",
+    "s1_famla_sacs": 0.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 1193.0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 0,
+    "ndobo_juil_cmds": 0,
+    "ndobo_juil_ca_m": 0.0,
+    "ndobo_aout_sacs": 80.0,
+    "ndobo_aout_cmds": 1,
+    "ndobo_aout_ca_m": 1.8,
+    "ndobo_products_juil": {},
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 60,
+      "BELGO 10% PORC 50 Kg": 8,
+      "BELGO 10% CHAIR 50Kg": 11,
+      "BELGO 10% PORC 5Kg": 10
+    },
+    "ndobo_refs_juil": {},
+    "ndobo_refs_aout": {
+      "T102": 60,
+      "C105": 8,
+      "C104": 11,
+      "C1054": 10
+    },
+    "ndobo_dates_juil": [],
+    "ndobo_dates_aout": [
+      "05/08/2026"
+    ]
+  },
+  {
+    "client": "CU2407-00783 -  METAFE GNITEYO SONYA M",
+    "s1_famla_sacs": 2645.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 130.0,
+    "ndobo_juil_sacs": 0,
+    "ndobo_juil_cmds": 0,
+    "ndobo_juil_ca_m": 0.0,
+    "ndobo_aout_sacs": 396,
+    "ndobo_aout_cmds": 2,
+    "ndobo_aout_ca_m": 9.4,
+    "ndobo_products_juil": {},
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 300,
+      "BELGO 5% PONTE 50 Kg": 96
+    },
+    "ndobo_refs_juil": {},
+    "ndobo_refs_aout": {
+      "T102": 300,
+      "C101": 96
+    },
+    "ndobo_dates_juil": [],
+    "ndobo_dates_aout": [
+      "13/08/2026",
+      "17/08/2026"
+    ]
+  },
+  {
+    "client": "CU2407-00815 -  NGADEU BRICE",
+    "s1_famla_sacs": 45.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 0,
+    "ndobo_juil_cmds": 0,
+    "ndobo_juil_ca_m": 0.0,
+    "ndobo_aout_sacs": 266,
+    "ndobo_aout_cmds": 1,
+    "ndobo_aout_ca_m": 6.3,
+    "ndobo_products_juil": {},
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 200,
+      "BELGO 10% CHAIR 50Kg": 32,
+      "BELGO 5% CHAIR 50 Kg": 30,
+      "BELGO 10% PORC 50 Kg": 4
+    },
+    "ndobo_refs_juil": {},
+    "ndobo_refs_aout": {
+      "T102": 200,
+      "C104": 32,
+      "C103": 30,
+      "C105": 4
+    },
+    "ndobo_dates_juil": [],
+    "ndobo_dates_aout": [
+      "07/08/2026"
+    ]
+  },
+  {
+    "client": "CU2407-00558 -  DUBOIS SARL",
+    "s1_famla_sacs": 624.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 100.0,
+    "ndobo_juil_sacs": 163,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 3.5,
+    "ndobo_aout_sacs": 0,
+    "ndobo_aout_cmds": 0,
+    "ndobo_aout_ca_m": 0.0,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 125,
+      "BELGO 10% PORC 50 Kg": 38
+    },
+    "ndobo_products_aout": {},
+    "ndobo_refs_juil": {
+      "T102": 125,
+      "C105": 38
+    },
+    "ndobo_refs_aout": {},
+    "ndobo_dates_juil": [
+      "31/07/2026"
+    ],
+    "ndobo_dates_aout": []
+  },
+  {
+    "client": "CU2407-00875 -  NOUMSI BLAISE",
+    "s1_famla_sacs": 1455.0,
+    "s1_djeleng_sacs": 333.0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 311.0,
+    "ndobo_juil_sacs": 0,
+    "ndobo_juil_cmds": 0,
+    "ndobo_juil_ca_m": 0.0,
+    "ndobo_aout_sacs": 266,
+    "ndobo_aout_cmds": 1,
+    "ndobo_aout_ca_m": 6.3,
+    "ndobo_products_juil": {},
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 200,
+      "BELGO 10% CHAIR 50Kg": 32,
+      "BELGO 5% CHAIR 50 Kg": 30,
+      "BELGO 10% PORC 50 Kg": 4
+    },
+    "ndobo_refs_juil": {},
+    "ndobo_refs_aout": {
+      "T102": 200,
+      "C104": 32,
+      "C103": 30,
+      "C105": 4
+    },
+    "ndobo_dates_juil": [],
+    "ndobo_dates_aout": [
+      "06/08/2026"
+    ]
+  },
+  {
+    "client": "CU2604-14447 -  KOUOKAM ALPHONSE STEPHANE",
+    "s1_famla_sacs": 130.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 600,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 11.0,
+    "ndobo_aout_sacs": 267,
+    "ndobo_aout_cmds": 1,
+    "ndobo_aout_ca_m": 6.1,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 600
+    },
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 200,
+      "BELGO 10% CHAIR 50Kg": 67
+    },
+    "ndobo_refs_juil": {
+      "T102": 600
+    },
+    "ndobo_refs_aout": {
+      "T102": 200,
+      "C104": 67
+    },
+    "ndobo_dates_juil": [
+      "20/07/2026"
+    ],
+    "ndobo_dates_aout": [
+      "06/08/2026"
+    ]
+  },
+  {
+    "client": "MOUKAM JOSEPH",
+    "s1_famla_sacs": 35.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 505,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 8.8,
+    "ndobo_aout_sacs": 595,
+    "ndobo_aout_cmds": 2,
+    "ndobo_aout_ca_m": 15.0,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 505,
+      "CONTRIBUTION CARBURANT": 2481.53
+    },
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 400,
+      "BELGO 5% CHAIR 50 Kg": 67,
+      "BELGO 10% CHAIR 50Kg": 48,
+      "BELGO 5% PONTE 50 Kg": 50,
+      "BELGO 10% PORC 50 Kg": 30,
+      "CONTRIBUTION CARBURANT": 2481.53
+    },
+    "ndobo_refs_juil": {
+      "T102": 505,
+      "CONTRIBUTION_CARBURANT": 2481.53
+    },
+    "ndobo_refs_aout": {
+      "T102": 400,
+      "C103": 67,
+      "C104": 48,
+      "C101": 50,
+      "C105": 30,
+      "CONTRIBUTION_CARBURANT": 2481.53
+    },
+    "ndobo_dates_juil": [
+      "02/07/2026"
+    ],
+    "ndobo_dates_aout": [
+      "08/08/2026",
+      "11/08/2026"
+    ]
+  },
+  {
+    "client": "CU2605-14465 -  FONDA CHRISTIAN CHO",
+    "s1_famla_sacs": 0.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 63.0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 73,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 1.3,
+    "ndobo_aout_sacs": 50,
+    "ndobo_aout_cmds": 1,
+    "ndobo_aout_ca_m": 1.1,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 70,
+      "BELGO 5% CHAIR 50 Kg": 3
+    },
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 40,
+      "BELGO 5% CHAIR 50 Kg": 5,
+      "BELGO 10% PORC 50 Kg": 5
+    },
+    "ndobo_refs_juil": {
+      "T102": 70,
+      "C103": 3
+    },
+    "ndobo_refs_aout": {
+      "T102": 40,
+      "C103": 5,
+      "C105": 5
+    },
+    "ndobo_dates_juil": [
+      "03/07/2026"
+    ],
+    "ndobo_dates_aout": [
+      "03/08/2026"
+    ]
+  },
+  {
+    "client": "CU2407-00266 -  EMMANUEL WIRSENYUY",
+    "s1_famla_sacs": 0.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0.0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 800,
+    "ndobo_juil_cmds": 2,
+    "ndobo_juil_ca_m": 17.4,
+    "ndobo_aout_sacs": 0,
+    "ndobo_aout_cmds": 0,
+    "ndobo_aout_ca_m": 0.0,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 600,
+      "BELGO 10% PORC 50 Kg": 200
+    },
+    "ndobo_products_aout": {},
+    "ndobo_refs_juil": {
+      "T102": 600,
+      "C105": 200
+    },
+    "ndobo_refs_aout": {},
+    "ndobo_dates_juil": [
+      "27/07/2026"
+    ],
+    "ndobo_dates_aout": []
+  },
+  {
+    "client": "CU2407-00288 -  LIDEL SARL",
+    "s1_famla_sacs": 101.0,
+    "s1_djeleng_sacs": 1098.0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 80.0,
+    "ndobo_juil_sacs": 100,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 1.8,
+    "ndobo_aout_sacs": 465,
+    "ndobo_aout_cmds": 2,
+    "ndobo_aout_ca_m": 10.9,
+    "ndobo_products_juil": {
+      "TOURTEAUX DE SOJA 50 KG": 100
+    },
+    "ndobo_products_aout": {
+      "TOURTEAUX DE SOJA 50 KG": 350,
+      "BELGO 10% CHAIR 50Kg": 55,
+      "BELGO 5% PONTE 50 Kg": 60
+    },
+    "ndobo_refs_juil": {
+      "T102": 100
+    },
+    "ndobo_refs_aout": {
+      "T102": 350,
+      "C104": 55,
+      "C101": 60
+    },
+    "ndobo_dates_juil": [
+      "17/07/2026"
+    ],
+    "ndobo_dates_aout": [
+      "01/08/2026"
+    ]
+  },
+  {
+    "client": "CU2407-00658 -  INGRID BANDJA",
+    "s1_famla_sacs": 41.0,
+    "s1_djeleng_sacs": 0,
+    "s1_mbouda_sacs": 0,
+    "ja_famla_sacs": 0.0,
+    "ndobo_juil_sacs": 58.0,
+    "ndobo_juil_cmds": 1,
+    "ndobo_juil_ca_m": 1.7,
+    "ndobo_aout_sacs": 0,
+    "ndobo_aout_cmds": 0,
+    "ndobo_aout_ca_m": 0.0,
+    "ndobo_products_juil": {
+      "BELGO 10% PORC 1KG": 1400,
+      "BELGO 10% PORC 50 Kg": 30
+    },
+    "ndobo_products_aout": {},
+    "ndobo_refs_juil": {
+      "C1053": 1400,
+      "C105": 30
+    },
+    "ndobo_refs_aout": {},
+    "ndobo_dates_juil": [
+      "21/07/2026"
+    ],
+    "ndobo_dates_aout": []
+  }
+]
