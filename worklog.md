@@ -309,3 +309,44 @@ Stage Summary:
   - Conclusion mi-aout: excellente dynamique, CONCENTRES depassent l'objectif de 13% (+194 t)
 - Outputs JSON: aout_mtd_20.json, soja_aout_20.json
 - Conclusion generale: Excellente dynamique mi-aout avancée. Les CONCENTRES depassent l'objectif de 13% (113% ajuste, +194 t d'avance) avec 11/14 agences au-dessus. FAMLA et NDOBO ont rattrape leur retard (FAMLA 80% -> 96%, NDOBO 68% -> 97%). L'effet prix sur les TOURTEAUX se tasse (moy/j remonte de 147 a 168 t/j). Le stock soja reste critique (rupture probable 07/09) — reapprovisionnement urgent a programmer avant le 27/08.
+
+---
+Task ID: aout-update-21
+Agent: main
+Task: Mettre a jour analyse zero achat, bundle soja-concentres et soja_aout avec la nouvelle extraction au 20/08/2026.
+
+Work Log:
+- Identifie la nouvelle extraction: `NJS GROUP ERP - Lignes de commandes + multicompany (20).xlsx` (modifiee 21/08 10:14, 7 568 lignes Livree).
+- Couverture: 01/08 au 21/08. Le 21/08 a 5 lignes Livree (extraction matinale) — exclue. Donnees utilisees: 01/08 au 20/08 (17 jours ouvres lun-sam, 65% du mois).
+- Metriques August MTD (au 20/08, 17j):
+  - TOURTEAUX: 2 819 t (moy 165,8 t/j, proj 4 312 t, obj 3 850 -> 112% ajuste, +462 t d'avance)
+  - CONCENTRES: 1 123 t (moy 66,0 t/j, proj 1 717 t, obj 1 534 -> 112% ajuste, +183 t d'avance)
+  - Bundle ratio: 2,5:1 (stable vs 19/08)
+  - Cross-sell: 96% bundle (1 355/1 417 cmds soja), 62 soja-only (4%)
+  - Dist ratios: 70% <= 3:1 (+1 pt), 28% 3-5:1, 2% >5:1
+  - Stock BEKOKO net: 71 230 sacs (3 561 t), rupture probable 09/09/2026 (20 jours, vs 19j au 19/08 — conso se stabilise)
+  - Churned: 307 clients S1 sans achat aout a 17j (vs 320 au 19/08, 993 au 04/08)
+  - Nouveaux clients: 130 (vs 125 au 19/08)
+  - Cross-sell: 503 clients soja S1 avec conc en aout (63%)
+- Performance CONCENTRES par region (au 20/08):
+  - Ouest: 722 / 605 = 119% (+116 t)
+  - Centre: 529 / 491 = 108% (+38 t)
+  - Littoral: 466 / 438 = 106% (+28 t)
+  - TOTAL: 1 717 / 1 535 = 112% (+183 t) — 10/14 agences au-dessus (vs 11/14 au 19/08 — leger tassement)
+  - DJELENG 180% (+89 t), PK11 150% (+24 t), MBOUDA 136% (+35 t) — top performers
+  - FAMLA 98% (-8 t), MESSASSI 98% (-5 t), NDOBO 94% (-13 t), NKOABANG 97% (-2 t) — sous l'objectif
+
+Stage Summary:
+- analyse_soja_aout.xlsx (5 feuilles, 16 Ko): au 20/08, moy/j soja 165,8 t (stable vs 19/08), rupture probable 09/09/2026
+- analyse_zero_achat.pdf (22 pages, 338 Ko): section 5.2 refraichie au 20/08
+  - 612 clients S1 actifs (42%), 130 nouveaux, 307 churned
+  - Projection CONCENTRES août: 1 717 t (112% ajuste, +183 t d'avance)
+  - Projection TOURTEAUX août: 4 312 t (112% ajuste)
+  - Bundle ratio 2,5:1, cross-sell 96%, 10/14 agences au-dessus
+  - Stock soja critique: rupture probable 09/09/2026
+- analyse_bundle_soja_concentres.pdf (17 pages, 90 Ko): section 8 refraichie au 20/08
+  - Tableau de bord global: ratio 2,5:1, 96% bundle, 1 355/1 417 cmds soja en bundle
+  - Distribution des ratios: 70% <= 3:1, 28% 3-5:1, 2% >5:1
+  - Conclusion mi-aout: excellente dynamique maintenue, CONCENTRES depassent l'objectif de 12% (+183 t)
+- Outputs JSON: aout_mtd_21.json, soja_aout_21.json
+- Conclusion generale: Excellente dynamique maintenue au 20/08. Les CONCENTRES depassent l'objectif de 12% (112% ajuste, +183 t d'avance) avec 10/14 agences au-dessus. Leger tassement vs 19/08 (113%, 11/14) — FAMLA, MESSASSI, NDOBO et NKOABANG sont passes sous l'objectif (correction normale). Le stock soja reste critique (rupture probable 09/09) — reapprovisionnement urgent a programmer avant le 29/08.

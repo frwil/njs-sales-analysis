@@ -6,7 +6,7 @@ import json
 import re
 
 # Sources
-AOUT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (19).xlsx"
+AOUT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (20).xlsx"
 JUIN_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx"  # juillet complet (for S1 + juillet comparison)
 JUILLET_FULL_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx"
 
@@ -120,22 +120,22 @@ def is_internal_client(client_str):
 
 
 # === Compute August metrics ===
-print("Loading August extraction (19).xlsx...")
+print("Loading August extraction (20).xlsx...")
 rows_aout, col_idx_aout = load_livree(AOUT_SRC)
 print(f"  {len(rows_aout)} Livree rows")
 
-# Filter only complete days (exclude 20/08 - matinal extraction with 67 rows)
+# Filter only complete days (exclude 21/08 - matinal extraction with 5 rows)
 aout_complete = []
 for r in rows_aout:
     d = parse_date(r[6])
-    if d == '20/08/2026':  # matinal - only 67 Livree rows
+    if d == '21/08/2026':  # matinal - only 5 Livree rows
         continue
     aout_complete.append(r)
-print(f"  {len(aout_complete)} Livree rows (excluding 20/08 matinal)")
+print(f"  {len(aout_complete)} Livree rows (excluding 21/08 matinal)")
 
-# Days elapsed (lun-sam) — Aug 1-19
+# Days elapsed (lun-sam) — Aug 1-20
 days_elapsed = 0
-for d in range(1, 20):  # 1-19
+for d in range(1, 21):  # 1-20
     dt = date(2026, 8, d)
     if dt.weekday() < 6:
         days_elapsed += 1
@@ -302,7 +302,7 @@ vente_soja_sacs_jour = vol_sacs['TOURTEAUX'] / days_elapsed
 vente_soja_sacs_sem = vente_soja_sacs_jour * 6
 conso_moy = vente_soja_sacs_sem + PROD_CONC['moy']
 jours_stock_moy = stock_eq_50_net / conso_moy * 7
-rupture_date = date(2026, 8, 19) + timedelta(days=int(jours_stock_moy))
+rupture_date = date(2026, 8, 20) + timedelta(days=int(jours_stock_moy))
 
 print(f"\n=== STOCK SOJA (BEKOKO au {STOCK_DATE}) ===")
 print(f"  Stock brut: {stock_eq_50_brut:.0f} sacs ({stock_t_brut:.0f} t)")
@@ -380,7 +380,7 @@ print(f"  Dont n'ont pas acheté conc en août: {len(s1_soja_no_conc_aout)}")
 
 # Save summary
 summary = {
-    'update_date': '19/08/2026',
+    'update_date': '20/08/2026',
     'days_elapsed': days_elapsed,
     'total_days_aug': total_days_aug,
     'pct_elapsed': round(pct_elapsed, 1),
@@ -437,6 +437,6 @@ summary = {
                        if c > 0 or s > 0]
 }
 
-with open('/home/z/my-project/scripts/aout_mtd_20.json', 'w', encoding='utf-8') as f:
+with open('/home/z/my-project/scripts/aout_mtd_21.json', 'w', encoding='utf-8') as f:
     json.dump(summary, f, indent=2, ensure_ascii=False, default=str)
-print(f"\nSaved summary: /home/z/my-project/scripts/aout_mtd_20.json")
+print(f"\nSaved summary: /home/z/my-project/scripts/aout_mtd_21.json")
