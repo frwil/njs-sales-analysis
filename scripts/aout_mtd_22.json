@@ -1,0 +1,197 @@
+{
+  "update_date": "21/08/2026",
+  "days_elapsed": 18,
+  "total_days_aug": 26,
+  "pct_elapsed": 69.2,
+  "volumes": {
+    "TOURTEAUX": {
+      "t": 2916.4,
+      "moy_t_j": 162.0,
+      "proj_t": 4213.0,
+      "obj_t": 3850,
+      "pct_obj": 109.0
+    },
+    "CONCENTRES": {
+      "t": 1172.3,
+      "moy_t_j": 65.1,
+      "proj_t": 1693.0,
+      "obj_t": 1534,
+      "pct_obj": 110.0
+    },
+    "INGREDIENTS": {
+      "t": 11.7,
+      "moy_t_j": 0.7,
+      "proj_t": 17.0,
+      "obj_t": 320,
+      "pct_obj": 5.0
+    },
+    "MAIS": {
+      "t": 0.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0,
+      "obj_t": 130,
+      "pct_obj": 0.0
+    },
+    "PREMIX": {
+      "t": 0.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0,
+      "obj_t": 0,
+      "pct_obj": 0.0
+    }
+  },
+  "bundle": {
+    "total_soja_sacs": 58328.0,
+    "total_conc_sacs": 23447.0,
+    "ratio": 2.5,
+    "cmds_soja": 1462,
+    "cmds_bundle": 1398,
+    "cmds_soja_only": 64,
+    "cmds_conc_only": 93,
+    "pct_bundle": 96.0,
+    "dist": {
+      "<= 3:1": 978,
+      "3-5:1": 395,
+      "5-10:1": 20,
+      "10-20:1": 2,
+      "> 20:1": 3
+    }
+  },
+  "stock": {
+    "date": "08/08/2026",
+    "brut_sacs": 80430.0,
+    "brut_t": 4021.0,
+    "net_sacs": 71230.0,
+    "net_t": 3561.0,
+    "spc_exclu": 9200,
+    "vente_sacs_jour": 3240.0,
+    "vente_sacs_sem": 19443.0,
+    "conso_moy_sacs_sem": 24343.0,
+    "jours_stock": 20,
+    "rupture_date": "10/09/2026"
+  },
+  "zero_achat": {
+    "s1_clients": 919,
+    "aout_clients": 754,
+    "churned": 299,
+    "new_aout": 134
+  },
+  "cross_sell": {
+    "s1_soja": 804,
+    "s1_conc": 703,
+    "aout_soja": 646,
+    "aout_conc": 647,
+    "s1_bundle": 661,
+    "aout_bundle": 627,
+    "soja_to_conc_aout": 509,
+    "soja_no_conc_aout": 295,
+    "pct_soja_with_conc_aout": 63.0
+  },
+  "conc_by_agence": [
+    {
+      "agence": "Ngaoundere",
+      "conc_t": 40975.0,
+      "soja_t": 82460.0,
+      "moy_t_j": 2276.4,
+      "proj_t": 59186.0
+    },
+    {
+      "agence": "Nkolbisson",
+      "conc_t": 31550.0,
+      "soja_t": 64450.0,
+      "moy_t_j": 1752.8,
+      "proj_t": 45572.0
+    },
+    {
+      "agence": "Messassi",
+      "conc_t": 137400.0,
+      "soja_t": 352650.0,
+      "moy_t_j": 7633.3,
+      "proj_t": 198467.0
+    },
+    {
+      "agence": "Mbouda",
+      "conc_t": 88600.0,
+      "soja_t": 198200.0,
+      "moy_t_j": 4922.2,
+      "proj_t": 127978.0
+    },
+    {
+      "agence": "Famla",
+      "conc_t": 257150.0,
+      "soja_t": 627850.0,
+      "moy_t_j": 14286.1,
+      "proj_t": 371439.0
+    },
+    {
+      "agence": "Nkongsamba",
+      "conc_t": 47515.0,
+      "soja_t": 117510.0,
+      "moy_t_j": 2639.7,
+      "proj_t": 68633.0
+    },
+    {
+      "agence": "Pk11",
+      "conc_t": 46750.0,
+      "soja_t": 131050.0,
+      "moy_t_j": 2597.2,
+      "proj_t": 67528.0
+    },
+    {
+      "agence": "Ndobo",
+      "conc_t": 123905.0,
+      "soja_t": 336950.0,
+      "moy_t_j": 6883.6,
+      "proj_t": 178974.0
+    },
+    {
+      "agence": "Nkoabang",
+      "conc_t": 32275.0,
+      "soja_t": 98300.0,
+      "moy_t_j": 1793.1,
+      "proj_t": 46619.0
+    },
+    {
+      "agence": "Bertoua",
+      "conc_t": 62150.0,
+      "soja_t": 152450.0,
+      "moy_t_j": 3452.8,
+      "proj_t": 89772.0
+    },
+    {
+      "agence": "Buea",
+      "conc_t": 40625.0,
+      "soja_t": 103900.0,
+      "moy_t_j": 2256.9,
+      "proj_t": 58681.0
+    },
+    {
+      "agence": "Ahala",
+      "conc_t": 65100.0,
+      "soja_t": 159900.0,
+      "moy_t_j": 3616.7,
+      "proj_t": 94033.0
+    },
+    {
+      "agence": "Djeleng",
+      "conc_t": 131800.0,
+      "soja_t": 340600.0,
+      "moy_t_j": 7322.2,
+      "proj_t": 190378.0
+    },
+    {
+      "agence": "Village",
+      "conc_t": 66550.0,
+      "soja_t": 136150.0,
+      "moy_t_j": 3697.2,
+      "proj_t": 96128.0
+    },
+    {
+      "agence": "AGENCE MAROUA",
+      "conc_t": 0,
+      "soja_t": 14000.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0
+    }
+  ]
+}
