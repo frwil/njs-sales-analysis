@@ -18,7 +18,7 @@ import datetime
 import copy
 import json
 
-SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (3) (18) (1).xlsx'
+SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (21).xlsx'
 # Pour août, pas d'extraction précédente — on compare vs juillet complet
 PREV_SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx'  # juillet complet (pour comparaison)
 OUT = '/home/z/my-project/download/analyse_soja_aout.xlsx'
@@ -852,7 +852,7 @@ def style_total_row(ws, row, n_cols):
 def write_t1(ws, t1, t1_prev):
     ws['A1'] = 'TABLEAU 1 - Moyenne journaliere SOJA août par agence/region'
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
-    ws['A2'] = f"01/08 au {t1['end_date']} ({t1['days_elapsed']}j). Livree. lun-sam. Mise a jour 26/08/2026."
+    ws['A2'] = f"01/08 au {t1['end_date']} ({t1['days_elapsed']}j). Livree. lun-sam. Mise a jour 27/08/2026."
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
     headers = ['Agence', 'Region', 'Total soja (t)', 'Moy/jour (t)', 'Evolution vs 31/07']
@@ -1176,12 +1176,12 @@ def main():
 
     # Compute tables for new (au 31/07 — bilan complet définitif)
     # T1: aggregate 1-31/07 (27 days lun-sam — mois complet)
-    t1_new = compute_t1(rows_new, '25/08/2026', col_idx=col_idx_new)
-    # T2/T3: use 25/08 (last complete day with 390 Livree rows)
-    t2_new = compute_t2(rows_new, '25/08/2026', col_idx=col_idx_new)
-    t3_new = compute_t3(rows_new, '25/08/2026', col_idx=col_idx_new)
+    t1_new = compute_t1(rows_new, '26/08/2026', col_idx=col_idx_new)
+    # T2/T3: use 26/08 (last complete day with 288 Livree rows)
+    t2_new = compute_t2(rows_new, '26/08/2026', col_idx=col_idx_new)
+    t3_new = compute_t3(rows_new, '26/08/2026', col_idx=col_idx_new)
     # T4: NOUVELLE MÉTHODE — stock BEKOKO + exclusion SPC + production concentrés
-    t4_new = compute_t4_bekoko(rows_new, col_idx=col_idx_new, end_date_str='25/08/2026')
+    t4_new = compute_t4_bekoko(rows_new, col_idx=col_idx_new, end_date_str='26/08/2026')
 
     # Compute tables for previous (extraction au 31/07 matinale — used 30/07 for T2/T3)
     t1_prev = compute_t1(rows_prev, '31/07/2026', col_idx=col_idx_prev)
@@ -1208,17 +1208,17 @@ def main():
     ws1 = wb.create_sheet('T1 - Moy jour soja par agence')
     write_t1(ws1, t1_new, t1_prev)
 
-    ws2 = wb.create_sheet('T2 - Commandes soja 25-08')
+    ws2 = wb.create_sheet('T2 - Commandes soja 26-08')
     write_t2(ws2, t2_new, t2_prev)
 
-    ws3 = wb.create_sheet('T3 - Soja-only 25-08')
+    ws3 = wb.create_sheet('T3 - Soja-only 26-08')
     write_t3(ws3, t3_new, t3_prev)
 
     ws4 = wb.create_sheet('T4 - Stock soja et rupture')
     write_t4_bekoko(ws4, t4_new)
 
     # T5: tendance journalière soja + concentrés avec graphiques
-    t5_new = compute_t5_trend(rows_new, end_date_str='25/08/2026', col_idx=col_idx_new)
+    t5_new = compute_t5_trend(rows_new, end_date_str='26/08/2026', col_idx=col_idx_new)
     ws5 = wb.create_sheet('T5 - Tendance Août')
     write_t5(ws5, t5_new)
 
@@ -1227,7 +1227,7 @@ def main():
 
     # Also save a summary JSON for traceability
     summary = {
-        'update_date': '25/08/2026',
+        'update_date': '26/08/2026',
         'source_file': SRC.split('/')[-1],
         'rows_livree_new': len(rows_new),
         'rows_livree_prev': len(rows_prev),
@@ -1243,9 +1243,9 @@ def main():
         't4_prev': {},
         'price_hike': {'date': '23/07/2026', 'amount': '+2 000 XAF/sac 50kg'},
     }
-    with open('/home/z/my-project/scripts/soja_aout_26.json', 'w', encoding='utf-8') as f:
+    with open('/home/z/my-project/scripts/soja_aout_27.json', 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
-    print('Summary saved: /home/z/my-project/scripts/soja_aout_26.json')
+    print('Summary saved: /home/z/my-project/scripts/soja_aout_27.json')
 
 
 if __name__ == '__main__':
