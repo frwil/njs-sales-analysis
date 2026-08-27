@@ -1,0 +1,275 @@
+{
+  "data_period": "2025-01-02 to 2026-08-26",
+  "total_records": 95819,
+  "total_tonnes": 113810.0,
+  "total_ca_ttc_m": 48737.4,
+  "n_products": 26,
+  "n_agences": 14,
+  "n_regions": 3,
+  "n_clients": 2075,
+  "stats_by_family": {
+    "ALIMENT_COMPLET": {
+      "tonnes_total": 942.4,
+      "tonnes_moy_mois": 47.1,
+      "n_cmdes": 5640,
+      "n_clients": 947,
+      "n_agences": 14,
+      "n_produits": 2
+    },
+    "CONCENTRES": {
+      "tonnes_total": 29072.6,
+      "tonnes_moy_mois": 1453.6,
+      "n_cmdes": 46567,
+      "n_clients": 1495,
+      "n_agences": 14,
+      "n_produits": 12
+    },
+    "INGREDIENTS": {
+      "tonnes_total": 263.8,
+      "tonnes_moy_mois": 13.2,
+      "n_cmdes": 6225,
+      "n_clients": 934,
+      "n_agences": 14,
+      "n_produits": 7
+    },
+    "MAIS": {
+      "tonnes_total": 210.0,
+      "tonnes_moy_mois": 10.5,
+      "n_cmdes": 8,
+      "n_clients": 3,
+      "n_agences": 1,
+      "n_produits": 1
+    },
+    "TOURTEAUX": {
+      "tonnes_total": 83321.2,
+      "tonnes_moy_mois": 4166.1,
+      "n_cmdes": 37379,
+      "n_clients": 1924,
+      "n_agences": 14,
+      "n_produits": 4
+    }
+  },
+  "seasonal_index": {
+    "ALIMENT_COMPLET": {
+      "1": 1.18,
+      "2": 0.45,
+      "3": 0.57,
+      "4": 0.94,
+      "5": 1.19,
+      "6": 0.74,
+      "7": 0.85,
+      "8": 1.03,
+      "9": 1.58,
+      "10": 1.1,
+      "11": 1.32,
+      "12": 1.04
+    },
+    "CONCENTRES": {
+      "1": 1.04,
+      "2": 0.92,
+      "3": 0.95,
+      "4": 1.0,
+      "5": 0.97,
+      "6": 0.96,
+      "7": 1.05,
+      "8": 0.9,
+      "9": 0.93,
+      "10": 0.95,
+      "11": 1.15,
+      "12": 1.18
+    },
+    "INGREDIENTS": {
+      "1": 1.18,
+      "2": 1.08,
+      "3": 1.11,
+      "4": 0.86,
+      "5": 0.68,
+      "6": 0.74,
+      "7": 0.88,
+      "8": 1.09,
+      "9": 0.97,
+      "10": 1.24,
+      "11": 0.98,
+      "12": 1.19
+    },
+    "MAIS": {
+      "1": 2.0,
+      "2": 0.0,
+      "3": 3.43,
+      "4": 5.43,
+      "5": 1.14,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0,
+      "11": 0.0,
+      "12": 0.0
+    },
+    "TOURTEAUX": {
+      "1": 0.81,
+      "2": 0.84,
+      "3": 0.79,
+      "4": 0.95,
+      "5": 0.84,
+      "6": 0.72,
+      "7": 0.72,
+      "8": 0.77,
+      "9": 0.81,
+      "10": 1.86,
+      "11": 1.25,
+      "12": 1.65
+    }
+  },
+  "q4_2025_share_pct": {
+    "ALIMENT_COMPLET": 42.0,
+    "CONCENTRES": 35.2,
+    "INGREDIENTS": 36.6,
+    "MAIS": NaN,
+    "TOURTEAUX": 46.3
+  },
+  "top_10_agences": [
+    {
+      "agence": "Famla",
+      "region": "Ouest",
+      "tonnes": 34443.897
+    },
+    {
+      "agence": "Ndobo",
+      "region": "Littoral",
+      "tonnes": 14958.291
+    },
+    {
+      "agence": "Messassi",
+      "region": "Centre",
+      "tonnes": 10774.768
+    },
+    {
+      "agence": "Djeleng",
+      "region": "Ouest",
+      "tonnes": 9779.02
+    },
+    {
+      "agence": "Mbouda",
+      "region": "Ouest",
+      "tonnes": 6566.655
+    },
+    {
+      "agence": "Village",
+      "region": "Littoral",
+      "tonnes": 6192.645
+    },
+    {
+      "agence": "Ahala",
+      "region": "Centre",
+      "tonnes": 6006.213
+    },
+    {
+      "agence": "Nkongsamba",
+      "region": "Littoral",
+      "tonnes": 5199.581
+    },
+    {
+      "agence": "Bertoua",
+      "region": "Centre",
+      "tonnes": 5004.201
+    },
+    {
+      "agence": "Buea",
+      "region": "Littoral",
+      "tonnes": 4591.031
+    }
+  ],
+  "top_15_produits": [
+    {
+      "ref": "T102",
+      "description": "TOURTEAUX DE SOJA 50 KG",
+      "family": "TOURTEAUX",
+      "tonnes": 83305.15
+    },
+    {
+      "ref": "C104",
+      "description": "BELGO 10% CHAIR 50Kg",
+      "family": "CONCENTRES",
+      "tonnes": 14404.0
+    },
+    {
+      "ref": "C101",
+      "description": "BELGO 5% PONTE 50 Kg",
+      "family": "CONCENTRES",
+      "tonnes": 5616.4
+    },
+    {
+      "ref": "C103",
+      "description": "BELGO 5% CHAIR 50 Kg",
+      "family": "CONCENTRES",
+      "tonnes": 4487.2
+    },
+    {
+      "ref": "C105",
+      "description": "BELGO 10% PORC 50 Kg",
+      "family": "CONCENTRES",
+      "tonnes": 4193.4
+    },
+    {
+      "ref": "CB100",
+      "description": "CHICK BOOSTER 25 Kg",
+      "family": "ALIMENT_COMPLET",
+      "tonnes": 499.825
+    },
+    {
+      "ref": "CB200",
+      "description": "PIGLET BOOSTER 25Kg",
+      "family": "ALIMENT_COMPLET",
+      "tonnes": 442.575
+    },
+    {
+      "ref": "M1051",
+      "description": "MAIS",
+      "family": "MAIS",
+      "tonnes": 209.95
+    },
+    {
+      "ref": "E101",
+      "description": "BELGOTOX 25Kg",
+      "family": "INGREDIENTS",
+      "tonnes": 180.65
+    },
+    {
+      "ref": "C102",
+      "description": "BELGO 10% PONTE 50 Kg",
+      "family": "CONCENTRES",
+      "tonnes": 153.7
+    },
+    {
+      "ref": "C1054",
+      "description": "BELGO 10% PORC 5Kg",
+      "family": "CONCENTRES",
+      "tonnes": 99.6
+    },
+    {
+      "ref": "C1053",
+      "description": "BELGO 10% PORC 1KG",
+      "family": "CONCENTRES",
+      "tonnes": 48.087
+    },
+    {
+      "ref": "B100",
+      "description": "BICARBONATE SODIUM 25 Kg",
+      "family": "INGREDIENTS",
+      "tonnes": 42.2
+    },
+    {
+      "ref": "C1043",
+      "description": "BELGO 10% CHAIR 5Kg",
+      "family": "CONCENTRES",
+      "tonnes": 36.615
+    },
+    {
+      "ref": "E1011",
+      "description": "BELGOTOX 1Kg",
+      "family": "INGREDIENTS",
+      "tonnes": 18.647000000000002
+    }
+  ]
+}

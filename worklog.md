@@ -518,3 +518,40 @@ Stage Summary:
   - Conclusion mi-aout: dynamique maintenue au-dessus de l'objectif, CONCENTRES depassent l'objectif de 9% (+144 t)
 - Outputs JSON: aout_mtd_27.json, soja_aout_27.json
 - Conclusion generale: Dynamique maintenue au 26/08. Les CONCENTRES depassent l'objectif de 9% (109% ajuste, +144 t d'avance) avec 7/14 agences au-dessus. Le bundle ratio se maintient a 2,4:1. Le stock soja reste critique (rupture probable 16/09) — reapprovisionnement a programmer avant le 03/09.
+
+---
+Task ID: forecast-q4-2026-pace
+Agent: main
+Task: Forecast Q4 2026 (sept-dec) en volumes et valeurs avec methode PACE. Production de tous les livrables (guide methodologique, document strategique PACE, matrice RACI, resume executif, proposition de projet, Excel forecast, notebook Jupyter, graphiques).
+
+Work Log:
+- Phase PREPARE: Construction dataset consolide (95 819 records Jan 2025 - 26 aout 2026)
+  - Sources: 86d96135 (2025), ventes janv a juin 2026, NJS ERP (9) juillet, NJS ERP (21) aout
+  - Filtrage: etat Livree uniquement, exclusion clients internes (SPC/PDC/COMPTOIR/EMANA)
+  - Mapping agences unifie (formats 2025 court + 2026 long)
+  - Calcul prix moyens Option A (extrapolation CA/quantite, precision ~90%)
+  - 26 refs produits, 14 agences, 3 regions
+- Phase ANALYZE (AED):
+  - Stats descriptives: 109 045 t total, 51 372 M FCFA CA
+  - Saisonnalite mensuelle (base 2025): Q4 = 35-46% du volume annuel
+  - Top produits: T102 (soja) = 76% du volume, C104 = 13%, C101 = 5%
+  - Top agences: FAMLA 31.6%, NDOBO 13.7%, MESSASSI 9.9%
+  - 6 graphiques AED generes
+- Phase CONSTRUCT:
+  - Strategie: 13 modeles Prophet famille × region, desagreges en produit × agence
+  - Configuration Prophet: yearly_seasonality=True, multiplicative, changepoint=0.05, interval=0.8
+  - 4 scenarios soja: S1 rupture (7 291 t, 4 656 M), S2 reappro 50% (32 207 t, 14 922 M), S3 reappro 100% (37 988 t, 17 304 M), S4 baisse prix (41 067 t, 17 168 M)
+  - 4 196 forecasts detailles generes (produit × agence × mois × scenario)
+- Phase EXECUTE:
+  - Excel forecast multi-feuilles (9 feuilles, 231 KB)
+  - Notebook Jupyter commente (5 sections PACE)
+  - 13 graphiques de visualisation
+  - 5 PDFs: resume executif (2p), proposition projet (7p), matrice RACI (3p), document strategique PACE (15p), guide methodologique (30+p)
+
+Stage Summary:
+- 9 livrables produits totalisant ~1.4 MB
+- Forecast Q4 2026 scenario reference (S3): 37 988 t, 17 304 M FCFA
+- Sensibilite critique au reappro soja: ecart S1-S3 = 12 648 M FCFA (73% du CA)
+- Bundle ratio 2.4:1 atteint en aout (vs 3.5:1 juillet) - a maintenir Q4
+- Top 5 agences CA Q4: FAMLA 3 420 M, NDOBO 1 870 M, DJELENG 1 230 M, MESSASSI 1 145 M, MBOUDA 870 M
+- Recommandation principale: reappro soja urgent avant 15/09/2026 (80 000 sacs min)

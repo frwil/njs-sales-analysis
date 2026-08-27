@@ -1,0 +1,22 @@
+{
+  "total_records": 95819,
+  "date_min": "2025-01-02 00:00:00",
+  "date_max": "2026-08-26 00:00:00",
+  "by_source": {
+    "2025": 52818,
+    "S1_2026": 31458,
+    "Juil_2026": 6410,
+    "Aout_2026": 5133
+  },
+  "by_family": {
+    "CONCENTRES": 46567,
+    "TOURTEAUX": 37379,
+    "INGREDIENTS": 6225,
+    "ALIMENT_COMPLET": 5640,
+    "MAIS": 8
+  },
+  "n_products": 26,
+  "n_agences": 14,
+  "n_regions": 3,
+  "n_clients": 2075
+}
