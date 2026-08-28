@@ -13,19 +13,12 @@
     "Buea"
   ],
   "spc_cat_mix": {
-    "CHAIR": 77.0,
-    "PORC": 13.4,
-    "PONTE": 4.1,
-    "LAPIN": 3.2,
-    "POISSON": 0.8,
-    "CHEVAL": 1.4,
-    "CHIEN": 0.1
+    "CHAIR": 95.2,
+    "PONTE": 4.8
   },
   "belgocam_mix": {
-    "CHAIR": 65.2,
-    "PONTE": 19.8,
-    "PORC": 15.0,
-    "AUTRE": 0.0
+    "CHAIR": 76.7,
+    "PONTE": 23.3
   },
-  "total_orders_lines": 1404
+  "total_orders_lines": 546
 }
