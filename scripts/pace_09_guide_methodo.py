@@ -156,7 +156,7 @@ story.append(Paragraph(
     BODY))
 
 story.append(Paragraph(
-    "Le portefeuille produits de BELGOCAM comprend 5 familles principales :",
+    "Le portefeuille produits de BELGOCAM comprend 6 familles principales :",
     BODY))
 fam_intro = [
     ["Famille", "Description", "Produits phares", "Part du volume"],
@@ -250,9 +250,9 @@ story.append(code_block("""forecast_q4_2026/
 │   ├── pace_07_pdf_batch1.py         # PDFs batch 1
 │   ├── pace_08_pdf_batch2.py         # PDFs batch 2
 │   └── pace_09_guide_methodo.py      # Ce guide PDF
-├── dataset_consolide.csv             # Dataset final (95 819 lignes)
+├── dataset_consolide.csv             # Dataset final (115 086 lignes)
 ├── prix_forecast.json                # Prix par scénario
-├── forecast_q4_2026.csv              # Forecast détaillé (4 196 lignes)
+├── forecast_q4_2026.csv              # Forecast détaillé (2 404 lignes)
 ├── aed_summary.json                  # Synthèse AED
 └── aed_charts/                       # Graphiques AED
     ├── 01_volumes_mensuels_famille.png
@@ -331,7 +331,7 @@ story.append(Paragraph(
 
 states_data = [
     ["État", "Count (estimé)", "Inclure", "Raison"],
-    ["Livrée", "95 819", "Oui", "Vente effectuée et facturée"],
+    ["Livrée", "115 086", "Oui", "Vente effectuée et facturée"],
     ["Validée", "~1 500", "Non", "Commande validée mais non encore livrée"],
     ["En cours", "~800", "Non", "Commande en cours de traitement"],
     ["Annulée", "~500", "Non", "Commande annulée par client ou BELGOCAM"],
@@ -464,15 +464,15 @@ story.append(Paragraph(
 
 story.append(Paragraph("7.1 Statistiques descriptives globales", H3))
 story.append(Paragraph(
-    "Le dataset consolidé contient <b>95 819 enregistrements</b> sur 20 mois (janvier 2025 - août 2026), "
+    "Le dataset consolidé contient <b>115 086 enregistrements</b> sur 20 mois (janvier 2025 - août 2026), "
     "représentant <b>109 045 tonnes</b> de produits vendus pour un CA total de <b>51 372 M FCFA</b>. "
-    "Le dataset couvre 26 références produits, 14 agences, 3 régions et plus de 1 500 clients uniques.",
+    "Le dataset couvre 69 références produits, 14 agences, 3 régions et plus de 1 500 clients uniques.",
     BODY))
 
 global_stats = [
     ["Indicateur", "Valeur"],
     ["Période couverte", "Janvier 2025 - 26 août 2026 (20 mois)"],
-    ["Total enregistrements", "95 819"],
+    ["Total enregistrements", "115 086"],
     ["Total volume", "109 045 tonnes"],
     ["Total CA TTC", "51 372 M FCFA"],
     ["Nb références produits", "26"],
@@ -645,8 +645,8 @@ story.append(Paragraph(
     "nous avons opté pour une <b>stratégie en 2 niveaux</b> :",
     BODY))
 story.append(Paragraph(
-    "<b>Niveau 1</b> : Entraînement de <b>13 modèles Prophet</b> au niveau famille × région "
-    "(5 familles × 3 régions, moins les combinaisons sans données). "
+    "<b>Niveau 1</b> : Entraînement de <b>13 modèles famille × région Prophet</b> au niveau famille × région "
+    "(6 familles × 3 régions, moins les combinaisons sans données). "
     "Chaque modèle est entraîné sur 20 mois d'historique (janvier 2025 - août 2026).",
     BODY))
 story.append(Paragraph(
@@ -769,7 +769,7 @@ scenarios_detail = [
     ["Scénario", "Hypothèse", "Volume Q4 (t)", "CA Q4 (M FCFA)"],
     ["S1 - Rupture totale", "Aucun réappro, ventes soja = 0 après 16/09", "7 291", "4 656"],
     ["S2 - Réappro 50%", "40 000 sacs au 01/10/2026", "32 207", "14 922"],
-    ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (référence)", "37 988", "17 304"],
+    ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (scénario retenu)", "37 780", "17 438"],
     ["S4 - Baisse prix", "S3 + baisse prix soja -10%", "41 067", "17 168"],
 ]
 story.append(make_table(scenarios_detail, col_widths=[3.5*cm, 6.5*cm, 3*cm, 3*cm], font_size=9))
@@ -818,7 +818,7 @@ story.append(HRFlowable(width="100%", thickness=2, color=GOLD))
 
 story.append(Paragraph("14. Production des livrables", H2))
 story.append(Paragraph(
-    "La phase EXECUTE consiste à transformer le forecast technique (fichier CSV avec 4 196 lignes) "
+    "La phase EXECUTE consiste à transformer le forecast technique (fichier CSV avec 2 404 lignes) "
     "en livrables utilisables par les différents acteurs de BELGOCAM. Neuf livrables sont produits :",
     BODY))
 
@@ -847,9 +847,9 @@ excel_feuilles = [
     ["2. Par Famille", "Détail famille × mois × scénario", "~100", "Analyse par produit"],
     ["3. Par Région", "Détail région × mois × scénario", "~60", "Analyse géographique"],
     ["4. Par Agence", "Top 14 agences × scénario", "~70", "Pilotage agences"],
-    ["5. Par Produit", "26 références × scénario", "~120", "Analyse produit"],
+    ["5. Par Produit", "69 références × scénario", "~120", "Analyse produit"],
     ["6. Par Mois", "Évolution sept-déc par famille", "~30", "Tendance mensuelle"],
-    ["7. Détail complet", "Produit × agence × mois × scénario", "4 196", "Données brutes"],
+    ["7. Détail complet", "Produit × agence × mois × scénario", "2 404", "Données brutes"],
     ["8. Prix utilisés", "Prix par produit (2 scénarios)", "26", "Transparence"],
     ["9. Hypothèses", "Tous les paramètres", "~50", "Audit"],
 ]
@@ -929,7 +929,7 @@ story.append(HRFlowable(width="100%", thickness=2, color=GOLD))
 
 story.append(Paragraph("Annexe A - Référence produits et agences", H2))
 
-story.append(Paragraph("A.1 Références produits (26 produits)", H3))
+story.append(Paragraph("A.1 Références produits (69 produits)", H3))
 produits_ref = [
     ["Réf", "Description", "Famille", "Poids unitaire (kg)"],
     ["T102", "TOURTEAUX DE SOJA 50 KG", "TOURTEAUX", "50"],
@@ -984,7 +984,7 @@ scripts_ref = [
     ["pace_01_prepare_dataset.py", "PREPARE", "Consolidation 4 sources ERP", "~250"],
     ["pace_02_prix_moyens.py", "PREPARE", "Calcul prix Option A", "~100"],
     ["pace_03_aed.py", "ANALYZE", "AED et graphiques", "~200"],
-    ["pace_04_prophet_forecast.py", "CONSTRUCT", "13 modèles Prophet + 4 scénarios", "~250"],
+    ["pace_04_prophet_forecast.py", "CONSTRUCT", "13 modèles famille × région Prophet + 4 scénarios", "~250"],
     ["pace_05_excel.py", "EXECUTE", "Excel 9 feuilles", "~300"],
     ["pace_06_charts.py", "EXECUTE", "13 graphiques de visualisation", "~150"],
     ["pace_07_pdf_batch1.py", "EXECUTE", "PDFs résumé + proposition", "~250"],
@@ -1033,7 +1033,7 @@ story.append(Paragraph(
     "Le modèle <b>Prophet</b> s'est révélé particulièrement adapté au contexte BELGOCAM : "
     "gestion automatique de la saisonnalité annuelle forte (Q4 = 35-46% du volume), "
     "robustesse aux données manquantes, interprétabilité des résultats, et rapidité d'entraînement. "
-    "La stratégie de modélisation en 2 niveaux (13 modèles famille × région, "
+    "La stratégie de modélisation en 2 niveaux (13 modèles famille × région famille × région, "
     "désagrégés en produit × agence) a permis de réduire le temps de calcul de 30+ minutes à moins de 2 minutes.",
     BODY))
 

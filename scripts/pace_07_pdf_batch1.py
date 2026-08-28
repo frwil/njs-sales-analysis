@@ -197,12 +197,12 @@ story.append(Paragraph(
 
 story.append(Paragraph("<b>Méthodologie</b>", H3))
 story.append(Paragraph(
-    "Le forecast repose sur <b>95 819 enregistrements de ventes</b> couvrant la période janvier 2025 - 26 août 2026, "
-    "incluant 5 familles de produits (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, MAÏS, ALIMENT COMPLET), "
-    "14 agences et 3 régions (Ouest, Centre, Littoral). "
-    "Le modèle <b>Prophet</b> a été entraîné au niveau famille × région (13 modèles), "
-    "puis désagrégé par produit × agence selon les parts historiques. "
-    "Quatre scénarios ont été modélisés pour tenir compte de l'incertitude sur le réapprovisionnement soja.",
+    "Le forecast repose sur <b>115 086 enregistrements de ventes</b> couvrant la période janvier 2025 - 26 août 2026, "
+    "incluant 6 familles de produits (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT COMPLET, MATERIEL ÉLEVAGE, PREMIX), "
+    "69 références produits, 14 agences et 3 régions (Ouest, Centre, Littoral). "
+    "Le modèle <b>Prophet</b> a été entraîné au niveau famille × région pour les 4 familles alimentaires, "
+    "complété par une extrapolation pour le matériel d'élevage et les prémix. "
+    "Le scénario S3 (réappro 100%) a été retenu comme scénario de référence.",
     BODY))
 
 story.append(Paragraph("<b>Résultats clés par scénario</b>", H3))
@@ -211,7 +211,7 @@ synth_data = [
     ["Scénario", "Description", "Volume Q4 (t)", "CA Q4 (M FCFA)", "vs S3"],
     ["S1 - Rupture totale", "Ventes soja = 0 après 16/09/2026", "7 291", "4 656", "-73%"],
     ["S2 - Réappro 50%", "40 000 sacs au 01/10/2026", "32 207", "14 922", "-14%"],
-    ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (référence)", "37 988", "17 304", "—"],
+    ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (scénario retenu)", "37 780", "17 438", "—"],
     ["S4 - Baisse prix", "S3 + baisse prix soja -10%", "41 067", "17 168", "-1%"],
 ]
 story.append(make_table(synth_data, col_widths=[3.2*cm, 5.8*cm, 2.8*cm, 3.2*cm, 2*cm], font_size=8))
@@ -219,8 +219,8 @@ story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Recommandations principales</b>", H3))
 recos = [
-    "<b>Réapprovisionnement soja urgent</b> — Commander 80 000 sacs minimum avant le 15/09/2026 pour éviter le scénario S1 (perte de 12 700 M FCFA vs S3).",
-    "<b>Planification commerciale Q4</b> — Utiliser le scénario S3 (37 988 t, 17 304 M FCFA) comme référence pour les objectifs commerciaux.",
+    "<b>Réapprovisionnement soja urgent</b> — Commander 80 000 sacs minimum avant le 15/09/2026 pour éviter le scénario S1 (perte de 12 782 M FCFA vs S3).",
+    "<b>Planification commerciale Q4</b> — Utiliser le scénario S3 (37 780 t, 17 438 M FCFA) comme référence pour les objectifs commerciaux.",
     "<b>Maintien du plan d'action bundle</b> — Le ratio soja:concentrés atteint 2,4:1 en août 2026 (vs 3,5:1 en juillet), à maintenir en Q4.",
     "<b>Surveillance FAMLA et MESSASSI</b> — Ces deux agences sous-performent en août (96% et 97% de l'objectif), à relancer en septembre.",
     "<b>Mise à jour mensuelle</b> — Actualiser le forecast avec les nouvelles extractions ERP pour ajuster les projections.",
@@ -248,13 +248,13 @@ story.append(Paragraph("<b>Détail des résultats par famille (Scénario S3 - R�
 
 fam_data = [
     ["Famille", "Sept (t)", "Oct (t)", "Nov (t)", "Déc (t)", "Total Q4 (t)", "CA (M FCFA)"],
-    ["TOURTEAUX", "2 200", "3 400", "6 000", "5 200", "16 800", "6 923"],
-    ["CONCENTRÉS", "1 420", "1 580", "1 600", "1 600", "6 200", "4 014"],
-    ["INGRÉDIENTS", "16", "20", "20", "19", "75", "81"],
-    ["ALIMENT COMPLET", "95", "95", "95", "95", "380", "311"],
-    ["MATERIEL ELEVAGE", "—", "—", "—", "—", "—", "189"],
+    ["TOURTEAUX", "422", "4 668", "14 201", "11 707", "30 998", "12 772"],
+    ["CONCENTRÉS", "805", "2 183", "1 208", "1 928", "6 124", "4 083"],
+    ["INGRÉDIENTS", "7", "69", "106", "111", "293", "62"],
+    ["ALIMENT COMPLET", "107", "87", "72", "100", "365", "286"],
+    ["MATERIEL ÉLEVAGE", "—", "—", "—", "—", "—", "189"],
     ["PREMIX", "—", "—", "—", "—", "—", "48"],
-    ["TOTAL", "3 731", "5 095", "7 715", "6 914", "23 455", "11 566"],
+    ["TOTAL", "1 340", "7 008", "15 587", "13 845", "37 780", "17 438"],
 ]
 story.append(make_table(fam_data, col_widths=[3.5*cm, 1.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.5*cm, 2.5*cm], font_size=8))
 
@@ -263,11 +263,11 @@ story.append(Paragraph("<b>Top 5 agences par CA Q4 2026 (Scénario S3)</b>", H3)
 
 top_ag_data = [
     ["Rang", "Agence", "Région", "Volume (t)", "CA (M FCFA)", "Part CA"],
-    ["1", "FAMLA", "Ouest", "5 850", "3 420", "19.8%"],
-    ["2", "NDOBO", "Littoral", "3 200", "1 870", "10.8%"],
-    ["3", "DJELENG", "Ouest", "2 100", "1 230", "7.1%"],
-    ["4", "MESSASSI", "Centre", "1 950", "1 145", "6.6%"],
-    ["5", "MBOUDA", "Ouest", "1 480", "870", "5.0%"],
+    ["1", "FAMLA", "Ouest", "9 108", "4 259", "24.4%"],
+    ["2", "NDOBO", "Littoral", "6 371", "2 807", "16.1%"],
+    ["3", "MESSASSI", "Centre", "3 867", "1 769", "10.1%"],
+    ["4", "DJELENG", "Ouest", "2 565", "1 204", "6.9%"],
+    ["5", "VILLAGE", "Littoral", "2 470", "1 110", "6.4%"],
 ]
 story.append(make_table(top_ag_data, col_widths=[1.5*cm, 3*cm, 2.5*cm, 3*cm, 4*cm, 3*cm], font_size=8))
 
@@ -279,8 +279,8 @@ story.extend(add_image(f"{CHARTS_DIR}/07_volume_par_scenario.png", width=14*cm,
 story.append(Paragraph("<b>Conclusion</b>", H3))
 story.append(Paragraph(
     "Le forecast Q4 2026 présente une <b>forte sensibilité au réapprovisionnement soja</b>. "
-    "Le scénario de référence (S3 - réappro 100%) projette <b>37 988 tonnes</b> pour un CA de <b>17 304 M FCFA</b>, "
-    "soit +12% vs S1 (rupture totale). La stratégie recommandée est donc de sécuriser le réapprovisionnement soja "
+    "Le scénario retenu (S3 - réappro 100%) projette <b>37 780 tonnes</b> pour un CA de <b>17 438 M FCFA</b>, "
+    "soit +274% vs S1 (rupture totale, 4 656 M FCFA). La stratégie recommandée est donc de sécuriser le réapprovisionnement soja "
     "avant le 15/09/2026 et de planifier les objectifs commerciaux Q4 sur le scénario S3. "
     "Le plan d'action bundle, qui a permis d'atteindre un ratio soja:concentrés de 2,4:1 en août "
     "(vs 3,5:1 en juillet), doit être maintenu pour optimiser la performance CONCENTRÉS en Q4.",
