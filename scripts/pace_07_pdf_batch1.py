@@ -325,7 +325,10 @@ story.append(Paragraph(
 story.append(Paragraph(
     "Ce projet vise à combler ce besoin en produisant un forecast désagrégé "
     "(produit × agence × mois) pour les 4 mois à venir, en volumes et en valeurs, "
-    "selon une méthodologie rigoureuse (PACE) et un modèle prédictif éprouvé (Prophet).",
+    "selon une méthodologie rigoureuse (PACE) et un modèle prédictif éprouvé (Prophet). "
+    "Le forecast couvre 6 familles de produits (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, "
+    "ALIMENT COMPLET, MATERIEL ÉLEVAGE incluant les alvéoles, et PREMIX), "
+    "soit 69 références produits, et exclut le Maïs (produit opportuniste hors portefeuille).",
     BODY))
 
 story.append(Paragraph("2. Objectifs du projet", H1))
@@ -333,15 +336,19 @@ story.append(Paragraph("<b>Objectif principal</b>", H3))
 story.append(Paragraph(
     "Produire un forecast des volumes de ventes et du chiffre d'affaires pour la période "
     "septembre - décembre 2026, désagrégé par produit, famille, agence et région, "
-    "en tenant compte de la situation critique du stock soja.",
+    "en tenant compte de la situation critique du stock soja. "
+    "Le forecast couvre 6 familles (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT COMPLET, "
+    "MATERIEL ÉLEVAGE, PREMIX) et exclut le Maïs et les produits opportunistes.",
     BODY))
 
 story.append(Paragraph("<b>Objectifs spécifiques</b>", H3))
 objs = [
-    "Modéliser la tendance et la saisonnalité mensuelles des ventes par famille × région via Prophet",
+    "Modéliser la tendance et la saisonnalité mensuelles des ventes par famille × région via Prophet (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT COMPLET) et extrapolation (MATERIEL ÉLEVAGE, PREMIX)",
     "Désagréger le forecast au niveau produit × agence en utilisant les parts historiques",
-    "Modéliser 4 scénarios de réapprovisionnement soja pour évaluer la sensibilité des projections",
+    "Modéliser le scénario S3 (réappro 100% soja) comme scénario de référence, en tenant compte de la situation critique du stock",
     "Calculer le CA projeté en appliquant les prix moyens actuels (Option A: extrapolation à partir du CA historique)",
+    "Intégrer le matériel d'élevage (alvéoles, abreuvoirs, mangeoires, etc.) et les prémix en valeurs (CA uniquement)",
+    "Exclure le Maïs et les produits opportunistes (ELVOR TONIC, CARBONATE DE CALCIUM) du périmètre",
     "Produire les livrables PACE complets (guide méthodologique, stratégie, RACI, résumé exécutif, Excel, notebook)",
     "Fournir une base de planification commerciale pour les objectifs Q4 2026",
 ]
@@ -353,25 +360,43 @@ story.append(Paragraph("<b>Périmètre inclus</b>", H3))
 scope_data = [
     ["Dimension", "Détail", "Volume"],
     ["Période forecast", "Septembre - Décembre 2026 (4 mois)", "4 mois"],
-    ["Familles", "TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, MAÏS, ALIMENT COMPLET", "5 familles"],
-    ["Produits", "26 références (T102, C101-C108, B100, E101, etc.)", "26 produits"],
+    ["Familles incluses", "TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT COMPLET, MATERIEL ÉLEVAGE (alvéoles inclus), PREMIX", "6 familles"],
+    ["Produits", "69 références (T102, C101-C108, MAT014/MAT011/MAT017 alvéoles, P102N2, etc.)", "69 produits"],
     ["Agences", "14 agences BELGOCAM (FAMLA, NDOBO, DJELENG, etc.)", "14 agences"],
     ["Régions", "Ouest, Centre, Littoral", "3 régions"],
-    ["Niveau détail", "Produit × Agence × Mois", "~1 680 lignes"],
-    ["Scénarios", "S1 Rupture, S2 Réappro 50%, S3 Réappro 100%, S4 Baisse prix", "4 scénarios"],
+    ["Niveau détail", "Produit × Agence × Mois", "2 404 lignes"],
+    ["Scénario retenu", "S3 - Réappro 100% (80 000 sacs au 15/09/2026)", "1 scénario"],
     ["Sorties", "Volume (tonnes) + Valeur (M FCFA)", "2 dimensions"],
 ]
 story.append(make_table(scope_data, col_widths=[3.5*cm, 9.5*cm, 4*cm], font_size=9))
 
 story.append(Paragraph("<b>Périmètre exclu</b>", H3))
+story.append(Paragraph("<b>Exclusions structurelles (entités et clients internes)</b>", BODY))
 excl = [
     "Ventes des entités internes (SPC, PDC, Comptoir) — exclues pour éviter les doubles comptes",
     "Agences SPC/PDC (Baf-Chefferie, Emana, Ndere, Dschang, Buea-SPC, Yassa) — non commerciales",
     "Clients internes (CLIENTS COMPTOIR MESSASSI, AHALA, etc.) — ventes comptoir non significatives",
-    "Produits DIVERS et MATERIEL ELEVAGE — hors périmètre alimentaire animal",
+    "Catégories DIVERS (manuels, pierre à lécher), DIVERS2 (contribution carburant, pont bascule, sac réemploi), COMPLEMENT ALIMENTAIRE (BELGOKILL, BELGO HARMONY, etc.) — hors périmètre",
 ]
 for e in excl:
     story.append(Paragraph(f"• {e}", BULLET))
+
+story.append(Spacer(1, 0.2*cm))
+story.append(Paragraph("<b>Produits opportunistes exclus du portefeuille régulier</b>", BODY))
+excl_opp = [
+    "<b>MAÏS (M1051, M1052)</b> — Produit opportuniste ne figurant pas dans le portefeuille régulier BELGOCAM. Exclu du forecast Q4 et des analyses futures.",
+    "<b>ELVOR TONIC</b> — Produit opportuniste (si vendu). À exclure systématiquement des futures analyses.",
+    "<b>CARBONATE DE CALCIUM</b> — Produit opportuniste (si vendu). À exclure systématiquement des futures analyses.",
+]
+for e in excl_opp:
+    story.append(Paragraph(f"• {e}", BULLET))
+
+story.append(Spacer(1, 0.2*cm))
+story.append(Paragraph(
+    "<i>Note : Ces exclusions opportunistes seront appliquées systématiquement dans toutes les analyses futures "
+    "(zero achat, bundle soja-concentrés, suivi mensuel, etc.) pour éviter de biaisser les performances "
+    "avec des produits non récurrents hors portefeuille.</i>",
+    SMALL))
 
 story.append(Paragraph("4. Méthodologie PACE", H1))
 story.append(Paragraph(
@@ -385,9 +410,9 @@ story.extend(add_image(f"{CHARTS_DIR}/13_pace_flowchart.png", width=15*cm,
 
 pace_data = [
     ["Phase", "Activités", "Livrables", "Durée"],
-    ["P - PREPARE", "Chargement données, nettoyage, consolidation, calcul prix", "Dataset consolidé (95 819 records), Prix par produit", "2 jours"],
+    ["P - PREPARE", "Chargement données, nettoyage, consolidation, calcul prix, intégration matériel élevage + premix", "Dataset consolidé (115 086 records), Prix par produit", "2 jours"],
     ["A - ANALYZE", "AED, statistiques descriptives, saisonnalité, top produits/agences", "Graphiques AED (6), Synthèse statistique", "1 jour"],
-    ["C - CONSTRUCT", "Modélisation Prophet (13 modèles), 4 scénarios soja, désagrégation", "Forecast Q4 (4 196 lignes), Modèles validés", "2 jours"],
+    ["C - CONSTRUCT", "Modélisation Prophet (4 familles alimentaires) + extrapolation (matériel + premix), scénario S3, désagrégation", "Forecast Q4 (2 404 lignes), Modèles validés", "2 jours"],
     ["E - EXECUTE", "Génération livrables finaux (Excel, PDFs, notebook)", "9 livrables finaux", "1 jour"],
 ]
 story.append(make_table(pace_data, col_widths=[3*cm, 5.5*cm, 5.5*cm, 3*cm], font_size=8))
@@ -446,7 +471,9 @@ story.append(Paragraph(
 
 story.append(Paragraph("9. Critères de succès", H1))
 success = [
-    "Forecast produit pour les 4 scénarios avec désagrégation complète (produit × agence × mois)",
+    "Forecast produit pour le scénario S3 avec désagrégation complète (produit × agence × mois)",
+    "Couverture de 6 familles et 69 produits (incluant matériel d'élevage/alvéoles et premix)",
+    "Exclusion effective du Maïs et des produits opportunistes (ELVOR TONIC, CARBONATE DE CALCIUM)",
     "Écart forecast vs réalité ≤ 15% à fin septembre (premier mois prédictible)",
     "Validation des hypothèses par la Direction Commerciale et le Contrôle de Gestion",
     "Livrables PACE complets (9 documents) produits et diffusés",
