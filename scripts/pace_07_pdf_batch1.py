@@ -66,16 +66,53 @@ COVER_INFO = ParagraphStyle('CoverInfo', parent=BODY, fontSize=11, alignment=TA_
 
 # === Helper functions ===
 
+# Page width available (A4 = 21cm wide, minus 2cm margins each side = 17cm)
+PAGE_WIDTH = 17 * cm
+
+# Cell paragraph style for table cells (allows text wrapping)
+CELL_STYLE = ParagraphStyle('CellStyle', parent=BODY, fontName='DejaVuSans',
+                            fontSize=9, leading=11, alignment=TA_LEFT, spaceAfter=0, spaceBefore=0)
+CELL_BOLD_STYLE = ParagraphStyle('CellBoldStyle', parent=CELL_STYLE, fontName='DejaVuSans-Bold')
+CELL_HEADER_STYLE = ParagraphStyle('CellHeaderStyle', parent=CELL_STYLE, fontName='DejaVuSans-Bold',
+                                   textColor=colors.white, alignment=TA_CENTER)
+CELL_CENTER_STYLE = ParagraphStyle('CellCenterStyle', parent=CELL_STYLE, alignment=TA_CENTER)
+
 def make_table(data, col_widths=None, font_size=9, header_color=NAVY, header_font_color=colors.white):
-    """Create a styled table."""
-    t = Table(data, colWidths=col_widths, repeatRows=1)
+    """Create a styled table with text wrapping (Paragraph in cells)."""
+    # Adjust cell font size based on font_size parameter
+    cell_style = ParagraphStyle('CellDynamic', parent=CELL_STYLE, fontSize=font_size, leading=font_size+2)
+    cell_bold_style = ParagraphStyle('CellBoldDynamic', parent=cell_style, fontName='DejaVuSans-Bold')
+    cell_header_style = ParagraphStyle('CellHeaderDynamic', parent=cell_style, fontName='DejaVuSans-Bold',
+                                       textColor=colors.white, alignment=TA_CENTER)
+    cell_center_style = ParagraphStyle('CellCenterDynamic', parent=cell_style, alignment=TA_CENTER)
+    
+    # Convert all cells to Paragraph for text wrapping
+    processed_data = []
+    for row_idx, row in enumerate(data):
+        processed_row = []
+        for col_idx, cell in enumerate(row):
+            if cell is None:
+                cell = ''
+            cell_str = str(cell)
+            if row_idx == 0:
+                # Header row
+                processed_row.append(Paragraph(cell_str, cell_header_style))
+            else:
+                # Data rows - center numeric columns, left-align text columns
+                # Detect if it's a number or short text
+                is_numeric = cell_str.replace(',', '').replace('.', '').replace('%', '').replace('-', '').replace('+', '').replace(' ', '').replace('€', '').replace('FCFA', '').replace('M', '').replace('t', '').replace('sacs', '').strip().isdigit()
+                if is_numeric or len(cell_str) < 15:
+                    processed_row.append(Paragraph(cell_str, cell_center_style))
+                else:
+                    processed_row.append(Paragraph(cell_str, cell_style))
+        processed_data.append(processed_row)
+    
+    t = Table(processed_data, colWidths=col_widths, repeatRows=1)
     style = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), header_color),
-        ('TEXTCOLOR', (0, 0), (-1, 0), header_font_color),
         ('FONTNAME', (0, 0), (-1, 0), 'DejaVuSans-Bold'),
         ('FONTNAME', (0, 1), (-1, -1), 'DejaVuSans'),
         ('FONTSIZE', (0, 0), (-1, -1), font_size),
-        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.gray),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, LIGHT_GRAY]),
@@ -177,7 +214,7 @@ synth_data = [
     ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (référence)", "37 988", "17 304", "—"],
     ["S4 - Baisse prix", "S3 + baisse prix soja -10%", "41 067", "17 168", "-1%"],
 ]
-story.append(make_table(synth_data, col_widths=[3*cm, 5*cm, 2.8*cm, 3*cm, 1.5*cm], font_size=8))
+story.append(make_table(synth_data, col_widths=[3.2*cm, 5.8*cm, 2.8*cm, 3.2*cm, 2*cm], font_size=8))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Recommandations principales</b>", H3))
@@ -214,11 +251,12 @@ fam_data = [
     ["TOURTEAUX", "2 200", "3 400", "6 000", "5 200", "16 800", "6 923"],
     ["CONCENTRÉS", "1 420", "1 580", "1 600", "1 600", "6 200", "4 014"],
     ["INGRÉDIENTS", "16", "20", "20", "19", "75", "81"],
-    ["MAÏS", "135", "135", "135", "140", "545", "134"],
     ["ALIMENT COMPLET", "95", "95", "95", "95", "380", "311"],
-    ["TOTAL", "3 866", "5 230", "7 850", "7 054", "24 000", "11 463"],
+    ["MATERIEL ELEVAGE", "—", "—", "—", "—", "—", "189"],
+    ["PREMIX", "—", "—", "—", "—", "—", "48"],
+    ["TOTAL", "3 731", "5 095", "7 715", "6 914", "23 455", "11 566"],
 ]
-story.append(make_table(fam_data, col_widths=[3*cm, 1.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.5*cm, 2.5*cm], font_size=8))
+story.append(make_table(fam_data, col_widths=[3.5*cm, 1.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.5*cm, 2.5*cm], font_size=8))
 
 story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Top 5 agences par CA Q4 2026 (Scénario S3)</b>", H3))
@@ -231,7 +269,7 @@ top_ag_data = [
     ["4", "MESSASSI", "Centre", "1 950", "1 145", "6.6%"],
     ["5", "MBOUDA", "Ouest", "1 480", "870", "5.0%"],
 ]
-story.append(make_table(top_ag_data, col_widths=[1.5*cm, 3*cm, 2.5*cm, 2.5*cm, 2.5*cm, 2*cm], font_size=8))
+story.append(make_table(top_ag_data, col_widths=[1.5*cm, 3*cm, 2.5*cm, 3*cm, 4*cm, 3*cm], font_size=8))
 
 story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Graphique - Comparaison des scénarios</b>", H3))
@@ -323,7 +361,7 @@ scope_data = [
     ["Scénarios", "S1 Rupture, S2 Réappro 50%, S3 Réappro 100%, S4 Baisse prix", "4 scénarios"],
     ["Sorties", "Volume (tonnes) + Valeur (M FCFA)", "2 dimensions"],
 ]
-story.append(make_table(scope_data, col_widths=[3*cm, 9*cm, 3.5*cm], font_size=9))
+story.append(make_table(scope_data, col_widths=[3.5*cm, 9.5*cm, 4*cm], font_size=9))
 
 story.append(Paragraph("<b>Périmètre exclu</b>", H3))
 excl = [
@@ -352,7 +390,7 @@ pace_data = [
     ["C - CONSTRUCT", "Modélisation Prophet (13 modèles), 4 scénarios soja, désagrégation", "Forecast Q4 (4 196 lignes), Modèles validés", "2 jours"],
     ["E - EXECUTE", "Génération livrables finaux (Excel, PDFs, notebook)", "9 livrables finaux", "1 jour"],
 ]
-story.append(make_table(pace_data, col_widths=[2.5*cm, 5*cm, 5*cm, 2*cm], font_size=8))
+story.append(make_table(pace_data, col_widths=[3*cm, 5.5*cm, 5.5*cm, 3*cm], font_size=8))
 
 story.append(Paragraph("5. Équipe projet et gouvernance", H1))
 story.append(Paragraph(
@@ -370,7 +408,7 @@ team_data = [
     ["Direction Générale", "Décisions stratégiques, allocation ressources", "E (décision)"],
     ["Contrôle de Gestion", "Validation CA projeté et cohérence financière", "E (validation)"],
 ]
-story.append(make_table(team_data, col_widths=[4*cm, 8*cm, 3*cm], font_size=9))
+story.append(make_table(team_data, col_widths=[4.5*cm, 8.5*cm, 4*cm], font_size=9))
 
 story.append(Paragraph("6. Risques et mitigation", H1))
 risks_data = [
@@ -382,7 +420,7 @@ risks_data = [
     ["Saisonnalité Q4 mal captée", "Faible", "Moyen", "Prophet yearly seasonality activée"],
     ["Désagrégation produit × agence biaisée", "Faible", "Faible", "Parts historiques 2025-S1 2026"],
 ]
-story.append(make_table(risks_data, col_widths=[5*cm, 2.5*cm, 2.5*cm, 5*cm], font_size=8))
+story.append(make_table(risks_data, col_widths=[5.5*cm, 2.5*cm, 2.5*cm, 6.5*cm], font_size=8))
 
 story.append(Paragraph("7. Planning et jalons", H1))
 planning_data = [
@@ -395,7 +433,7 @@ planning_data = [
     ["Présentation comité de direction", "J+7 (03/09/2026)", "Validation officielle"],
     ["Mise à jour mensuelle", "Mensuel", "Réactualisation avec nouvelles données"],
 ]
-story.append(make_table(planning_data, col_widths=[5*cm, 4*cm, 6*cm], font_size=9))
+story.append(make_table(planning_data, col_widths=[5.5*cm, 4*cm, 7.5*cm], font_size=9))
 
 story.append(Paragraph("8. Budget et ressources", H1))
 story.append(Paragraph(
