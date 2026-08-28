@@ -1,0 +1,31 @@
+{
+  "substitution_ratio": 3,
+  "format_split": {
+    "5kg": 0.3,
+    "10kg": 0.7
+  },
+  "scenarios": {
+    "prudent": 0.1,
+    "realiste": 0.3,
+    "optimiste": 0.5
+  },
+  "excluded_agencies": [
+    "Buea"
+  ],
+  "spc_cat_mix": {
+    "CHAIR": 77.0,
+    "PORC": 13.4,
+    "PONTE": 4.1,
+    "LAPIN": 3.2,
+    "POISSON": 0.8,
+    "CHEVAL": 1.4,
+    "CHIEN": 0.1
+  },
+  "belgocam_mix": {
+    "CHAIR": 65.2,
+    "PONTE": 19.8,
+    "PORC": 15.0,
+    "AUTRE": 0.0
+  },
+  "total_orders_lines": 1404
+}
