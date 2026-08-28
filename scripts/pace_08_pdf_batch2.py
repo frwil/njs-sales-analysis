@@ -48,20 +48,45 @@ BULLET = ParagraphStyle('Bullet', parent=BODY, leftIndent=20, bulletIndent=10, s
 SMALL = ParagraphStyle('Small', parent=BODY, fontSize=8, textColor=GRAY)
 CAPTION = ParagraphStyle('Caption', parent=BODY, fontSize=9, textColor=GRAY, alignment=TA_CENTER)
 
+# Cell paragraph styles for table cells (allows text wrapping)
+CELL_STYLE = ParagraphStyle('CellStyle', parent=BODY, fontName='DejaVuSans',
+                            fontSize=9, leading=11, alignment=TA_LEFT, spaceAfter=0, spaceBefore=0)
+CELL_CENTER_STYLE = ParagraphStyle('CellCenterStyle', parent=CELL_STYLE, alignment=TA_CENTER)
+
 def make_table(data, col_widths=None, font_size=9, header_color=NAVY):
-    t = Table(data, colWidths=col_widths, repeatRows=1)
+    """Create a styled table with text wrapping (Paragraph in cells)."""
+    cell_style = ParagraphStyle('CellDynamic', parent=CELL_STYLE, fontSize=font_size, leading=font_size+2)
+    cell_header_style = ParagraphStyle('CellHeaderDynamic', parent=cell_style, fontName='DejaVuSans-Bold',
+                                       textColor=colors.white, alignment=TA_CENTER)
+    cell_center_style = ParagraphStyle('CellCenterDynamic', parent=cell_style, alignment=TA_CENTER)
+    
+    processed_data = []
+    for row_idx, row in enumerate(data):
+        processed_row = []
+        for col_idx, cell in enumerate(row):
+            if cell is None:
+                cell = ''
+            cell_str = str(cell)
+            if row_idx == 0:
+                processed_row.append(Paragraph(cell_str, cell_header_style))
+            else:
+                is_numeric = cell_str.replace(',', '').replace('.', '').replace('%', '').replace('-', '').replace('+', '').replace(' ', '').replace('/', '').strip().isdigit()
+                if is_numeric or len(cell_str) <= 3:
+                    processed_row.append(Paragraph(cell_str, cell_center_style))
+                else:
+                    processed_row.append(Paragraph(cell_str, cell_style))
+        processed_data.append(processed_row)
+    
+    t = Table(processed_data, colWidths=col_widths, repeatRows=1)
     style = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), header_color),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('FONTNAME', (0, 0), (-1, 0), 'DejaVuSans-Bold'),
-        ('FONTNAME', (0, 1), (-1, -1), 'DejaVuSans'),
-        ('FONTSIZE', (0, 0), (-1, -1), font_size),
-        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.gray),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, LIGHT_GRAY]),
         ('TOPPADDING', (0, 0), (-1, -1), 4),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
     ])
     t.setStyle(style)
     return t
@@ -128,7 +153,7 @@ raci_def = [
     ["C", "Consulté (Consulted)", "Celui dont l'avis est sollicité avant la décision. Communication bidirectionnelle."],
     ["I", "Informé (Informed)", "Celui qui est tenu au courant de la décision après coup. Communication unidirectionnelle."],
 ]
-story.append(make_table(raci_def, col_widths=[1.5*cm, 5*cm, 11*cm], font_size=9))
+story.append(make_table(raci_def, col_widths=[2*cm, 5*cm, 11*cm], font_size=9))
 
 story.append(Paragraph("2. Acteurs du projet", H1))
 story.append(Paragraph(
@@ -146,7 +171,7 @@ actors = [
     ["CG", "Contrôle de Gestion", "Service financier en charge du CA et budgets", "Validation de la cohérence financière"],
     ["RA", "Responsables d'Agences", "14 responsables d'agences BELGOCAM", "Informés et consultés sur leurs périmètres"],
 ]
-story.append(make_table(actors, col_widths=[1.2*cm, 3.5*cm, 6.5*cm, 5.5*cm], font_size=9))
+story.append(make_table(actors, col_widths=[1.5*cm, 4*cm, 7*cm, 5.5*cm], font_size=9))
 
 story.append(PageBreak())
 story.append(Paragraph("3. Matrice RACI détaillée par étape PACE", H1))
@@ -185,7 +210,7 @@ raci_matrix = [
     ["", "4.9 Diffusion aux responsables d'agences", "R", "A", "I", "I", "I", "C"],
     ["", "4.10 Mise à jour mensuelle", "R/A", "C", "C", "I", "I", "I"],
 ]
-story.append(make_table(raci_matrix, col_widths=[2.2*cm, 5.5*cm, 1.2*cm, 1.2*cm, 1.2*cm, 1.2*cm, 1.2*cm, 1.2*cm], font_size=7.5))
+story.append(make_table(raci_matrix, col_widths=[2.5*cm, 6.5*cm, 1.2*cm, 1.2*cm, 1.2*cm, 1.2*cm, 1.2*cm, 1.2*cm], font_size=7.5))
 
 story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph(
@@ -254,7 +279,7 @@ control_data = [
     ["Livrables finaux", "EXECUTE", "02/09/2026", "DG", "9 livrables PACE"],
     ["Présentation CODIR", "EXECUTE", "03/09/2026", "DG", "Validation officielle"],
 ]
-story.append(make_table(control_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 3*cm, 5*cm], font_size=8))
+story.append(make_table(control_data, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 3.5*cm, 6*cm], font_size=8))
 
 doc.build(story)
 print(f"✓ Matrice RACI: {raci_path}")
@@ -310,7 +335,7 @@ obj_data = [
     ["Adoption", "Diffuser auprès des 14 agences et du CODIR", "100% agences informées"],
     ["Réutilisabilité", "Notebook Jupyter reproductible pour les prochains trimestres", "Code commenté"],
 ]
-story.append(make_table(obj_data, col_widths=[3*cm, 9*cm, 4*cm], font_size=9))
+story.append(make_table(obj_data, col_widths=[3.5*cm, 10*cm, 4.5*cm], font_size=9))
 
 story.append(Paragraph("1.3 Alignement avec la stratégie BELGOCAM", H2))
 story.append(Paragraph(
@@ -341,7 +366,7 @@ sources_data = [
     ["NJS GROUP ERP (21).xlsx", "01-26/08/2026", "5 133", "Août MTD (dernier mois)"],
     ["TOTAL", "20 mois", "115 086", "Dataset consolidé"],
 ]
-story.append(make_table(sources_data, col_widths=[5*cm, 3.5*cm, 2.5*cm, 5*cm], font_size=9))
+story.append(make_table(sources_data, col_widths=[5.5*cm, 4*cm, 2.5*cm, 6*cm], font_size=9))
 
 story.append(Paragraph("2.2 Nettoyage et normalisation", H2))
 story.append(Paragraph(
@@ -392,7 +417,7 @@ stats_data = [
     ["MAIS", "8", "0", "1", "FAMLA (8 t)"],
     ["TOTAL", "109 045", "51 372", "26", "—"],
 ]
-story.append(make_table(stats_data, col_widths=[3*cm, 3*cm, 3.5*cm, 2.5*cm, 4*cm], font_size=9))
+story.append(make_table(stats_data, col_widths=[3.5*cm, 3.5*cm, 4*cm, 2.5*cm, 4.5*cm], font_size=9))
 
 story.append(Paragraph("3.2 Saisonnalité mensuelle", H2))
 story.append(Paragraph(
@@ -412,7 +437,7 @@ q4_share_data = [
     ["INGRÉDIENTS", "36.6%"],
     ["ALIMENT COMPLET", "42.0%"],
 ]
-story.append(make_table(q4_share_data, col_widths=[6*cm, 8*cm], font_size=9))
+story.append(make_table(q4_share_data, col_widths=[6.5*cm, 11.5*cm], font_size=9))
 story.append(Paragraph(
     "<b>Implication pour le forecast</b> : Le Q4 représente entre 35% et 46% du volume annuel selon les familles. "
     "Le modèle Prophet doit impérativement capturer cette saisonnalité forte via le paramètre "
@@ -434,7 +459,7 @@ top_prod_data = [
     ["4", "C103", "BELGO 5% CHAIR 50 Kg", "CONCENTRÉS", "4 487", "4.1%"],
     ["5", "CB100", "CHICK BOOSTER 25 Kg", "ALIMENT COMPLET", "500", "0.5%"],
 ]
-story.append(make_table(top_prod_data, col_widths=[1.5*cm, 1.5*cm, 5*cm, 3*cm, 2.5*cm, 2.5*cm], font_size=8))
+story.append(make_table(top_prod_data, col_widths=[1.5*cm, 1.5*cm, 6*cm, 3.5*cm, 2.75*cm, 2.75*cm], font_size=8))
 
 story.append(Paragraph(
     "<b>Concentration</b> : Le soja (T102) représente à lui seul <b>76% du volume total</b>. "
@@ -451,7 +476,7 @@ top_ag_data = [
     ["4", "DJELENG", "Ouest", "9 779", "9.0%"],
     ["5", "MBOUDA", "Ouest", "6 567", "6.0%"],
 ]
-story.append(make_table(top_ag_data, col_widths=[1.5*cm, 3*cm, 3*cm, 3*cm, 3*cm], font_size=9))
+story.append(make_table(top_ag_data, col_widths=[1.5*cm, 3.5*cm, 3.5*cm, 3.5*cm, 3.5*cm], font_size=9))
 
 story.append(Paragraph(
     "<b>Concentration géographique</b> : L'Ouest (FAMLA + DJELENG + MBOUDA) représente <b>46.6%</b> du volume total. "
@@ -511,7 +536,7 @@ config_data = [
     ["interval_width", "0.8", "Intervalle de confiance à 80%"],
     ["mcmc_samples", "0", "Désactivation MCMC pour rapidité (méthode MAP)"],
 ]
-story.append(make_table(config_data, col_widths=[5*cm, 3*cm, 8*cm], font_size=9))
+story.append(make_table(config_data, col_widths=[5.5*cm, 3.5*cm, 9*cm], font_size=9))
 
 story.append(PageBreak())
 
@@ -529,7 +554,7 @@ livrables_data = [
     ["7", "Notebook Jupyter", ".ipynb", "Code reproductible - Audit et réutilisation"],
     ["8", "Graphiques de visualisation", "PNG (13 graphiques)", "Supports de présentation"],
 ]
-story.append(make_table(livrables_data, col_widths=[1*cm, 5*cm, 4*cm, 6*cm], font_size=9))
+story.append(make_table(livrables_data, col_widths=[1.5*cm, 5.5*cm, 4.5*cm, 6.5*cm], font_size=9))
 
 story.append(Paragraph("5.2 Excel forecast multi-feuilles", H2))
 story.append(Paragraph(
@@ -567,7 +592,7 @@ scenarios_data = [
     ["S3 - Réappro 100%", "80 000 sacs au 15/09", "70%", "100%", "100%", "100%"],
     ["S4 - Baisse prix", "S3 + baisse prix -10%", "70% × 1.05", "100% × 1.10", "100% × 1.10", "100% × 1.10"],
 ]
-story.append(make_table(scenarios_data, col_widths=[3.5*cm, 4.5*cm, 2*cm, 2*cm, 2*cm, 2*cm], font_size=9))
+story.append(make_table(scenarios_data, col_widths=[4*cm, 5*cm, 2.25*cm, 2.25*cm, 2.25*cm, 2.25*cm], font_size=9))
 
 story.append(Paragraph("6.2 Résultats comparés", H2))
 results_data = [
@@ -577,7 +602,7 @@ results_data = [
     ["S3 - Réappro 100%", "37 780", "17 438", "—", "SCÉNARIO RETENU"],
     ["S4 - Baisse prix", "41 067", "17 168", "-1%", "Optimiste (si stock stabilisé)"],
 ]
-story.append(make_table(results_data, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 5.5*cm], font_size=9))
+story.append(make_table(results_data, col_widths=[4*cm, 3*cm, 3*cm, 2.5*cm, 5.5*cm], font_size=9))
 
 story.extend(add_image(f"{CHARTS_DIR}/08_ca_par_scenario.png", width=14*cm,
                        caption="Figure 2 - CA Q4 2026 par scénario (M FCFA)"))
@@ -617,7 +642,7 @@ deploy_data = [
     ["7", "01/10/2026", "Mise à jour mensuelle du forecast", "DA"],
     ["8", "Mensuel", "Suivi écart forecast vs réel", "DA + DC"],
 ]
-story.append(make_table(deploy_data, col_widths=[1*cm, 2.5*cm, 7*cm, 5.5*cm], font_size=9))
+story.append(make_table(deploy_data, col_widths=[1.5*cm, 3*cm, 7.5*cm, 6*cm], font_size=9))
 
 story.append(Paragraph("7.2 Stratégie d'adoption", H2))
 story.append(Paragraph(
@@ -648,7 +673,7 @@ kpi_data = [
     ["Valeur", "Objectifs Q4 2026 calibrés sur forecast", "Oui/Non", "Validation DC"],
     ["Valeur", "Réutilisation du modèle pour Q1 2027", "Oui/Non", "Vérification DA"],
 ]
-story.append(make_table(kpi_data, col_widths=[2.5*cm, 6*cm, 3*cm, 4.5*cm], font_size=9))
+story.append(make_table(kpi_data, col_widths=[3*cm, 7*cm, 3.5*cm, 4.5*cm], font_size=9))
 
 story.append(Paragraph("9. Gouvernance et comité de pilotage", H1))
 story.append(Paragraph(
