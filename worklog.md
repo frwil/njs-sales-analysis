@@ -589,3 +589,34 @@ Stage Summary:
 - Note user: les livrables du projet forecast doivent pouvoir etre mis a jour au fur et a mesure des mises a jour des extractions.
 - Outputs JSON: aout_mtd_29.json, soja_aout_29.json
 - Conclusion generale: Au 28/08 (92% du mois), les CONCENTRES depassent l'objectif de 8% (108% ajuste, +125 t d'avance) avec 8/14 agences au-dessus. La distribution des ratios bundle s'est amelioree (74% <= 3:1 vs 72% au 26/08). Le stock soja reste critique (rupture probable 18/09, 21 jours de stock). Le churn continue de se resorber (248 vs 264 au 26/08). Avec 2 jours ouvrables restants (29-30/08), le mois d'aout s'annonce comme le 2e mois consecutif au-dessus de l'objectif CONCENTRES.
+
+---
+Task ID: aout-update-30
+Agent: main
+Task: Mettre a jour analyse zero achat, bundle soja-concentres, soja_aout et forecast pipeline avec extraction au 29/08/2026.
+
+Work Log:
+- Extraction: NJS GROUP ERP (25).xlsx, 10 821 lignes Livree, couverture 01-29/08.
+- 25 jours ouvres (lun-sam), 96% du mois. Quasi définitif (plus que 1 jour ouvrable: lundi 31/08).
+- Metriques August MTD (au 29/08, 25j):
+  - TOURTEAUX: 3 672 t (moy 146.9 t/j, proj 3 818 t, obj 3 850 -> 99% ajuste, -32 t)
+  - CONCENTRES: 1 560 t (moy 62.4 t/j, proj 1 623 t, obj 1 534 -> 106% ajuste, +88 t d'avance)
+  - Bundle ratio: 2,4:1 (stable)
+  - Cross-sell: 95% (1 891/1 987), 96 soja-only (5%)
+  - Dist ratios: 74% <= 3:1, 24% 3-5:1, 1% >5:1
+  - Stock: rupture probable 20/09/2026 (22 jours)
+  - Churned: 247, Nouveaux: 194, Cross-sell soja→conc: 557 (69%)
+- Performance CONCENTRES par region:
+  - Ouest: 672 / 605 = 111% (+66 t)
+  - Centre: 494 / 491 = 101% (+2 t)
+  - Littoral: 457 / 438 = 104% (+19 t)
+  - TOTAL: 1 623 / 1 535 = 106% (+88 t) — 8/14 agences au-dessus
+- Forecast pipeline execute (2.4 min): dataset, forecast S3, Excel, graphiques tous mis a jour.
+- Tous les livrables sont a jour avec l'extraction du 29/08.
+
+Stage Summary:
+- analyse_soja_aout.xlsx (5 feuilles): au 29/08, moy/j soja 147 t, rupture probable 20/09/2026
+- analyse_zero_achat.pdf (22 pages): section 5.2 refraichie au 29/08 (25j, 96%)
+- analyse_bundle_soja_concentres.pdf (17 pages): section 8 refraichie au 29/08
+- forecast_q4_2026_S3_volumes_valeurs.xlsx (8 feuilles): mis a jour via pipeline automatise
+- Conclusion: Août 2026 = 2e mois consecutif au-dessus de l'objectif CONCENTRES (106% ajuste, +88 t). Le TOURTEAUX termine juste sous l'objectif (99%, -32 t). Bundle ratio record a 2.4:1. Stock soja critique (rupture 20/09).

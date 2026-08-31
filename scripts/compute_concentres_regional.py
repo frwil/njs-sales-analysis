@@ -19,7 +19,7 @@ REGION_MAP = {
 
 # Projections August (from compute_aout_mtd_metrics.py)
 # Format: agence -> (conc_mtd_t, proj_t)
-with open('/home/z/my-project/scripts/aout_mtd_29.json') as f:
+with open('/home/z/my-project/scripts/aout_mtd_30.json') as f:
     summary = json.load(f)
 
 PROJ = {}

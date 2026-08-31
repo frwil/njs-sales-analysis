@@ -24,7 +24,7 @@ import os
 FILE_2025 = "/home/z/my-project/upload/86d96135-9db7-45bc-bba6-a69efa2c5ee3.xlsx"
 FILE_S1_2026 = "/home/z/my-project/upload/ventes janv a juin 2026.xlsx"
 FILE_JUIL = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx"
-FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (24).xlsx"
+FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (25).xlsx"
 
 # === Product refs and weights ===
 SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}

@@ -1,12 +1,12 @@
 {
-  "update_date": "28/08/2026",
-  "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (24).xlsx",
-  "rows_livree_new": 10515,
+  "update_date": "29/08/2026",
+  "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (25).xlsx",
+  "rows_livree_new": 10821,
   "rows_livree_prev": 12014,
   "t1_new": {
-    "total_t": 4230.294,
-    "moy_jour_t": 176.26225,
-    "days_elapsed": 24
+    "total_t": 4280.469,
+    "moy_jour_t": 171.21876,
+    "days_elapsed": 25
   },
   "t1_prev": {
     "total_t": 7565.946,
@@ -14,10 +14,10 @@
     "days_elapsed": 27
   },
   "t2_new": {
-    "cmds": 120,
-    "bundle": 106,
+    "cmds": 63,
+    "bundle": 49,
     "soja_only": 14,
-    "ratio": "1.6:1"
+    "ratio": "1.8:1"
   },
   "t2_prev": {
     "cmds": 119,
@@ -27,18 +27,18 @@
   },
   "t3_new": {
     "count": 14,
-    "total_t": 5.555
+    "total_t": 4.055
   },
   "t3_prev": {
     "count": 14,
     "total_t": 3.925
   },
   "t4_new": {
-    "rupture_date": "22/09/2026",
-    "jours_stock": 25,
+    "rupture_date": "24/09/2026",
+    "jours_stock": 26,
     "stock_net_sacs": 71230,
     "stock_net_t": 3561,
-    "conso_moy_sacs_sem": 19556
+    "conso_moy_sacs_sem": 18969
   },
   "t4_prev": {},
   "price_hike": {
