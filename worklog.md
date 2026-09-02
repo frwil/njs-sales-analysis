@@ -644,3 +644,62 @@ Work Log:
   - En cours + Validées incluses
   - Prix soja actualisé 25 000 FCFA
   - Forecast 12 mois complet
+
+---
+Task ID: forecast-2027-v2-complement-alimentaire
+Agent: main
+Task: Mettre à jour le forecast 2027 selon les instructions utilisateur: (1) utiliser les années 2024-2026 uniquement (laisser 2021-2023), (2) utiliser les tendances BELGOKILL comme proxy pour toute la famille COMPLEMENT ALIMENTAIRE, (3) ajouter la famille COMPLEMENT_ALIMENTAIRE au forecast 2027 (1L=1kg).
+
+Work Log:
+- Phase 1: Construction du nouveau dataset 2024-2026
+  - Sources: LY_24 (Jul-Dec 2024, 52 215 records), 2025 (66 206 records), S1 2026 (37 745 records), Juillet 2026 (7 537 records), Août 2026 (6 857 records)
+  - Exclusion des années 2021-2023 (focus 2024-2026, 32 mois d'historique)
+  - Ajout de la famille COMPLEMENT_ALIMENTAIRE: 10 produits liquides (V300/V305 BELGOKILL, CA001-CA008 BELGO xxx)
+  - Conversion 1L = 1kg (qte = kg, tonnes = qte/1000), V305 = 200 kg/qte
+  - Exclusion MAIS (M1051/M1052) et DIVERS
+  - Total: 170 560 records, 78 produits, 14 agences
+  - Script: scripts/build_dataset_2024_2026.py
+  - Output: scripts/dataset_2024_2026.csv
+
+- Phase 2: Mise à jour du forecast 2027
+  - 7 familles au lieu de 6 (ajout COMPLEMENT_ALIMENTAIRE)
+  - Prophet pour 5 familles (TOURTEAUX, CONCENTRES, INGREDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE)
+  - Extrapolation pour 2 familles (MATERIEL_ELEVAGE, PREMIX)
+  - Désaisonnalisation soja Jul-Août 2026 maintenue (cap moyenne S1 2026)
+  - En cours + Validées août 2026 inclus
+  - Prix soja 25 000 FCFA/sac maintenu
+  - Prix COMPLEMENT_ALIMENTAIRE par litre: 2 500-15 000 FCFA/L selon produit
+  - BELGOKILL (V300) utilisé comme proxy tendance (38% du CA famille)
+  - Script: scripts/forecast_2027_v3.py
+  - Output: scripts/forecast_2027_S3.csv (8 868 lignes)
+
+- Phase 3: Régénération Excel
+  - 8 feuilles (vs 7 avant): synthèse, par famille × mois, par région × mois, par agence, par produit, détail complet, hypothèses, saisonnalité
+  - 7 familles dans synthèse (COMPLEMENT_ALIMENTAIRE surligné en jaune)
+  - Sheet 8 nouvelle: coefficients saisonniers 2025 vs 2027
+  - Script: scripts/forecast_2027_excel_v2.py
+  - Output: download/forecast_2027_S3_volumes_valeurs.xlsx (390 KB)
+
+- Phase 4: Régénération des 5 PDFs PACE
+  - Tous les chiffres actualisés: 118 608 t, 64 114 M FCFA (vs 75 112 t, 41 219 M FCFA avant)
+  - NOUVEAU: Section dédiée COMPLEMENT_ALIMENTAIRE dans guide méthodologique (section 7)
+  - NOUVEAU: Tableau CA par produit BELGOxxx avec parts famille
+  - NOUVEAU: Lignes surlignées en jaune pour COMPLEMENT_ALIMENTAIRE dans tableaux
+  - NOUVEAU: Historique 2024-2026 vs 2027 (au lieu de YTD 2026 + Q4 fcst)
+  - Script: scripts/forecast_2027_pdfs_v2.py
+  - Outputs: 5 PDFs dans download/forecast_2027/ (270 KB total)
+
+Stage Summary:
+- dataset_2024_2026.csv: 170 560 records (vs 115 086 avant), 78 produits (vs 69), 32 mois (vs 20)
+- forecast_2027_S3.csv: 8 868 lignes (vs 12 600 — moins car COMPLEMENT_ALIM n'a pas toutes les agences)
+- forecast_2027_S3_volumes_valeurs.xlsx: 390 KB, 8 feuilles, 7 familles
+- 5 PDFs forecast 2027 régénérés:
+  - 01_resume_executif.pdf (58 KB)
+  - 02_proposition_projet.pdf (51 KB)
+  - 03_matrice_raci.pdf (49 KB)
+  - 04_document_strategique_pace.pdf (57 KB)
+  - 05_guide_methodologique.pdf (55 KB)
+- Forecast 2027 v2: 118 608 t, 64 114 M FCFA (+58% volume vs 2026 annualisé)
+- 7 familles: TOURTEAUX (92 517 t, 46 261 M), CONCENTRES (24 680 t, 16 504 M), ALIMENT_COMPLET (890 t, 688 M), MATERIEL_ELEVAGE (0 t, 377 M), INGREDIENTS (518 t, 107 M), PREMIX (0 t, 160 M), COMPLEMENT_ALIMENTAIRE (3 t, 17 M)
+- Top 5 agences 2027: FAMLA 18 085 M, NDOBO 9 476 M, MESSASSI 5 848 M, DJELENG 5 166 M, VILLAGE 3 749 M
+- Conclusion: v2 intègre COMPLEMENT_ALIMENTAIRE (proxy BELGOKILL, 1L=1kg) et utilise 32 mois d'historique (2024-2026). La progression de +58% vs 2026 annualisé reflète la tendance haussière 2024-2026 amplifiée par l'effet prix soja 25 000 FCFA. COMPLEMENT_ALIMENTAIRE reste marginal en volume (3 t) mais contribue à 17 M FCFA de CA grâce à la forte valeur unitaire des liquides.

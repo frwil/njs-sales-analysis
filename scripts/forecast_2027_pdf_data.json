@@ -1,0 +1,219 @@
+{
+  "total_t": 118607.78,
+  "total_ca": 64114.16,
+  "n_products": 78,
+  "n_agences": 14,
+  "n_families": 7,
+  "n_lines": 8868,
+  "by_family": [
+    {
+      "family": "ALIMENT_COMPLET",
+      "tonnes": 890.0,
+      "ca_m_fcfa": 687.7
+    },
+    {
+      "family": "COMPLEMENT_ALIMENTAIRE",
+      "tonnes": 3.0,
+      "ca_m_fcfa": 17.1
+    },
+    {
+      "family": "CONCENTRES",
+      "tonnes": 24680.0,
+      "ca_m_fcfa": 16504.5
+    },
+    {
+      "family": "INGREDIENTS",
+      "tonnes": 518.0,
+      "ca_m_fcfa": 106.6
+    },
+    {
+      "family": "MATERIEL_ELEVAGE",
+      "tonnes": 0.0,
+      "ca_m_fcfa": 376.8
+    },
+    {
+      "family": "PREMIX",
+      "tonnes": 0.0,
+      "ca_m_fcfa": 160.3
+    },
+    {
+      "family": "TOURTEAUX",
+      "tonnes": 92517.0,
+      "ca_m_fcfa": 46261.0
+    }
+  ],
+  "by_quarter": [
+    {
+      "index": "Q1 (Jan-Mar)",
+      "tonnes": 22616.0,
+      "ca_m_fcfa": 12451.0
+    },
+    {
+      "index": "Q2 (Avr-Juin)",
+      "tonnes": 31562.0,
+      "ca_m_fcfa": 16806.0
+    },
+    {
+      "index": "Q3 (Juil-Sept)",
+      "tonnes": 17089.0,
+      "ca_m_fcfa": 9914.8
+    },
+    {
+      "index": "Q4 (Oct-D\u00e9c)",
+      "tonnes": 47340.0,
+      "ca_m_fcfa": 24942.3
+    }
+  ],
+  "top_agences": [
+    {
+      "agence": "Famla",
+      "region": "Ouest",
+      "tonnes": 33444.97,
+      "ca_m_fcfa": 18085.26
+    },
+    {
+      "agence": "Ndobo",
+      "region": "Littoral",
+      "tonnes": 19260.67,
+      "ca_m_fcfa": 9475.98
+    },
+    {
+      "agence": "Messassi",
+      "region": "Centre",
+      "tonnes": 11639.62,
+      "ca_m_fcfa": 5847.53
+    },
+    {
+      "agence": "Djeleng",
+      "region": "Ouest",
+      "tonnes": 9303.34,
+      "ca_m_fcfa": 5166.0
+    },
+    {
+      "agence": "Village",
+      "region": "Littoral",
+      "tonnes": 5772.5,
+      "ca_m_fcfa": 3749.12
+    }
+  ],
+  "ytd_2026": [
+    {
+      "family": "ALIMENT_COMPLET",
+      "tonnes": 502.0,
+      "ca_ht_m": 407.5,
+      "ca_ttc_m": 407.5
+    },
+    {
+      "family": "COMPLEMENT_ALIMENTAIRE",
+      "tonnes": 3.0,
+      "ca_ht_m": 15.5,
+      "ca_ttc_m": 15.5
+    },
+    {
+      "family": "CONCENTRES",
+      "tonnes": 11932.0,
+      "ca_ht_m": 7977.0,
+      "ca_ttc_m": 7977.0
+    },
+    {
+      "family": "INGREDIENTS",
+      "tonnes": 531.0,
+      "ca_ht_m": 751.4,
+      "ca_ttc_m": 754.2
+    },
+    {
+      "family": "MATERIEL_ELEVAGE",
+      "tonnes": 6.0,
+      "ca_ht_m": 85.7,
+      "ca_ttc_m": 85.8
+    },
+    {
+      "family": "PREMIX",
+      "tonnes": 60.0,
+      "ca_ht_m": 113.5,
+      "ca_ttc_m": 113.5
+    },
+    {
+      "family": "TOURTEAUX",
+      "tonnes": 39045.0,
+      "ca_ht_m": 13380.5,
+      "ca_ttc_m": 13380.7
+    }
+  ],
+  "ytd_2025": [
+    {
+      "family": "ALIMENT_COMPLET",
+      "tonnes": 500.0,
+      "ca_ttc_m": 403.6,
+      "ca_ht_m": 403.6
+    },
+    {
+      "family": "COMPLEMENT_ALIMENTAIRE",
+      "tonnes": 6.0,
+      "ca_ttc_m": 25.4,
+      "ca_ht_m": 25.4
+    },
+    {
+      "family": "CONCENTRES",
+      "tonnes": 17319.0,
+      "ca_ttc_m": 11476.5,
+      "ca_ht_m": 11476.5
+    },
+    {
+      "family": "INGREDIENTS",
+      "tonnes": 733.0,
+      "ca_ttc_m": 989.2,
+      "ca_ht_m": 988.7
+    },
+    {
+      "family": "MATERIEL_ELEVAGE",
+      "tonnes": 75.0,
+      "ca_ttc_m": 531.6,
+      "ca_ht_m": 531.3
+    },
+    {
+      "family": "PREMIX",
+      "tonnes": 86.0,
+      "ca_ttc_m": 158.3,
+      "ca_ht_m": 158.3
+    },
+    {
+      "family": "TOURTEAUX",
+      "tonnes": 44584.0,
+      "ca_ttc_m": 15053.2,
+      "ca_ht_m": 15053.2
+    }
+  ],
+  "ytd_2024": [
+    {
+      "family": "ALIMENT_COMPLET",
+      "tonnes": 296.0,
+      "ca_ht_m": 233.4
+    },
+    {
+      "family": "COMPLEMENT_ALIMENTAIRE",
+      "tonnes": 3.0,
+      "ca_ht_m": 13.2
+    },
+    {
+      "family": "CONCENTRES",
+      "tonnes": 8207.0,
+      "ca_ht_m": 5437.5
+    },
+    {
+      "family": "INGREDIENTS",
+      "tonnes": 606.0,
+      "ca_ht_m": 834.5
+    },
+    {
+      "family": "PREMIX",
+      "tonnes": 41.0,
+      "ca_ht_m": 75.3
+    },
+    {
+      "family": "TOURTEAUX",
+      "tonnes": 19296.0,
+      "ca_ht_m": 7798.2
+    }
+  ]
+}
