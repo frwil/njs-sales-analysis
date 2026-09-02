@@ -137,9 +137,11 @@ fam_data = [
     ["MATERIEL_ELEVAGE", "—", "376", "0,6%"],
     ["INGREDIENTS", "996", "209", "0,4%"],
     ["PREMIX", "—", "163", "0,3%"],
+    ["MAÏS (exclu)", "0", "0", "0,0%"],
     ["TOTAL", "109 288", "58 550", "100%"],
 ]
 story.append(make_table(fam_data, col_widths=[4*cm, 3.5*cm, 3.5*cm, 2.5*cm], font_size=9))
+story.append(Paragraph("<i>Note: Le maïs (M1051) a été retiré des ventes 2026 avant le forecast 2027 car produit opportuniste hors portefeuille régulier BELGOCAM. Ligne MAÏS à 0 pour traçabilité.</i>", SMALL))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Synthèse par trimestre</b>", H3))
@@ -182,6 +184,7 @@ ytd_data = [
     ["ALIMENT COMPLET", "525", "368", "893", "1 046", "85%", "❌"],
     ["INGRÉDIENTS", "548", "307", "855", "1 064", "80%", "❌"],
     ["PREMIX", "61", "0", "61", "130", "47%", "❌"],
+    ["MAÏS (exclu)", "0", "0", "0", "—", "—", "—"],
     ["TOTAL", "52 918", "40 921", "93 839", "80 628", "116%", "✅"],
 ]
 story.append(make_table(ytd_data, col_widths=[2.8*cm, 2*cm, 1.8*cm, 2.2*cm, 2.5*cm, 1.5*cm, 1*cm], font_size=8))
@@ -506,7 +509,8 @@ proj_data = [
     ["CONCENTRÉS", "12 066", "6 393", "18 459", "24 192", "76%", "-5 733"],
     ["ALIMENT COMPLET", "525", "368", "893", "1 046", "85%", "-153"],
     ["INGRÉDIENTS", "548", "307", "855", "1 064", "80%", "-209"],
-    ["PREMIX", "61", "0", "61", "130", "47%", "-69"],
+    ["PREMIX", "61", "0", "61", "130", "47%", "❌"],
+    ["MAÏS (exclu)", "0", "0", "0", "—", "—", "—"],
     ["TOTAL", "52 918", "40 921", "93 839", "80 628", "116%", "+13 211"],
 ]
 story.append(make_table(proj_data, col_widths=[3*cm, 2*cm, 2.5*cm, 2.5*cm, 2.5*cm, 1.5*cm, 2.5*cm], font_size=8))
