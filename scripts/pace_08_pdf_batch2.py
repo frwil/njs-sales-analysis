@@ -629,6 +629,65 @@ story.append(Paragraph(
 story.append(PageBreak())
 
 # === Section 7 ===
+
+story.append(PageBreak())
+story.append(Paragraph("6.5 Réalisation 2026 YTD + Projection fin d'année", H1))
+story.append(Paragraph(
+    "Cette section présente la réalisation YTD (Jan-Août 2026, tous clients) comparée aux objectifs, "
+    "ainsi que la projection de fin d'année (YTD réel + Q4 forecast S3) vs objectif annuel. "
+    "Cette analyse permet de contextualiser le forecast Q4 dans la trajectoire annuelle complète.",
+    BODY))
+
+story.append(Paragraph("6.5.1 Volumes YTD vs objectifs", H2))
+ytd_vol_data = [
+    ["Famille", "YTD réel (t)", "Obj YTD (t)", "% YTD", "\u00c9cart (t)", "Statut"],
+    ["TOURTEAUX", "39 718", "34 359", "116%", "+5 359", "✅"],
+    ["CONCENTR\u00c9S", "12 066", "15 792", "76%", "-3 726", "❌"],
+    ["ALIMENT COMPLET", "525", "663", "79%", "-138", "❌"],
+    ["INGR\u00c9DIENTS", "548", "728", "75%", "-180", "❌"],
+    ["PREMIX", "61", "80", "76%", "-19", "❌"],
+    ["TOTAL", "52 918", "51 622", "103%", "+1 296", "✅"],
+]
+story.append(make_table(ytd_vol_data, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 1.5*cm, 2.5*cm, 1.5*cm], font_size=9))
+story.append(Spacer(1, 0.3*cm))
+
+story.append(Paragraph("6.5.2 CA YTD vs objectifs", H2))
+ytd_ca_data = [
+    ["Famille", "CA YTD réel (M FCFA)", "CA YTD obj (M FCFA)", "% YTD"],
+    ["TOURTEAUX", "13 478", "11 563", "117%"],
+    ["CONCENTR\u00c9S", "8 069", "10 970", "74%"],
+    ["ALIMENT COMPLET", "427", "576", "74%"],
+    ["INGR\u00c9DIENTS", "777", "1 074", "72%"],
+    ["PREMIX", "115", "149", "77%"],
+    ["TOTAL", "22 866", "24 332", "94%"],
+]
+story.append(make_table(ytd_ca_data, col_widths=[4*cm, 4*cm, 4*cm, 2.5*cm], font_size=9))
+story.append(Spacer(1, 0.3*cm))
+
+story.append(Paragraph("6.5.3 Projection fin d'année (YTD + Q4 forecast S3)", H2))
+proj_data = [
+    ["Famille", "YTD réel (t)", "Q4 forecast (t)", "Total 2026 (t)", "Obj annuel (t)", "% Annuel", "\u00c9cart (t)"],
+    ["TOURTEAUX", "39 718", "33 853", "73 571", "54 196", "136%", "+19 375"],
+    ["CONCENTR\u00c9S", "12 066", "6 393", "18 459", "24 192", "76%", "-5 733"],
+    ["ALIMENT COMPLET", "525", "368", "893", "1 046", "85%", "-153"],
+    ["INGR\u00c9DIENTS", "548", "307", "855", "1 064", "80%", "-209"],
+    ["PREMIX", "61", "0", "61", "130", "47%", "-69"],
+    ["TOTAL", "52 918", "40 921", "93 839", "80 628", "116%", "+13 211"],
+]
+story.append(make_table(proj_data, col_widths=[3*cm, 2*cm, 2.5*cm, 2.5*cm, 2.5*cm, 1.5*cm, 2.5*cm], font_size=8))
+story.append(Spacer(1, 0.3*cm))
+
+story.append(Paragraph(
+    "<b>Analyse</b> : Le TOURTEAUX surperforme massivement (136% de l'objectif annuel, +19 375 t) "
+    "gr\u00e2ce \u00e0 la rupture concurrente de juillet-août 2026. Cette surperformance est exceptionnelle et non récurrente. "
+    "Les CONCENTR\u00c9S restent \u00e0 76% de l'objectif annuel (-5 733 t) : malgré un mois d'août \u00e0 113%, "
+    "le retard accumulé sur S1 (-3 726 t) n'est pas rattrapable en Q4. "
+    "Au niveau global, l'objectif annuel est dépassé \u00e0 116% (+13 211 t), mais cette performance est entièrement tirée "
+    "par le TOURTEAUX. Sans cet effet exceptionnel, l'objectif serait manqué. "
+    "Cette analyse justifie la désaisonnalisation de l'effet soja dans le forecast 2027, pour éviter de projeter "
+    "un phénomène non récurrent.",
+    BODY))
+
 story.append(Paragraph("7. Plan de déploiement et adoption", H1))
 story.append(Paragraph("7.1 Calendrier de déploiement", H2))
 deploy_data = [

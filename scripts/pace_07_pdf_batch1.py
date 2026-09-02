@@ -217,6 +217,34 @@ synth_data = [
 story.append(make_table(synth_data, col_widths=[3.2*cm, 5.8*cm, 2.8*cm, 3.2*cm, 2*cm], font_size=8))
 story.append(Spacer(1, 0.3*cm))
 
+
+story.append(Paragraph("<b>Réalisation 2026 YTD + Projection fin d'année</b>", H3))
+
+story.append(Paragraph(
+    "Le tableau ci-dessous présente la réalisation YTD (Jan-Août 2026, tous clients) "
+    "vs objectifs, et la projection de fin d'année (YTD réel + Q4 forecast S3) vs objectif annuel.",
+    BODY))
+
+ytd_data = [
+    ["Famille", "YTD réel (t)", "Obj YTD (t)", "% YTD", "Q4 fcst (t)", "Total 2026 (t)", "Obj annuel (t)", "% Annuel", "Statut"],
+    ["TOURTEAUX", "39 718", "34 359", "116%", "33 853", "73 571", "54 196", "136%", "✅"],
+    ["CONCENTR\u00c9S", "12 066", "15 792", "76%", "6 393", "18 459", "24 192", "76%", "❌"],
+    ["ALIMENT COMPLET", "525", "663", "79%", "368", "893", "1 046", "85%", "❌"],
+    ["INGR\u00c9DIENTS", "548", "728", "75%", "307", "855", "1 064", "80%", "❌"],
+    ["PREMIX", "61", "80", "76%", "0", "61", "130", "47%", "❌"],
+    ["TOTAL", "52 918", "51 622", "103%", "40 921", "93 839", "80 628", "116%", "✅"],
+]
+story.append(make_table(ytd_data, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.2*cm, 1.8*cm, 2*cm, 2*cm, 1.2*cm, 0.8*cm], font_size=7.5))
+story.append(Spacer(1, 0.3*cm))
+
+story.append(Paragraph(
+    "<b>Lecture clé</b> : Le TOURTEAUX surperforme massivement (136% de l'objectif annuel) gr\u00e2ce \u00e0 la rupture "
+    "concurrente de juillet-août. Les CONCENTR\u00c9S restent \u00e0 76% malgré un août \u00e0 113%. "
+    "Au niveau global, l'objectif annuel est dépassé de 116% (+13 211 t), mais cette performance est entièrement "
+    "tirée par le TOURTEAUX (effet exceptionnel non récurrent).",
+    BODY))
+story.append(Spacer(1, 0.3*cm))
+
 story.append(Paragraph("<b>Recommandations principales</b>", H3))
 recos = [
     "<b>Réapprovisionnement soja urgent</b> — Commander 80 000 sacs minimum avant le 15/09/2026 pour éviter le scénario S1 (perte de 12 782 M FCFA vs S3).",
