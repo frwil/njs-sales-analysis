@@ -329,7 +329,7 @@ story.append(Paragraph("1.2 Objectifs stratégiques", H2))
 obj_data = [
     ["Objectif", "Description", "KPI de succès"],
     ["Anticipation", "Produire un forecast Q4 2026 fiable (précision ≥ 85%)", "Écart forecast vs réel ≤ 15%"],
-    ["Désagrégation", "Détail par produit × agence × mois pour le pilotage opérationnel", "2 404 lignes"],
+    ["Désagrégation", "Détail par produit × agence × mois pour le pilotage opérationnel", "7 224 lignes"],
     ["Scénarios", "Modéliser 4 scénarios de réapprovisionnement soja", "S1-S4 produits"],
     ["Valeur", "Calculer le CA projeté (M FCFA) en plus du volume (tonnes)", "2 dimensions"],
     ["Adoption", "Diffuser auprès des 14 agences et du CODIR", "100% agences informées"],
@@ -352,7 +352,7 @@ story.append(PageBreak())
 story.append(Paragraph("2. Phase PREPARE - Préparation des données", H1))
 story.append(Paragraph("2.1 Sources de données consolidées", H2))
 story.append(Paragraph(
-    "Le dataset consolidé regroupe <b>115 086 enregistrements de ventes Livrées</b> "
+    "Le dataset consolidé regroupe <b>115 592 enregistrements de ventes Livrées</b> "
     "couvrant la période janvier 2025 - 26 août 2026 (20 mois d'historique). "
     "Cette consolidation a nécessité l'intégration de 4 sources ERP hétérogènes, "
     "chacune avec un format de colonnes légèrement différent.",
@@ -364,7 +364,7 @@ sources_data = [
     ["ventes janv a juin 2026.xlsx", "Jan-Juin 2026", "31 458", "S1 2026 (tendance récente)"],
     ["NJS GROUP ERP (9).xlsx", "Juillet 2026", "6 410", "Mois complet"],
     ["NJS GROUP ERP (21).xlsx", "01-26/08/2026", "5 133", "Août MTD (dernier mois)"],
-    ["TOTAL", "20 mois", "115 086", "Dataset consolidé"],
+    ["TOTAL", "20 mois", "115 592", "Dataset consolidé"],
 ]
 story.append(make_table(sources_data, col_widths=[5.5*cm, 4*cm, 2.5*cm, 6*cm], font_size=9))
 
@@ -567,7 +567,7 @@ excel_sheets = [
     "<b>4. Par Agence</b> - Top 14 agences par scénario avec part de CA",
     "<b>5. Par Produit</b> - 69 références produits par scénario",
     "<b>6. Par Mois</b> - Évolution mensuelle sept-déc par famille et scénario",
-    "<b>7. Détail complet</b> - Toutes les combinaisons produit × agence × mois × scénario (2 404 lignes)",
+    "<b>7. Détail complet</b> - Toutes les combinaisons produit × agence × mois × scénario (7 224 lignes)",
     "<b>8. Prix utilisés</b> - Prix par produit (stable + baisse) avec source",
     "<b>9. Hypothèses</b> - Tous les paramètres et scénarios documentés",
 ]
@@ -599,7 +599,7 @@ results_data = [
     ["Scénario", "Volume Q4 (t)", "CA Q4 (M FCFA)", "vs S3 (CA)", "Recommandation"],
     ["S1 - Rupture totale", "7 291", "4 656", "-73%", "À ÉVITER ABSOLUMENT"],
     ["S2 - Réappro 50%", "32 207", "14 922", "-14%", "Plan B (si réappro partiel)"],
-    ["S3 - Réappro 100%", "37 780", "17 438", "—", "SCÉNARIO RETENU"],
+    ["S3 - Réappro 100%", "40 921", "18 798", "—", "SCÉNARIO RETENU"],
     ["S4 - Baisse prix", "41 067", "17 168", "-1%", "Optimiste (si stock stabilisé)"],
 ]
 story.append(make_table(results_data, col_widths=[4*cm, 3*cm, 3*cm, 2.5*cm, 5.5*cm], font_size=9))
@@ -691,7 +691,7 @@ story.append(Paragraph(
 story.append(Paragraph("10. Conclusion et prochaines étapes", H1))
 story.append(Paragraph(
     "Le forecast Q4 2026 fournit à BELGOCAM SA un <b>outil de pilotage stratégique</b> "
-    "qui transforme 115 086 enregistrements historiques en projections actionnables. "
+    "qui transforme 115 592 enregistrements historiques en projections actionnables. "
     "Les 4 scénarios modélisés permettent d'anticiper l'impact des décisions de réapprovisionnement soja "
     "et de calibrer les objectifs commerciaux Q4 avec une précision opérationnelle.",
     BODY))

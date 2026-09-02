@@ -250,9 +250,9 @@ story.append(code_block("""forecast_q4_2026/
 │   ├── pace_07_pdf_batch1.py         # PDFs batch 1
 │   ├── pace_08_pdf_batch2.py         # PDFs batch 2
 │   └── pace_09_guide_methodo.py      # Ce guide PDF
-├── dataset_consolide.csv             # Dataset final (115 086 lignes)
+├── dataset_consolide.csv             # Dataset final (115 592 lignes)
 ├── prix_forecast.json                # Prix par scénario
-├── forecast_q4_2026.csv              # Forecast détaillé (2 404 lignes)
+├── forecast_q4_2026.csv              # Forecast détaillé (7 224 lignes)
 ├── aed_summary.json                  # Synthèse AED
 └── aed_charts/                       # Graphiques AED
     ├── 01_volumes_mensuels_famille.png
@@ -331,7 +331,7 @@ story.append(Paragraph(
 
 states_data = [
     ["État", "Count (estimé)", "Inclure", "Raison"],
-    ["Livrée", "115 086", "Oui", "Vente effectuée et facturée"],
+    ["Livrée", "115 592", "Oui", "Vente effectuée et facturée"],
     ["Validée", "~1 500", "Non", "Commande validée mais non encore livrée"],
     ["En cours", "~800", "Non", "Commande en cours de traitement"],
     ["Annulée", "~500", "Non", "Commande annulée par client ou BELGOCAM"],
@@ -464,7 +464,7 @@ story.append(Paragraph(
 
 story.append(Paragraph("7.1 Statistiques descriptives globales", H3))
 story.append(Paragraph(
-    "Le dataset consolidé contient <b>115 086 enregistrements</b> sur 20 mois (janvier 2025 - août 2026), "
+    "Le dataset consolidé contient <b>115 592 enregistrements</b> sur 20 mois (janvier 2025 - août 2026), "
     "représentant <b>109 045 tonnes</b> de produits vendus pour un CA total de <b>51 372 M FCFA</b>. "
     "Le dataset couvre 69 références produits, 14 agences, 3 régions et plus de 1 500 clients uniques.",
     BODY))
@@ -472,7 +472,7 @@ story.append(Paragraph(
 global_stats = [
     ["Indicateur", "Valeur"],
     ["Période couverte", "Janvier 2025 - 26 août 2026 (20 mois)"],
-    ["Total enregistrements", "115 086"],
+    ["Total enregistrements", "115 592"],
     ["Total volume", "109 045 tonnes"],
     ["Total CA TTC", "51 372 M FCFA"],
     ["Nb références produits", "26"],
@@ -769,7 +769,7 @@ scenarios_detail = [
     ["Scénario", "Hypothèse", "Volume Q4 (t)", "CA Q4 (M FCFA)"],
     ["S1 - Rupture totale", "Aucun réappro, ventes soja = 0 après 16/09", "7 291", "4 656"],
     ["S2 - Réappro 50%", "40 000 sacs au 01/10/2026", "32 207", "14 922"],
-    ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (scénario retenu)", "37 780", "17 438"],
+    ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (scénario retenu)", "40 921", "18 798"],
     ["S4 - Baisse prix", "S3 + baisse prix soja -10%", "41 067", "17 168"],
 ]
 story.append(make_table(scenarios_detail, col_widths=[3.5*cm, 6.5*cm, 3*cm, 3*cm], font_size=9))
@@ -818,7 +818,7 @@ story.append(HRFlowable(width="100%", thickness=2, color=GOLD))
 
 story.append(Paragraph("14. Production des livrables", H2))
 story.append(Paragraph(
-    "La phase EXECUTE consiste à transformer le forecast technique (fichier CSV avec 2 404 lignes) "
+    "La phase EXECUTE consiste à transformer le forecast technique (fichier CSV avec 7 224 lignes) "
     "en livrables utilisables par les différents acteurs de BELGOCAM. Neuf livrables sont produits :",
     BODY))
 
@@ -849,7 +849,7 @@ excel_feuilles = [
     ["4. Par Agence", "Top 14 agences × scénario", "~70", "Pilotage agences"],
     ["5. Par Produit", "69 références × scénario", "~120", "Analyse produit"],
     ["6. Par Mois", "Évolution sept-déc par famille", "~30", "Tendance mensuelle"],
-    ["7. Détail complet", "Produit × agence × mois × scénario", "2 404", "Données brutes"],
+    ["7. Détail complet", "Produit × agence × mois × scénario", "7 224", "Données brutes"],
     ["8. Prix utilisés", "Prix par produit (2 scénarios)", "26", "Transparence"],
     ["9. Hypothèses", "Tous les paramètres", "~50", "Audit"],
 ]

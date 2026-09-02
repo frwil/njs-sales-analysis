@@ -620,3 +620,27 @@ Stage Summary:
 - analyse_bundle_soja_concentres.pdf (17 pages): section 8 refraichie au 29/08
 - forecast_q4_2026_S3_volumes_valeurs.xlsx (8 feuilles): mis a jour via pipeline automatise
 - Conclusion: Août 2026 = 2e mois consecutif au-dessus de l'objectif CONCENTRES (106% ajuste, +88 t). Le TOURTEAUX termine juste sous l'objectif (99%, -32 t). Bundle ratio record a 2.4:1. Stock soja critique (rupture 20/09).
+
+---
+Task ID: forecast-2027-pdfs
+Agent: main
+Task: Régénérer tous les PDFs Q4 2026 avec chiffres définitifs août + générer les 5 PDFs PACE pour le forecast 2027.
+
+Work Log:
+- Q4 2026 PDFs régénérés avec chiffres définitifs (extraction 27, 01-31/08):
+  - 01_resume_executif.pdf, 02_proposition_projet.pdf, 03_matrice_raci.pdf, 04_document_strategique_pace.pdf, 05_guide_methodologique.pdf
+  - Tous mis à jour: Volume Q4 = 40 921 t, CA Q4 = 18 798 M FCFA, 115 592 records, 7 224 lignes
+- Forecast 2027 PDFs générés (nouveaux):
+  - 01_resume_executif.pdf (50 KB) - Vue d'ensemble 2027
+  - 02_proposition_projet.pdf (50 KB) - Cadre formel 2027
+  - 03_matrice_raci.pdf (49 KB) - Rôles et responsabilités 2027
+  - 04_document_strategique_pace.pdf (51 KB) - Stratégie PACE 2027
+  - 05_guide_methodologique.pdf (51 KB) - Méthodes Prophet + désaisonnalisation
+- Tous les PDFs utilisent les mêmes chiffres officiels:
+  - 2027: Volume 109 288 t, CA 58 550 M FCFA, 69 produits, 14 agences, 7 224 lignes
+  - Q4 2026: Volume 40 921 t, CA 18 798 M FCFA (mis à jour avec extraction 31/08)
+- Innovations 2027 documentées dans tous les PDFs:
+  - Désaisonnalisation effet soja (cap moyenne S1)
+  - En cours + Validées incluses
+  - Prix soja actualisé 25 000 FCFA
+  - Forecast 12 mois complet

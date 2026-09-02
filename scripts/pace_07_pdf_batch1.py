@@ -197,7 +197,7 @@ story.append(Paragraph(
 
 story.append(Paragraph("<b>Méthodologie</b>", H3))
 story.append(Paragraph(
-    "Le forecast repose sur <b>115 086 enregistrements de ventes</b> couvrant la période janvier 2025 - 26 août 2026, "
+    "Le forecast repose sur <b>115 592 enregistrements de ventes</b> couvrant la période janvier 2025 - 26 août 2026, "
     "incluant 6 familles de produits (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT COMPLET, MATERIEL ÉLEVAGE, PREMIX), "
     "69 références produits, 14 agences et 3 régions (Ouest, Centre, Littoral). "
     "Le modèle <b>Prophet</b> a été entraîné au niveau famille × région pour les 4 familles alimentaires, "
@@ -211,7 +211,7 @@ synth_data = [
     ["Scénario", "Description", "Volume Q4 (t)", "CA Q4 (M FCFA)", "vs S3"],
     ["S1 - Rupture totale", "Ventes soja = 0 après 16/09/2026", "7 291", "4 656", "-73%"],
     ["S2 - Réappro 50%", "40 000 sacs au 01/10/2026", "32 207", "14 922", "-14%"],
-    ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (scénario retenu)", "37 780", "17 438", "—"],
+    ["S3 - Réappro 100%", "80 000 sacs au 15/09/2026 (scénario retenu)", "40 921", "18 798", "—"],
     ["S4 - Baisse prix", "S3 + baisse prix soja -10%", "41 067", "17 168", "-1%"],
 ]
 story.append(make_table(synth_data, col_widths=[3.2*cm, 5.8*cm, 2.8*cm, 3.2*cm, 2*cm], font_size=8))
@@ -220,7 +220,7 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Recommandations principales</b>", H3))
 recos = [
     "<b>Réapprovisionnement soja urgent</b> — Commander 80 000 sacs minimum avant le 15/09/2026 pour éviter le scénario S1 (perte de 12 782 M FCFA vs S3).",
-    "<b>Planification commerciale Q4</b> — Utiliser le scénario S3 (37 780 t, 17 438 M FCFA) comme référence pour les objectifs commerciaux.",
+    "<b>Planification commerciale Q4</b> — Utiliser le scénario S3 (40 921 t, 18 798 M FCFA) comme référence pour les objectifs commerciaux.",
     "<b>Maintien du plan d'action bundle</b> — Le ratio soja:concentrés atteint 2,4:1 en août 2026 (vs 3,5:1 en juillet), à maintenir en Q4.",
     "<b>Surveillance FAMLA et MESSASSI</b> — Ces deux agences sous-performent en août (96% et 97% de l'objectif), à relancer en septembre.",
     "<b>Mise à jour mensuelle</b> — Actualiser le forecast avec les nouvelles extractions ERP pour ajuster les projections.",
@@ -254,7 +254,7 @@ fam_data = [
     ["ALIMENT COMPLET", "107", "87", "72", "100", "365", "286"],
     ["MATERIEL ÉLEVAGE", "—", "—", "—", "—", "—", "189"],
     ["PREMIX", "—", "—", "—", "—", "—", "48"],
-    ["TOTAL", "1 340", "7 008", "15 587", "13 845", "37 780", "17 438"],
+    ["TOTAL", "1 340", "7 008", "15 587", "13 845", "40 921", "18 798"],
 ]
 story.append(make_table(fam_data, col_widths=[3.5*cm, 1.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.5*cm, 2.5*cm], font_size=8))
 
@@ -279,7 +279,7 @@ story.extend(add_image(f"{CHARTS_DIR}/07_volume_par_scenario.png", width=14*cm,
 story.append(Paragraph("<b>Conclusion</b>", H3))
 story.append(Paragraph(
     "Le forecast Q4 2026 présente une <b>forte sensibilité au réapprovisionnement soja</b>. "
-    "Le scénario retenu (S3 - réappro 100%) projette <b>37 780 tonnes</b> pour un CA de <b>17 438 M FCFA</b>, "
+    "Le scénario retenu (S3 - réappro 100%) projette <b>40 921 tonnes</b> pour un CA de <b>18 798 M FCFA</b>, "
     "soit +274% vs S1 (rupture totale, 4 656 M FCFA). La stratégie recommandée est donc de sécuriser le réapprovisionnement soja "
     "avant le 15/09/2026 et de planifier les objectifs commerciaux Q4 sur le scénario S3. "
     "Le plan d'action bundle, qui a permis d'atteindre un ratio soja:concentrés de 2,4:1 en août "
@@ -364,7 +364,7 @@ scope_data = [
     ["Produits", "69 références (T102, C101-C108, MAT014/MAT011/MAT017 alvéoles, P102N2, etc.)", "69 produits"],
     ["Agences", "14 agences BELGOCAM (FAMLA, NDOBO, DJELENG, etc.)", "14 agences"],
     ["Régions", "Ouest, Centre, Littoral", "3 régions"],
-    ["Niveau détail", "Produit × Agence × Mois", "2 404 lignes"],
+    ["Niveau détail", "Produit × Agence × Mois", "7 224 lignes"],
     ["Scénario retenu", "S3 - Réappro 100% (80 000 sacs au 15/09/2026)", "1 scénario"],
     ["Sorties", "Volume (tonnes) + Valeur (M FCFA)", "2 dimensions"],
 ]
@@ -410,9 +410,9 @@ story.extend(add_image(f"{CHARTS_DIR}/13_pace_flowchart.png", width=15*cm,
 
 pace_data = [
     ["Phase", "Activités", "Livrables", "Durée"],
-    ["P - PREPARE", "Chargement données, nettoyage, consolidation, calcul prix, intégration matériel élevage + premix", "Dataset consolidé (115 086 records), Prix par produit", "2 jours"],
+    ["P - PREPARE", "Chargement données, nettoyage, consolidation, calcul prix, intégration matériel élevage + premix", "Dataset consolidé (115 592 records), Prix par produit", "2 jours"],
     ["A - ANALYZE", "AED, statistiques descriptives, saisonnalité, top produits/agences", "Graphiques AED (6), Synthèse statistique", "1 jour"],
-    ["C - CONSTRUCT", "Modélisation Prophet (4 familles alimentaires) + extrapolation (matériel + premix), scénario S3, désagrégation", "Forecast Q4 (2 404 lignes), Modèles validés", "2 jours"],
+    ["C - CONSTRUCT", "Modélisation Prophet (4 familles alimentaires) + extrapolation (matériel + premix), scénario S3, désagrégation", "Forecast Q4 (7 224 lignes), Modèles validés", "2 jours"],
     ["E - EXECUTE", "Génération livrables finaux (Excel, PDFs, notebook)", "9 livrables finaux", "1 jour"],
 ]
 story.append(make_table(pace_data, col_widths=[3*cm, 5.5*cm, 5.5*cm, 3*cm], font_size=8))

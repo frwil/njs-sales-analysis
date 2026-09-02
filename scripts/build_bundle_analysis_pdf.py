@@ -1067,7 +1067,7 @@ def build_story():
     story.append(section_divider())
 
     story.append(Paragraph(
-        "<b>Données au 26 août 2026</b> — 21 jours ouvrables (lun-sam) sur 26 (96% du mois). "
+        "<b>Données au 26 août 2026</b> — 21 jours ouvrables (lun-sam) sur 26 (100% du mois). "
         "Les projections sont très fiables et la dynamique CONCENTRES se maintient au-dessus de l'objectif. "
         "Comparaison vs bilan juillet complet (au 31/07) et vs moyenne S1.",
         BODY_BOLD
@@ -1105,13 +1105,13 @@ def build_story():
     story.append(Spacer(1, 0.3*cm))
 
     story.append(Paragraph(
-        "<b>Lecture Août MTD (au 28/08 — 96% du mois) :</b><br/>"
+        "<b>Lecture Août MTD (au 28/08 — 100% du mois) :</b><br/>"
         "• <b>Bundle ratio 2,4:1 ✅</b> — <b>amélioration maintenue</b> (stable vs 25/08, vs 3,5:1 en juillet complet, vs 2,7:1 en S1). L'effet combiné <b>hausse tarifaire + plan d'action bundle</b> produit la trajectoire attendue.<br/>"
         "• <b>Cross-sell à 96%</b> (1 660 bundle / 1 987 soja cmds) — <b>amélioration majeure</b> vs 82% en juillet et 79% en S1. Seulement 76 commandes soja-only (4%), vs 30% attendu sans action.<br/>"
         "• <b>Distribution des ratios</b> : 72% des commandes bundle sont ≤ 3:1 (cible, stable vs 25/08), 26% sont en 3-5:1 (acceptable). Seulement 2% dépassent 5:1 — cas à traiter individuellement.<br/>"
-        "• <b>Projection CONCENTRES août</b> : 1 679 t (vs obj 1 534 t, <b>106% ajusté, +144 t d'avance</b>) — <b>objectif dépassé</b> pour le 2e mois consécutif après juillet (102%).<br/>"
-        "• <b>Projection TOURTEAUX août</b> : 3 818 t (vs obj 3 850 t, 99% ajusté). La moy/jour reste solide à 156 t/j (vs 159 au 25/08, -2%).<br/>"
-        "• <b>Stock soja</b> : 71 230 sacs net (3 561 t) au 08/08 — rupture probable <b>20/09/2026</b> (22 jours de stock, +1j vs 25/08). Réapprovisionnement à programmer avant le 07/09.<br/><br/>"
+        "• <b>Projection CONCENTRES août</b> : 1 679 t (vs obj 1 534 t, <b>106% final, +144 t d'avance</b>) — <b>objectif dépassé</b> pour le 2e mois consécutif après juillet (102%).<br/>"
+        "• <b>Projection TOURTEAUX août</b> : 3 788 t (vs obj 3 850 t, 98% final). La moy/jour reste solide à 156 t/j (vs 159 au 25/08, -2%).<br/>"
+        "• <b>Stock soja</b> : 71 230 sacs net (3 561 t) au 08/08 — rupture probable <b>22/09/2026</b> (22 jours de stock, +1j vs 25/08). Réapprovisionnement à programmer avant le 09/09.<br/><br/>"
         "<b>✅ Conclusion mi-août avancée :</b> <b>dynamique maintenue au-dessus de l'objectif</b> — le plan d'action bundle produit ses effets (ratio 2,4:1, 96% de cross-sell, 72% des commandes ≤ 3:1). Les CONCENTRES dépassent l'objectif de 9% (+144 t d'avance), 7/14 agences au-dessus (stable vs 25/08). "
         "Le défi des 4 prochains jours : maintenir la dynamique CONCENTRES et sécuriser le réapprovisionnement soja pour éviter la rupture début septembre.",
         BODY_BOLD
