@@ -850,3 +850,68 @@ Stage Summary:
 - 10 PDFs générés (5 Q4 2026 + 5 2027), tous avec ALVEOLES comme famille distincte
 - 2 Excels régénérés avec 8 familles dans la synthèse, surlignage jaune pour ALVEOLES et COMPLEMENT_ALIMENTAIRE
 - Conclusion v3 finale: ALVEOLES séparés du MATERIEL_ELEVAGE comme 8e famille (4 refs MAT011/MAT014/MAT015/MAT017, CA only). La séparation révèle que les ALVEOLES représentaient 80% du CA MATERIEL_ELEVAGE historique (449 M / 650 M total). En Q4 2026, ALVEOLES prévoit 146 M FCFA (vs 114 M pour MATERIEL_ELEVAGE précédemment combiné). En 2027, ALVEOLES prévoit 438 M FCFA. La séparation permet un meilleur suivi opérationnel de cette activité très saisonnière (concentrée en 2025).
+
+---
+Task ID: forecast-v4-spc-maroua-bundle
+Agent: main
+Task: Intégrer les agences SPC (Baf-Chefferie etc.) + Maroua dans le forecast. Appliquer bundle 2.5:1 (soja:concentré). Utiliser la saisonnalité 2026 pour ALVEOLES (au lieu du pic 2025).
+
+Work Log:
+- Phase 1: Reconstruction dataset avec agences SPC + Maroua
+  - Script: scripts/build_dataset_v3_spc_maroua.py
+  - 11 agences SPC ajoutées à ALL_AGENCES (mapping Ouest/Littoral/Centre)
+  - Maroua ajoutée (Centre par convention — Nord → Centre)
+  - Filtre Tiers (client) maintenu: exclusion SPC SA, PDC, COMPTOIR, EMANA comme client (pas comme agence)
+  - SPC Baf-Chefferie (Ouest): 253 records, 274 M CA HT (prédominant en ALVEOLES + MATERIEL_ELEVAGE)
+  - SPC Village/Yassa/Buea/Ndere: présence mineure (0.1-1 M CA chacun)
+  - Maroua: 5 records (Août 2026, soja T102, total 327 sacs = 16.35 t)
+  - Résultat: 20 agences (14 BELGOCAM + 5 SPC + Maroua), 176 576 records, 8 familles
+  - ALVEOLES 2025 = 738.8 M (vs 449 M avant — SPC Baf-Chefferie ajouté: 214 M)
+  - ALVEOLES 2026 = 13.9 M (très faible vs pic 2025)
+
+- Phase 2: Saisonnalité ALVEOLES 2026
+  - Script: extrapolate_mean_q4 / extrapolate_mean modifiés
+  - Si family == 'ALVEOLES': utiliser 2026 monthly average (~1.7 M/mois) avec weights Q4
+  - Saisonnalité: Sep 0.8, Oct 1.2, Nov 1.0, Déc 0.9 (légère hausse fin d'année)
+  - Résultat: ALVEOLES Q4 2026 = 30 M FCFA (vs 146 M avant — réduction de -80%)
+  - Résultat: ALVEOLES 2027 = 92 M FCFA (vs 438 M avant — réduction de -79%)
+
+- Phase 3: Application bundle 2.5:1 (soja:concentré)
+  - Logique: pour chaque region × month, si ratio soja/concentré > 2.5, augmenter CONCENTRES proportionnellement
+  - Recalcul du CA CONCENTRES après ajustement (prix par sac)
+  - Q4 2026: 6 ajustements effectués (Centre/Ouest/Littoral × mois avec ratio > 2.5)
+  - 2027: 26 ajustements effectués (mensuels × régions)
+  - Impact: CONCENTRES Q4 2026 passent de 6 610 à 8 165 t (+1 555 t, +23%)
+  - Impact: CONCENTRES 2027 passent de 19 658 à 25 827 t (+6 169 t, +31%)
+
+- Phase 4: Régénération Excels
+  - Q4 2026 Excel: 168 KB, 8 feuilles, 3 520 lignes, 20 agences, 90 produits
+  - 2027 Excel: 459 KB, 8 feuilles, 10 560 lignes, 20 agences, 90 produits
+
+- Phase 5: Régénération 10 PDFs v4
+  - Q4 2026: 27 686 t / 15 292 M FCFA (vs 25 410 t / 13 993 M en v3 = +9% volume, +9% CA)
+  - 2027: 89 807 t / 49 496 M FCFA (vs 81 582 t / 44 666 M en v3 = +10% volume, +11% CA)
+  - Tous les PDFs incluent: 20 agences, NOUVEAU v4 SPC agences, Maroua, Bundle 2.5:1, Saisonnalité ALV 2026
+  - Top 5 agences Q4 2026: FAMLA 4 358 M, NDOBO 2 093 M, MESSASSI 1 359 M, DJELENG 1 247 M, VILLAGE 868 M
+  - Top 5 agences 2027: FAMLA 15 416 M, NDOBO 6 236 M, DJELENG 4 420 M, MESSASSI 4 245 M, MBOUDA 2 703 M
+
+Stage Summary:
+- Dataset 2023-2026 v3 final: 176 576 records, 90 produits, 20 agences (14 BELGOCAM + 5 SPC + Maroua), 8 familles
+- Q4 2026 v4 forecast: 27 686 t, 15 292 M FCFA (+9% vs v3)
+  - TOURTEAUX: 18 970 t (62,0% CA) — augmente avec Maroua (16.35 t historique annuels)
+  - CONCENTRES: 8 165 t (35,5% CA) — augmente de +23% avec bundle 2.5:1
+  - ALVEOLES: 0 t / 30 M FCFA (0,2%) — baisse de -80% (saisonnalité 2026)
+  - MATERIEL_ELEVAGE: 0 t / 50 M FCFA (0,3%) — augmente avec SPC agences
+  - COMPLEMENT_ALIMENTAIRE: 1 t / 7 M FCFA (V300 1L only)
+  - PREMIX: 0 t / 59 M FCFA
+  - 6 ajustements bundle 2.5:1 (Centre/Ouest/Littoral × Oct, Nov, Déc selon ratio)
+
+- 2027 v4 forecast: 89 807 t, 49 496 M FCFA (+10% volume, +11% CA vs v3)
+  - TOURTEAUX: 62 480 t (63,1% CA)
+  - CONCENTRES: 25 827 t (34,7% CA) — augmente de +31% avec bundle
+  - ALVEOLES: 0 t / 92 M FCFA (0,2%) — baisse de -79% (saisonnalité 2026)
+  - MATERIEL_ELEVAGE: 0 t / 108 M FCFA (0,2%)
+  - 26 ajustements bundle 2.5:1 (12 mois × régions concernées)
+
+- 10 PDFs générés (5 Q4 2026 + 5 2027), tous avec nouvelles nouveautés v4 documentées
+- Conclusion v4: Intégration complète des agences SPC (Baf-Chefferie dominant en alvéoles + matériel), de Maroua (soja), du bundle 2.5:1 (ratio soja:concentré forcé à <=2.5), et de la saisonnalité ALVEOLES 2026 (vs pic 2025). Les volumes et CA augmentent respectivement de +9% et +11% en 2027 vs v3, principalement tirés par l'ajustement bundle 2.5:1 qui augmente les CONCENTRES. Les ALVEOLES baissent drastiquement (-79%) car la saisonnalité 2026 (13.9 M/an) est utilisée au lieu du pic 2025 (739 M).

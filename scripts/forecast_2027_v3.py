@@ -268,9 +268,26 @@ def fit_prophet_fast(history_df, periods=12, freq='MS'):
         return pd.DataFrame({'ds': future_dates, 'yhat': [avg] * periods,
                              'yhat_lower': [avg * 0.8] * periods, 'yhat_upper': [avg * 1.2] * periods})
 
-def extrapolate_mean(history_df, periods=12, freq='MS', value_col='y'):
-    """Extrapolate using historical monthly average for 2027."""
+def extrapolate_mean(history_df, periods=12, freq='MS', value_col='y', family=None):
+    """Extrapolate using historical monthly average for 2027.
+    For ALVEOLES: use 2026 monthly average (very low) instead of 2025 spike."""
     future_dates = pd.date_range(start='2027-01-01', periods=periods, freq=freq)
+    
+    # SPECIAL CASE: ALVEOLES — use 2026 monthly average (very low) instead of 2025 spike
+    if family == 'ALVEOLES':
+        # 2026 ALVEOLES: 11 records, 13.9 M HT over 8 months → ~1.7 M/month
+        avg_2026 = history_df[history_df['ds'].dt.year == 2026][value_col].mean()
+        if pd.isna(avg_2026) or avg_2026 == 0:
+            avg_2026 = 1.5  # Fallback: ~1.5 M/month
+        # Apply seasonal weights (Q4 slight uptick for year-end)
+        weights = [0.8, 0.9, 1.0, 1.0, 1.1, 1.0, 0.9, 0.9, 0.9, 1.2, 1.1, 1.0]
+        return pd.DataFrame({
+            'ds': future_dates,
+            'yhat': [avg_2026 * w for w in weights],
+            'yhat_lower': [avg_2026 * w * 0.7 for w in weights],
+            'yhat_upper': [avg_2026 * w * 1.3 for w in weights],
+        })
+    
     avg = history_df[value_col].mean() if len(history_df) > 0 else 0
     return pd.DataFrame({'ds': future_dates, 'yhat': [avg] * periods,
                          'yhat_lower': [avg * 0.7] * periods, 'yhat_upper': [avg * 1.3] * periods})
@@ -292,7 +309,7 @@ for idx, row in combos_fr.iterrows():
         history = history[['date', 'ca_m_fcfa']].rename(columns={'date': 'ds', 'ca_m_fcfa': 'y'})
         history = history.sort_values('ds')
         history['y'] = history['y'].clip(lower=0)
-        forecast = extrapolate_mean(history, periods=12, freq='MS', value_col='y')
+        forecast = extrapolate_mean(history, periods=12, freq='MS', value_col='y', family=family)
         is_ca_only = True
     else:
         history = monthly_fr_vol[(monthly_fr_vol['family'] == family) & (monthly_fr_vol['region'] == region)].copy()
@@ -389,6 +406,36 @@ fcst_df = pd.DataFrame(all_forecasts)
 # Filter 2027 only
 fcst_df = fcst_df[fcst_df['year'] == 2027]
 print(f"\n{len(fcst_df)} forecasts détaillés générés (2027, 12 mois)")
+
+# === BUNDLE 2.5:1 (soja:concentré) constraint ===
+print("\n=== APPLICATION BUNDLE 2.5:1 (soja:concentré) ===")
+BUNDLE_RATIO = 2.5
+adjustments_made = 0
+for (region, month), group in fcst_df.groupby(['region', 'month']):
+    soja_t = group[group['family'] == 'TOURTEAUX']['tonnes'].sum()
+    conc_t = group[group['family'] == 'CONCENTRES']['tonnes'].sum()
+    if soja_t > 0 and conc_t > 0:
+        ratio = soja_t / conc_t
+        if ratio > BUNDLE_RATIO:
+            # Increase CONCENTRÉS to reach 2.5:1
+            target_conc = soja_t / BUNDLE_RATIO
+            adjustment_factor = target_conc / conc_t
+            mask = (fcst_df['region'] == region) & (fcst_df['month'] == month) & (fcst_df['family'] == 'CONCENTRES')
+            fcst_df.loc[mask, 'tonnes'] = fcst_df.loc[mask, 'tonnes'] * adjustment_factor
+            fcst_df.loc[mask, 'sacs_50'] = fcst_df.loc[mask, 'sacs_50'] * adjustment_factor
+            # Recalculate CA for CONCENTRES
+            for idx in fcst_df[mask].index:
+                ref = fcst_df.at[idx, 'ref']
+                new_tonnes = fcst_df.at[idx, 'tonnes']
+                sacs = new_tonnes * 1000 / 50
+                prix = prix_2027.get(ref, 0)
+                fcst_df.at[idx, 'ca_m_fcfa'] = round(sacs * prix / 1e6, 2)
+                fcst_df.at[idx, 'sacs_50'] = round(sacs, 1)
+            adjustments_made += 1
+            if adjustments_made <= 10:  # Show only first 10
+                print(f"  {region} × {month}/2027: ratio {ratio:.2f} → {BUNDLE_RATIO}:1 (CONCENTRES ×{adjustment_factor:.2f})")
+
+print(f"  Total adjustments: {adjustments_made}")
 
 # Save
 output_path = "/home/z/my-project/scripts/forecast_2027_S3.csv"

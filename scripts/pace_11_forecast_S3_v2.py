@@ -246,9 +246,27 @@ def fit_prophet_fast_q4(history_df, periods=4, freq='MS'):
         return pd.DataFrame({'ds': future_dates, 'yhat': [avg] * periods,
                              'yhat_lower': [avg * 0.8] * periods, 'yhat_upper': [avg * 1.2] * periods})
 
-def extrapolate_mean_q4(history_df, periods=4, freq='MS', value_col='y'):
-    """Extrapolate using Q4 historical average."""
+def extrapolate_mean_q4(history_df, periods=4, freq='MS', value_col='y', family=None):
+    """Extrapolate using Q4 historical average.
+    For ALVEOLES: use 2026 patterns (low) instead of 2025 spike."""
     future_dates = pd.date_range(start='2026-09-01', periods=periods, freq=freq)
+    
+    # SPECIAL CASE: ALVEOLES — use 2026 monthly average (very low) instead of 2025 spike
+    if family == 'ALVEOLES':
+        # 2026 ALVEOLES: 11 records, 13.9 M HT over 8 months → ~1.7 M/month
+        # Spread across Q4 (Sep, Oct, Nov, Dec)
+        avg_2026 = history_df[history_df['ds'].dt.year == 2026][value_col].mean()
+        if pd.isna(avg_2026) or avg_2026 == 0:
+            avg_2026 = 1.5  # Fallback: ~1.5 M/month
+        # Apply Q4 weight (slightly higher than annual avg due to year-end purchases)
+        q4_weights = [0.8, 1.2, 1.0, 0.9]  # Sep, Oct, Nov, Dec
+        return pd.DataFrame({
+            'ds': future_dates,
+            'yhat': [avg_2026 * w for w in q4_weights],
+            'yhat_lower': [avg_2026 * w * 0.7 for w in q4_weights],
+            'yhat_upper': [avg_2026 * w * 1.3 for w in q4_weights],
+        })
+    
     q4_history = history_df[history_df['ds'].dt.month.isin([9, 10, 11, 12])]
     if len(q4_history) >= 4:
         avg = q4_history[value_col].mean()
@@ -274,7 +292,7 @@ for idx, row in combos_fr.iterrows():
         history = history[['date', 'ca_m_fcfa']].rename(columns={'date': 'ds', 'ca_m_fcfa': 'y'})
         history = history.sort_values('ds')
         history['y'] = history['y'].clip(lower=0)
-        forecast = extrapolate_mean_q4(history, periods=4, freq='MS', value_col='y')
+        forecast = extrapolate_mean_q4(history, periods=4, freq='MS', value_col='y', family=family)
         is_ca_only = True
     else:
         history = monthly_fr_vol[(monthly_fr_vol['family'] == family) & (monthly_fr_vol['region'] == region)].copy()
@@ -373,6 +391,38 @@ fcst_df = pd.DataFrame(all_forecasts)
 # Filter Q4 2026 only
 fcst_df = fcst_df[(fcst_df['year'] == 2026) & (fcst_df['month'].isin([9, 10, 11, 12]))]
 print(f"\n{len(fcst_df)} forecasts détaillés générés (Q4 2026 S3)")
+
+# === BUNDLE 2.5:1 (soja:concentré) constraint ===
+# For each region × month: ensure ratio soja/concentré <= 2.5
+# If ratio > 2.5, increase CONCENTRÉS to match (upward adjustment)
+print("\n=== APPLICATION BUNDLE 2.5:1 (soja:concentré) ===")
+BUNDLE_RATIO = 2.5
+adjustments_made = 0
+for (region, month), group in fcst_df.groupby(['region', 'month']):
+    soja_t = group[group['family'] == 'TOURTEAUX']['tonnes'].sum()
+    conc_t = group[group['family'] == 'CONCENTRES']['tonnes'].sum()
+    if soja_t > 0 and conc_t > 0:
+        ratio = soja_t / conc_t
+        if ratio > BUNDLE_RATIO:
+            # Increase CONCENTRÉS to reach 2.5:1
+            target_conc = soja_t / BUNDLE_RATIO
+            adjustment_factor = target_conc / conc_t
+            # Apply to all CONCENTRES rows for this region × month
+            mask = (fcst_df['region'] == region) & (fcst_df['month'] == month) & (fcst_df['family'] == 'CONCENTRES')
+            fcst_df.loc[mask, 'tonnes'] = fcst_df.loc[mask, 'tonnes'] * adjustment_factor
+            fcst_df.loc[mask, 'sacs_50'] = fcst_df.loc[mask, 'sacs_50'] * adjustment_factor
+            # Recalculate CA for CONCENTRES
+            for idx in fcst_df[mask].index:
+                ref = fcst_df.at[idx, 'ref']
+                new_tonnes = fcst_df.at[idx, 'tonnes']
+                sacs = new_tonnes * 1000 / 50
+                prix = prix_q4.get(ref, 0)
+                fcst_df.at[idx, 'ca_m_fcfa'] = round(sacs * prix / 1e6, 2)
+                fcst_df.at[idx, 'sacs_50'] = round(sacs, 1)
+            adjustments_made += 1
+            print(f"  {region} × {month}/2026: ratio {ratio:.2f} → {BUNDLE_RATIO}:1 (CONCENTRES ×{adjustment_factor:.2f})")
+
+print(f"  Total adjustments: {adjustments_made}")
 
 # Save
 output_path = "/home/z/my-project/scripts/forecast_q4_2026_S3.csv"
