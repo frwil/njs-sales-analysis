@@ -703,3 +703,70 @@ Stage Summary:
 - 7 familles: TOURTEAUX (92 517 t, 46 261 M), CONCENTRES (24 680 t, 16 504 M), ALIMENT_COMPLET (890 t, 688 M), MATERIEL_ELEVAGE (0 t, 377 M), INGREDIENTS (518 t, 107 M), PREMIX (0 t, 160 M), COMPLEMENT_ALIMENTAIRE (3 t, 17 M)
 - Top 5 agences 2027: FAMLA 18 085 M, NDOBO 9 476 M, MESSASSI 5 848 M, DJELENG 5 166 M, VILLAGE 3 749 M
 - Conclusion: v2 intègre COMPLEMENT_ALIMENTAIRE (proxy BELGOKILL, 1L=1kg) et utilise 32 mois d'historique (2024-2026). La progression de +58% vs 2026 annualisé reflète la tendance haussière 2024-2026 amplifiée par l'effet prix soja 25 000 FCFA. COMPLEMENT_ALIMENTAIRE reste marginal en volume (3 t) mais contribue à 17 M FCFA de CA grâce à la forte valeur unitaire des liquides.
+
+---
+Task ID: forecast-v3-2023-integration
+Agent: main
+Task: Intégrer l'année 2023 au forecast, refaire Q4 2026 et 2027, MATERIEL_ELEVAGE tonnes=0, BELGOKILL V300 1L only (V305 200L exclu).
+
+Work Log:
+- Phase 1: Construction du dataset 2023-2026
+  - Source LY_21_24 (filtre 2023): 6 016 records (Jan-Dec 2023)
+  - Combiné avec dataset_2024_2026 (170 560 records) → 176 576 records au total
+  - V305 (BELGOKILL 200L) EXCLU du dataset selon demande utilisateur
+  - MATERIEL_ELEVAGE tonnes=0 appliqué (CA only, non exprimable en volume)
+  - COMPLEMENT_ALIMENTAIRE: 9 produits liquides 1L (V300 + CA001-CA008), conversion 1L=1kg
+  - Script: scripts/build_dataset_2023_2026.py
+  - Output: scripts/dataset_2023_2026.csv (24 381 KB)
+  - Vérification: V305 absent, MATERIEL_ELEVAGE tonnes=0, COMPLEMENT_ALIMENTAIRE 18.8 t (2023-2026)
+
+- Phase 2: Forecast Q4 2026 (v2)
+  - Script: scripts/pace_11_forecast_S3_v2.py
+  - 7 familles au lieu de 6 (ajout COMPLEMENT_ALIMENTAIRE)
+  - 5 familles Prophet (incluant COMPLEMENT_ALIMENTAIRE)
+  - 2 familles extrapolation (MATERIEL_ELEVAGE tonnes=0, PREMIX tonnes=0)
+  - Désaisonnalisation soja maintenue (cap moyenne S1 2026)
+  - V305 EXCLU — seul V300 1L conservé
+  - Prix Q4: 25 000 FCFA/sac soja, prix par litre pour COMPLEMENT (2 500-15 000 FCFA/L)
+  - Output: scripts/forecast_q4_2026_S3.csv (3 884 lignes)
+
+- Phase 3: Forecast 2027 (v3)
+  - Script: scripts/forecast_2027_v3.py (mis à jour)
+  - Même méthodologie que Q4 2026 mais 12 mois (Jan-Déc 2027)
+  - Output: scripts/forecast_2027_S3.csv (11 652 lignes)
+
+- Phase 4: Régénération Excels
+  - Q4 2026 Excel: scripts/pace_12_excel_S3_v2.py
+    - 8 feuilles, 7 familles, COMPLEMENT_ALIMENTAIRE surligné en jaune
+    - Output: download/forecast_q4_2026_S3_volumes_valeurs.xlsx (188 KB)
+  - 2027 Excel: scripts/forecast_2027_excel_v2.py (mis à jour)
+    - 8 feuilles, 7 familles, sheet "Saisonnalité" ajoutée
+    - Output: download/forecast_2027_S3_volumes_valeurs.xlsx (516 KB)
+
+- Phase 5: Régénération PDFs (10 au total)
+  - Script unique: scripts/forecast_pdfs_v3.py (génère Q4 2026 + 2027)
+  - Q4 2026: 5 PDFs dans download/forecast_q4_2026/ (51-56 KB chacun)
+  - 2027: 5 PDFs dans download/forecast_2027/ (49-55 KB chacun)
+  - Tous les PDFs mentionnent: données 2023-2026 (44 mois), V305 exclu, MATERIEL_ELEVAGE tonnes=0
+
+Stage Summary:
+- Dataset 2023-2026: 176 576 records (vs 170 560 v2), 115 produits (vs 78 v2), 44 mois (vs 32 v2)
+- Q4 2026 v3 forecast: 25 410 t, 13 924 M FCFA (vs 40 921 t, 18 798 v1)
+  - TOURTEAUX: 18 321 t (65,8% CA)
+  - CONCENTRÉS: 6 610 t (31,6% CA)
+  - COMPLEMENT_ALIMENTAIRE: 1 t, 7 M FCFA (V300 1L only)
+  - MATERIEL_ELEVAGE: 0 t, 114 M FCFA (CA only)
+  - Pic octobre: 7 628 t (29,5% CA Q4)
+  - Top agences: FAMLA 4 028 M (29%), NDOBO 1 845 M, MESSASSI 1 335 M
+
+- 2027 v3 forecast: 81 582 t, 44 402 M FCFA (vs 118 608 t, 64 114 v2)
+  - TOURTEAUX: 60 673 t (68,3% CA)
+  - CONCENTRÉS: 19 658 t (29,5% CA)
+  - COMPLEMENT_ALIMENTAIRE: 3 t, 18 M FCFA (V300 1L only)
+  - MATERIEL_ELEVAGE: 0 t, 250 M FCFA (CA only)
+  - Q4 2027: 22 533 t (27,6% CA)
+  - Top agences: FAMLA 13 761 M, NDOBO 5 516 M, MESSASSI 4 098 M
+  - Progression 2027 vs 2026 annualisé: +4,4% (vs +51,8% en v2 — baisse car historique plus large)
+
+- 10 PDFs générés (5 Q4 2026 + 5 2027), tous avec mention V305 EXCLU et données 2023-2026
+- Conclusion: v3 intègre l'année 2023 (44 mois d'historique), exclut V305 (BELGOKILL 200L), maintient MATERIEL_ELEVAGE à 0 tonne. Les volumes forecast sont plus conservateurs qu'en v2 (Q4 2026: 25 410 t vs 40 921; 2027: 81 582 t vs 118 608) car l'historique 2023 (année post-COVID avec volumes modérés) apporte une saisonnalité plus équilibrée et l'absence de V305 réduit le CA famille COMPLEMENT_ALIMENTAIRE.

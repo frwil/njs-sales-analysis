@@ -1,0 +1,240 @@
+{
+  "q4_2026": {
+    "total_t": 25409.819999999996,
+    "total_ca": 13923.900000000001,
+    "by_family": [
+      {
+        "family": "ALIMENT_COMPLET",
+        "t": 187.0,
+        "ca": 131.2
+      },
+      {
+        "family": "COMPLEMENT_ALIMENTAIRE",
+        "t": 1.0,
+        "ca": 6.7
+      },
+      {
+        "family": "CONCENTRES",
+        "t": 6610.0,
+        "ca": 4400.3
+      },
+      {
+        "family": "INGREDIENTS",
+        "t": 291.0,
+        "ca": 64.1
+      },
+      {
+        "family": "MATERIEL_ELEVAGE",
+        "t": 0.0,
+        "ca": 113.6
+      },
+      {
+        "family": "PREMIX",
+        "t": 0.0,
+        "ca": 46.8
+      },
+      {
+        "family": "TOURTEAUX",
+        "t": 18321.0,
+        "ca": 9161.1
+      }
+    ],
+    "by_month": [
+      {
+        "month": 9,
+        "t": 4054.0,
+        "ca": 2296.1
+      },
+      {
+        "month": 10,
+        "t": 7628.0,
+        "ca": 4113.7
+      },
+      {
+        "month": 11,
+        "t": 6609.0,
+        "ca": 3635.6
+      },
+      {
+        "month": 12,
+        "t": 7118.0,
+        "ca": 3878.4
+      }
+    ],
+    "top_agences": [
+      {
+        "agence": "Famla",
+        "region": "Ouest",
+        "t": 7646.0,
+        "ca": 4027.5
+      },
+      {
+        "agence": "Ndobo",
+        "region": "Littoral",
+        "t": 3668.0,
+        "ca": 1845.2
+      },
+      {
+        "agence": "Messassi",
+        "region": "Centre",
+        "t": 2646.0,
+        "ca": 1335.3
+      },
+      {
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "t": 2073.0,
+        "ca": 1136.0
+      },
+      {
+        "agence": "Village",
+        "region": "Littoral",
+        "t": 1239.0,
+        "ca": 776.4
+      }
+    ]
+  },
+  "f2027": {
+    "total_t": 81581.55,
+    "total_ca": 44401.56,
+    "by_family": [
+      {
+        "family": "ALIMENT_COMPLET",
+        "t": 561.0,
+        "ca": 392.6
+      },
+      {
+        "family": "COMPLEMENT_ALIMENTAIRE",
+        "t": 3.0,
+        "ca": 17.6
+      },
+      {
+        "family": "CONCENTRES",
+        "t": 19658.0,
+        "ca": 13093.8
+      },
+      {
+        "family": "INGREDIENTS",
+        "t": 686.0,
+        "ca": 151.3
+      },
+      {
+        "family": "MATERIEL_ELEVAGE",
+        "t": 0.0,
+        "ca": 250.4
+      },
+      {
+        "family": "PREMIX",
+        "t": 0.0,
+        "ca": 157.3
+      },
+      {
+        "family": "TOURTEAUX",
+        "t": 60673.0,
+        "ca": 30338.4
+      }
+    ],
+    "by_quarter": [
+      {
+        "q": 1,
+        "t": 21500.0,
+        "ca": 11664.3
+      },
+      {
+        "q": 2,
+        "t": 20548.0,
+        "ca": 11106.5
+      },
+      {
+        "q": 3,
+        "t": 17000.0,
+        "ca": 9386.1
+      },
+      {
+        "q": 4,
+        "t": 22533.0,
+        "ca": 12244.6
+      }
+    ],
+    "top_agences": [
+      {
+        "agence": "Famla",
+        "region": "Ouest",
+        "t": 26424.0,
+        "ca": 13761.2
+      },
+      {
+        "agence": "Ndobo",
+        "region": "Littoral",
+        "t": 11010.0,
+        "ca": 5516.1
+      },
+      {
+        "agence": "Messassi",
+        "region": "Centre",
+        "t": 8158.0,
+        "ca": 4097.7
+      },
+      {
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "t": 7131.0,
+        "ca": 3874.7
+      },
+      {
+        "agence": "Mbouda",
+        "region": "Ouest",
+        "t": 3756.0,
+        "ca": 2626.3
+      }
+    ]
+  },
+  "ytd_2026": {
+    "total_t": 52072.575,
+    "annualized_t": 78108.86249999999
+  },
+  "hist_by_year": {
+    "2023": 50041.0,
+    "2024": 28450.0,
+    "2025": 63228.0,
+    "2026": 52073.0
+  },
+  "hist_by_family_year": {
+    "2023": {
+      "ALIMENT_COMPLET": 709.0,
+      "COMPLEMENT_ALIMENTAIRE": 7.0,
+      "CONCENTRES": 14963.0,
+      "INGREDIENTS": 964.0,
+      "MATERIEL_ELEVAGE": 0.0,
+      "PREMIX": 75.0,
+      "TOURTEAUX": 33323.0
+    },
+    "2024": {
+      "ALIMENT_COMPLET": 296.0,
+      "COMPLEMENT_ALIMENTAIRE": 3.0,
+      "CONCENTRES": 8207.0,
+      "INGREDIENTS": 606.0,
+      "MATERIEL_ELEVAGE": 0.0,
+      "PREMIX": 41.0,
+      "TOURTEAUX": 19296.0
+    },
+    "2025": {
+      "ALIMENT_COMPLET": 500.0,
+      "COMPLEMENT_ALIMENTAIRE": 6.0,
+      "CONCENTRES": 17319.0,
+      "INGREDIENTS": 733.0,
+      "MATERIEL_ELEVAGE": 0.0,
+      "PREMIX": 86.0,
+      "TOURTEAUX": 44584.0
+    },
+    "2026": {
+      "ALIMENT_COMPLET": 502.0,
+      "COMPLEMENT_ALIMENTAIRE": 3.0,
+      "CONCENTRES": 11932.0,
+      "INGREDIENTS": 531.0,
+      "MATERIEL_ELEVAGE": 0.0,
+      "PREMIX": 60.0,
+      "TOURTEAUX": 39045.0
+    }
+  }
+}

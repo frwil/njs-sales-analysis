@@ -1,11 +1,11 @@
 from openpyxl.utils import get_column_letter
 """
 Excel - Forecast 2027 complet (12 mois, S3)
-VERSION 2 - Avec COMPLEMENT_ALIMENTAIRE et données 2024-2026
+VERSION 2 - Avec COMPLEMENT_ALIMENTAIRE et données 2023-2026
 
 Changements:
 - 7 familles au lieu de 6 (ajout COMPLEMENT_ALIMENTAIRE)
-- Données historiques 2024-2026 (vs 2025-2026 avant)
+- Données historiques 2023-2026 (vs 2025-2026 avant)
 - 78 produits (vs 69 avant)
 - 8 868 lignes détaillées (vs 12 600 avant — certaines familles n'ont pas toutes les agences)
 - Sheet 8: Coefficients saisonniers 2024-2025 vs 2027
@@ -19,7 +19,7 @@ fcst = pd.read_csv("/home/z/my-project/scripts/forecast_2027_S3.csv", parse_date
 print(f"Loaded {len(fcst)} forecast records")
 
 # Load descriptions from new dataset
-desc_df = pd.read_csv("/home/z/my-project/scripts/dataset_2024_2026.csv", low_memory=False)
+desc_df = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv", low_memory=False)
 desc_map = desc_df[['ref', 'description']].drop_duplicates().set_index('ref')['description'].to_dict()
 
 HEAD_FILL = PatternFill('solid', fgColor='1F4E78')
@@ -64,7 +64,7 @@ wb.remove(wb.active)
 ws = wb.create_sheet("1. Synthèse")
 ws['A1'] = 'BELGOCAM SA - Forecast 2027 (Janvier - Décembre)'
 ws['A1'].font = Font(bold=True, size=16, color='1F4E78')
-ws['A2'] = 'Scénario S3 | Désaisonnalisation effet soja | En cours+Validées inclus | Prix soja 25 000 FCFA/sac | Données 2024-2026'
+ws['A2'] = 'Scénario S3 | Désaisonnalisation effet soja | En cours+Validées inclus | Prix soja 25 000 FCFA/sac | Données 2023-2026'
 ws['A2'].font = Font(italic=True, size=10, color='595959')
 
 total_t = fcst['tonnes'].sum()
@@ -91,7 +91,7 @@ global_data = [
     ('Méthode', 'Prophet (5 familles) + Extrapolation (MAT+PREMIX)', '—'),
     ('Désaisonnalisation', 'Effet soja Jul-Août 2026 neutralisé (cap S1 avg)', '—'),
     ('En cours + Validées', 'Incluses comme potentielles Livrées', '—'),
-    ('Données historiques', '170 560 enregistrements (Jul 2024 - Août 2026)', '32 mois'),
+    ('Données historiques', '176 576 enregistrements (Jan 2023 - Août 2026)', '44 mois'),
     ('NOUVEAU: COMPLEMENT_ALIMENTAIRE', 'Ajouté au forecast (1L=1kg, proxy BELGOKILL)', '10 produits'),
 ]
 for label, val, unit in global_data:
@@ -322,7 +322,7 @@ hyp = [
     ('MÉTHODE', 'Prophet (5 familles alimentaires) + Extrapolation (MAT+PREMIX)'),
     ('', ''),
     ('NOUVEAUTÉS VS VERSION PRÉCÉDENTE', ''),
-    ('Données historiques', '32 mois (Jul 2024 - Août 2026) au lieu de 20 mois (Jan 2025 - Août 2026). Années 2021-2023 exclues.'),
+    ('Données historiques', '44 mois (Jan 2023 - Août 2026). Années 2021-2022 exclues, 2023 incluse.'),
     ('Famille COMPLEMENT_ALIMENTAIRE', 'AJOUTÉE: 10 produits (BELGOKILL V300/V305, BELGO HARMONY, BELGO PROTECT, etc.)'),
     ('Conversion 1L=1kg', 'Pour COMPLEMENT_ALIMENTAIRE: 1 litre = 1 kg (qte = kg, tonnes = qte/1000)'),
     ('Proxy BELGOKILL', 'BELGOKILL (V300 1L + V305 200L) représente 38% du CA famille — tendance utilisée comme proxy'),
@@ -337,8 +337,8 @@ hyp = [
     ('FAMILLES EXCLUES', 'MAIS (produit opportuniste), DIVERS'),
     ('PRODUITS OPPORTUNISTES', 'MAÏs (M1051, M1052) — exclus du périmètre'),
     ('', ''),
-    ('DONNÉES HISTORIQUES', '170 560 enregistrements (Jul 2024 - Août 2026) + En cours/Validées août'),
-    ('LIMITES', '32 mois d\'historique (Prophet recommande 2+ ans pour yearly seasonality — OK)'),
+    ('DONNÉES HISTORIQUES', '176 576 enregistrements (Jan 2023 - Août 2026) + En cours/Validées août'),
+    ('LIMITES', '44 mois d\'historique (Prophet recommande 2+ ans pour yearly seasonality — OK)'),
     ('PRODUITS COMPLEMENT_ALIMENTAIRE', 'V300 (BELGOKILL 1L), V305 (BELGOKILL 200L), CA001-CA008 (BELGO xxx 1L)'),
     ('MISE À JOUR', 'Pipeline: python scripts/forecast_2027_v3.py + scripts/forecast_2027_excel_v2.py'),
 ]
@@ -362,7 +362,7 @@ ws['A1'] = 'COEFFICIENTS SAISONNIERS - 2025 (HISTORIQUE) VS 2027 (FORECAST)'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 
 # Calculate seasonal coefficients from 2025 historical data
-df_hist = pd.read_csv("/home/z/my-project/scripts/dataset_2024_2026.csv", parse_dates=['date'], low_memory=False)
+df_hist = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv", parse_dates=['date'], low_memory=False)
 df_2025 = df_hist[df_hist['date'].dt.year == 2025]
 df_2025_fam = df_2025.groupby(['family', df_2025['date'].dt.month])['tonnes'].sum().reset_index()
 df_2025_fam.columns = ['family', 'month', 'tonnes']

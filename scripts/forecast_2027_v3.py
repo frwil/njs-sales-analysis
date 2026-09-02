@@ -2,26 +2,19 @@
 Forecast 2027 complet (12 mois) - Volume + Valeur
 Scénario S3 (réappro soja 100%)
 
-CHANGEMENTS MAJEURS vs version précédente:
-1. Utilise données 2024-2026 uniquement (exclusion 2021-2023)
-   - 170,560 records (Jul 2024 - Août 2026)
-   - 32 mois d'historique (vs 20 mois avant)
-2. AJOUT de la famille COMPLEMENT_ALIMENTAIRE (BELGOKILL, BELGO HARMONY, etc.)
-   - Conversion 1L = 1kg (donc qte = kg, tonnes = qte/1000)
-   - BELGOKILL (V300 1L + V305 200L) utilisé comme proxy de tendance pour toute la famille
-   - 10 produits, présents dans les 14 agences
-3. MAINTIEN des innovations:
-   - Désaisonnalisation effet soja exceptionnel (cap moyenne S1)
-   - En cours + Validées inclus
-   - Prix soja actualisé 25 000 FCFA/sac
-   - Forecast 12 mois complet
+VERSION 3 (mise à jour):
+1. Utilise données 2023-2026 (44 mois, 176 576 records)
+2. Inclut la famille COMPLEMENT_ALIMENTAIRE (BELGOKILL V300 1L only + autres CA001-CA008)
+   - V305 (BELGOKILL 200L) EXCLU selon demande utilisateur
+   - Conversion 1L = 1kg
+3. MATERIEL_ELEVAGE toujours à 0 en tonnes (CA only)
+4. Désaisonnalisation effet soja (cap moyenne S1 2026) maintenue
+5. En cours + Validées inclus
+6. Prix soja actualisé 25 000 FCFA/sac
 
 Méthode:
-  - Prophet pour 5 familles alimentaires (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE)
-  - Extrapolation pour MATERIEL_ELEVAGE et PREMIX (CA uniquement)
-
-7 familles au total (vs 6 précédemment)
-Pas de MAIS (produit opportuniste)
+  - Prophet pour 5 familles (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE)
+  - Extrapolation pour MATERIEL_ELEVAGE et PREMIX (CA only)
 """
 import pandas as pd
 import numpy as np
@@ -35,9 +28,9 @@ logging.getLogger('prophet').setLevel(logging.WARNING)
 
 from prophet import Prophet
 
-# === Load dataset 2024-2026 (nouveau) ===
-df = pd.read_csv("/home/z/my-project/scripts/dataset_2024_2026.csv", parse_dates=['date'], low_memory=False)
-print(f"Loaded {len(df)} records (Livrée only, 2024-2026)")
+# === Load dataset 2023-2026 (nouveau) ===
+df = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv", parse_dates=['date'], low_memory=False)
+print(f"Loaded {len(df)} records (Livrée only, 2023-2026)")
 print(f"Date range: {df['date'].min().date()} → {df['date'].max().date()}")
 print(f"\nBy family:")
 print(df['family'].value_counts())
@@ -63,11 +56,17 @@ INGREDIENT_REFS = {'B100': 25, 'E101': 25, 'I105': 25, 'B1001': 1, 'B1003': 5, '
 PREMIX_REFS = {'P102N2': 25, 'P104N2': 25, 'P109': 25, 'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25}
 MATERIEL_REFS = {f'MAT{i:03d}': 1 for i in range(1, 100)}
 MATERIEL_REFS.update({'MAT014-80010003': 1, 'MAT011-80010002': 1})
-# NOUVEAU: COMPLEMENT ALIMENTAIRE (liquides)
+# NOUVEAU: COMPLEMENT ALIMENTAIRE (liquides) — V300 1L only (V305 200L EXCLU)
 COMPLEMENT_REFS = {
-    'V300': 1, 'V305': 200,        # BELGOKILL 1L, 200L
-    'CA003.1': 1, 'CA004.1': 1, 'CA006.1': 1, 'CA001.1': 1,
-    'CA002.1': 1, 'CA005.1': 1, 'CA007.1': 1, 'CA008.1': 1,
+    'V300': 1,        # BELGOKILL 1L = 1 kg
+    'CA003.1': 1,     # BELGO HARMONY 1L = 1 kg
+    'CA004.1': 1,     # BELGO PROTECT 1L = 1 kg
+    'CA006.1': 1,     # BELGO DRY LIT 1L = 1 kg
+    'CA001.1': 1,     # BELGO WATER CLEAN 1L = 1 kg
+    'CA002.1': 1,     # BELGO VIT Ese 1L = 1 kg
+    'CA005.1': 1,     # BELGO THERMO 1L = 1 kg
+    'CA007.1': 1,     # BELGO BIO SELECT 1L = 1 kg
+    'CA008.1': 1,     # BELGO FRESH 1L = 1 kg
 }
 
 ALL_REFS = {**SOJA_REFS, **CONC_REFS, **ALIMENT_REFS, **INGREDIENT_REFS, 
@@ -181,9 +180,9 @@ prix_2027.update(PREMIX_PRICES)
 
 # NOUVEAU: Prix COMPLEMENT ALIMENTAIRE (par unité = 1L)
 # Basé sur les prix moyens historiques observés
+# V305 EXCLU — seul V300 1L conservé
 COMPLEMENT_PRICES = {
     'V300': 2500,      # BELGOKILL 1L (~2 500 FCFA/L)
-    'V305': 500000,    # BELGOKILL 200L (200 × 2500)
     'CA003.1': 8000,   # BELGO HARMONY 1L
     'CA004.1': 9800,   # BELGO PROTECT 1L
     'CA006.1': 6500,   # BELGO DRY LIT 1L
