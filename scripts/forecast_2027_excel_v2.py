@@ -34,7 +34,7 @@ THIN = Side(border_style='thin', color='BFBFBF')
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 
 # 7 familles (ordre: ordre alphabétique, mais COMPLEMENT_ALIMENTAIRE mis en évidence à la fin)
-FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']
+FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES']
 MONTHS = list(range(1, 13))
 MONTH_NAMES = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
 QUARTERS = {'Q1 (Jan-Mar)': [1,2,3], 'Q2 (Avr-Juin)': [4,5,6], 'Q3 (Juil-Sept)': [7,8,9], 'Q4 (Oct-Déc)': [10,11,12]}
@@ -85,7 +85,7 @@ global_data = [
     ('CA total 2027', f"{total_ca:,.1f}", 'M FCFA'),
     ('Période forecast', 'Janvier - Décembre 2027', '12 mois'),
     ('Scénario', 'S3 - Réappro soja 100%', '—'),
-    ('Nb familles', '7', 'TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE'),
+    ('Nb familles', '8', 'TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE'),
     ('Nb produits', f"{fcst['ref'].nunique()}", 'références'),
     ('Nb agences', f"{fcst['agence'].nunique()}", 'agences'),
     ('Méthode', 'Prophet (5 familles) + Extrapolation (MAT+PREMIX)', '—'),
@@ -122,7 +122,7 @@ for fam in FAMILIES:
         ws.cell(row=row, column=2, value=round(t, 0))
         ws.cell(row=row, column=3, value=round(ca, 1))
         ws.cell(row=row, column=4, value=f"{pct:.1f}%")
-        color = NEW_FAMILY_COLOR if fam == 'COMPLEMENT_ALIMENTAIRE' else S3_COLOR
+        color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
         style_data_row(ws, row, 4, color=color)
         row += 1
 ws.cell(row=row, column=1, value='TOTAL')
@@ -184,7 +184,7 @@ for fam in FAMILIES:
         ws.cell(row=row, column=i, value=round(monthly_t.get(m, 0), 0))
     ws.cell(row=row, column=14, value=round(total_t_fam, 0))
     ws.cell(row=row, column=15, value=round(total_ca_fam, 1))
-    color = NEW_FAMILY_COLOR if fam == 'COMPLEMENT_ALIMENTAIRE' else S3_COLOR
+    color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
     style_data_row(ws, row, 15, color=color)
     row += 1
 ws.cell(row=row, column=1, value='TOTAL')
@@ -273,7 +273,7 @@ for _, r in by_prod.iterrows():
     ws.cell(row=row, column=4, value=round(r['tonnes'], 1))
     ws.cell(row=row, column=5, value=round(r['ca_m_fcfa'], 1))
     ws.cell(row=row, column=6, value=f"{pct:.1f}%")
-    color = NEW_FAMILY_COLOR if r['family'] == 'COMPLEMENT_ALIMENTAIRE' else S3_COLOR
+    color = NEW_FAMILY_COLOR if r['family'] in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
     style_data_row(ws, row, 6, color=color)
     row += 1
 ws.cell(row=row, column=1, value='TOTAL')
@@ -414,7 +414,7 @@ for fam in FAMILIES:
         coef = v / avg_2027 if avg_2027 > 0 else 0
         ws.cell(row=row, column=i, value=round(coef, 2))
     ws.cell(row=row, column=15, value=round(avg_2027, 0))
-    color = NEW_FAMILY_COLOR if fam == 'COMPLEMENT_ALIMENTAIRE' else S3_COLOR
+    color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
     style_data_row(ws, row, 15, color=color)
     row += 1
 

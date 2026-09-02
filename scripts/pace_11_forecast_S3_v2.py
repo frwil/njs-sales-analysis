@@ -65,13 +65,17 @@ COMPLEMENT_REFS = {
 ALL_REFS = {**SOJA_REFS, **CONC_REFS, **ALIMENT_REFS, **INGREDIENT_REFS, 
             **PREMIX_REFS, **MATERIEL_REFS, **COMPLEMENT_REFS}
 
+# ALVEOLES refs (separated from MATERIEL_ELEVAGE)
+ALVEOLES_REFS = {'MAT011-80010002', 'MAT014-80010003', 'MAT015', 'MAT017'}
+
 def get_family_q4(ref):
     if ref in SOJA_REFS: return 'TOURTEAUX'
     if ref in CONC_REFS: return 'CONCENTRES'
     if ref in ALIMENT_REFS: return 'ALIMENT_COMPLET'
     if ref in INGREDIENT_REFS: return 'INGREDIENTS'
     if ref in PREMIX_REFS: return 'PREMIX'
-    if ref in MATERIEL_REFS or ref.startswith('MAT'): return 'MATERIEL_ELEVAGE'
+    if ref in ALVEOLES_REFS: return 'ALVEOLES'
+    if ref in MATERIEL_REFS or ref.startswith('MAT') or ref.startswith('ME'): return 'MATERIEL_ELEVAGE'
     if ref in COMPLEMENT_REFS: return 'COMPLEMENT_ALIMENTAIRE'
     return None
 
@@ -108,12 +112,20 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     except:
         continue
     
+    # For MATERIEL_ELEVAGE, ALVEOLES, PREMIX: tonnes=0 (CA only)
+    if family in ('MATERIEL_ELEVAGE', 'ALVEOLES'):
+        tonnes_val = 0
+    elif family == 'COMPLEMENT_ALIMENTAIRE':
+        tonnes_val = kg / 1000  # 1L = 1kg conversion
+    else:
+        tonnes_val = kg / 1000
+    
     extra_records.append({
         'date': date, 'year': date.year, 'month': date.month,
         'ref': ref, 'family': family, 'description': r[1],
         'agence': agence, 'region': region,
-        'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': kg / 1000,
-        'sacs_50': kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE') else 0,
+        'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': tonnes_val,
+        'sacs_50': kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else 0,
         'montant_ttc': montant_ttc, 'montant_ht': 0,
         'source': 'En_cours_Validee'
     })
@@ -251,7 +263,7 @@ print("\n=== FORECAST Q4 2026 (S3) ===")
 forecasts_fr = []
 
 PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE']
-EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX']
+EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX', 'ALVEOLES']  # ALVEOLES ajouté (CA only, tonnes=0)
 
 for idx, row in combos_fr.iterrows():
     family = row['family']

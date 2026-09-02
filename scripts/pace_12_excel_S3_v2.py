@@ -32,8 +32,8 @@ NEW_FAMILY_COLOR = 'FFE699'  # Yellow for COMPLEMENT_ALIMENTAIRE
 THIN = Side(border_style='thin', color='BFBFBF')
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 
-# 7 familles (ajout COMPLEMENT_ALIMENTAIRE)
-FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']
+# 8 familles (ajout COMPLEMENT_ALIMENTAIRE + ALVEOLES séparés)
+FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES']
 
 def style_header_row(ws, row, n_cols):
     for c in range(1, n_cols + 1):
@@ -87,13 +87,14 @@ global_data = [
     ('Sacs éq. 50kg total Q4', f"{total_sacs:,.0f}", 'sacs'),
     ('Période forecast', 'Septembre - Décembre 2026', '4 mois'),
     ('Scénario', 'S3 - Réappro soja 100%', '80 000 sacs au 15/09'),
-    ('Nb familles', '7', 'TOURTEAUX, CONCENTRES, INGREDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE'),
+    ('Nb familles', '8', 'TOURTEAUX, CONCENTRES, INGREDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE, ALVEOLES'),
     ('Nb produits', f"{fcst['ref'].nunique()}", 'références'),
     ('Nb agences', f"{fcst['agence'].nunique()}", 'agences'),
     ('Nb régions', f"{fcst['region'].nunique()}", 'régions'),
-    ('Méthode', 'Prophet (5 familles) + Extrapolation (MAT_ELEVAGE, PREMIX)', '—'),
+    ('Méthode', 'Prophet (5 familles) + Extrapolation (MAT_ELEVAGE, PREMIX, ALVEOLES)', '—'),
     ('Prix', 'Prix août 2026 + soja 25 000 FCFA/sac', 'Option A - extrapolation CA/qté'),
     ('NOUVEAU: COMPLEMENT_ALIMENTAIRE', 'V300 1L only (V305 200L exclu), 1L=1kg', '9 produits'),
+    ('NOUVEAU: ALVEOLES séparé', '4 refs (MAT011, MAT014, MAT015, MAT017), tonnes=0', 'CA only'),
     ('NOUVEAU: Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026)', '176 576 records'),
 ]
 
@@ -119,7 +120,7 @@ row += 1
 fam_synth = fcst.groupby('family').agg(
     tonnes=('tonnes', 'sum'),
     ca_m_fcfa=('ca_m_fcfa', 'sum'),
-).reindex(FAMILLES := ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE'])
+).reindex(FAMILLES := ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES'])
 
 for fam in FAMILLES:
     if fam in fam_synth.index:
@@ -132,7 +133,7 @@ for fam in FAMILLES:
         ws.cell(row=row, column=3, value=round(ca, 1))
         ws.cell(row=row, column=4, value=f"{pct:.1f}%")
         ws.cell(row=row, column=5, value=method)
-        color = NEW_FAMILY_COLOR if fam == 'COMPLEMENT_ALIMENTAIRE' else S3_COLOR
+        color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
         style_data_row(ws, row, 5, color=color)
         row += 1
 
@@ -312,7 +313,7 @@ for _, r in by_prod.iterrows():
     ws.cell(row=row, column=5, value=round(r['sacs_50'], 0))
     ws.cell(row=row, column=6, value=round(r['ca_m_fcfa'], 1))
     ws.cell(row=row, column=7, value=f"{pct:.1f}%")
-    color = NEW_FAMILY_COLOR if r['family'] == 'COMPLEMENT_ALIMENTAIRE' else S3_COLOR
+    color = NEW_FAMILY_COLOR if r['family'] in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
     style_data_row(ws, row, 7, color=color)
     row += 1
 
@@ -362,7 +363,7 @@ for fam in FAMILLES:
     ws.cell(row=row, column=9, value=round(monthly_ca.get(11, 0), 1))
     ws.cell(row=row, column=10, value=round(monthly_ca.get(12, 0), 1))
     ws.cell(row=row, column=11, value=round(total_ca_fam, 1))
-    color = NEW_FAMILY_COLOR if fam == 'COMPLEMENT_ALIMENTAIRE' else S3_COLOR
+    color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
     style_data_row(ws, row, 11, color=color)
     row += 1
 
@@ -428,23 +429,25 @@ ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 hypotheses = [
     ('PÉRIODE', 'Septembre - Décembre 2026 (4 mois)'),
     ('SCÉNARIO', 'S3 - Réappro 100% (80 000 sacs au 15/09/2026)'),
-    ('MÉTHODE', 'Prophet (TOURTEAUX, CONCENTRES, INGREDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE) + Extrapolation moyenne (MATERIEL_ELEVAGE, PREMIX)'),
-    ('NIVEAU DE DÉTAIL', '15 modèles Prophet famille × région + 6 extrapolations, désagrégés en produit × agence'),
+    ('MÉTHODE', 'Prophet (TOURTEAUX, CONCENTRES, INGREDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE) + Extrapolation moyenne (MATERIEL_ELEVAGE, PREMIX, ALVEOLES)'),
+    ('NIVEAU DE DÉTAIL', '15 modèles Prophet famille × région + 9 extrapolations, désagrégés en produit × agence'),
     ('', ''),
-    ('NOUVEAUTÉS VERSION 2', ''),
+    ('NOUVEAUTÉS VERSION 3', ''),
     ('Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026), 176 576 records'),
     ('Famille COMPLEMENT_ALIMENTAIRE', '9 produits liquides (V300 BELGOKILL 1L + CA001-CA008), 1L=1kg'),
+    ('Famille ALVEOLES (NOUVEAU v3)', '4 refs (MAT011-80010002, MAT014-80010003, MAT015, MAT017), tonnes=0, CA only'),
     ('V305 (BELGOKILL 200L)', 'EXCLU du forecast selon demande utilisateur'),
-    ('MATERIEL_ELEVAGE', 'Tonnes toujours à 0 (CA only, non exprimable en volume)'),
+    ('MATERIEL_ELEVAGE', 'Tonnes toujours à 0 (CA only). ALVEOLES désormais séparés.'),
     ('', ''),
     ('FAMILLES INCLUES (7)', ''),
     ('TOURTEAUX', 'Soja T102, T1021, T1023, T1024 (76% du volume historique)'),
     ('CONCENTRES', 'BELGO Chair/Ponte/Porc C101-C108 (13 références)'),
     ('INGREDIENTS', 'Belgotox, Bicarbonate, Methionine, Lysine, Belgofos, Farine poisson (18 refs)'),
     ('ALIMENT_COMPLET', 'Chick/Piglet Booster CB100-CB201, BELGO Rabbit (5 refs)'),
-    ('MATERIEL_ELEVAGE', 'Alvéoles MAT014/MAT011/MAT015/MAT017 + autres refs matériel (26 refs) - CA ONLY'),
+    ('MATERIEL_ELEVAGE', 'Abreuvoirs, mangeoires, cages, caisses, robinets, radiants (32 refs) - CA ONLY'),
     ('PREMIX', 'P102N2, P104N2, P109 (3 refs) - CA ONLY'),
     ('COMPLEMENT_ALIMENTAIRE', 'BELGOKILL V300 1L + BELGO HARMONY/PROTECT/DRY LIT/WATER CLEAN/VIT/THERMO/BIO SELECT/FRESH (9 refs) - 1L=1kg'),
+    ('ALVEOLES', 'MAT011-80010002 (GROS TROU), MAT014-80010003 (PETIT TROU), MAT015 (PETIT TROU JAUNE), MAT017 (RE) (4 refs) - CA ONLY'),
     ('', ''),
     ('FAMILLES EXCLUES', ''),
     ('MAIS', 'M1051, M1052 - Produit opportuniste hors portefeuille BELGOCAM'),

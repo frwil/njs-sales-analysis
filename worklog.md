@@ -770,3 +770,83 @@ Stage Summary:
 
 - 10 PDFs générés (5 Q4 2026 + 5 2027), tous avec mention V305 EXCLU et données 2023-2026
 - Conclusion: v3 intègre l'année 2023 (44 mois d'historique), exclut V305 (BELGOKILL 200L), maintient MATERIEL_ELEVAGE à 0 tonne. Les volumes forecast sont plus conservateurs qu'en v2 (Q4 2026: 25 410 t vs 40 921; 2027: 81 582 t vs 118 608) car l'historique 2023 (année post-COVID avec volumes modérés) apporte une saisonnalité plus équilibrée et l'absence de V305 réduit le CA famille COMPLEMENT_ALIMENTAIRE.
+
+---
+Task ID: forecast-v3-alveoles-separation
+Agent: main
+Task: Séparer les ALVEOLES du MATERIEL_ELEVAGE comme famille distincte. Appliquer la modification dans toutes les versions de forecast (Q4 2026 et 2027).
+
+Work Log:
+- Phase 1: Dissociation ALVEOLES / MATERIEL_ELEVAGE
+  - ALVEOLES: 4 refs identifiées (MAT011-80010002, MAT014-80010003, MAT015, MAT017)
+  - MATERIEL_ELEVAGE: 32 refs (abreuvoirs, mangeoires, cages, caisses, robinets, radiants, etc.)
+  - ALVEOLES: 2 152 records (2152), 449 M FCFA CA HT (2023-2026)
+  - MATERIEL_ELEVAGE (hors alvéoles): 785 records, 201 M FCFA CA HT (2023-2026)
+  - Saisonnalité ALVEOLES: très concentrée en 2025 (2141 records, 435 M), quasi-nulle en 2026 (11 records, 14 M)
+  - MATERIEL_ELEVAGE: activité continue 2023-2026 (33-96 M/an)
+  - Script: scripts/split_alveoles_dataset.py
+  - Dataset modifié en place: scripts/dataset_2023_2026.csv (23 489 KB)
+  - ALVEOLES: tonnes=0 comme MATERIEL_ELEVAGE (CA only, non exprimable en volume)
+
+- Phase 2: Mise à jour forecast Q4 2026 (v2)
+  - Script: scripts/pace_11_forecast_S3_v2.py
+  - EXTRAPOL_FAMILIES étendu: MATERIEL_ELEVAGE, PREMIX, ALVEOLES (vs 2 avant)
+  - get_family_q4: détection ALVEOLES en priorité (avant MATERIEL_ELEVAGE)
+  - tonnes=0 forcé pour MATERIEL_ELEVAGE et ALVEOLES dans En cours/Validées
+  - sacs_50=0 pour ALVEOLES (ajouté à la liste)
+  - Output: scripts/forecast_q4_2026_S3.csv (3 884 lignes, 8 familles)
+
+- Phase 3: Mise à jour forecast 2027 (v3)
+  - Script: scripts/forecast_2027_v3.py
+  - Mêmes modifications: EXTRAPOL_FAMILIES incluant ALVEOLES
+  - get_family_2027: ALVEOLES détecté en priorité
+  - tonnes=0 et sacs_50=0 pour ALVEOLES
+  - Output: scripts/forecast_2027_S3.csv (11 652 lignes, 8 familles)
+
+- Phase 4: Régénération Excels
+  - Q4 2026 Excel: scripts/pace_12_excel_S3_v2.py
+    - FAMILIES étendu à 8 familles (ajout ALVEOLES)
+    - fam_synth reindex avec 8 familles
+    - ALVEOLES surligné en jaune (NEW_FAMILY_COLOR) avec COMPLEMENT_ALIMENTAIRE
+    - Hypothèses mises à jour: 'FAMILLES INCLUSES (8)', ajout ligne ALVEOLES avec descriptions
+    - NOUVEAUTÉS VERSION 3: ajout ligne 'Famille ALVEOLES (NOUVEAU v3)'
+    - MATERIEL_ELEVAGE: description mise à jour ('Abreuvoirs, mangeoires, cages, caisses, robinets, radiants (32 refs)')
+    - Output: download/forecast_q4_2026_S3_volumes_valeurs.xlsx (184 KB)
+  - 2027 Excel: scripts/forecast_2027_excel_v2.py
+    - FAMILIES étendu à 8 familles
+    - fam_synth reindex avec 8 familles
+    - ALVEOLES surligné en jaune (NEW_FAMILY_COLOR)
+    - Output: download/forecast_2027_S3_volumes_valeurs.xlsx (503 KB)
+
+- Phase 5: Régénération 10 PDFs
+  - Script: scripts/forecast_pdfs_v3.py (mis à jour)
+  - Tous les tableaux fam_data, fam_detail, hist_data, hist_detail, ytd_data, month_data, month_detail mis à jour
+  - Ajout ligne ALVEOLES dans tous les tableaux par famille
+  - Mise à jour highlights_rows pour ALVEOLES (row 4 typiquement, en plus de COMPLEMENT_ALIM row 7/8)
+  - Mise à jour totaux: Q4 2026 = 13 993 M FCFA (vs 13 924 avant), 2027 = 44 666 M FCFA (vs 44 402 avant)
+  - Ajout entrées 'ALVEOLES' dans glossaire
+  - Ajout ligne 'NOUVEAU v3: ALVEOLES séparé' dans synth_data et scope_data
+  - Mise à jour familles count de 7 à 8 partout
+  - 10 PDFs générés (5 Q4 2026 + 5 2027), 49-55 KB chacun
+
+Stage Summary:
+- Dataset 2023-2026 v3: 176 576 records, 115 produits, 8 familles (vs 7 avant)
+- Q4 2026 v3 forecast: 25 410 t, 13 993 M FCFA (+69 M vs version précédente)
+  - TOURTEAUX: 18 321 t (65,5% CA, vs 65,8% avant)
+  - CONCENTRÉS: 6 610 t (31,4% CA)
+  - ALVEOLES: 0 t / 146 M FCFA (1,0% CA) — NOUVELLE famille séparée
+  - MATERIEL_ELEVAGE: 0 t / 37 M FCFA (0,3% CA, vs 114 M avant — réduction car ALVEOLES extraits)
+  - COMPLEMENT_ALIMENTAIRE: 1 t / 7 M FCFA
+  - PREMIX: 0 t / 47 M FCFA
+
+- 2027 v3 forecast: 81 582 t, 44 666 M FCFA (+264 M vs version précédente)
+  - TOURTEAUX: 60 673 t (67,9% CA)
+  - CONCENTRÉS: 19 658 t (29,3% CA)
+  - ALVEOLES: 0 t / 438 M FCFA (1,0% CA) — NOUVELLE famille séparée
+  - MATERIEL_ELEVAGE: 0 t / 77 M FCFA (0,2% CA, vs 250 M avant — réduction)
+  - COMPLEMENT_ALIMENTAIRE: 3 t / 18 M FCFA
+  - PREMIX: 0 t / 157 M FCFA
+
+- 10 PDFs générés (5 Q4 2026 + 5 2027), tous avec ALVEOLES comme famille distincte
+- 2 Excels régénérés avec 8 familles dans la synthèse, surlignage jaune pour ALVEOLES et COMPLEMENT_ALIMENTAIRE
+- Conclusion v3 finale: ALVEOLES séparés du MATERIEL_ELEVAGE comme 8e famille (4 refs MAT011/MAT014/MAT015/MAT017, CA only). La séparation révèle que les ALVEOLES représentaient 80% du CA MATERIEL_ELEVAGE historique (449 M / 650 M total). En Q4 2026, ALVEOLES prévoit 146 M FCFA (vs 114 M pour MATERIEL_ELEVAGE précédemment combiné). En 2027, ALVEOLES prévoit 438 M FCFA. La séparation permet un meilleur suivi opérationnel de cette activité très saisonnière (concentrée en 2025).
