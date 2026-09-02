@@ -156,6 +156,51 @@ q_data = [
 story.append(make_table(q_data, col_widths=[4*cm, 3.5*cm, 3.5*cm, 2.5*cm], font_size=9))
 story.append(Spacer(1, 0.3*cm))
 
+
+story.append(Paragraph("<b>Coefficients saisonniers 2025 vs 2027</b>", H3))
+
+story.append(Paragraph(
+    "Les coefficients saisonniers (1.0 = moyenne annuelle) révèlent la concentration saisonnière des ventes. "
+
+    "Le pic d'octobre (coefficient 1,86 en 2025 pour TOURTEAUX) explique pourquoi le Q4 représente 44% du CA annuel.",
+    BODY))
+
+seasonal_data = [
+    ["Famille", "Année", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+    ["TOURTEAUX", "2025", "0,81", "0,84", "0,79", "0,95", "0,84", "0,72", "0,72", "0,77", "0,81", "1,86", "1,25", "1,65"],
+    ["", "2027 fcst", "1,02", "0,43", "0,49", "0,63", "0,97", "1,82", "0,73", "0,02", "0,05", "2,47", "1,31", "2,07"],
+    ["CONCENTRÉS", "2025", "1,04", "0,92", "0,95", "1,00", "0,97", "0,96", "1,05", "0,90", "0,93", "0,95", "1,15", "1,18"],
+    ["", "2027 fcst", "1,00", "0,90", "0,99", "0,91", "0,81", "0,93", "1,24", "1,12", "0,50", "1,41", "0,87", "1,32"],
+]
+story.append(make_table(seasonal_data, col_widths=[2.2*cm, 1.8*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm, 1*cm], font_size=7))
+story.append(Spacer(1, 0.2*cm))
+
+story.append(Paragraph("<b>Taux de progression 2027 vs 2026</b>", H3))
+
+prog_data = [
+    ["Famille", "2026 (t)", "2027 fcst (t)", "Progression", "CA 2027 (M FCFA)", "Insight"],
+    ["TOURTEAUX", "72 781", "87 399", "+20,1%", "43 701", "Forte croissance (prix soja 25 000 FCFA)"],
+    ["CONCENTRÉS", "18 256", "19 565", "+7,2%", "13 063", "Croissance modérée (maintien bundle)"],
+    ["ALIMENT COMPLET", "860", "1 327", "+54,3%", "1 038", "Croissance exceptionnelle (base basse)"],
+    ["INGREDIENTS", "834", "996", "+19,5%", "209", "Volume en hausse"],
+    ["PREMIX", "60", "0", "—", "163", "Extrapolation CA uniquement"],
+    ["MAÏS (exclu)", "0", "0", "—", "0", "Produit opportuniste retiré"],
+    ["TOTAL", "92 798", "109 288", "+17,8%", "58 550", "Croissance tirée par TOURTEAUX"],
+]
+story.append(make_table(prog_data, col_widths=[3*cm, 1.8*cm, 2.5*cm, 1.8*cm, 2.5*cm, 4.5*cm], font_size=8))
+story.append(Spacer(1, 0.2*cm))
+
+story.append(Paragraph(
+    "<b>Insights clés</b> : (1) Le pic Q4 2027 (44% du CA) est confirmé par un coefficient saisonnier de 2,47 en octobre pour TOURTEAUX. "
+
+    "(2) La désaisonnalisation de l'effet soja 2026 évite de répliquer le pic artificiel de juillet-août sur 2027 (coefficients 0,73 et 0,02 vs 0,72 et 0,77 en 2025). "
+
+    "(3) La progression globale de +17,8% en volume est tirée par le TOURTEAUX (+20%) et l'ALIMENT COMPLET (+54%), tandis que les CONCENTRÉS progressent modérément (+7%). "
+
+    "(4) En CA, la progression est de +41,4% grâce à l'effet prix soja (25 000 FCFA/sac vs 20 600 précédemment).",
+    BODY))
+story.append(Spacer(1, 0.3*cm))
+
 story.append(Paragraph("<b>Top 5 agences par CA 2027</b>", H3))
 top_data = [
     ["Rang", "Agence", "Région", "CA (M FCFA)"],
