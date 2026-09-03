@@ -1,6 +1,6 @@
 {
-  "total_tonnes": 29346.862,
-  "total_ca_m_fcfa": 14148.740000000002,
+  "total_tonnes": 29445.363999999998,
+  "total_ca_m_fcfa": 14194.23,
   "n_products": 121,
   "n_agences": 25,
   "n_families": 8,
@@ -8,14 +8,14 @@
   "by_family": [
     {
       "family": "ALIMENT_COMPLET",
-      "tonnes": 267.0,
-      "ca_m_fcfa": 201.8,
+      "tonnes": 268.0,
+      "ca_m_fcfa": 202.5,
       "part_ca_pct": 1.4
     },
     {
       "family": "ALVEOLES",
       "tonnes": 0.0,
-      "ca_m_fcfa": 33.5,
+      "ca_m_fcfa": 33.6,
       "part_ca_pct": 0.2
     },
     {
@@ -26,14 +26,14 @@
     },
     {
       "family": "CONCENTRES",
-      "tonnes": 8703.0,
-      "ca_m_fcfa": 5778.3,
+      "tonnes": 8730.0,
+      "ca_m_fcfa": 5796.3,
       "part_ca_pct": 40.8
     },
     {
       "family": "INGREDIENTS",
       "tonnes": 394.0,
-      "ca_m_fcfa": 551.9,
+      "ca_m_fcfa": 552.6,
       "part_ca_pct": 3.9
     },
     {
@@ -50,48 +50,48 @@
     },
     {
       "family": "TOURTEAUX",
-      "tonnes": 19982.0,
-      "ca_m_fcfa": 7430.2,
+      "tonnes": 20051.0,
+      "ca_m_fcfa": 7456.1,
       "part_ca_pct": 52.5
     }
   ],
   "by_region": [
     {
       "region": "Centre",
-      "tonnes": 7414.0,
-      "ca_m_fcfa": 3670.0
+      "tonnes": 7424.0,
+      "ca_m_fcfa": 3675.4
     },
     {
       "region": "Littoral",
-      "tonnes": 10240.0,
-      "ca_m_fcfa": 4866.3
+      "tonnes": 10308.0,
+      "ca_m_fcfa": 4896.8
     },
     {
       "region": "Ouest",
-      "tonnes": 11693.0,
-      "ca_m_fcfa": 5612.4
+      "tonnes": 11714.0,
+      "ca_m_fcfa": 5622.1
     }
   ],
   "by_month": [
     {
       "index": "Sep",
-      "tonnes": 4449.0,
-      "ca_m_fcfa": 2274.8
+      "tonnes": 4460.0,
+      "ca_m_fcfa": 2279.9
     },
     {
       "index": "Oct",
-      "tonnes": 9021.0,
-      "ca_m_fcfa": 4276.9
+      "tonnes": 9045.0,
+      "ca_m_fcfa": 4288.4
     },
     {
       "index": "Nov",
-      "tonnes": 7691.0,
-      "ca_m_fcfa": 3713.7
+      "tonnes": 7725.0,
+      "ca_m_fcfa": 3729.1
     },
     {
       "index": "D\u00e9c",
-      "tonnes": 8186.0,
-      "ca_m_fcfa": 3883.4
+      "tonnes": 8215.0,
+      "ca_m_fcfa": 3897.0
     }
   ]
 }

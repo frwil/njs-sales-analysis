@@ -328,8 +328,11 @@ print("\n=== FORECAST 2027 (12 mois, S3) ===")
 forecasts_fr = []
 
 # NOUVEAU: 5 familles avec Prophet (vs 4 avant), 2 familles avec extrapolation
-PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE']
-EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX', 'ALVEOLES']  # ALVEOLES ajouté (CA only, tonnes=0)
+PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE']  # MAIS excluded (opportuniste, forecast=0)
+EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX', 'ALVEOLES']  # MAIS excluded entirely (forecast=0)
+
+# Exclude MAIS from forecast (opportuniste, forecast=0)
+combos_fr = combos_fr[combos_fr['family'] != 'MAIS']
 
 for idx, row in combos_fr.iterrows():
     family = row['family']

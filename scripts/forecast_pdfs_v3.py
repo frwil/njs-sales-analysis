@@ -127,8 +127,8 @@ story.append(Paragraph(
 story.append(Paragraph("<b>Résultats clés Q4 2026</b>", H3))
 synth_data = [
     ["Indicateur", "Valeur", "Détail"],
-    ["Volume total Q4 2026", "29 347 t", "8 familles, 121 produits, 25 agences"],
-    ["CA total Q4 2026", "14 149 M FCFA", "Prix soja médian 18 590 FCFA/sac"],
+    ["Volume total Q4 2026", "29 445 t", "8 familles, 121 produits, 25 agences"],
+    ["CA total Q4 2026", "14 194 M FCFA", "Prix soja médian 18 590 FCFA/sac"],
     ["Période", "Sept-Déc 2026 (4 mois)", "Saison haute (35-46% du volume annuel)"],
     ["Scénario", "S3 (réappro 100%)", "80 000 sacs au 15/09/2026"],
     ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
@@ -155,7 +155,7 @@ fam_data = [
     ["PREMIX", "0", "62", "0,4%"],
     ["COMPLEMENT_ALIMENTAIRE", "2", "10", "0,1%"],
     ["MAÏS (exclu)", "0", "0", "0,0%"],
-    ["TOTAL", "29 347", "14 149", "100%"],
+    ["TOTAL", "29 445", "14 194", "100%"],
 ]
 story.append(make_table(fam_data, col_widths=[5*cm, 3*cm, 3*cm, 2.5*cm], font_size=9, highlight_rows=[4, 8]))
 story.append(Spacer(1, 0.2*cm))
@@ -163,11 +163,11 @@ story.append(Spacer(1, 0.2*cm))
 story.append(Paragraph("<b>Synthèse par mois</b>", H3))
 month_data = [
     ["Mois", "Volume (t)", "CA (M FCFA)", "Part CA"],
-    ["Septembre 2026", "4 449", "2 275", "16,1%"],
-    ["Octobre 2026", "9 021", "4 277", "30,2%"],
-    ["Novembre 2026", "7 691", "3 714", "26,2%"],
-    ["Décembre 2026", "8 186", "3 883", "27,5%"],
-    ["TOTAL Q4", "29 347", "14 149", "100%"],
+    ["Septembre 2026", "4 460", "2 280", "16,1%"],
+    ["Octobre 2026", "9 045", "4 288", "30,2%"],
+    ["Novembre 2026", "7 725", "3 729", "26,3%"],
+    ["Décembre 2026", "8 215", "3 897", "27,5%"],
+    ["TOTAL Q4", "29 445", "14 194", "100%"],
 ]
 story.append(make_table(month_data, col_widths=[4*cm, 3.5*cm, 3.5*cm, 2.5*cm], font_size=9))
 story.append(Spacer(1, 0.3*cm))
@@ -175,11 +175,11 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Top 5 agences par CA Q4 2026</b>", H3))
 top_data = [
     ["Rang", "Agence", "Région", "CA (M FCFA)"],
-    ["1", "FAMLA", "Ouest", "3 807"],
-    ["2", "NDOBO", "Littoral", "2 171"],
-    ["3", "MESSASSI", "Centre", "1 265"],
+    ["1", "FAMLA", "Ouest", "3 817"],
+    ["2", "NDOBO", "Littoral", "2 192"],
+    ["3", "MESSASSI", "Centre", "1 266"],
     ["4", "DJELENG", "Ouest", "1 090"],
-    ["5", "VILLAGE", "Littoral", "845"],
+    ["5", "VILLAGE", "Littoral", "855"],
 ]
 story.append(make_table(top_data, col_widths=[1.5*cm, 4*cm, 3*cm, 4.5*cm], font_size=9))
 story.append(Spacer(1, 0.3*cm))
@@ -196,7 +196,7 @@ ytd_data = [
     ["ALVEOLES", "0", "0 (CA only)", "0"],
     ["MATERIEL_ELEVAGE", "0", "0 (CA only)", "0"],
     ["MAÏS (exclu)", "0", "0", "0"],
-    ["TOTAL", "52 073", "29 347", "77 483"],
+    ["TOTAL", "52 073", "29 445", "77 483"],
 ]
 story.append(make_table(ytd_data, col_widths=[3.5*cm, 3*cm, 3*cm, 3*cm], font_size=9, highlight_rows=[6, 7]))
 story.append(Spacer(1, 0.3*cm))
@@ -204,7 +204,7 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Recommandations principales</b>", H3))
 recos = [
     "<b>Réapprovisionnement soja urgent</b> — Commander 80 000 sacs minimum avant le 15/09/2026 pour éviter le scénario S1 (perte de 12 000+ M FCFA vs S3).",
-    "<b>Planification commerciale Q4</b> — Utiliser le scénario S3 (29 347 t, 14 149 M FCFA) comme référence.",
+    "<b>Planification commerciale Q4</b> — Utiliser le scénario S3 (29 445 t, 14 194 M FCFA) comme référence.",
     "<b>Pic d'octobre</b> — Octobre = pic du Q4 (7 628 t, 4 114 M FCFA). Anticiper capacité de production et logistique.",
     "<b>Maintien du bundle</b> — Ratio bundle 2,3:1 atteint en août 2026 à maintenir Q4 2026.",
     "<b>Surveillance FAMLA</b> — Représente 29% du CA Q4 (4 028 M FCFA). Performance critique.",
@@ -216,7 +216,7 @@ for r in recos:
 story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Conclusion</b>", H3))
 story.append(Paragraph(
-    "Le forecast Q4 2026 projette <b>29 347 tonnes</b> pour un CA de <b>14 149 M FCFA</b>. "
+    "Le forecast Q4 2026 projette <b>29 445 tonnes</b> pour un CA de <b>14 194 M FCFA</b>. "
     "La désaisonnalisation de l'effet soja exceptionnel, l'actualisation du prix à 18 590 FCFA/sac (médian 2023-2026), "
     "l'intégration de l'année 2023 (44 mois d'historique) et l'ajout de la famille COMPLEMENT_ALIMENTAIRE "
     "(V300 1L only) permettent une projection réaliste. Le pic d'octobre (7 628 t) nécessitera une "
@@ -414,14 +414,14 @@ story.append(Paragraph("1. Vision et objectifs", H1))
 story.append(Paragraph("1.1 Vision", H2))
 story.append(Paragraph(
     "Faire du forecast Q4 2026 un <b>outil de planification opérationnelle</b> permettant à BELGOCAM SA d'anticiper "
-    "29 347 tonnes de ventes et 14 149 M FCFA de chiffre d'affaires sur la période septembre-décembre 2026, "
+    "29 445 tonnes de ventes et 14 194 M FCFA de chiffre d'affaires sur la période septembre-décembre 2026, "
     "avec une désaisonnalisation de l'effet soja exceptionnel et l'intégration de la famille COMPLEMENT_ALIMENTAIRE.",
     BODY))
 
 story.append(Paragraph("1.2 Objectifs stratégiques", H2))
 obj_data = [
     ["Objectif", "Description", "KPI"],
-    ["Forecast Q4", "4 mois Sept-Dec 2026 en volume + valeur", "29 347 t, 14 149 M FCFA"],
+    ["Forecast Q4", "4 mois Sept-Dec 2026 en volume + valeur", "29 445 t, 14 194 M FCFA"],
     ["Désaisonnalisation", "Neutraliser l'effet soja Jul-Août 2026", "Cap moyenne S1 2026"],
     ["En cours + Validées", "Intégrer comme potentielles ventes", "255 commandes incluses"],
     ["Prix actualisé", "Soja 18 590 FCFA/sac (médian 2023-2026)", "vs 18 590 médian 2023-2026"],
@@ -509,7 +509,7 @@ story.append(make_table(deploy_data, col_widths=[1*cm, 3*cm, 7*cm, 6*cm], font_s
 
 story.append(Paragraph("6. Conclusion", H1))
 story.append(Paragraph(
-    "Le forecast Q4 2026  projette <b>29 347 tonnes</b> pour <b>14 149 M FCFA</b>. La désaisonnalisation "
+    "Le forecast Q4 2026  projette <b>29 445 tonnes</b> pour <b>14 194 M FCFA</b>. La désaisonnalisation "
     "de l'effet soja, l'actualisation du prix à 18 590 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only) et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     "permettent une projection réaliste. Le pic d'octobre (7 628 t) nécessitera une anticipation renforcée "
@@ -751,8 +751,8 @@ story.append(Paragraph(
 story.append(Paragraph("<b>Résultats clés 2027</b>", H3))
 synth_data = [
     ["Indicateur", "Valeur", "Détail"],
-    ["Volume total 2027", "96 102 t", "8 familles, 121 produits, 25 agences"],
-    ["CA total 2027", "44 726 M FCFA", "Prix soja médian 18 590 FCFA/sac"],
+    ["Volume total 2027", "96 529 t", "8 familles, 121 produits, 25 agences"],
+    ["CA total 2027", "44 932 M FCFA", "Prix soja médian 18 590 FCFA/sac"],
     ["Période", "12 mois (Jan-Déc 2027)", "Forecast complet annuel"],
     ["Scénario", "S3 (réappro 100%)", "Situation normale"],
     ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
@@ -769,16 +769,16 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Synthèse par famille</b>", H3))
 fam_data = [
     ["Famille", "Volume (t)", "CA (M FCFA)", "Part CA"],
-    ["TOURTEAUX", "66 338", "24 639", "55,1%"],
-    ["CONCENTRÉS", "27 822", "18 447", "41,2%"],
-    ["ALIMENT_COMPLET", "877", "326", "0,7%"],
-    ["INGREDIENTS", "1 059", "778", "1,7%"],
-    ["ALVEOLES", "0", "101", "0,2%"],
+    ["TOURTEAUX", "66 597", "24 735", "55,1%"],
+    ["CONCENTRÉS", "27 980", "18 551", "41,3%"],
+    ["ALIMENT_COMPLET", "884", "328", "0,7%"],
+    ["INGREDIENTS", "1 062", "780", "1,7%"],
+    ["ALVEOLES", "0", "102", "0,2%"],
     ["MATERIEL_ELEVAGE", "0", "214", "0,5%"],
-    ["PREMIX", "0", "192", "0,4%"],
+    ["PREMIX", "0", "193", "0,4%"],
     ["COMPLEMENT_ALIMENTAIRE", "5", "29", "0,1%"],
     ["MAÏS (exclu)", "0", "0", "0,0%"],
-    ["TOTAL", "96 102", "44 726", "100%"],
+    ["TOTAL", "96 529", "44 932", "100%"],
 ]
 story.append(make_table(fam_data, col_widths=[5*cm, 3*cm, 3*cm, 2.5*cm], font_size=9, highlight_rows=[4, 8]))
 story.append(Spacer(1, 0.3*cm))
@@ -790,7 +790,7 @@ q_data = [
     ["Q2 (Avr-Juin)", "24 316", "13 443", "25,3%"],
     ["Q3 (Juil-Sept)", "19 515", "10 881", "20,4%"],
     ["Q4 (Oct-Déc)", "26 975", "14 903", "28,0%"],
-    ["TOTAL", "96 102", "44 726", "100%"],
+    ["TOTAL", "96 529", "44 932", "100%"],
 ]
 story.append(make_table(q_data, col_widths=[4*cm, 3.5*cm, 3.5*cm, 2.5*cm], font_size=9))
 story.append(Spacer(1, 0.3*cm))
@@ -798,11 +798,11 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Top 5 agences par CA 2027</b>", H3))
 top_data = [
     ["Rang", "Agence", "Région", "CA (M FCFA)"],
-    ["1", "FAMLA", "Ouest", "13 158"],
-    ["2", "NDOBO", "Littoral", "6 385"],
-    ["3", "MESSASSI", "Centre", "3 816"],
+    ["1", "FAMLA", "Ouest", "13 190"],
+    ["2", "NDOBO", "Littoral", "6 469"],
+    ["3", "MESSASSI", "Centre", "3 824"],
     ["4", "DJELENG", "Ouest", "3 788"],
-    ["5", "VILLAGE", "Littoral", "2 492"],
+    ["5", "VILLAGE", "Littoral", "2 530"],
 ]
 story.append(make_table(top_data, col_widths=[1.5*cm, 4*cm, 3*cm, 4.5*cm], font_size=9))
 
@@ -823,7 +823,7 @@ hist_data = [
     ["PREMIX", "75", "41", "86", "60", "0 (CA)", "192"],
     ["COMPLEMENT_ALIM.", "8", "3", "6", "3", "5", "29"],
     ["MAÏS (exclu)", "0", "0", "0", "0", "0", "0"],
-    ["TOTAL", "50 041", "28 450", "63 228", "52 073", "96 102", "44 726"],
+    ["TOTAL", "50 041", "28 450", "63 228", "52 073", "96 529", "44 932"],
 ]
 story.append(make_table(hist_data, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.4*cm], font_size=8, highlight_rows=[6, 7]))
 story.append(Spacer(1, 0.3*cm))
@@ -845,7 +845,7 @@ story.append(Paragraph(
 
 progression_data = [
     ["Famille", "2026 (t)", "2027 fcst (t)", "Δ Vol %", "2026 (M)", "2027 fcst (M)", "Δ CA %"],
-    ["TOURTEAUX", "60 971", "66 338", "+8,8%", "21 342", "24 639", "+15,5%"],
+    ["TOURTEAUX", "60 971", "66 338", "+8,8%", "21 342", "24 639", "+15,6%"],
     ["CONCENTRÉS", "21 313", "27 822", "+30,5%", "14 217", "18 447", "+29,8%"],
     ["ALIMENT_COMPLET", "914", "877", "-4,0%", "732", "326", "-55,5%"],
     ["INGREDIENTS", "1 016", "1 059", "+4,3%", "1 426", "778", "-45,5%"],
@@ -853,7 +853,7 @@ progression_data = [
     ["COMPLEMENT_ALIM.", "6", "5", "-6,1%", "29", "29", "-2,1%"],
     ["ALVEOLES", "0", "0", "—", "51", "101", "+97,0%"],
     ["MATERIEL_ELEVAGE", "0", "0", "—", "270", "214", "-20,8%"],
-    ["TOTAL", "84 307", "96 102", "+14,0%", "38 292", "44 726", "+16,8%"],
+    ["TOTAL", "84 307", "96 529", "+14,0%", "38 292", "44 932", "+17,0%"],
 ]
 story.append(make_table(progression_data, col_widths=[3*cm, 1.8*cm, 2.2*cm, 1.4*cm, 1.8*cm, 2.2*cm, 1.4*cm], font_size=7.5))
 story.append(Spacer(1, 0.3*cm))
@@ -861,7 +861,7 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Insights clés et argumentaires de justification</b>", H3))
 insights_data = [
     ["#", "Insight", "Justification"],
-    ["1", "TOURTEAUX: +15,5% CA (prix médian 18 590, pas 18 590)", "Prix médian 18 590 FCFA/sac (2023-2026, vs 21 342 M CA 2026) = +8,8% volume × prix stable = +15,5% CA"],
+    ["1", "TOURTEAUX: +15,6% CA (prix médian 18 590, pas 18 590)", "Prix médian 18 590 FCFA/sac (2023-2026, vs 21 342 M CA 2026) = +8,8% volume × prix stable = +15,6% CA"],
     ["2", "CONCENTRÉS: +29,8% CA (bundle 2.5:1)", "Bundle 2.5:1 force CONCENTRÉS à la hausse quand ratio soja/concentré > 2,5 (26 ajustements 2027)"],
     ["3", "INGREDIENTS: -45% CA (correction prix 2026)", "Prix 2026 réels par unité (CA TTC / qte) pour 66 références — correctif vs méthode sacs 50kg"],
     ["4", "ALVEOLES: +97% CA (forfait révisé)", "Forfait ALV=0 (2026 nul) vs 51 M historique 2026 = pic ponctuel non récurrent, activité 2026 nulle"],
@@ -875,8 +875,8 @@ story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Argumentaire commercial pour le forecast 2027</b>", H3))
 story.append(Paragraph(
-    "Le forecast 2027 à <b>96 102 t (+14% vs 2026)</b> et <b>44 726 M FCFA (+17%)</b> reflète plusieurs dynamiques : "
-    "(1) <b>Effet prix soja</b> (+21% prix, +8,8% volume) → +15,5% CA TOURTEAUX qui représente 55% du CA total. "
+    "Le forecast 2027 à <b>96 529 t (+14% vs 2026)</b> et <b>44 932 M FCFA (+17%)</b> reflète plusieurs dynamiques : "
+    "(1) <b>Effet prix soja</b> (+21% prix, +8,8% volume) → +15,6% CA TOURTEAUX qui représente 55% du CA total. "
     "(2) <b>Bundle 2.5:1</b> applique une discipline commerciale historique — quand le soja domine (rupture 2026), "
     "le concentré doit suivre proportionnellement. "
     "(3) <b>Forfait SPC révisé</b> reflète la réalité 2026 (ALV=0 car activité nulle, MAT=38,4 M car +27% vs 2025). "
@@ -886,7 +886,7 @@ story.append(Paragraph(
 
 story.append(Paragraph("<b>Recommandations principales</b>", H3))
 recos = [
-    "<b>Planification annuelle 2027</b> — Utiliser le forecast S3 (96 102 t, 44 726 M FCFA) comme base budgétaire.",
+    "<b>Planification annuelle 2027</b> — Utiliser le forecast S3 (96 529 t, 44 932 M FCFA) comme base budgétaire.",
     "<b>Saisonnalité Q4</b> — Le Q4 2027 représente 28% du CA annuel (12 245 M FCFA). Préparer stocks dès septembre 2027.",
     "<b>Pic d'octobre</b> — Octobre 2027 = pic de l'année. Anticiper le réapprovisionnement soja avant septembre 2027.",
     "<b>Maintien du bundle</b> — Ratio bundle 2,3:1 atteint en août 2026 à maintenir en 2027.",
@@ -900,7 +900,7 @@ for r in recos:
 story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Conclusion</b>", H3))
 story.append(Paragraph(
-    "Le forecast 2027 projette <b>96 102 tonnes</b> pour un CA de <b>44 726 M FCFA</b>. La désaisonnalisation "
+    "Le forecast 2027 projette <b>96 529 tonnes</b> pour un CA de <b>44 932 M FCFA</b>. La désaisonnalisation "
     "de l'effet soja, l'actualisation du prix à 18 590 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only) et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     "permettent une projection réaliste. Le pic d'octobre nécessitera une anticipation renforcée du "
@@ -1095,14 +1095,14 @@ story.append(Paragraph("1. Vision et objectifs", H1))
 story.append(Paragraph("1.1 Vision", H2))
 story.append(Paragraph(
     "Faire du forecast 2027 un <b>outil de planification annuelle</b> permettant à BELGOCAM SA d'anticiper "
-    "96 102 tonnes de ventes et 44 726 M FCFA de chiffre d'affaires, avec désaisonnalisation de l'effet soja "
+    "96 529 tonnes de ventes et 44 932 M FCFA de chiffre d'affaires, avec désaisonnalisation de l'effet soja "
     "et intégration de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only).",
     BODY))
 
 story.append(Paragraph("1.2 Objectifs stratégiques", H2))
 obj_data = [
     ["Objectif", "Description", "KPI"],
-    ["Forecast annuel", "12 mois 2027 en volume + valeur", "96 102 t, 44 726 M FCFA"],
+    ["Forecast annuel", "12 mois 2027 en volume + valeur", "96 529 t, 44 932 M FCFA"],
     ["Désaisonnalisation", "Neutraliser l'effet soja Jul-Août 2026", "Cap moyenne S1 2026"],
     ["En cours + Validées", "Intégrer comme potentielles ventes", "255 commandes incluses"],
     ["Prix actualisé", "Soja 18 590 FCFA/sac (médian 2023-2026)", "vs 18 590 médian 2023-2026"],
@@ -1158,13 +1158,13 @@ story.append(Paragraph("4. Résultats par famille et trimestre", H1))
 story.append(Paragraph("4.1 Par famille", H2))
 fam_detail = [
     ["Famille", "Volume (t)", "CA (M FCFA)", "Part CA", "Méthode"],
-    ["TOURTEAUX", "66 338", "24 639", "55,1%", "Prophet + prix médian 18 590"],
-    ["CONCENTRÉS", "27 822", "18 447", "41,2%", "Prophet + bundle 2.5:1"],
-    ["ALIMENT_COMPLET", "877", "326", "0,7%", "Prophet + prix 2026 réels"],
-    ["INGREDIENTS", "1 059", "778", "1,7%", "Prophet + prix 2026 réels"],
-    ["ALVEOLES", "0", "101", "0,2%", "Extrap 2026 + Forfait SPC (ALV=0)"],
+    ["TOURTEAUX", "66 597", "24 735", "55,1%", "Prophet + prix médian 18 590"],
+    ["CONCENTRÉS", "27 980", "18 551", "41,3%", "Prophet + bundle 2.5:1"],
+    ["ALIMENT_COMPLET", "884", "328", "0,7%", "Prophet + prix 2026 réels"],
+    ["INGREDIENTS", "1 062", "780", "1,7%", "Prophet + prix 2026 réels"],
+    ["ALVEOLES", "0", "102", "0,2%", "Extrap 2026 + Forfait SPC (ALV=0)"],
     ["MATERIEL_ELEVAGE", "0", "214", "0,5%", "Extrap + Forfait SPC (2026 annualisé)"],
-    ["PREMIX", "0", "192", "0,4%", "Extrapolation CA"],
+    ["PREMIX", "0", "193", "0,4%", "Extrapolation CA"],
     ["COMPLEMENT_ALIM.", "5", "29", "0,1%", "Prophet (V300 1L proxy)"],
 ]
 story.append(make_table(fam_detail, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 4*cm], font_size=9, highlight_rows=[4, 8]))
@@ -1188,7 +1188,7 @@ hist_detail = [
     ["INGRÉDIENTS", "964", "606", "733", "531", "1 059", "778"],
     ["PREMIX", "75", "41", "86", "60", "0 (CA)", "192"],
     ["COMPLEMENT_ALIM.", "8", "3", "6", "3", "5", "29"],
-    ["TOTAL", "50 041", "28 450", "63 228", "52 073", "96 102", "44 726"],
+    ["TOTAL", "50 041", "28 450", "63 228", "52 073", "96 529", "44 932"],
 ]
 story.append(make_table(hist_detail, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.4*cm], font_size=8, highlight_rows=[6, 7]))
 
@@ -1205,7 +1205,7 @@ story.append(make_table(deploy_data, col_widths=[1*cm, 3*cm, 7*cm, 6*cm], font_s
 
 story.append(Paragraph("7. Conclusion", H1))
 story.append(Paragraph(
-    "Le forecast 2027  projette <b>96 102 tonnes</b> pour <b>44 726 M FCFA</b>. La désaisonnalisation "
+    "Le forecast 2027  projette <b>96 529 tonnes</b> pour <b>44 932 M FCFA</b>. La désaisonnalisation "
     "de l'effet soja, l'actualisation du prix à 18 590 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only) et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     "permettent une projection réaliste.",

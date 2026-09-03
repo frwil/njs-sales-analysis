@@ -298,8 +298,11 @@ def extrapolate_mean_q4(history_df, periods=4, freq='MS', value_col='y', family=
 print("\n=== FORECAST Q4 2026 (S3) ===")
 forecasts_fr = []
 
-PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE']
-EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX', 'ALVEOLES']  # ALVEOLES ajouté (CA only, tonnes=0)
+PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE']  # MAIS excluded (opportuniste, forecast=0)
+EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX', 'ALVEOLES']  # MAIS excluded entirely (forecast=0)
+
+# Exclude MAIS from forecast (opportuniste, forecast=0)
+combos_fr = combos_fr[combos_fr['family'] != 'MAIS']
 
 for idx, row in combos_fr.iterrows():
     family = row['family']
