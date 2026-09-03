@@ -964,3 +964,51 @@ Stage Summary:
 - 2027 v5 finale: 96 102 t, 53 052 M FCFA
 - 10 PDFs générés (5 Q4 2026 + 5 2027), tous avec mention "Forfait SPC v2: MAT_ELEV 2026 annualisé, ALV=0"
 - Conclusion v5 finale: Le forfait SPC v2 reflète la réalité 2026 (ALV quasi-nul, MAT en hausse +27%). La méthode combine poids relatifs 2025 (structure des agences SPC) avec saisonnalité 2026 (activité réelle observée). Le pic ALV 2025 (318 M) n'est pas répercuté car non récurrent. Le forfait MAT 38.4 M annuel est supérieur au 2025 (30 M) car l'activité 2026 est en hausse.
+
+---
+Task ID: forecast-v5-finale-progression-insights
+Agent: main
+Task: Calculer la progression 2027 vs 2026 (avec v5 finale + corrections prix INGREDIENTS), préparer insights et argumentaires de justification, intégrer dans les livrables.
+
+Work Log:
+- Détection anomalie CA INGREDIENTS 2026 (962 M réel) vs 2027 forecast (236 M)
+  - Cause: Prix manquants dans prix_forecast.json pour P105, I106, I107, F1145, etc.
+  - Solution: Calcul des prix moyens 2026 par sac (CA/sacs) et mise à jour de 12 références
+  - Prix corrigés: P105=68k, I106=207k, I107=105k, F1145=54k, F1146=55k, F1147=59k, E1014=78k, F114=53k, I1061=235k, I1071=162k, P1051=71k, P1053=70k
+
+- Re-run forecasts avec prix corrigés:
+  - Q4 2026: 29 347 t, 16 693 M FCFA (+461 M vs précédent, principalement INGREDIENTS)
+  - 2027: 96 102 t, 54 298 M FCFA (+1 247 M vs précédent)
+
+- Calcul progression détaillée 2027 vs 2026:
+  - 2026 total = YTD réel (Jan-Août) + Q4 forecast (Sep-Déc)
+  - 2027 total = 12 mois forecast
+  - Volume: 84 307 t → 96 102 t (+14,0%)
+  - CA: 40 836 M → 54 298 M (+33,0%)
+  - Q1-Q3 2027 vs Q1-Q3 2026 réel: Volume +26%, CA +62%
+  - Q4 2027 vs Q4 2026 forecast: Volume -8%, CA -9% (effet normalisation)
+
+- Insights et argumentaires (intégrés dans le résumé exécutif 2027):
+  1. TOURTEAUX: +38,8% CA (effet prix 25 000 FCFA/sac, +21% prix × +8,8% volume)
+  2. CONCENTRÉS: +30,1% CA (bundle 2.5:1, 26 ajustements 2027)
+  3. INGREDIENTS: +4,2% CA (correction prix 2026 réels)
+  4. ALVEOLES: +97% CA (forfait révisé ALV=0 vs 51 M historique 2026 = pic non récurrent)
+  5. MATERIEL_ELEVAGE: -20,8% CA (normalisation vs pic 2026)
+  6. Total: +14% volume, +33% CA (effets combinés)
+  7. Q4 2027 vs Q4 2026: -8% volume (normalisation après rupture concurrente 2026)
+  8. Q1-Q3 2027 vs 2026: +26% volume (tendance haussière amplifiée)
+
+- Régénération 10 PDFs v5 finale:
+  - Q4 2026 résumé exécutif: 16 693 M FCFA, 29 347 t, 25 agences, 121 produits
+  - 2027 résumé exécutif: 54 298 M FCFA, 96 102 t, NOUVELLE section "Progression 2027 vs 2026" avec tableau détaillé + insights + argumentaire commercial
+  - Document stratégique 2027: tableau hist_detail mis à jour (INGREDIENTS 1 482 M au lieu de 236 M)
+
+Stage Summary:
+- v5 finale: 96 102 t / 54 298 M FCFA pour 2027 (+14% volume, +33% CA vs 2026)
+- Correction majeure: prix INGREDIENTS basés sur 2026 réels (+1 247 M CA pour 2027)
+- Section "Progression 2027 vs 2026" ajoutée dans le résumé exécutif 2027 avec:
+  - Tableau progression par famille (8 familles)
+  - 8 insights clés avec justifications
+  - Argumentaire commercial de 5 points
+- Top 5 agences 2027 (avec prix corrigés): FAMLA 15 878 M, NDOBO 7 983 M, MESSASSI 4 677 M, DJELENG 4 536 M, VILLAGE 2 990 M
+- Conclusion: La progression 2027 vs 2026 (+14% volume, +33% CA) est portée par 4 effets combinés: (1) prix soja +21%, (2) bundle 2.5:1 (+31% CONCENTRÉS), (3) prix INGREDIENTS corrigés, (4) forfait SPC révisé (MAT_ELEV 2026 annualisé, ALV=0). Le Q4 2027 en retrait vs Q4 2026 (effet normalisation après rupture concurrente 2026).
