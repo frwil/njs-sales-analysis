@@ -915,3 +915,52 @@ Stage Summary:
 
 - 10 PDFs générés (5 Q4 2026 + 5 2027), tous avec nouvelles nouveautés v4 documentées
 - Conclusion v4: Intégration complète des agences SPC (Baf-Chefferie dominant en alvéoles + matériel), de Maroua (soja), du bundle 2.5:1 (ratio soja:concentré forcé à <=2.5), et de la saisonnalité ALVEOLES 2026 (vs pic 2025). Les volumes et CA augmentent respectivement de +9% et +11% en 2027 vs v3, principalement tirés par l'ajustement bundle 2.5:1 qui augmente les CONCENTRES. Les ALVEOLES baissent drastiquement (-79%) car la saisonnalité 2026 (13.9 M/an) est utilisée au lieu du pic 2025 (739 M).
+
+---
+Task ID: forecast-v5-revised-forfait-2026
+Agent: main
+Task: Réviser le forfait SPC en utilisant la saisonnalité 2026 annualisée (au lieu du pic 2025) pour ALVEOLES et MAT_ELEVAGE. Poids par agence reste basé sur 2025.
+
+Work Log:
+- Analyse COMPTOIR sales 2026 (toutes agences): 497.57 M HT, 4.73% du total 2026 (10 517 M)
+  - Top agences: MESSASSI 81.69 M, BERTOUA 74.45 M, FAMLA 64.69 M, NDOBO 48.39 M, VILLAGE 37.71 M
+  - Top familles: CONCENTRES 196.53 M, TOURTEAUX 140.51 M, ALIMENT_COMPLET 49.35 M, INGREDIENTS 46.56 M, MAT_ELEVAGE 41.86 M
+
+- Analyse SPC 2026 ALV+MAT (sans exclusion COMPTOIR): 
+  - ALVEOLES 2026 YTD (8 mois) = 0 M (vs 318 M en 2025) — pic 2025 non récurrent
+  - MATERIEL_ELEVAGE 2026 YTD = 25.63 M → annualisé = 38.44 M (vs 30.32 M en 2025, +27%)
+  - Saisonnalité 2026 MAT: Jan 3.53 M, Juil 4.48 M, Août 17.62 M (pic)
+
+- Forfait SPC v2 révisé (scripts/spc_forfait.py):
+  - ALVEOLES: 0 M/an (activité nulle en 2026, pic 2025 non récurrent)
+  - MATERIEL_ELEVAGE: 38.44 M/an (2026 annualisé)
+  - SPC PK15 forfait réaliste: 0.5 M/an MAT (0 ALV)
+  - Saisonnalité mensuelle: weights 2025 (Q3 pic été 71.4%, Q4 17.1%)
+  - Méthode: poids 2025 par agence × forfait total 2026 annualisé
+
+- Application au forecast:
+  - Q4 2026 forfait SPC: 36 records, 11.6 M FCFA (MAT only, ALV=0)
+  - 2027 forfait SPC: 109 records, 45.1 M FCFA (MAT only, ALV=0)
+
+- Régénération Excels:
+  - Q4 2026: 212 KB, 4 536 lignes, 25 agences, 121 produits
+  - 2027: 583 KB, 13 609 lignes, 25 agences, 121 produits
+
+- Régénération 10 PDFs v5 finale:
+  - Q4 2026: 29 347 t / 16 232 M FCFA (vs 16 335 en v5 précédent, -103 M)
+    - ALVEOLES: 34 M FCFA (vs 139 M en v5 précédent, -105 M — forfait ALV=0)
+    - MATERIEL_ELEVAGE: 82 M FCFA (vs 80 M en v5 précédent, +2 M — forfait MAT 11.6 M vs 10 M)
+  - 2027: 96 102 t / 53 052 M FCFA (vs 53 356 M en v5 précédent, -304 M)
+    - ALVEOLES: 101 M FCFA (vs 420 M en v5 précédent, -319 M — forfait ALV=0)
+    - MATERIEL_ELEVAGE: 214 M FCFA (vs 199 M en v5 précédent, +15 M — forfait MAT 45 M vs 30 M)
+  
+- Top 5 agences Q4 2026: FAMLA 4 430 M, NDOBO 2 497 M, MESSASSI 1 445 M, DJELENG 1 268 M, VILLAGE 950 M
+- Top 5 agences 2027: FAMLA 15 682 M, NDOBO 7 652 M, MESSASSI 4 552 M, DJELENG 4 494 M, VILLAGE 2 912 M
+
+Stage Summary:
+- Dataset v5: 25 agences (14 BELGOCAM + 10 SPC + Maroua), 176 576 records, 121 produits, 8 familles
+- Forfait SPC v2: basé sur saisonnalité 2026 annualisée (ALV=0, MAT=38.44 M) × poids 2025
+- Q4 2026 v5 finale: 29 347 t, 16 232 M FCFA
+- 2027 v5 finale: 96 102 t, 53 052 M FCFA
+- 10 PDFs générés (5 Q4 2026 + 5 2027), tous avec mention "Forfait SPC v2: MAT_ELEV 2026 annualisé, ALV=0"
+- Conclusion v5 finale: Le forfait SPC v2 reflète la réalité 2026 (ALV quasi-nul, MAT en hausse +27%). La méthode combine poids relatifs 2025 (structure des agences SPC) avec saisonnalité 2026 (activité réelle observée). Le pic ALV 2025 (318 M) n'est pas répercuté car non récurrent. Le forfait MAT 38.4 M annuel est supérieur au 2025 (30 M) car l'activité 2026 est en hausse.

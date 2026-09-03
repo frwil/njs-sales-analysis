@@ -1,44 +1,33 @@
 """
-Forfait SPC pour ALVEOLES + MATERIEL_ELEVAGE.
+Forfait SPC v2 (révisé) pour ALVEOLES + MATERIEL_ELEVAGE.
 
-Définit un forfait global basé sur 2025 pour les SPC agencies, distribué par poids 2025.
-Pour SPC PK15 (0 en 2025), applique un forfait réaliste.
+METHODE: 
+- Poids par agence = basé sur 2025 (relatif, en %)
+- Forfait total = basé sur la saisonnalité 2026 annualisée
 
-Forfait global annuel 2025 (basé sur 2025 SPC agency sales):
-  ALVEOLES: 318.2 M FCFA/an (10 agences SPC, SPC Baf-Chefferie 97.83%)
-  MATERIEL_ELEVAGE: 30.3 M FCFA/an (10 agences SPC, SPC Baf-Chefferie 79.79%)
-  TOTAL: 348.5 M FCFA/an
+Résultats 2026 (YTD 8 mois, SPC agencies):
+- ALVEOLES: 0 M FCFA en 2026 → forfait ALV annuel = 0 M
+- MATERIEL_ELEVAGE: 25.63 M en 2026 (8 mois) → annualisé = 38.44 M
 
-Pour 2027 (forecast 12 mois), on applique:
-  - Forfait ALVEOLES annuel: 318.2 M FCFA/an (maintien de l'activité 2025)
-  - Forfait MAT_ELEVAGE annuel: 30.3 M FCFA/an (maintien)
-  - Total SPC: 348.5 M FCFA/an
+Pour les poids par agence (2025):
+- SPC Baf-Chefferie: 79.79% (dominant)
+- SPC Yassa: 5.98%
+- SPC Kye-Ossi: 5.71%
+- SPC DLA-Beri: 4.19%
+- SPC Ndere: 2.53%
+- SPC Village: 0.91%
+- SPC Dschang: 0.71%
+- SPC Buea: 0.18%
+- SPC PK15: 0% (forfait réaliste 0.5 M/an)
+- SPC TPO: 0.01%
 
-Pour Q4 2026 (4 mois): on applique 1/3 du forfait annuel (Q4 ≈ 33% activité annuelle):
-  - Forfait ALVEOLES Q4: ~105 M FCFA
-  - Forfait MAT_ELEVAGE Q4: ~10 M FCFA
-  - Total SPC Q4: ~115 M FCFA
-
-Poids 2025 par agence SPC:
-  SPC Baf-Chefferie: ALV 97.83%, MAT 79.79%
-  SPC TPO:           ALV 0.90%,  MAT 0.01%
-  SPC Ndere:         ALV 0.64%,  MAT 2.53%
-  SPC Kye-Ossi:      ALV 0.13%,  MAT 5.71%
-  SPC DLA-Beri:      ALV 0.20%,  MAT 4.19%
-  SPC Yassa:         ALV 0.03%,  MAT 5.98%
-  SPC Village:       ALV 0.11%,  MAT 0.91%
-  SPC Dschang:       ALV 0.12%,  MAT 0.71%
-  SPC Buea:          ALV 0.05%,  MAT 0.18%
-  SPC PK15:          ALV 0%,     MAT 0% (forfait réaliste: 0.5 M/an ALV + 0.5 M/an MAT)
-
-Pour SPC PK15 (0 en 2025), forfait réaliste:
-  ALVEOLES: 0.5 M FCFA/an (basé sur taille similaire à SPC Yassa/Village)
-  MATERIEL_ELEVAGE: 0.5 M FCFA/an
+Saisonnalité mensuelle (2025 weights, puisque 2026 n'a que 3 mois de data):
+  Mai: 2.68%, Juin: 18.05%, Juil: 21.0%, Août: 28.39%, Sep: 12.82%, Oct: 10.47%, Nov: 3.58%, Déc: 3.02%
 """
 import pandas as pd
 import json
 
-# 2025 SPC weights
+# 2025 SPC weights (relatifs, en %)
 SPC_WEIGHTS_2025 = {
     'SPC Baf-Chefferie': {'ALVEOLES': 97.83, 'MATERIEL_ELEVAGE': 79.79},
     'SPC TPO':           {'ALVEOLES': 0.90,  'MATERIEL_ELEVAGE': 0.01},
@@ -49,10 +38,8 @@ SPC_WEIGHTS_2025 = {
     'SPC Village':       {'ALVEOLES': 0.11,  'MATERIEL_ELEVAGE': 0.91},
     'SPC Dschang':       {'ALVEOLES': 0.12,  'MATERIEL_ELEVAGE': 0.71},
     'SPC Buea':          {'ALVEOLES': 0.05,  'MATERIEL_ELEVAGE': 0.18},
-    # SPC PK15: 0% in 2025, forfait réaliste defined below
 }
 
-# SPC agencies regions (for forecast integration)
 SPC_REGIONS = {
     'SPC Baf-Chefferie': 'Ouest',
     'SPC TPO': 'Littoral',
@@ -66,71 +53,78 @@ SPC_REGIONS = {
     'SPC PK15': 'Littoral',
 }
 
-# Forfait global annuel (basé sur 2025)
-FORFAIT_ALVEOLES_ANNUAL = 318.2  # M FCFA/an (total SPC ALVEOLES 2025)
-FORFAIT_MAT_ELEVAGE_ANNUAL = 30.3  # M FCFA/an (total SPC MATERIEL_ELEVAGE 2025)
+# FORFAIT ANNUEL basé sur 2026 annualisé (NOUVELLE METHODE v2)
+FORFAIT_ALVEOLES_ANNUAL_2026 = 0.0  # ALV: 0 M en 2026 (pic 2025 non récurrent)
+FORFAIT_MAT_ELEVAGE_ANNUAL_2026 = 38.44  # MAT: 25.63 M YTD × 12/8 = 38.44 M annualisé
 
-# Forfait SPC PK15 (poids nul en 2025) — forfait réaliste
-FORFAIT_PK15_ALVEOLES = 0.5  # M FCFA/an
-FORFAIT_PK15_MAT_ELEVAGE = 0.5  # M FCFA/an
+# SPC PK15: 0 en 2025 ET 0.06 M en 2026 (1 seule vente) → forfait réaliste
+FORFAIT_PK15_ALVEOLES = 0.0  # 0 ALV en 2026
+FORFAIT_PK15_MAT_ELEVAGE = 0.5  # Forfait réaliste (taille similaire à SPC Yassa/Village)
 
-# Saisonnalité approximative (Q4 ≈ 33% de l'année, pics en octobre et décembre)
-MONTH_WEIGHTS_Q4 = {9: 0.20, 10: 0.35, 11: 0.20, 12: 0.25}  # Sep, Oct, Nov, Dec
+# Saisonnalité mensuelle (basée sur 2025 SPC MAT_ELEVAGE, car 2026 n'a que 3 mois)
+# 2025 weights: Mai 2.68%, Juin 18.05%, Juil 21.0%, Août 28.39%, Sep 12.82%, Oct 10.47%, Nov 3.58%, Déc 3.02%
+# Complété pour Q1 (qui était 0 en 2025) avec une légère présence (~5% par mois)
 MONTH_WEIGHTS_ANNUAL = {
-    1: 0.07, 2: 0.06, 3: 0.07, 4: 0.07, 5: 0.08, 6: 0.08,
-    7: 0.07, 8: 0.06, 9: 0.09, 10: 0.13, 11: 0.10, 12: 0.12
+    1: 0.04, 2: 0.04, 3: 0.04,    # Q1: 12% (extrapolé)
+    4: 0.04, 5: 0.027, 6: 0.180,  # Q2: 24.7%
+    7: 0.210, 8: 0.284, 9: 0.128, # Q3: 62.2% (pic été)
+    10: 0.105, 11: 0.036, 12: 0.030  # Q4: 17.1%
 }
 
+# Q4 monthly weights (specific to Q4 2026 forecast)
+MONTH_WEIGHTS_Q4 = {9: 0.128, 10: 0.105, 11: 0.036, 12: 0.030}  # Sep, Oct, Nov, Dec
+
+
 def generate_spc_forfait_q4_2026():
-    """Generate SPC forfait records for Q4 2026 (Sep, Oct, Nov, Dec)."""
+    """Generate SPC forfait records for Q4 2026 (Sep, Oct, Nov, Dec).
+    
+    Forfait ALV: 0 (2026 = 0)
+    Forfait MAT: based on 2026 annualized (38.44 M) × Q4 weights
+    """
     records = []
     
-    # Forfait total Q4 = (ALV + MAT) * 1/3 (Q4 ≈ 33% of year)
-    forfait_alv_q4 = FORFAIT_ALVEOLES_ANNUAL * 0.33  # ~105 M
-    forfait_mat_q4 = FORFAIT_MAT_ELEVAGE_ANNUAL * 0.33  # ~10 M
+    # Q4 portion of annual forfait (based on 2025 monthly weights for Q4)
+    q4_total_weight = sum(MONTH_WEIGHTS_Q4.values())  # ~30%
+    forfait_mat_q4 = FORFAIT_MAT_ELEVAGE_ANNUAL_2026 * q4_total_weight  # ~11.5 M
+    forfait_alv_q4 = FORFAIT_ALVEOLES_ANNUAL_2026 * q4_total_weight  # 0
     
+    # For each SPC agency, distribute forfait by 2025 weight
     for agence, weights in SPC_WEIGHTS_2025.items():
         region = SPC_REGIONS[agence]
-        # ALVEOLES share
-        alv_share_pct = weights['ALVEOLES'] / 100
         mat_share_pct = weights['MATERIEL_ELEVAGE'] / 100
+        alv_share_pct = weights['ALVEOLES'] / 100  # Will be 0 anyway
         
-        # ALVEOLES CA per agency
-        alv_ca_agence = forfait_alv_q4 * alv_share_pct
-        # MAT_ELEVAGE CA per agency
         mat_ca_agence = forfait_mat_q4 * mat_share_pct
+        alv_ca_agence = forfait_alv_q4 * alv_share_pct  # = 0
         
-        # Distribute across Q4 months
         for month, weight_m in MONTH_WEIGHTS_Q4.items():
-            # Normalize Q4 weights to sum to 1
-            q4_total = sum(MONTH_WEIGHTS_Q4.values())
-            norm_weight = weight_m / q4_total
+            norm_weight = weight_m / q4_total_weight
             
-            alv_month = alv_ca_agence * norm_weight
             mat_month = mat_ca_agence * norm_weight
+            alv_month = alv_ca_agence * norm_weight  # = 0
             
-            # ALVEOLES record
-            if alv_month > 0.01:
+            # ALVEOLES record (always 0 in v2)
+            if alv_month > 0.001:
                 records.append({
                     'scenario': 'S3_reappro_100',
-                    'ref': 'MAT014-80010003',  # Main ALVEOLE ref
+                    'ref': 'MAT014-80010003',
                     'family': 'ALVEOLES',
                     'agence': agence,
                     'region': region,
                     'date': pd.Timestamp(f'2026-{month:02d}-01'),
                     'month': month, 'year': 2026,
-                    'tonnes': 0,  # ALVEOLES not expressed in tonnes
+                    'tonnes': 0,
                     'sacs_50': 0,
                     'prix_ttc_sac': 0,
                     'ca_m_fcfa': round(alv_month, 2),
-                    'source': 'forfait_spc_2025'
+                    'source': 'forfait_spc_2026_saisonnalite'
                 })
             
             # MATERIEL_ELEVAGE record
-            if mat_month > 0.01:
+            if mat_month > 0.001:
                 records.append({
                     'scenario': 'S3_reappro_100',
-                    'ref': 'MAT003',  # ABREUVOIR AUTO (main ref)
+                    'ref': 'MAT003',
                     'family': 'MATERIEL_ELEVAGE',
                     'agence': agence,
                     'region': region,
@@ -140,53 +134,58 @@ def generate_spc_forfait_q4_2026():
                     'sacs_50': 0,
                     'prix_ttc_sac': 0,
                     'ca_m_fcfa': round(mat_month, 2),
-                    'source': 'forfait_spc_2025'
+                    'source': 'forfait_spc_2026_saisonnalite'
                 })
     
-    # SPC PK15 (0 en 2025) — forfait réaliste
-    pk15_alv_q4 = FORFAIT_PK15_ALVEOLES * 0.33
-    pk15_mat_q4 = FORFAIT_PK15_MAT_ELEVAGE * 0.33
+    # SPC PK15 forfait réaliste (Q4 portion)
+    pk15_mat_q4 = FORFAIT_PK15_MAT_ELEVAGE * q4_total_weight
+    pk15_alv_q4 = FORFAIT_PK15_ALVEOLES * q4_total_weight  # 0
+    
     for month, weight_m in MONTH_WEIGHTS_Q4.items():
-        q4_total = sum(MONTH_WEIGHTS_Q4.values())
-        norm_weight = weight_m / q4_total
-        
-        alv_month = pk15_alv_q4 * norm_weight
+        norm_weight = weight_m / q4_total_weight
         mat_month = pk15_mat_q4 * norm_weight
+        alv_month = pk15_alv_q4 * norm_weight  # 0
         
-        records.append({
-            'scenario': 'S3_reappro_100',
-            'ref': 'MAT014-80010003',
-            'family': 'ALVEOLES',
-            'agence': 'SPC PK15',
-            'region': 'Littoral',
-            'date': pd.Timestamp(f'2026-{month:02d}-01'),
-            'month': month, 'year': 2026,
-            'tonnes': 0,
-            'sacs_50': 0,
-            'prix_ttc_sac': 0,
-            'ca_m_fcfa': round(alv_month, 2),
-            'source': 'forfait_pk15_realiste'
-        })
-        records.append({
-            'scenario': 'S3_reappro_100',
-            'ref': 'MAT003',
-            'family': 'MATERIEL_ELEVAGE',
-            'agence': 'SPC PK15',
-            'region': 'Littoral',
-            'date': pd.Timestamp(f'2026-{month:02d}-01'),
-            'month': month, 'year': 2026,
-            'tonnes': 0,
-            'sacs_50': 0,
-            'prix_ttc_sac': 0,
-            'ca_m_fcfa': round(mat_month, 2),
-            'source': 'forfait_pk15_realiste'
-        })
+        # PK15 ALV (0)
+        if alv_month > 0.001:
+            records.append({
+                'scenario': 'S3_reappro_100',
+                'ref': 'MAT014-80010003',
+                'family': 'ALVEOLES',
+                'agence': 'SPC PK15',
+                'region': 'Littoral',
+                'date': pd.Timestamp(f'2026-{month:02d}-01'),
+                'month': month, 'year': 2026,
+                'tonnes': 0, 'sacs_50': 0, 'prix_ttc_sac': 0,
+                'ca_m_fcfa': round(alv_month, 2),
+                'source': 'forfait_pk15_realiste'
+            })
+        
+        # PK15 MAT (forfait réaliste 0.5 M/an)
+        if mat_month > 0.001:
+            records.append({
+                'scenario': 'S3_reappro_100',
+                'ref': 'MAT003',
+                'family': 'MATERIEL_ELEVAGE',
+                'agence': 'SPC PK15',
+                'region': 'Littoral',
+                'date': pd.Timestamp(f'2026-{month:02d}-01'),
+                'month': month, 'year': 2026,
+                'tonnes': 0, 'sacs_50': 0, 'prix_ttc_sac': 0,
+                'ca_m_fcfa': round(mat_month, 2),
+                'source': 'forfait_pk15_realiste'
+            })
     
     return records
 
 
 def generate_spc_forfait_2027():
-    """Generate SPC forfait records for 2027 (12 months)."""
+    """Generate SPC forfait records for 2027 (12 months).
+    
+    Forfait ALV: 0 (2026 = 0, pic 2025 non récurrent)
+    Forfait MAT: 38.44 M/an (2026 annualisé)
+    Saisonnalité: 2025 weights (Q3 pic)
+    """
     records = []
     
     for agence, weights in SPC_WEIGHTS_2025.items():
@@ -194,14 +193,14 @@ def generate_spc_forfait_2027():
         alv_share_pct = weights['ALVEOLES'] / 100
         mat_share_pct = weights['MATERIEL_ELEVAGE'] / 100
         
-        alv_ca_agence = FORFAIT_ALVEOLES_ANNUAL * alv_share_pct
-        mat_ca_agence = FORFAIT_MAT_ELEVAGE_ANNUAL * mat_share_pct
+        alv_ca_agence = FORFAIT_ALVEOLES_ANNUAL_2026 * alv_share_pct  # = 0
+        mat_ca_agence = FORFAIT_MAT_ELEVAGE_ANNUAL_2026 * mat_share_pct
         
         for month, weight_m in MONTH_WEIGHTS_ANNUAL.items():
-            alv_month = alv_ca_agence * weight_m
+            alv_month = alv_ca_agence * weight_m  # = 0
             mat_month = mat_ca_agence * weight_m
             
-            if alv_month > 0.01:
+            if alv_month > 0.001:
                 records.append({
                     'scenario': 'S3_reappro_100',
                     'ref': 'MAT014-80010003',
@@ -210,14 +209,12 @@ def generate_spc_forfait_2027():
                     'region': region,
                     'date': pd.Timestamp(f'2027-{month:02d}-01'),
                     'month': month, 'year': 2027,
-                    'tonnes': 0,
-                    'sacs_50': 0,
-                    'prix_ttc_sac': 0,
+                    'tonnes': 0, 'sacs_50': 0, 'prix_ttc_sac': 0,
                     'ca_m_fcfa': round(alv_month, 2),
-                    'source': 'forfait_spc_2025'
+                    'source': 'forfait_spc_2026_saisonnalite'
                 })
             
-            if mat_month > 0.01:
+            if mat_month > 0.001:
                 records.append({
                     'scenario': 'S3_reappro_100',
                     'ref': 'MAT003',
@@ -226,72 +223,75 @@ def generate_spc_forfait_2027():
                     'region': region,
                     'date': pd.Timestamp(f'2027-{month:02d}-01'),
                     'month': month, 'year': 2027,
-                    'tonnes': 0,
-                    'sacs_50': 0,
-                    'prix_ttc_sac': 0,
+                    'tonnes': 0, 'sacs_50': 0, 'prix_ttc_sac': 0,
                     'ca_m_fcfa': round(mat_month, 2),
-                    'source': 'forfait_spc_2025'
+                    'source': 'forfait_spc_2026_saisonnalite'
                 })
     
-    # SPC PK15 forfait réaliste
+    # SPC PK15 forfait réaliste (annuel)
     for month, weight_m in MONTH_WEIGHTS_ANNUAL.items():
-        alv_month = FORFAIT_PK15_ALVEOLES * weight_m
+        alv_month = FORFAIT_PK15_ALVEOLES * weight_m  # 0
         mat_month = FORFAIT_PK15_MAT_ELEVAGE * weight_m
         
-        records.append({
-            'scenario': 'S3_reappro_100',
-            'ref': 'MAT014-80010003',
-            'family': 'ALVEOLES',
-            'agence': 'SPC PK15',
-            'region': 'Littoral',
-            'date': pd.Timestamp(f'2027-{month:02d}-01'),
-            'month': month, 'year': 2027,
-            'tonnes': 0, 'sacs_50': 0, 'prix_ttc_sac': 0,
-            'ca_m_fcfa': round(alv_month, 2),
-            'source': 'forfait_pk15_realiste'
-        })
-        records.append({
-            'scenario': 'S3_reappro_100',
-            'ref': 'MAT003',
-            'family': 'MATERIEL_ELEVAGE',
-            'agence': 'SPC PK15',
-            'region': 'Littoral',
-            'date': pd.Timestamp(f'2027-{month:02d}-01'),
-            'month': month, 'year': 2027,
-            'tonnes': 0, 'sacs_50': 0, 'prix_ttc_sac': 0,
-            'ca_m_fcfa': round(mat_month, 2),
-            'source': 'forfait_pk15_realiste'
-        })
+        # PK15 ALV (0)
+        if alv_month > 0.001:
+            records.append({
+                'scenario': 'S3_reappro_100',
+                'ref': 'MAT014-80010003',
+                'family': 'ALVEOLES',
+                'agence': 'SPC PK15',
+                'region': 'Littoral',
+                'date': pd.Timestamp(f'2027-{month:02d}-01'),
+                'month': month, 'year': 2027,
+                'tonnes': 0, 'sacs_50': 0, 'prix_ttc_sac': 0,
+                'ca_m_fcfa': round(alv_month, 2),
+                'source': 'forfait_pk15_realiste'
+            })
+        # PK15 MAT (0.5 M/an)
+        if mat_month > 0.001:
+            records.append({
+                'scenario': 'S3_reappro_100',
+                'ref': 'MAT003',
+                'family': 'MATERIEL_ELEVAGE',
+                'agence': 'SPC PK15',
+                'region': 'Littoral',
+                'date': pd.Timestamp(f'2027-{month:02d}-01'),
+                'month': month, 'year': 2027,
+                'tonnes': 0, 'sacs_50': 0, 'prix_ttc_sac': 0,
+                'ca_m_fcfa': round(mat_month, 2),
+                'source': 'forfait_pk15_realiste'
+            })
     
     return records
 
 
 if __name__ == '__main__':
-    # Test: print forfait summary
-    print('=== FORFAIT SPC (basé sur 2025) ===\n')
-    print(f"Forfait annuel ALVEOLES: {FORFAIT_ALVEOLES_ANNUAL} M FCFA/an")
-    print(f"Forfait annuel MATERIEL_ELEVAGE: {FORFAIT_MAT_ELEVAGE_ANNUAL} M FCFA/an")
-    print(f"Forfait SPC PK15 ALVEOLES: {FORFAIT_PK15_ALVEOLES} M FCFA/an (réaliste)")
+    print('=== FORFAIT SPC v2 (basé sur saisonnalité 2026, poids 2025) ===\n')
+    print(f"Forfait annuel ALVEOLES 2026: {FORFAIT_ALVEOLES_ANNUAL_2026} M FCFA/an (0 = activité nulle en 2026)")
+    print(f"Forfait annuel MATERIEL_ELEVAGE 2026: {FORFAIT_MAT_ELEVAGE_ANNUAL_2026} M FCFA/an (annualisé)")
     print(f"Forfait SPC PK15 MAT_ELEVAGE: {FORFAIT_PK15_MAT_ELEVAGE} M FCFA/an (réaliste)")
-    print(f"TOTAL annuel SPC: {FORFAIT_ALVEOLES_ANNUAL + FORFAIT_MAT_ELEVAGE_ANNUAL + FORFAIT_PK15_ALVEOLES + FORFAIT_PK15_MAT_ELEVAGE} M FCFA/an")
+    print(f"Forfait SPC PK15 ALVEOLES: {FORFAIT_PK15_ALVEOLES} M FCFA/an (0)")
+    print(f"TOTAL annuel SPC v2: {FORFAIT_ALVEOLES_ANNUAL_2026 + FORFAIT_MAT_ELEVAGE_ANNUAL_2026 + FORFAIT_PK15_ALVEOLES + FORFAIT_PK15_MAT_ELEVAGE} M FCFA/an")
+    print(f"\nMéthode: Poids 2025 par agence × Forfait total 2026 annualisé")
     print()
     
-    # Generate Q4 2026 forfait
-    print('=== Q4 2026 Forfait SPC ===')
+    print('=== Q4 2026 Forfait SPC v2 ===')
     q4_records = generate_spc_forfait_q4_2026()
     print(f'Total records: {len(q4_records)}')
     q4_df = pd.DataFrame(q4_records)
-    print(q4_df.groupby(['agence', 'family'])['ca_m_fcfa'].sum().round(2))
-    print(f'\nTotal CA Q4: {q4_df["ca_m_fcfa"].sum():.2f} M FCFA')
-    print(f'  - ALVEOLES: {q4_df[q4_df["family"]=="ALVEOLES"]["ca_m_fcfa"].sum():.2f} M')
-    print(f'  - MAT_ELEVAGE: {q4_df[q4_df["family"]=="MATERIEL_ELEVAGE"]["ca_m_fcfa"].sum():.2f} M')
+    if len(q4_df) > 0:
+        print(q4_df.groupby(['agence', 'family'])['ca_m_fcfa'].sum().round(2))
+        print(f'\nTotal CA Q4: {q4_df["ca_m_fcfa"].sum():.2f} M FCFA')
+        print(f'  - ALVEOLES: {q4_df[q4_df["family"]=="ALVEOLES"]["ca_m_fcfa"].sum():.2f} M (0)')
+        print(f'  - MAT_ELEVAGE: {q4_df[q4_df["family"]=="MATERIEL_ELEVAGE"]["ca_m_fcfa"].sum():.2f} M')
     
     print()
-    print('=== 2027 Forfait SPC ===')
+    print('=== 2027 Forfait SPC v2 ===')
     f2027_records = generate_spc_forfait_2027()
     print(f'Total records: {len(f2027_records)}')
     f2027_df = pd.DataFrame(f2027_records)
-    print(f2027_df.groupby(['agence', 'family'])['ca_m_fcfa'].sum().round(2))
-    print(f'\nTotal CA 2027: {f2027_df["ca_m_fcfa"].sum():.2f} M FCFA')
-    print(f'  - ALVEOLES: {f2027_df[f2027_df["family"]=="ALVEOLES"]["ca_m_fcfa"].sum():.2f} M')
-    print(f'  - MAT_ELEVAGE: {f2027_df[f2027_df["family"]=="MATERIEL_ELEVAGE"]["ca_m_fcfa"].sum():.2f} M')
+    if len(f2027_df) > 0:
+        print(f2027_df.groupby(['agence', 'family'])['ca_m_fcfa'].sum().round(2))
+        print(f'\nTotal CA 2027: {f2027_df["ca_m_fcfa"].sum():.2f} M FCFA')
+        print(f'  - ALVEOLES: {f2027_df[f2027_df["family"]=="ALVEOLES"]["ca_m_fcfa"].sum():.2f} M (0)')
+        print(f'  - MAT_ELEVAGE: {f2027_df[f2027_df["family"]=="MATERIEL_ELEVAGE"]["ca_m_fcfa"].sum():.2f} M')
