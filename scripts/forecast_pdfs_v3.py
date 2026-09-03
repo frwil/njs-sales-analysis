@@ -137,7 +137,7 @@ synth_data = [
     ["NOUVEAU v5: ALVEOLES", "0 t / 139 M FCFA (2026 + forfait SPC)", "4 refs MAT011/MAT014/MAT015/MAT017"],
     ["NOUVEAU v5: 10 agences SPC incluses", "Forfait global 348 M/an (poids 2025)", "ALV + MAT_ELEV"],
     ["NOUVEAU v4: Maroua agence", "1 agence ajoutée (soja T102, Août 2026)", "Centre (par convention)"],
-    ["NOUVEAU v5: Forfait SPC", "348 M/an ALV+MAT (poids 2025)", "SPC PK15 forfait réaliste 1 M"),
+    ["NOUVEAU v5: Forfait SPC", "348 M/an ALV+MAT (poids 2025)", "SPC PK15 forfait réaliste 1 M"],
     ["NOUVEAU v4: Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1 forcé", "6 ajustements Q4"],
 ]
 story.append(make_table(synth_data, col_widths=[5*cm, 4*cm, 8*cm], font_size=9, highlight_rows=[7, 8]))
@@ -760,7 +760,7 @@ synth_data = [
     ["NOUVEAU v3: COMPLEMENT_ALIM.", "3 t / 18 M FCFA", "V300 1L only (V305 200L exclu)"],
     ["NOUVEAU v5: ALVEOLES", "0 t / 420 M FCFA (2026 + forfait SPC)", "4 refs MAT011/MAT014/MAT015/MAT017"],
     ["NOUVEAU v4: SPC agences incluses", "5 agences SPC + Maroua", "25 agences total"],
-    ["NOUVEAU v5: Forfait SPC", "348 M/an ALV+MAT (poids 2025)", "SPC PK15 forfait réaliste 1 M"),
+    ["NOUVEAU v5: Forfait SPC", "348 M/an ALV+MAT (poids 2025)", "SPC PK15 forfait réaliste 1 M"],
     ["NOUVEAU v4: Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1 forcé", "26 ajustements annuels"],
 ]
 story.append(make_table(synth_data, col_widths=[5*cm, 4*cm, 8*cm], font_size=9, highlight_rows=[7, 8]))
