@@ -424,6 +424,23 @@ for (region, month), group in fcst_df.groupby(['region', 'month']):
 
 print(f"  Total adjustments: {adjustments_made}")
 
+# === FORFAIT SPC (ALVEOLES + MATERIEL_ELEVAGE) ===
+print("\n=== APPLICATION FORFAIT SPC (ALVEOLES + MAT_ELEVAGE) ===")
+import sys
+sys.path.insert(0, "/home/z/my-project/scripts")
+from spc_forfait import generate_spc_forfait_q4_2026
+
+spc_forfait_records = generate_spc_forfait_q4_2026()
+spc_df = pd.DataFrame(spc_forfait_records)
+print(f"  Forfait SPC: {len(spc_df)} records, CA total = {spc_df['ca_m_fcfa'].sum():.1f} M FCFA")
+print(f"    - ALVEOLES: {spc_df[spc_df['family']=='ALVEOLES']['ca_m_fcfa'].sum():.1f} M (basé sur 2025)")
+print(f"    - MAT_ELEVAGE: {spc_df[spc_df['family']=='MATERIEL_ELEVAGE']['ca_m_fcfa'].sum():.1f} M (basé sur 2025)")
+print(f"    - SPC PK15 forfait réaliste: 0.5 M ALV + 0.5 M MAT")
+
+# Add forfait to forecast
+fcst_df = pd.concat([fcst_df, spc_df], ignore_index=True)
+print(f"  Total forecast après forfait: {len(fcst_df)} records, CA = {fcst_df['ca_m_fcfa'].sum():.1f} M FCFA")
+
 # Save
 output_path = "/home/z/my-project/scripts/forecast_q4_2026_S3.csv"
 fcst_df.to_csv(output_path, index=False)
