@@ -1,6 +1,6 @@
 {
   "total_tonnes": 29445.363999999998,
-  "total_ca_m_fcfa": 14438.510000000002,
+  "total_ca_m_fcfa": 13317.29,
   "n_products": 121,
   "n_agences": 25,
   "n_families": 8,
@@ -10,13 +10,13 @@
       "family": "ALIMENT_COMPLET",
       "tonnes": 268.0,
       "ca_m_fcfa": 202.5,
-      "part_ca_pct": 1.4
+      "part_ca_pct": 1.5
     },
     {
       "family": "ALVEOLES",
       "tonnes": 0.0,
       "ca_m_fcfa": 33.6,
-      "part_ca_pct": 0.2
+      "part_ca_pct": 0.3
     },
     {
       "family": "COMPLEMENT_ALIMENTAIRE",
@@ -28,13 +28,13 @@
       "family": "CONCENTRES",
       "tonnes": 8730.0,
       "ca_m_fcfa": 5796.3,
-      "part_ca_pct": 40.1
+      "part_ca_pct": 43.5
     },
     {
       "family": "INGREDIENTS",
       "tonnes": 394.0,
       "ca_m_fcfa": 552.6,
-      "part_ca_pct": 3.8
+      "part_ca_pct": 4.1
     },
     {
       "family": "MATERIEL_ELEVAGE",
@@ -46,52 +46,52 @@
       "family": "PREMIX",
       "tonnes": 0.0,
       "ca_m_fcfa": 61.6,
-      "part_ca_pct": 0.4
+      "part_ca_pct": 0.5
     },
     {
       "family": "TOURTEAUX",
       "tonnes": 20051.0,
-      "ca_m_fcfa": 7700.3,
-      "part_ca_pct": 53.3
+      "ca_m_fcfa": 6579.1,
+      "part_ca_pct": 49.4
     }
   ],
   "by_region": [
     {
       "region": "Centre",
       "tonnes": 7424.0,
-      "ca_m_fcfa": 3734.2
+      "ca_m_fcfa": 3464.4
     },
     {
       "region": "Littoral",
       "tonnes": 10308.0,
-      "ca_m_fcfa": 4983.8
+      "ca_m_fcfa": 4584.5
     },
     {
       "region": "Ouest",
       "tonnes": 11714.0,
-      "ca_m_fcfa": 5720.5
+      "ca_m_fcfa": 5268.4
     }
   ],
   "by_month": [
     {
       "index": "Sep",
       "tonnes": 4460.0,
-      "ca_m_fcfa": 2313.4
+      "ca_m_fcfa": 2159.3
     },
     {
       "index": "Oct",
       "tonnes": 9045.0,
-      "ca_m_fcfa": 4365.5
+      "ca_m_fcfa": 4011.5
     },
     {
       "index": "Nov",
       "tonnes": 7725.0,
-      "ca_m_fcfa": 3792.7
+      "ca_m_fcfa": 3500.5
     },
     {
       "index": "D\u00e9c",
       "tonnes": 8215.0,
-      "ca_m_fcfa": 3966.8
+      "ca_m_fcfa": 3646.0
     }
   ]
 }
