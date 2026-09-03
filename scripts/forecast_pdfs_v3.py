@@ -1,5 +1,5 @@
 """
-Forecast Q4 2026 + 2027 - Génération des 5 PDFs PACE - VERSION 3
+Forecast Q4 2026 + 2027 - Génération des 5 PDFs PACE - 
 AVEC COMPLEMENT_ALIMENTAIRE (V300 1L only), données 2023-2026, MATERIEL_ELEVAGE tonnes=0
 
 Génère:
@@ -92,28 +92,28 @@ Q4_DIR = "/home/z/my-project/download/forecast_q4_2026"
 os.makedirs(Q4_DIR, exist_ok=True)
 
 # === Q4 2026: 1. RÉSUMÉ EXÉCUTIF ===
-print("Generating Q4 2026: 1. Résumé exécutif (v3)...")
+print("Generating Q4 2026: 1. Résumé exécutif ...")
 exec_path = f"{Q4_DIR}/01_resume_executif.pdf"
 doc = SimpleDocTemplate(exec_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
 story = []
 
 story.append(Paragraph("RÉSUMÉ EXÉCUTIF", H1))
-story.append(Paragraph("Forecast Q4 2026 - Volumes et Valeurs — Version 3", H2))
+story.append(Paragraph("Forecast Q4 2026 - Volumes et Valeurs", H2))
 story.append(HRFlowable(width="100%", thickness=1, color=NAVY))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Contexte</b>", H3))
 story.append(Paragraph(
     "BELGOCAM SA doit anticiper ses volumes de ventes et son chiffre d'affaires pour le Q4 2026 "
-    "(septembre - décembre). Cette version 3 du forecast s'appuie sur <b>176 576 enregistrements</b> "
+    "(septembre - décembre). Cette  du forecast s'appuie sur <b>176 576 enregistrements</b> "
     "couvrant <b>44 mois d'historique</b> (janvier 2023 - août 2026), intégrant les commandes En cours et "
     "Validées d'août 2026. L'effet soja exceptionnel de juillet-août 2026 (rupture concurrente) a été "
-    "<b>désaisonnalisé</b>. Le prix du soja a été actualisé à <b>25 000 FCFA/sac</b> (hausse du 24/08/2026).",
+    "<b>désaisonnalisé</b>. Le prix du soja a été actualisé à <b>18 590 FCFA/sac (médian 2023-2026)</b> (hausse du 24/08/2026).",
     BODY))
 story.append(Paragraph(
-    "<b>NOUVEAUTÉS VERSION 3</b> : (1) Intégration de l'année 2023 (4 ans d'historique au total). "
+    "<b>MÉTHODOLOGIE</b> : (1) Intégration de l'année 2023 (4 ans d'historique au total). "
     "(2) Ajout de la famille <b>COMPLEMENT_ALIMENTAIRE</b> (BELGOKILL V300 1L only, V305 200L exclu). "
-    "Conversion 1L = 1kg. (3) MATERIEL_ELEVAGE toujours à 0 en tonnes (non exprimable en volume).",
+    "Conversion 1L = 1kg. (3) MATERIEL_ELEVAGE et ALVEOLES à 0 tonne (CA only).",
     BODY))
 
 story.append(Paragraph("<b>Méthodologie</b>", H3))
@@ -133,12 +133,12 @@ synth_data = [
     ["Scénario", "S3 (réappro 100%)", "80 000 sacs au 15/09/2026"],
     ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
     ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "Cap à moyenne S1 2026"],
-    ["NOUVEAU: COMPLEMENT_ALIMENTAIRE", "1 t / 6,7 M FCFA", "V300 1L only (V305 200L exclu)"],
-    ["NOUVEAU v5: ALVEOLES", "0 t / 34 M FCFA (forfait ALV=0)", "4 refs MAT011/MAT014/MAT015/MAT017"],
-    ["NOUVEAU v5: 10 agences SPC incluses", "Forfait global 348 M/an (poids 2025)", "ALV + MAT_ELEV"],
-    ["NOUVEAU v4: Maroua agence", "1 agence ajoutée (soja T102, Août 2026)", "Centre (par convention)"],
-    ["NOUVEAU v5: Forfait SPC v2", "39 M/an MAT only (2026 annualisé)", "ALV=0, MAT=38.4M"],
-    ["NOUVEAU v4: Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1 forcé", "6 ajustements Q4"],
+    ["COMPLEMENT_ALIMENTAIRE", "1 t / 7 M FCFA", "V300 1L only"],
+    ["ALVEOLES (forfait SPC)", "0 t / 34 M FCFA", "4 refs MAT011/MAT014/MAT015/MAT017"],
+    [" 10 agences SPC incluses", "Forfait SPC: 39 M/an MAT (2026 annualisé)", "ALV + MAT_ELEV"],
+    ["Agence Maroua", "Soja T102 (Août 2026)", "Centre (par convention)"],
+    ["Forfait SPC", "39 M/an MAT only (2026 annualisé)", "ALV=0, MAT=38.4M"],
+    ["Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1", "6 ajustements Q4"],
 ]
 story.append(make_table(synth_data, col_widths=[5*cm, 4*cm, 8*cm], font_size=9, highlight_rows=[7, 8]))
 story.append(Spacer(1, 0.3*cm))
@@ -217,7 +217,7 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Conclusion</b>", H3))
 story.append(Paragraph(
     "Le forecast Q4 2026 projette <b>29 347 tonnes</b> pour un CA de <b>14 149 M FCFA</b>. "
-    "La désaisonnalisation de l'effet soja exceptionnel, l'actualisation du prix à 25 000 FCFA/sac, "
+    "La désaisonnalisation de l'effet soja exceptionnel, l'actualisation du prix à 18 590 FCFA/sac (médian 2023-2026), "
     "l'intégration de l'année 2023 (44 mois d'historique) et l'ajout de la famille COMPLEMENT_ALIMENTAIRE "
     "(V300 1L only) permettent une projection réaliste. Le pic d'octobre (7 628 t) nécessitera une "
     "anticipation renforcée du réapprovisionnement soja.",
@@ -227,19 +227,19 @@ doc.build(story)
 print(f"✓ Q4 2026 Résumé exécutif: {os.path.getsize(exec_path)/1024:.0f} KB")
 
 # === Q4 2026: 2. PROPOSITION DE PROJET ===
-print("Generating Q4 2026: 2. Proposition (v3)...")
+print("Generating Q4 2026: 2. Proposition ...")
 prop_path = f"{Q4_DIR}/02_proposition_projet.pdf"
 doc = SimpleDocTemplate(prop_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
 story = []
-story.extend(cover_page("Proposition de Projet", "Forecast Q4 2026 - Version 3", "PROPOSITION DE PROJET"))
+story.extend(cover_page("Proposition de Projet", "Forecast Q4 2026", "PROPOSITION DE PROJET"))
 
 story.append(Paragraph("1. Contexte et justification", H1))
 story.append(Paragraph(
-    "BELGOCAM SA doit anticiper ses volumes et CA pour le Q4 2026 (sept-déc). Cette version 3 s'appuie sur "
+    "BELGOCAM SA doit anticiper ses volumes et CA pour le Q4 2026 (sept-déc). Cette  s'appuie sur "
     "44 mois d'historique (Jan 2023 - Août 2026) et intègre les innovations suivantes : ajout de la famille "
     "COMPLEMENT_ALIMENTAIRE (BELGOKILL V300 1L only, V305 200L exclu, 1L=1kg), intégration de l'année 2023, "
     "désaisonnalisation de l'effet soja, inclusion des commandes En cours/Validées, actualisation du prix soja "
-    "à 25 000 FCFA/sac. Le forecast couvre 8 familles, 121 produits et 25 agences.",
+    "à 18 590 FCFA/sac (médian 2023-2026). Le forecast couvre 8 familles, 121 produits et 25 agences.",
     BODY))
 
 story.append(Paragraph("2. Objectifs", H1))
@@ -253,10 +253,10 @@ objs = [
     "Modéliser la tendance et la saisonnalité mensuelles via Prophet (5 familles alimentaires)",
     "Désaisonnaliser l'effet soja exceptionnel de juillet-août 2026",
     "Intégrer les commandes En cours et Validées comme potentielles ventes Livrées",
-    "Actualiser le prix soja à 25 000 FCFA/sac (hausse du 24/08/2026)",
-    "NOUVEAU v3 : Ajouter la famille COMPLEMENT_ALIMENTAIRE (V300 1L only, 1L=1kg)",
-    "NOUVEAU v3 : Intégrer l'année 2023 (44 mois d'historique au total)",
-    "NOUVEAU v3 : MATERIEL_ELEVAGE toujours à 0 en tonnes",
+    "Actualiser le prix soja à 18 590 FCFA/sac (médian 2023-2026) (hausse du 24/08/2026)",
+    "Ajouter la famille COMPLEMENT_ALIMENTAIRE (V300 1L only, 1L=1kg)",
+    "Intégrer l'année 2023 (44 mois d'historique au total)",
+    "MATERIEL_ELEVAGE toujours à 0 en tonnes",
     "Exclure le Maïs, les produits opportunistes et V305 (BELGOKILL 200L)",
     "Produire les livrables PACE complets (8 documents)",
 ]
@@ -276,14 +276,14 @@ scope_data = [
     ["Données historiques", "176 576 enregistrements (Jan 2023 - Août 2026)", "44 mois"],
     ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "—"],
     ["Prix soja", "18 590 FCFA/sac (médian 2023-2026, non circonstanciel)", "—"],
-    ["NOUVEAU: COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "9 produits"],
+    ["COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "9 produits"],
 ]
 story.append(make_table(scope_data, col_widths=[3.5*cm, 9.5*cm, 4*cm], font_size=9, highlight_rows=[11, 12]))
 
 story.append(Paragraph("4. Méthodologie PACE", H1))
 story.append(Paragraph(
     "La méthodologie PACE (Prepare-Analyze-Construct-Execute) structure le projet en 4 phases. "
-    "L'innovation majeure v3 est l'ajout de la famille COMPLEMENT_ALIMENTAIRE avec proxy BELGOKILL V300 1L "
+    "L'innovation majeure est l'ajout de la famille COMPLEMENT_ALIMENTAIRE avec proxy BELGOKILL V300 1L "
     "et l'utilisation de 44 mois d'historique (Jan 2023 - Août 2026).",
     BODY))
 
@@ -311,7 +311,7 @@ story.append(Paragraph("6. Risques et mitigation", H1))
 risks_data = [
     ["Risque", "Probabilité", "Mitigation"],
     ["Historique 44 mois — suffisant pour Prophet", "Faible", "Mise à jour trimestrielle"],
-    ["Prix soja volatil (+47% en 2 mois)", "Élevée", "Prix actualisé 25 000 FCFA, scénario S3"],
+    ["Prix soja volatil (+47% en 2 mois)", "Élevée", "Prix actualisé 18 590 FCFA, scénario S3"],
     ["Effet soja 2026 non récurrent en Q4", "Élevée", "Cap désaisonnalisation à moyenne S1"],
     ["Commandes En cours/Validées non converties", "Faible", "Filtre qualité, exclusion Annulées"],
     ["V305 exclu — BELGOKILL 200L absent", "Faible", "V300 1L utilisé comme proxy suffisant"],
@@ -323,7 +323,7 @@ success = [
     "Forecast Q4 2026 produit sur 4 mois avec désagrégation complète (4 569 lignes)",
     "Désaisonnalisation effective de l'effet soja exceptionnel",
     "En cours et Validées intégrés comme potentielles ventes",
-    "Prix soja actualisé à 25 000 FCFA/sac",
+    "Prix soja actualisé à 18 590 FCFA/sac (médian 2023-2026)",
     "Famille COMPLEMENT_ALIMENTAIRE ajoutée avec proxy BELGOKILL V300 1L",
     "Écart forecast vs réalité ≤ 15% par mois",
     "Livrables PACE complets (8 documents) produits et diffusés",
@@ -335,11 +335,11 @@ doc.build(story)
 print(f"✓ Q4 2026 Proposition: {os.path.getsize(prop_path)/1024:.0f} KB")
 
 # === Q4 2026: 3. MATRICE RACI ===
-print("Generating Q4 2026: 3. Matrice RACI (v3)...")
+print("Generating Q4 2026: 3. Matrice RACI ...")
 raci_path = f"{Q4_DIR}/03_matrice_raci.pdf"
 doc = SimpleDocTemplate(raci_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=1.5*cm, rightMargin=1.5*cm)
 story = []
-story.extend(cover_page("Matrice RACI", "Forecast Q4 2026 - Version 3", "MATRICE RACI"))
+story.extend(cover_page("Matrice RACI", "Forecast Q4 2026", "MATRICE RACI"))
 
 story.append(Paragraph("1. Définition des rôles RACI", H1))
 raci_def = [
@@ -368,9 +368,9 @@ raci_matrix = [
     ["Phase", "Tâche", "DA", "DC", "DP", "DG", "CG", "RA"],
     ["PREPARE", "1.1 Consolidation 2023-2026 + En cours/Validées", "R/A", "I", "C", "I", "I", "I"],
     ["", "1.2 Désaisonnalisation effet soja", "R/A", "C", "C", "I", "I", "I"],
-    ["", "1.3 Calcul prix Q4 (soja 25 000)", "R/A", "C", "I", "I", "C", "I"],
-    ["", "1.4 NOUVEAU: Ajout COMPLEMENT_ALIMENTAIRE (V300 1L)", "R/A", "C", "I", "I", "I", "I"],
-    ["", "1.5 Validation dataset v3", "R", "C", "C", "I", "A", "I"],
+    ["", "1.3 Calcul prix Q4 (soja 18 590)", "R/A", "C", "I", "I", "C", "I"],
+    ["", "1.4 Ajout COMPLEMENT_ALIMENTAIRE (V300 1L)", "R/A", "C", "I", "I", "I", "I"],
+    ["", "1.5 Validation dataset", "R", "C", "C", "I", "A", "I"],
     ["ANALYZE", "2.1 AED + saisonnalité 2023-2025", "R/A", "I", "I", "I", "I", "I"],
     ["", "2.2 Analyse effet soja exceptionnel", "R/A", "C", "C", "I", "I", "I"],
     ["", "2.3 Validation hypothèses AED", "R", "C", "C", "I", "A", "I"],
@@ -391,7 +391,7 @@ story.append(Paragraph("4. Points de contrôle", H1))
 control_data = [
     ["Jalon", "Phase", "Date", "Approbateur", "Livrable"],
     ["Kick-off", "PREPARE", "03/09/2026", "DG", "Proposition validée"],
-    ["Validation dataset v3", "PREPARE", "03/09/2026", "CG", "Dataset 2023-2026 + COMPLEMENT_ALIM."],
+    ["Validation dataset", "PREPARE", "03/09/2026", "CG", "Dataset 2023-2026 + COMPLEMENT_ALIM."],
     ["Validation AED", "ANALYZE", "04/09/2026", "DC", "Synthèse AED"],
     ["Validation forecast", "CONSTRUCT", "05/09/2026", "DG + DC", "Forecast Q4 2027 complet"],
     ["Livrables finaux", "EXECUTE", "05/09/2026", "DG", "8 livrables"],
@@ -404,11 +404,11 @@ doc.build(story)
 print(f"✓ Q4 2026 Matrice RACI: {os.path.getsize(raci_path)/1024:.0f} KB")
 
 # === Q4 2026: 4. DOCUMENT STRATÉGIQUE PACE ===
-print("Generating Q4 2026: 4. Document stratégique PACE (v3)...")
+print("Generating Q4 2026: 4. Document stratégique PACE ...")
 strat_path = f"{Q4_DIR}/04_document_strategique_pace.pdf"
 doc = SimpleDocTemplate(strat_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
 story = []
-story.extend(cover_page("Document Stratégique PACE", "Forecast Q4 2026 - Version 3 (8 familles, données 2023-2026)", "STRATÉGIE PACE"))
+story.extend(cover_page("Document Stratégique PACE", "Forecast Q4 2026 (8 familles, données 2023-2026)", "STRATÉGIE PACE"))
 
 story.append(Paragraph("1. Vision et objectifs", H1))
 story.append(Paragraph("1.1 Vision", H2))
@@ -424,9 +424,9 @@ obj_data = [
     ["Forecast Q4", "4 mois Sept-Dec 2026 en volume + valeur", "29 347 t, 14 149 M FCFA"],
     ["Désaisonnalisation", "Neutraliser l'effet soja Jul-Août 2026", "Cap moyenne S1 2026"],
     ["En cours + Validées", "Intégrer comme potentielles ventes", "255 commandes incluses"],
-    ["Prix actualisé", "Soja 25 000 FCFA/sac", "vs 20 600 précédent"],
+    ["Prix actualisé", "Soja 18 590 FCFA/sac (médian 2023-2026)", "vs 18 590 médian 2023-2026"],
     ["Désagrégation", "Produit × agence × mois", "4 569 lignes"],
-    ["NOUVEAU: COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "1 t, 7 M FCFA"],
+    ["COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "1 t, 7 M FCFA"],
 ]
 story.append(make_table(obj_data, col_widths=[3.5*cm, 8.5*cm, 5*cm], font_size=9, highlight_rows=[6, 7]))
 
@@ -450,7 +450,7 @@ story.append(Paragraph(
     "<b>cappés à la moyenne S1 2026</b>.",
     BODY))
 
-story.append(Paragraph("2.3 NOUVEAU v3: Famille COMPLEMENT_ALIMENTAIRE", H2))
+story.append(Paragraph("2.3  Famille COMPLEMENT_ALIMENTAIRE", H2))
 story.append(Paragraph(
     "La famille COMPLEMENT_ALIMENTAIRE (9 produits liquides 1L) a été ajoutée au forecast Q4 2026. "
     "Selon demande utilisateur : <b>seul V300 (BELGOKILL 1L) est conservé — V305 (BELGOKILL 200L) est EXCLU</b>. "
@@ -466,7 +466,7 @@ config_data = [
     ["changepoint_prior_scale", "0.05", "Tendance modérément flexible"],
     ["interval_width", "0.8", "Intervalle de confiance 80%"],
     ["Période forecast", "4 mois (Sep-Dec 2026)", "Q4 2026"],
-    ["Familles Prophet", "5 (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE)", "Nouveau: COMPLEMENT_ALIMENTAIRE"],
+    ["Familles Prophet", "5 (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE)", "Inclut COMPLEMENT_ALIMENTAIRE"],
 
 ]
 story.append(make_table(config_data, col_widths=[5*cm, 5*cm, 7*cm], font_size=9, highlight_rows=[6]))
@@ -499,7 +499,7 @@ story.append(make_table(month_detail, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 
 story.append(Paragraph("5. Plan de déploiement", H1))
 deploy_data = [
     ["Étape", "Date", "Action", "Cible"],
-    ["1", "03/09/2026", "Validation proposition v3", "DG"],
+    ["1", "03/09/2026", "Validation proposition", "DG"],
     ["2", "05/09/2026", "Livrables finaux prêts", "DA"],
     ["3", "06/09/2026", "Présentation CODIR", "DG + DC + DP + CG"],
     ["4", "07/09/2026", "Diffusion aux agences", "14 RA"],
@@ -509,8 +509,8 @@ story.append(make_table(deploy_data, col_widths=[1*cm, 3*cm, 7*cm, 6*cm], font_s
 
 story.append(Paragraph("6. Conclusion", H1))
 story.append(Paragraph(
-    "Le forecast Q4 2026 version 3 projette <b>29 347 tonnes</b> pour <b>14 149 M FCFA</b>. La désaisonnalisation "
-    "de l'effet soja, l'actualisation du prix à 25 000 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
+    "Le forecast Q4 2026  projette <b>29 347 tonnes</b> pour <b>14 149 M FCFA</b>. La désaisonnalisation "
+    "de l'effet soja, l'actualisation du prix à 18 590 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only) et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     "permettent une projection réaliste. Le pic d'octobre (7 628 t) nécessitera une anticipation renforcée "
     "du réapprovisionnement soja.",
@@ -520,11 +520,11 @@ doc.build(story)
 print(f"✓ Q4 2026 Document stratégique: {os.path.getsize(strat_path)/1024:.0f} KB")
 
 # === Q4 2026: 5. GUIDE MÉTHODOLOGIQUE ===
-print("Generating Q4 2026: 5. Guide méthodologique (v3)...")
+print("Generating Q4 2026: 5. Guide méthodologique ...")
 guide_path = f"{Q4_DIR}/05_guide_methodologique.pdf"
 doc = SimpleDocTemplate(guide_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
 story = []
-story.extend(cover_page("Guide Méthodologique", "Forecast Q4 2026 - Version 3 (Prophet + COMPLEMENT_ALIMENTAIRE V300 1L)", "GUIDE MÉTHODOLOGIQUE"))
+story.extend(cover_page("Guide Méthodologique", "Forecast Q4 2026 (Prophet + COMPLEMENT_ALIMENTAIRE V300 1L)", "GUIDE MÉTHODOLOGIQUE"))
 
 story.append(Paragraph("Sommaire", H1))
 story.append(Paragraph(
@@ -533,7 +533,7 @@ story.append(Paragraph(
     "3. Outils et environnement<br/>"
     "4. Phase PREPARE - Données 2023-2026<br/>"
     "5. Phase PREPARE - Désaisonnalisation soja<br/>"
-    "6. NOUVEAU v3: Phase PREPARE - COMPLEMENT_ALIMENTAIRE<br/>"
+    "6. Phase PREPARE - COMPLEMENT_ALIMENTAIRE<br/>"
     "7. Phase ANALYZE - AED<br/>"
     "8. Phase CONSTRUCT - Prophet<br/>"
     "9. Phase EXECUTE - Livrables<br/>"
@@ -543,15 +543,15 @@ story.append(Paragraph(
 story.append(PageBreak())
 story.append(Paragraph("1. Introduction et contexte", H1))
 story.append(Paragraph(
-    "Ce guide décrit la méthodologie complète du forecast Q4 2026 de BELGOCAM SA (version 3). Il couvre 4 mois "
+    "Ce guide décrit la méthodologie complète du forecast Q4 2026 de BELGOCAM SA (). Il couvre 4 mois "
     "(septembre-décembre 2026) avec 8 familles de produits (incluant la nouvelle famille COMPLEMENT_ALIMENTAIRE) "
-    "et 25 agences. Les innovations majeures v3 : "
+    "et 25 agences. Les innovations : "
     "(1) ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 BELGOKILL 1L only, V305 200L EXCLU, 1L=1kg), "
     "(2) intégration de l'année 2023 (44 mois d'historique au total), "
     "(3) MATERIEL_ELEVAGE toujours à 0 tonne (non exprimable en volume), "
     "(4) désaisonnalisation de l'effet soja, "
     "(5) inclusion des commandes En cours/Validées, "
-    "(6) actualisation du prix soja à 25 000 FCFA/sac.",
+    "(6) actualisation du prix soja à 18 590 FCFA/sac (médian 2023-2026).",
     BODY))
 
 story.append(Paragraph("2. Méthodologie PACE", H1))
@@ -587,7 +587,7 @@ story.append(Paragraph(
     "Historique 2025 (66 206), S1+Juil+Août 2026 (52 139), En cours + Validées (~255).",
     BODY))
 story.append(Paragraph(
-    "<b>Intégration de l'année 2023</b> : La version 3 inclut 2023 pour enrichir l'historique avec 4 ans "
+    "<b>Intégration de l'année 2023</b> : La  inclut 2023 pour enrichir l'historique avec 4 ans "
     "de données (2023-2026). Cela permet à Prophet de mieux capturer la saisonnalité annuelle.",
     BODY))
 
@@ -606,7 +606,7 @@ story.append(Paragraph(
     BODY))
 
 story.append(PageBreak())
-story.append(Paragraph("6. NOUVEAU v3: Famille COMPLEMENT_ALIMENTAIRE", H1))
+story.append(Paragraph("6.  Famille COMPLEMENT_ALIMENTAIRE", H1))
 story.append(Paragraph(
     "La famille COMPLEMENT_ALIMENTAIRE regroupe 9 produits liquides BELGO : BELGOKILL V300 (1L), "
     "BELGO HARMONY, BELGO PROTECT, BELGO DRY LIT, BELGO WATER CLEAN, BELGO VIT Ese, BELGO THERMO, "
@@ -636,7 +636,7 @@ story.append(Paragraph(
 ca_proxy = [
     ["Réf.", "Produit", "Poids (kg/qte)", "Prix Q4 2026 (FCFA/L)", "Statut"],
     ["V300", "BELGOKILL 1L", "1", "2 500", "✓ Inclus (proxy)"],
-    ["V305", "BELGOKILL 200L", "—", "—", "✗ EXCLU v3"],
+    ["V305", "BELGOKILL 200L", "—", "—", "✗ Exclu"],
     ["CA003.1", "BELGO HARMONY 1L", "1", "8 000", "✓ Inclus"],
     ["CA004.1", "BELGO PROTECT 1L", "1", "9 800", "✓ Inclus"],
     ["CA006.1", "BELGO DRY LIT 1L", "1", "6 500", "✓ Inclus"],
@@ -659,7 +659,7 @@ story.append(Paragraph("8. Phase CONSTRUCT - Prophet", H1))
 story.append(Paragraph(
     "15 modèles Prophet famille × région (5 familles × 3 régions) + extrapolation Q4 moyenne pour MATERIEL_ELEVAGE "
     "et PREMIX (2 familles × 3 régions = 6 extrapolations). Désagrégation par produit × agence selon parts "
-    "historiques de CA. Prix Q4 2026 : 25 000 FCFA/sac soja, prix août 2026 autres familles, prix par litre "
+    "historiques de CA. Prix Q4 2026 : 18 590 FCFA/sac (médian 2023-2026) soja, prix août 2026 autres familles, prix par litre "
     "pour COMPLEMENT_ALIMENTAIRE (2 500-15 000 FCFA/L selon produit).",
     BODY))
 
@@ -684,18 +684,18 @@ glossaire = [
     ["Cap S1", "Plafonnement des volumes Jul-Août 2026 à moyenne S1 2026"],
     ["Q4", "Quatrième trimestre (oct-déc)"],
     ["PACE", "Prepare-Analyze-Construct-Execute"],
-    ["NOUVEAU v3: COMPLEMENT_ALIM.", "9 produits liquides 1L BELGOxxx (V300 1L proxy)"],
-    ["NOUVEAU v3: ALVEOLES séparé", "Famille distincte de MATERIEL_ELEVAGE (4 refs MAT011/14/15/17)"],
-    ["NOUVEAU v4: SPC agences", "5 agences SPC incluses (Baf-Chefferie dominant, 274 M CA historique)"],
-    ["NOUVEAU v4: Maroua", "Agence ajoutée (Centre par convention), soja T102 only (Août 2026)"],
-    ["NOUVEAU v4: Bundle 2.5:1", "Ratio soja:concentré forcé à <=2.5:1 (augment. CONCENTRES si ratio > 2.5)"],
-    ["NOUVEAU v4: Saisonnalité ALV 2026", "ALVEOLES utilise 2026 (13.9 M/an) au lieu du pic 2025 (739 M)"],
-    ["NOUVEAU v5: 10 SPC agences", "Toutes SPC incluses (vs 5 avant) — fin exclusion COMPTOIR pour SPC"],
-    ["NOUVEAU v5: Forfait SPC v2", "Forfait MAT_ELEV (38.4 M/an) basé sur 2026 annualisé, poids 2025"],
-    ["NOUVEAU v5: SPC PK15 forfait", "Poids 0 en 2025 → forfait réaliste 1 M/an (0.5 ALV + 0.5 MAT)"],
-    ["NOUVEAU v3: V305 EXCLU", "BELGOKILL 200L retiré du forecast (seul V300 1L conservé)"],
-    ["NOUVEAU v3: 1L=1kg", "Conversion pour volumes liquides en tonnes"],
-    ["NOUVEAU v3: Données 2023-2026", "44 mois d'historique (vs 20 mois en v1)"],
+    ["COMPLEMENT_ALIM.", "9 produits liquides 1L BELGOxxx (V300 1L proxy)"],
+    ["ALVEOLES séparé", "Famille distincte de MATERIEL_ELEVAGE (4 refs MAT011/14/15/17)"],
+    ["SPC agences", "10 agences SPC incluses (Baf-Chefferie dominant)"],
+    ["Maroua", "Agence ajoutée (Centre), soja T102 only"],
+    ["Bundle 2.5:1", "Ratio soja:concentré forcé à <=2.5:1"],
+    ["Saisonnalité ALV 2026", "ALVEOLES utilise 2026 (13.9 M/an) au lieu du pic 2025 (739 M)"],
+    ["10 SPC agences", "Toutes SPC incluses (10 agences)"],
+    ["Forfait SPC", "Forfait MAT_ELEV (38.4 M/an) basé sur 2026 annualisé, poids 2025"],
+    ["SPC PK15 forfait", "Forfait réaliste 1 M/an (0.5 ALV + 0.5 MAT)"],
+    [" V305 EXCLU", "BELGOKILL 200L retiré du forecast (seul V300 1L conservé)"],
+    [" 1L=1kg", "Conversion pour volumes liquides en tonnes"],
+    [" Données 2023-2026", "44 mois d'historique (Jan 2023 - Août 2026)"],
     ["MATERIEL_ELEVAGE", "Toujours 0 en tonnes (CA only). ALVEOLES désormais séparés en famille distincte"],
 ]
 story.append(make_table(glossaire, col_widths=[5*cm, 11*cm], font_size=9, highlight_rows=[7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]))
@@ -703,7 +703,7 @@ story.append(make_table(glossaire, col_widths=[5*cm, 11*cm], font_size=9, highli
 doc.build(story)
 print(f"✓ Q4 2026 Guide méthodologique: {os.path.getsize(guide_path)/1024:.0f} KB")
 
-print(f"\n=== Q4 2026: 5 PDFs v3 GÉNÉRÉS ===")
+print(f"\n=== Q4 2026: 5 PDFs GÉNÉRÉS ===")
 for f in sorted(os.listdir(Q4_DIR)):
     if f.endswith('.pdf'):
         print(f"  {f}: {os.path.getsize(os.path.join(Q4_DIR, f))/1024:.0f} KB")
@@ -716,26 +716,26 @@ F2027_DIR = "/home/z/my-project/download/forecast_2027"
 os.makedirs(F2027_DIR, exist_ok=True)
 
 # === 2027: 1. RÉSUMÉ EXÉCUTIF ===
-print("\nGenerating 2027: 1. Résumé exécutif (v3)...")
+print("\nGenerating 2027: 1. Résumé exécutif ...")
 exec_path = f"{F2027_DIR}/01_resume_executif.pdf"
 doc = SimpleDocTemplate(exec_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
 story = []
 
 story.append(Paragraph("RÉSUMÉ EXÉCUTIF", H1))
-story.append(Paragraph("Forecast 2027 - Volumes et Valeurs (12 mois) — Version 3", H2))
+story.append(Paragraph("Forecast 2027 - Volumes et Valeurs (12 mois)", H2))
 story.append(HRFlowable(width="100%", thickness=1, color=NAVY))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Contexte</b>", H3))
 story.append(Paragraph(
     "BELGOCAM SA doit anticiper ses volumes de ventes et son chiffre d'affaires pour l'année 2027 complète. "
-    "Cette version 3 s'appuie sur <b>176 576 enregistrements</b> couvrant <b>44 mois d'historique</b> "
+    "Cette  s'appuie sur <b>176 576 enregistrements</b> couvrant <b>44 mois d'historique</b> "
     "(janvier 2023 - août 2026), intégrant les commandes En cours et Validées d'août 2026. "
     "L'effet soja exceptionnel de juillet-août 2026 a été <b>désaisonnalisé</b>. Le prix du soja a été "
-    "actualisé à <b>25 000 FCFA/sac</b>.",
+    "actualisé à <b>18 590 FCFA/sac (médian 2023-2026)</b>.",
     BODY))
 story.append(Paragraph(
-    "<b>NOUVEAUTÉS VERSION 3</b> : (1) Intégration de l'année 2023 (44 mois d'historique). "
+    "<b>MÉTHODOLOGIE</b> : (1) Intégration de l'année 2023 (44 mois d'historique). "
     "(2) Ajout de la famille <b>COMPLEMENT_ALIMENTAIRE</b> (BELGOKILL V300 1L only, V305 200L exclu, 1L=1kg). "
     "(3) MATERIEL_ELEVAGE toujours à 0 en tonnes.",
     BODY))
@@ -757,11 +757,11 @@ synth_data = [
     ["Scénario", "S3 (réappro 100%)", "Situation normale"],
     ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
     ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "Cap à moyenne S1 2026"],
-    ["NOUVEAU v3: COMPLEMENT_ALIM.", "3 t / 18 M FCFA", "V300 1L only (V305 200L exclu)"],
-    ["NOUVEAU v5: ALVEOLES", "0 t / 101 M FCFA (forfait ALV=0)", "4 refs MAT011/MAT014/MAT015/MAT017"],
-    ["NOUVEAU v4: SPC agences incluses", "5 agences SPC + Maroua", "25 agences total"],
-    ["NOUVEAU v5: Forfait SPC v2", "39 M/an MAT only (2026 annualisé)", "ALV=0, MAT=38.4M"],
-    ["NOUVEAU v4: Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1 forcé", "26 ajustements annuels"],
+    ["COMPLEMENT_ALIM.", "3 t / 18 M FCFA", "V300 1L only"],
+    ["ALVEOLES (forfait SPC)", "0 t / 101 M FCFA", "4 refs MAT011/MAT014/MAT015/MAT017"],
+    [" SPC agences incluses", "5 agences SPC + Maroua", "25 agences total"],
+    ["Forfait SPC", "39 M/an MAT only (2026 annualisé)", "ALV=0, MAT=38.4M"],
+    ["Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1", "26 ajustements annuels"],
 ]
 story.append(make_table(synth_data, col_widths=[5*cm, 4*cm, 8*cm], font_size=9, highlight_rows=[7, 8]))
 story.append(Spacer(1, 0.3*cm))
@@ -816,12 +816,12 @@ story.append(Paragraph(
 
 hist_data = [
     ["Famille", "2023 (t)", "2024 (t)", "2025 (t)", "2026 YTD (t)", "2027 fcst (t)", "CA 2027 (M)"],
-    ["TOURTEAUX", "33 323", "19 296", "44 584", "39 045", "60 673", "30 338"],
-    ["CONCENTRÉS", "14 963", "8 207", "17 319", "11 932", "19 658", "13 094"],
-    ["ALIMENT_COMPLET", "709", "296", "500", "502", "561", "393"],
-    ["INGRÉDIENTS", "964", "606", "733", "531", "686", "151"],
-    ["PREMIX", "75", "41", "86", "60", "0 (CA)", "157"],
-    ["COMPLEMENT_ALIM.", "8", "3", "6", "3", "3", "18"],
+    ["TOURTEAUX", "33 323", "19 296", "44 584", "39 045", "66 338", "24 639"],
+    ["CONCENTRÉS", "14 963", "8 207", "17 319", "11 932", "27 822", "18 447"],
+    ["ALIMENT_COMPLET", "709", "296", "500", "502", "877", "326"],
+    ["INGRÉDIENTS", "964", "606", "733", "531", "1 059", "778"],
+    ["PREMIX", "75", "41", "86", "60", "0 (CA)", "192"],
+    ["COMPLEMENT_ALIM.", "8", "3", "6", "3", "5", "29"],
     ["MAÏS (exclu)", "0", "0", "0", "0", "0", "0"],
     ["TOTAL", "50 041", "28 450", "63 228", "52 073", "96 102", "44 726"],
 ]
@@ -838,7 +838,7 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Progression 2027 vs 2026 (détail par famille)</b>", H3))
 story.append(Paragraph(
     "Le tableau ci-dessous présente la progression détaillée 2027 vs 2026 (YTD réel + Q4 forecast) par famille, "
-    "en volume et en chiffre d\'affaires. Cette progression reflète l\'effet cumulé des innovations v5 : "
+    "en volume et en chiffre d\'affaires. Cette progression reflète l\'effet cumulé des innovations : "
     "ajustement bundle 2.5:1 (augmente CONCENTRÉS), forfait SPC (ALVEOLES=0, MAT_ELEV=38,4 M annualisé), "
     "et prix INGREDIENTS 2026 réels (correction majeure sur P105, I106, I107, etc.).",
     BODY))
@@ -861,14 +861,14 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Insights clés et argumentaires de justification</b>", H3))
 insights_data = [
     ["#", "Insight", "Justification"],
-    ["1", "TOURTEAUX: +15,5% CA (prix médian 18 590, pas 25 000)", "Prix médian 18 590 FCFA/sac (2023-2026, vs 21 342 M CA 2026) = +8,8% volume × prix stable = +15,5% CA"],
-    ["2", "CONCENTRÉS: +29,7% CA tiré par bundle 2.5:1", "Bundle 2.5:1 force CONCENTRÉS à la hausse quand ratio soja/concentré > 2,5 (26 ajustements 2027)"],
-    ["3", "INGREDIENTS: -45% CA (correction prix 2026)", "Prix 2026 réels intégrés (P105: 68k, I106: 207k, I107: 105k FCFA/sac) — vs 0 avant"],
+    ["1", "TOURTEAUX: +15,5% CA (prix médian 18 590, pas 18 590)", "Prix médian 18 590 FCFA/sac (2023-2026, vs 21 342 M CA 2026) = +8,8% volume × prix stable = +15,5% CA"],
+    ["2", "CONCENTRÉS: +29,8% CA (bundle 2.5:1)", "Bundle 2.5:1 force CONCENTRÉS à la hausse quand ratio soja/concentré > 2,5 (26 ajustements 2027)"],
+    ["3", "INGREDIENTS: -45% CA (correction prix 2026)", "Prix 2026 réels par unité (CA TTC / qte) pour 66 références — correctif vs méthode sacs 50kg"],
     ["4", "ALVEOLES: +97% CA (forfait révisé)", "Forfait ALV=0 (2026 nul) vs 51 M historique 2026 = pic ponctuel non récurrent, activité 2026 nulle"],
     ["5", "MATERIEL_ELEVAGE: -20,8% CA (normalisation)", "Forfait MAT 38,4 M annualisé 2026 (vs 270 M 2026 incluant pic saisonnier) — retour à normale"],
     ["6", "Total: +14% volume, +17% CA", "Effet combiné: prix soja (+21%), bundle 2.5:1 (+31% CONCENTRÉS), corrections prix INGREDIENTS"],
     ["7", "Q4 2027 vs Q4 2026: -8% volume, -9% CA", "Effet normalisation: 2026 Q4 boosté par rupture concurrente (effet non récurrent désaisonnalisé)"],
-    ["8", "Q1-Q3 2027 vs 2026 réel: +26% volume, +62% CA", "Tendance haussière continue 2024-2026 amplifiée par effets prix et bundle"],
+    ["8", "Q1-Q3 2027 vs 2026 réel: +26% volume, +31% CA", "Tendance haussière continue 2024-2026 amplifiée par effets prix et bundle"],
 ]
 story.append(make_table(insights_data, col_widths=[0.8*cm, 6*cm, 10*cm], font_size=8))
 story.append(Spacer(1, 0.3*cm))
@@ -901,7 +901,7 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Conclusion</b>", H3))
 story.append(Paragraph(
     "Le forecast 2027 projette <b>96 102 tonnes</b> pour un CA de <b>44 726 M FCFA</b>. La désaisonnalisation "
-    "de l'effet soja, l'actualisation du prix à 25 000 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
+    "de l'effet soja, l'actualisation du prix à 18 590 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only) et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     "permettent une projection réaliste. Le pic d'octobre nécessitera une anticipation renforcée du "
     "réapprovisionnement soja dès septembre 2027.",
@@ -914,17 +914,17 @@ print(f"✓ 2027 Résumé exécutif: {os.path.getsize(exec_path)/1024:.0f} KB")
 # Create concise versions reusing cover_page and table structures
 
 # 2. PROPOSITION
-print("Generating 2027: 2. Proposition (v3)...")
+print("Generating 2027: 2. Proposition ...")
 prop_path = f"{F2027_DIR}/02_proposition_projet.pdf"
 doc = SimpleDocTemplate(prop_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
 story = []
-story.extend(cover_page("Proposition de Projet", "Forecast 2027 - Version 3", "PROPOSITION DE PROJET"))
+story.extend(cover_page("Proposition de Projet", "Forecast 2027", "PROPOSITION DE PROJET"))
 
 story.append(Paragraph("1. Contexte", H1))
 story.append(Paragraph(
-    "BELGOCAM SA doit anticiper ses volumes et CA pour l'année 2027 complète. Cette version 3 s'appuie sur "
+    "BELGOCAM SA doit anticiper ses volumes et CA pour l'année 2027 complète. Cette  s'appuie sur "
     "44 mois d'historique (Jan 2023 - Août 2026) et intègre : désaisonnalisation de l'effet soja exceptionnel, "
-    "inclusion des commandes En cours/Validées, actualisation du prix soja à 25 000 FCFA/sac, "
+    "inclusion des commandes En cours/Validées, actualisation du prix soja à 18 590 FCFA/sac (médian 2023-2026), "
     "ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only, V305 200L exclu), intégration de l'année 2023, "
     "MATERIEL_ELEVAGE à 0 tonne. Le forecast couvre 8 familles, 121 produits et 25 agences.",
     BODY))
@@ -940,10 +940,10 @@ objs = [
     "Modéliser tendance + saisonnalité mensuelles via Prophet (5 familles)",
     "Désaisonnaliser l'effet soja exceptionnel de juillet-août 2026",
     "Intégrer les commandes En cours et Validées",
-    "Actualiser le prix soja à 25 000 FCFA/sac",
-    "NOUVEAU v3: Ajouter COMPLEMENT_ALIMENTAIRE (V300 1L only, 1L=1kg)",
-    "NOUVEAU v3: Intégrer l'année 2023 (44 mois d'historique)",
-    "NOUVEAU v3: MATERIEL_ELEVAGE toujours à 0 tonne",
+    "Actualiser le prix soja à 18 590 FCFA/sac (médian 2023-2026)",
+    " Ajouter COMPLEMENT_ALIMENTAIRE (V300 1L only, 1L=1kg)",
+    " Intégrer l'année 2023 (44 mois d'historique)",
+    " MATERIEL_ELEVAGE toujours à 0 tonne",
     "Exclure le Maïs, V305 (BELGOKILL 200L) et produits opportunistes",
     "Produire les livrables PACE complets",
 ]
@@ -963,8 +963,8 @@ scope_data = [
     ["Données historiques", "176 576 enregistrements (Jan 2023 - Août 2026)", "44 mois"],
     ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "—"],
     ["Prix soja", "18 590 FCFA/sac (médian 2023-2026, non circonstanciel)", "—"],
-    ["NOUVEAU v3: COMPLEMENT_ALIM.", "V300 1L only (V305 200L exclu), 1L=1kg", "9 produits"],
-    ["NOUVEAU v3: ALVEOLES séparé", "4 refs (MAT011/MAT014/MAT015/MAT017), tonnes=0", "CA only"],
+    ["COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "9 produits"],
+    ["ALVEOLES séparé", "4 refs MAT011/14/15/17, tonnes=0", "CA only"],
 ]
 story.append(make_table(scope_data, col_widths=[3.5*cm, 9.5*cm, 4*cm], font_size=9, highlight_rows=[11, 12]))
 
@@ -993,7 +993,7 @@ story.append(Paragraph("6. Risques et mitigation", H1))
 risks_data = [
     ["Risque", "Probabilité", "Mitigation"],
     ["Historique 44 mois — suffisant", "Faible", "Mise à jour trimestrielle"],
-    ["Prix soja volatil (+47% en 2 mois)", "Élevée", "Prix actualisé 25 000 FCFA, scénario S3"],
+    ["Prix soja volatil (+47% en 2 mois)", "Élevée", "Prix actualisé 18 590 FCFA, scénario S3"],
     ["Effet soja 2026 non récurrent en 2027", "Élevée", "Cap désaisonnalisation à moyenne S1"],
     ["V305 exclu — BELGOKILL 200L absent", "Faible", "V300 1L utilisé comme proxy suffisant"],
     ["Nouvelles hausses tarifaires en 2027", "Moyenne", "Hypothèse prix stable en 2027"],
@@ -1004,7 +1004,7 @@ story.append(Paragraph("7. Critères de succès", H1))
 success = [
     "Forecast 2027 produit sur 12 mois avec désagrégation complète",
     "Désaisonnalisation effective de l'effet soja",
-    "Prix soja actualisé à 25 000 FCFA/sac",
+    "Prix soja actualisé à 18 590 FCFA/sac (médian 2023-2026)",
     "Famille COMPLEMENT_ALIMENTAIRE ajoutée (V300 1L only)",
     "Écart forecast vs réalité ≤ 15% par trimestre",
     "Livrables PACE complets (8 documents) produits et diffusés",
@@ -1016,11 +1016,11 @@ doc.build(story)
 print(f"✓ 2027 Proposition: {os.path.getsize(prop_path)/1024:.0f} KB")
 
 # 3. MATRICE RACI 2027
-print("Generating 2027: 3. Matrice RACI (v3)...")
+print("Generating 2027: 3. Matrice RACI ...")
 raci_path = f"{F2027_DIR}/03_matrice_raci.pdf"
 doc = SimpleDocTemplate(raci_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=1.5*cm, rightMargin=1.5*cm)
 story = []
-story.extend(cover_page("Matrice RACI", "Forecast 2027 - Version 3", "MATRICE RACI"))
+story.extend(cover_page("Matrice RACI", "Forecast 2027", "MATRICE RACI"))
 
 story.append(Paragraph("1. Définition des rôles RACI", H1))
 raci_def = [
@@ -1049,9 +1049,9 @@ raci_matrix = [
     ["Phase", "Tâche", "DA", "DC", "DP", "DG", "CG", "RA"],
     ["PREPARE", "1.1 Consolidation 2023-2026 + En cours/Validées", "R/A", "I", "C", "I", "I", "I"],
     ["", "1.2 Désaisonnalisation effet soja", "R/A", "C", "C", "I", "I", "I"],
-    ["", "1.3 Calcul prix 2027 (soja 25 000)", "R/A", "C", "I", "I", "C", "I"],
-    ["", "1.4 NOUVEAU: Ajout COMPLEMENT_ALIMENTAIRE (V300 1L)", "R/A", "C", "I", "I", "I", "I"],
-    ["", "1.5 Validation dataset v3", "R", "C", "C", "I", "A", "I"],
+    ["", "1.3 Calcul prix 2027 (soja 18 590)", "R/A", "C", "I", "I", "C", "I"],
+    ["", "1.4 Ajout COMPLEMENT_ALIMENTAIRE (V300 1L)", "R/A", "C", "I", "I", "I", "I"],
+    ["", "1.5 Validation dataset", "R", "C", "C", "I", "A", "I"],
     ["ANALYZE", "2.1 AED + saisonnalité 2023-2025", "R/A", "I", "I", "I", "I", "I"],
     ["", "2.2 Analyse effet soja exceptionnel", "R/A", "C", "C", "I", "I", "I"],
     ["", "2.3 Validation hypothèses AED", "R", "C", "C", "I", "A", "I"],
@@ -1072,7 +1072,7 @@ story.append(Paragraph("4. Points de contrôle", H1))
 control_data = [
     ["Jalon", "Phase", "Date", "Approbateur", "Livrable"],
     ["Kick-off", "PREPARE", "03/09/2026", "DG", "Proposition validée"],
-    ["Validation dataset v3", "PREPARE", "03/09/2026", "CG", "Dataset 2023-2026 + COMPLEMENT_ALIM."],
+    ["Validation dataset", "PREPARE", "03/09/2026", "CG", "Dataset 2023-2026 + COMPLEMENT_ALIM."],
     ["Validation AED", "ANALYZE", "04/09/2026", "DC", "Synthèse AED"],
     ["Validation forecast", "CONSTRUCT", "05/09/2026", "DG + DC", "Forecast 2027 complet"],
     ["Livrables finaux", "EXECUTE", "05/09/2026", "DG", "8 livrables"],
@@ -1085,11 +1085,11 @@ doc.build(story)
 print(f"✓ 2027 Matrice RACI: {os.path.getsize(raci_path)/1024:.0f} KB")
 
 # 4. DOCUMENT STRATÉGIQUE PACE 2027
-print("Generating 2027: 4. Document stratégique PACE (v3)...")
+print("Generating 2027: 4. Document stratégique PACE ...")
 strat_path = f"{F2027_DIR}/04_document_strategique_pace.pdf"
 doc = SimpleDocTemplate(strat_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
 story = []
-story.extend(cover_page("Document Stratégique PACE", "Forecast 2027 - Version 3 (8 familles, données 2023-2026)", "STRATÉGIE PACE"))
+story.extend(cover_page("Document Stratégique PACE", "Forecast 2027 (8 familles, données 2023-2026)", "STRATÉGIE PACE"))
 
 story.append(Paragraph("1. Vision et objectifs", H1))
 story.append(Paragraph("1.1 Vision", H2))
@@ -1105,11 +1105,11 @@ obj_data = [
     ["Forecast annuel", "12 mois 2027 en volume + valeur", "96 102 t, 44 726 M FCFA"],
     ["Désaisonnalisation", "Neutraliser l'effet soja Jul-Août 2026", "Cap moyenne S1 2026"],
     ["En cours + Validées", "Intégrer comme potentielles ventes", "255 commandes incluses"],
-    ["Prix actualisé", "Soja 25 000 FCFA/sac", "vs 20 600 précédent"],
+    ["Prix actualisé", "Soja 18 590 FCFA/sac (médian 2023-2026)", "vs 18 590 médian 2023-2026"],
     ["Désagrégation", "Produit × agence × mois", "13 704 lignes"],
     ["Adoption", "Diffusion CODIR + 25 agences", "100% agences informées"],
-    ["NOUVEAU v3: COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "3 t, 18 M FCFA"],
-    ["NOUVEAU v3: ALVEOLES séparé", "4 refs (MAT011/MAT014/MAT015/MAT017), tonnes=0", "0 t, 438 M FCFA"],
+    [" COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "3 t, 18 M FCFA"],
+    [" ALVEOLES séparé", "4 refs (MAT011/MAT014/MAT015/MAT017), tonnes=0", "0 t, 101 M FCFA"],
 ]
 story.append(make_table(obj_data, col_widths=[3.5*cm, 8.5*cm, 5*cm], font_size=9, highlight_rows=[6, 7]))
 
@@ -1133,7 +1133,7 @@ story.append(Paragraph(
     "<b>cappés à la moyenne S1 2026</b>.",
     BODY))
 
-story.append(Paragraph("2.3 NOUVEAU v3: Famille COMPLEMENT_ALIMENTAIRE", H2))
+story.append(Paragraph("2.3  Famille COMPLEMENT_ALIMENTAIRE", H2))
 story.append(Paragraph(
     "La famille COMPLEMENT_ALIMENTAIRE (9 produits liquides 1L) a été ajoutée au forecast 2027. "
     "Selon demande utilisateur : <b>seul V300 (BELGOKILL 1L) est conservé — V305 (BELGOKILL 200L) est EXCLU</b>. "
@@ -1149,7 +1149,7 @@ config_data = [
     ["changepoint_prior_scale", "0.05", "Tendance modérée"],
     ["interval_width", "0.8", "Intervalle 80%"],
     ["Période forecast", "12 mois (Jan-Déc 2027)", "Année complète"],
-    ["Familles Prophet", "5 (incluant COMPLEMENT_ALIMENTAIRE)", "Nouveau v3"],
+    ["Familles Prophet", "5 (incluant COMPLEMENT_ALIMENTAIRE)", ""],
 
 ]
 story.append(make_table(config_data, col_widths=[5*cm, 5*cm, 7*cm], font_size=9, highlight_rows=[6]))
@@ -1182,12 +1182,12 @@ story.append(make_table(q_detail, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 4.5*
 story.append(Paragraph("5. Historique 2023-2026 vs Forecast 2027", H1))
 hist_detail = [
     ["Famille", "2023 (t)", "2024 (t)", "2025 (t)", "2026 YTD (t)", "2027 fcst (t)", "CA 2027 (M)"],
-    ["TOURTEAUX", "33 323", "19 296", "44 584", "39 045", "60 673", "30 338"],
-    ["CONCENTRÉS", "14 963", "8 207", "17 319", "11 932", "19 658", "13 094"],
-    ["ALIMENT_COMPLET", "709", "296", "500", "502", "561", "393"],
-    ["INGRÉDIENTS", "964", "606", "733", "531", "686", "151"],
-    ["PREMIX", "75", "41", "86", "60", "0 (CA)", "157"],
-    ["COMPLEMENT_ALIM.", "8", "3", "6", "3", "3", "18"],
+    ["TOURTEAUX", "33 323", "19 296", "44 584", "39 045", "66 338", "24 639"],
+    ["CONCENTRÉS", "14 963", "8 207", "17 319", "11 932", "27 822", "18 447"],
+    ["ALIMENT_COMPLET", "709", "296", "500", "502", "877", "326"],
+    ["INGRÉDIENTS", "964", "606", "733", "531", "1 059", "778"],
+    ["PREMIX", "75", "41", "86", "60", "0 (CA)", "192"],
+    ["COMPLEMENT_ALIM.", "8", "3", "6", "3", "5", "29"],
     ["TOTAL", "50 041", "28 450", "63 228", "52 073", "96 102", "44 726"],
 ]
 story.append(make_table(hist_detail, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.4*cm], font_size=8, highlight_rows=[6, 7]))
@@ -1195,7 +1195,7 @@ story.append(make_table(hist_detail, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm,
 story.append(Paragraph("6. Plan de déploiement", H1))
 deploy_data = [
     ["Étape", "Date", "Action", "Cible"],
-    ["1", "03/09/2026", "Validation proposition v3", "DG"],
+    ["1", "03/09/2026", "Validation proposition", "DG"],
     ["2", "05/09/2026", "Livrables finaux prêts", "DA"],
     ["3", "06/09/2026", "Présentation CODIR", "DG + DC + DP + CG"],
     ["4", "07/09/2026", "Diffusion aux agences", "14 RA"],
@@ -1205,8 +1205,8 @@ story.append(make_table(deploy_data, col_widths=[1*cm, 3*cm, 7*cm, 6*cm], font_s
 
 story.append(Paragraph("7. Conclusion", H1))
 story.append(Paragraph(
-    "Le forecast 2027 version 3 projette <b>96 102 tonnes</b> pour <b>44 726 M FCFA</b>. La désaisonnalisation "
-    "de l'effet soja, l'actualisation du prix à 25 000 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
+    "Le forecast 2027  projette <b>96 102 tonnes</b> pour <b>44 726 M FCFA</b>. La désaisonnalisation "
+    "de l'effet soja, l'actualisation du prix à 18 590 FCFA, l'intégration de l'année 2023 (44 mois d'historique), "
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only) et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     "permettent une projection réaliste.",
     BODY))
@@ -1215,11 +1215,11 @@ doc.build(story)
 print(f"✓ 2027 Document stratégique: {os.path.getsize(strat_path)/1024:.0f} KB")
 
 # 5. GUIDE MÉTHODOLOGIQUE 2027
-print("Generating 2027: 5. Guide méthodologique (v3)...")
+print("Generating 2027: 5. Guide méthodologique ...")
 guide_path = f"{F2027_DIR}/05_guide_methodologique.pdf"
 doc = SimpleDocTemplate(guide_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
 story = []
-story.extend(cover_page("Guide Méthodologique", "Forecast 2027 - Version 3 (Prophet + COMPLEMENT_ALIMENTAIRE V300 1L)", "GUIDE MÉTHODOLOGIQUE"))
+story.extend(cover_page("Guide Méthodologique", "Forecast 2027 (Prophet + COMPLEMENT_ALIMENTAIRE V300 1L)", "GUIDE MÉTHODOLOGIQUE"))
 
 story.append(Paragraph("Sommaire", H1))
 story.append(Paragraph(
@@ -1228,7 +1228,7 @@ story.append(Paragraph(
     "3. Outils et environnement<br/>"
     "4. Phase PREPARE - Données 2023-2026<br/>"
     "5. Phase PREPARE - Désaisonnalisation soja<br/>"
-    "6. NOUVEAU v3: Phase PREPARE - COMPLEMENT_ALIMENTAIRE (V300 1L)<br/>"
+    "6. Phase PREPARE - COMPLEMENT_ALIMENTAIRE (V300 1L)<br/>"
     "7. Phase ANALYZE - AED<br/>"
     "8. Phase CONSTRUCT - Prophet<br/>"
     "9. Phase EXECUTE - Livrables<br/>"
@@ -1238,11 +1238,11 @@ story.append(Paragraph(
 story.append(PageBreak())
 story.append(Paragraph("1. Introduction et contexte", H1))
 story.append(Paragraph(
-    "Ce guide décrit la méthodologie complète du forecast 2027 de BELGOCAM SA (version 3). Il couvre 12 mois "
+    "Ce guide décrit la méthodologie complète du forecast 2027 de BELGOCAM SA (). Il couvre 12 mois "
     "(janvier-décembre 2027) avec 8 familles de produits (incluant COMPLEMENT_ALIMENTAIRE) et 25 agences. "
-    "Innovations v3 : (1) ajout COMPLEMENT_ALIMENTAIRE (V300 1L only, V305 200L EXCLU, 1L=1kg), "
+    "Innovations : (1) ajout COMPLEMENT_ALIMENTAIRE (V300 1L only, V305 200L EXCLU, 1L=1kg), "
     "(2) intégration année 2023 (44 mois d'historique), (3) MATERIEL_ELEVAGE toujours 0 tonne, "
-    "(4) désaisonnalisation effet soja, (5) inclusion En cours/Validées, (6) prix soja 25 000 FCFA.",
+    "(4) désaisonnalisation effet soja, (5) inclusion En cours/Validées, (6) prix soja 18 590 FCFA.",
     BODY))
 
 story.append(Paragraph("2. Méthodologie PACE", H1))
@@ -1274,7 +1274,7 @@ story.append(Paragraph(
     "S1+Juil+Août 2026 (52 139), En cours + Validées (~255).",
     BODY))
 story.append(Paragraph(
-    "<b>Intégration de l'année 2023</b> : La version 3 inclut 2023 pour enrichir l'historique avec 4 ans "
+    "<b>Intégration de l'année 2023</b> : La  inclut 2023 pour enrichir l'historique avec 4 ans "
     "de données. Prophet dispose ainsi d'une saisonnalité annuelle complète.",
     BODY))
 
@@ -1285,7 +1285,7 @@ story.append(Paragraph(
     BODY))
 
 story.append(PageBreak())
-story.append(Paragraph("6. NOUVEAU v3: Famille COMPLEMENT_ALIMENTAIRE", H1))
+story.append(Paragraph("6.  Famille COMPLEMENT_ALIMENTAIRE", H1))
 story.append(Paragraph(
     "La famille COMPLEMENT_ALIMENTAIRE regroupe 9 produits liquides BELGO en conditionnement 1L : "
     "BELGOKILL V300 (1L), BELGO HARMONY, BELGO PROTECT, BELGO DRY LIT, BELGO WATER CLEAN, BELGO VIT Ese, "
@@ -1314,7 +1314,7 @@ story.append(Paragraph(
 ca_proxy = [
     ["Réf.", "Produit", "Poids (kg/qte)", "Prix 2027 (FCFA/L)", "Statut"],
     ["V300", "BELGOKILL 1L", "1", "2 500", "✓ Inclus (proxy)"],
-    ["V305", "BELGOKILL 200L", "—", "—", "✗ EXCLU v3"],
+    ["V305", "BELGOKILL 200L", "—", "—", "✗ Exclu"],
     ["CA003.1", "BELGO HARMONY 1L", "1", "8 000", "✓ Inclus"],
     ["CA004.1", "BELGO PROTECT 1L", "1", "9 800", "✓ Inclus"],
     ["CA006.1", "BELGO DRY LIT 1L", "1", "6 500", "✓ Inclus"],
@@ -1337,7 +1337,7 @@ story.append(Paragraph("8. Phase CONSTRUCT - Prophet", H1))
 story.append(Paragraph(
     "15 modèles Prophet famille × région (5 familles Prophet × 3 régions) + extrapolation pour MATERIEL_ELEVAGE "
     "et PREMIX (CA only, tonnes=0). Désagrégation par produit × agence selon parts historiques de CA. "
-    "Prix 2027 : 25 000 FCFA/sac soja, prix par litre pour COMPLEMENT_ALIMENTAIRE (2 500-15 000 FCFA/L).",
+    "Prix 2027 : 18 590 FCFA/sac (médian 2023-2026) soja, prix par litre pour COMPLEMENT_ALIMENTAIRE (2 500-15 000 FCFA/L).",
     BODY))
 
 story.append(Paragraph("9. Phase EXECUTE - Livrables", H1))
@@ -1361,18 +1361,18 @@ glossaire = [
     ["Cap S1", "Plafonnement Jul-Août 2026 à moyenne S1 2026"],
     ["Q4", "Quatrième trimestre (oct-déc)"],
     ["PACE", "Prepare-Analyze-Construct-Execute"],
-    ["NOUVEAU v3: COMPLEMENT_ALIM.", "9 produits liquides 1L BELGOxxx (V300 1L proxy)"],
-    ["NOUVEAU v3: ALVEOLES séparé", "Famille distincte de MATERIEL_ELEVAGE (4 refs MAT011/14/15/17)"],
-    ["NOUVEAU v4: SPC agences", "5 agences SPC incluses (Baf-Chefferie dominant, 274 M CA historique)"],
-    ["NOUVEAU v4: Maroua", "Agence ajoutée (Centre par convention), soja T102 only (Août 2026)"],
-    ["NOUVEAU v4: Bundle 2.5:1", "Ratio soja:concentré forcé à <=2.5:1 (augment. CONCENTRES si ratio > 2.5)"],
-    ["NOUVEAU v4: Saisonnalité ALV 2026", "ALVEOLES utilise 2026 (13.9 M/an) au lieu du pic 2025 (739 M)"],
-    ["NOUVEAU v5: 10 SPC agences", "Toutes SPC incluses (vs 5 avant) — fin exclusion COMPTOIR pour SPC"],
-    ["NOUVEAU v5: Forfait SPC v2", "Forfait MAT_ELEV (38.4 M/an) basé sur 2026 annualisé, poids 2025"],
-    ["NOUVEAU v5: SPC PK15 forfait", "Poids 0 en 2025 → forfait réaliste 1 M/an (0.5 ALV + 0.5 MAT)"],
-    ["NOUVEAU v3: V305 EXCLU", "BELGOKILL 200L retiré (seul V300 1L conservé)"],
-    ["NOUVEAU v3: 1L=1kg", "Conversion pour volumes liquides en tonnes"],
-    ["NOUVEAU v3: Données 2023-2026", "44 mois d'historique (vs 20 mois en v1)"],
+    ["COMPLEMENT_ALIM.", "9 produits liquides 1L BELGOxxx (V300 1L proxy)"],
+    ["ALVEOLES séparé", "Famille distincte de MATERIEL_ELEVAGE (4 refs MAT011/14/15/17)"],
+    ["SPC agences", "10 agences SPC incluses (Baf-Chefferie dominant)"],
+    ["Maroua", "Agence ajoutée (Centre), soja T102 only"],
+    ["Bundle 2.5:1", "Ratio soja:concentré forcé à <=2.5:1"],
+    ["Saisonnalité ALV 2026", "ALVEOLES utilise 2026 (13.9 M/an) au lieu du pic 2025 (739 M)"],
+    ["10 SPC agences", "Toutes SPC incluses (10 agences)"],
+    ["Forfait SPC", "Forfait MAT_ELEV (38.4 M/an) basé sur 2026 annualisé, poids 2025"],
+    ["SPC PK15 forfait", "Forfait réaliste 1 M/an (0.5 ALV + 0.5 MAT)"],
+    [" V305 EXCLU", "BELGOKILL 200L retiré (seul V300 1L conservé)"],
+    [" 1L=1kg", "Conversion pour volumes liquides en tonnes"],
+    [" Données 2023-2026", "44 mois d'historique (Jan 2023 - Août 2026)"],
     ["MATERIEL_ELEVAGE", "Toujours 0 en tonnes (CA only). ALVEOLES désormais séparés en famille distincte"],
 ]
 story.append(make_table(glossaire, col_widths=[5*cm, 11*cm], font_size=9, highlight_rows=[7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]))
@@ -1380,11 +1380,11 @@ story.append(make_table(glossaire, col_widths=[5*cm, 11*cm], font_size=9, highli
 doc.build(story)
 print(f"✓ 2027 Guide méthodologique: {os.path.getsize(guide_path)/1024:.0f} KB")
 
-print(f"\n=== 2027: 5 PDFs v3 GÉNÉRÉS ===")
+print(f"\n=== 2027: 5 PDFs GÉNÉRÉS ===")
 for f in sorted(os.listdir(F2027_DIR)):
     if f.endswith('.pdf'):
         print(f"  {f}: {os.path.getsize(os.path.join(F2027_DIR, f))/1024:.0f} KB")
 
-print("\n=== TOUS LES 10 PDFs v3 GÉNÉRÉS ===")
+print("\n=== TOUS LES 10 PDFs GÉNÉRÉS ===")
 print(f"Q4 2026: {Q4_DIR}")
 print(f"2027: {F2027_DIR}")
