@@ -1012,3 +1012,66 @@ Stage Summary:
   - Argumentaire commercial de 5 points
 - Top 5 agences 2027 (avec prix corrigés): FAMLA 15 878 M, NDOBO 7 983 M, MESSASSI 4 677 M, DJELENG 4 536 M, VILLAGE 2 990 M
 - Conclusion: La progression 2027 vs 2026 (+14% volume, +33% CA) est portée par 4 effets combinés: (1) prix soja +21%, (2) bundle 2.5:1 (+31% CONCENTRÉS), (3) prix INGREDIENTS corrigés, (4) forfait SPC révisé (MAT_ELEV 2026 annualisé, ALV=0). Le Q4 2027 en retrait vs Q4 2026 (effet normalisation après rupture concurrente 2026).
+
+---
+Task ID: forecast-v5-correction-prix-reels-2026
+Agent: main
+Task: Corriger les prix dans forecast avec prix reels 2026 par unite (CA TTC / qte) pour TOUS les produits hors 50kg. Le bug divisait par 50 au lieu du poids reel du sac (25kg, 5kg, 1kg, etc.).
+
+Work Log:
+- Detection du bug: prix calcules par sacs_50 = kg/50 au lieu du poids reel par unite
+  - P105 (BELGOFOS 25kg) calcule a 68 304 FCFA/sac au lieu de 34 391 (erreur x2)
+  - Methode correcte: prix_unit = CA TTC / qte (qte = nombre d'unites = nombre de sacs/pieces/bidons)
+
+- Creation du fichier prix_reels_2026.json (66 references) avec:
+  - Prix reels 2026 par unite (CA TTC / qte) pour 66 references
+  - Fallback prix 2025 si pas de ventes 2026
+  - Couvre: TOURTEAUX variantes, CONCENTRES variantes, ALIMENT_COMPLET, INGREDIENTS, PREMIX, COMPLEMENT_ALIMENTAIRE, ALVEOLES, MATERIEL_ELEVAGE
+
+- Verification prix cles:
+  - P105 BELGOFOS 25Kg: 34 391 FCFA/sac (vs 68 304 errone)
+  - E101 BELGOTOX 25Kg: 29 325 (vs 58 637 errone)
+  - I106 METHIONINE 25Kg: 107 150 (vs 206 872 errone)
+  - I107 LYSINE 25Kg: 52 556 (vs 104 865 errone)
+  - CB100 CHICK BOOSTER 25Kg: 21 307 (vs 42 614 errone)
+  - P102N2 PREMIX 25Kg: 48 959 (vs 95 147 errone)
+  - V300 BELGOKILL 1L: 2 700 FCFA/L
+  - MAT017 ALVEOLE RE: 6 122 FCFA/unite
+  - MAT003 ABREUVOIR 9MM: 12 581 FCFA/unite
+
+- Mise a jour des scripts forecast (pace_11_forecast_S3_v2.py et forecast_2027_v3.py):
+  - Ajout du WEIGHT_MAP (kg par unite) pour 66 references
+  - Ajout de la fonction get_units_from_tonnes(ref, tonnes) = tonnes * 1000 / weight
+  - Nouvelle formule CA: units * prix_unit / 1e6 (au lieu de sacs_50 * prix_sac / 1e6)
+  - Bundle 2.5:1 recalcul avec la nouvelle formule
+  - Chargement de prix_reels_2026.json + override des prix 50kg
+
+- Re-run Q4 2026:
+  - Total: 29 347 t, 16 707 M FCFA (vs 16 693 M avant correction = +14 M)
+  - La correction est quasi neutre sur Q4 2026 car la plupart des ventes 50kg (TOURTEAUX T102, CONCENTRES C101-C104) utilisaient deja le bon poids
+  - Variantes (T1021/23/24, C1042/43/44, CB101, etc.) corrigees
+
+- Re-run 2027:
+  - Total: 96 102 t, 53 218 M FCFA (vs 54 298 M avant correction = -1 080 M)
+  - INGREDIENTS: 778 M (vs 1 482 M = -704 M, plus realiste)
+  - ALIMENT_COMPLET: 326 M (vs 612 M = -286 M)
+  - COMPLEMENT_ALIMENTAIRE: 29 M (vs 28 M, stable)
+  - CONCENTRES: 18 447 M (vs 18 493 M, quasi stable)
+
+- Regeneration Excels:
+  - Q4 2026: 215 KB, 4 536 lignes
+  - 2027: 585 KB, 13 609 lignes
+
+- Regeneration 10 PDFs v5 finale:
+  - Q4 2026: 29 347 t, 16 707 M FCFA
+  - 2027: 96 102 t, 53 218 M FCFA
+  - Section "Progression 2027 vs 2026" mise a jour avec nouveaux chiffres
+  - Tableau progression: TOURTEAUX +38,6%, CONCENTRES +29,7%, INGREDIENTS -45%, ALIMENT_COMPLET -54,5%
+  - TOTAL: +14% volume, +30% CA (vs +33% avant correction)
+
+Stage Summary:
+- v5 finale (apres correction prix): 96 102 t, 53 218 M FCFA pour 2027
+- Correction majeure: 1 080 M FCFA de reduction vs version precedente (prix reels 2026 au lieu de sacs 50kg errones)
+- Top 5 agences 2027: FAMLA 15 724 M, NDOBO 7 740 M, MESSASSI 4 545 M, DJELENG 4 500 M, VILLAGE 2 900 M
+- Top 5 agences Q4 2026: FAMLA 4 519 M, NDOBO 2 612 M, MESSASSI 1 492 M, DJELENG 1 287 M, VILLAGE 978 M
+- Conclusion: La correction des prix (par unite reelle au lieu de sac 50kg) reduit le forecast 2027 de 1 080 M FCFA. Les principales corrections concernent INGREDIENTS (P105, E101, I106, I107, etc.) et ALIMENT_COMPLET (CB100, CB200). La progression 2027 vs 2026 est maintenant de +14% volume, +30% CA (vs +33% errone avant).

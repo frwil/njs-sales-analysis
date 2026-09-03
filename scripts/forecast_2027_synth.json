@@ -1,6 +1,6 @@
 {
   "total_tonnes": 96101.7,
-  "total_ca_m_fcfa": 54297.759999999995,
+  "total_ca_m_fcfa": 53217.84,
   "n_products": 121,
   "n_agences": 25,
   "n_families": 8,
@@ -9,8 +9,8 @@
     {
       "family": "ALIMENT_COMPLET",
       "tonnes": 877.0,
-      "ca_m_fcfa": 611.5,
-      "part_ca_pct": 1.1
+      "ca_m_fcfa": 325.7,
+      "part_ca_pct": 0.6
     },
     {
       "family": "ALVEOLES",
@@ -21,20 +21,20 @@
     {
       "family": "COMPLEMENT_ALIMENTAIRE",
       "tonnes": 5.0,
-      "ca_m_fcfa": 28.2,
+      "ca_m_fcfa": 28.9,
       "part_ca_pct": 0.1
     },
     {
       "family": "CONCENTRES",
       "tonnes": 27822.0,
-      "ca_m_fcfa": 18493.4,
-      "part_ca_pct": 34.1
+      "ca_m_fcfa": 18447.2,
+      "part_ca_pct": 34.7
     },
     {
       "family": "INGREDIENTS",
       "tonnes": 1059.0,
-      "ca_m_fcfa": 1482.4,
-      "part_ca_pct": 2.7
+      "ca_m_fcfa": 777.7,
+      "part_ca_pct": 1.5
     },
     {
       "family": "MATERIEL_ELEVAGE",
@@ -51,109 +51,109 @@
     {
       "family": "TOURTEAUX",
       "tonnes": 66338.0,
-      "ca_m_fcfa": 33175.6,
-      "part_ca_pct": 61.1
+      "ca_m_fcfa": 33131.6,
+      "part_ca_pct": 62.3
     }
   ],
   "by_quarter": [
     {
       "quarter": "Q1 (Jan-Mar)",
       "tonnes": 25295.0,
-      "ca_m_fcfa": 14274.2
+      "ca_m_fcfa": 13991.5
     },
     {
       "quarter": "Q2 (Avr-Juin)",
       "tonnes": 24316.0,
-      "ca_m_fcfa": 13683.0
+      "ca_m_fcfa": 13442.8
     },
     {
       "quarter": "Q3 (Juil-Sept)",
       "tonnes": 19515.0,
-      "ca_m_fcfa": 11157.1
+      "ca_m_fcfa": 10880.9
     },
     {
       "quarter": "Q4 (Oct-D\u00e9c)",
       "tonnes": 26975.0,
-      "ca_m_fcfa": 15183.5
+      "ca_m_fcfa": 14902.7
     }
   ],
   "by_region": [
     {
       "region": "Centre",
       "tonnes": 23315.0,
-      "ca_m_fcfa": 13376.1
+      "ca_m_fcfa": 13016.9
     },
     {
       "region": "Littoral",
       "tonnes": 31430.0,
-      "ca_m_fcfa": 17657.6
+      "ca_m_fcfa": 17165.4
     },
     {
       "region": "Ouest",
       "tonnes": 41356.0,
-      "ca_m_fcfa": 23264.1
+      "ca_m_fcfa": 23035.6
     }
   ],
   "by_month": [
     {
       "month": "Jan",
       "tonnes": 10484.0,
-      "ca_m_fcfa": 5889.1
+      "ca_m_fcfa": 5780.2
     },
     {
       "month": "F\u00e9v",
       "tonnes": 7492.0,
-      "ca_m_fcfa": 4243.6
+      "ca_m_fcfa": 4147.1
     },
     {
       "month": "Mar",
       "tonnes": 7319.0,
-      "ca_m_fcfa": 4141.5
+      "ca_m_fcfa": 4064.2
     },
     {
       "month": "Avr",
       "tonnes": 5819.0,
-      "ca_m_fcfa": 3323.7
+      "ca_m_fcfa": 3233.5
     },
     {
       "month": "Mai",
       "tonnes": 7497.0,
-      "ca_m_fcfa": 4216.0
+      "ca_m_fcfa": 4146.3
     },
     {
       "month": "Juin",
       "tonnes": 11000.0,
-      "ca_m_fcfa": 6143.2
+      "ca_m_fcfa": 6063.0
     },
     {
       "month": "Juil",
       "tonnes": 7101.0,
-      "ca_m_fcfa": 4027.6
+      "ca_m_fcfa": 3940.8
     },
     {
       "month": "Ao\u00fbt",
       "tonnes": 5442.0,
-      "ca_m_fcfa": 3160.5
+      "ca_m_fcfa": 3069.1
     },
     {
       "month": "Sep",
       "tonnes": 6972.0,
-      "ca_m_fcfa": 3969.0
+      "ca_m_fcfa": 3871.0
     },
     {
       "month": "Oct",
       "tonnes": 9440.0,
-      "ca_m_fcfa": 5318.3
+      "ca_m_fcfa": 5213.4
     },
     {
       "month": "Nov",
       "tonnes": 8757.0,
-      "ca_m_fcfa": 4953.6
+      "ca_m_fcfa": 4839.4
     },
     {
       "month": "D\u00e9c",
       "tonnes": 8779.0,
-      "ca_m_fcfa": 4911.6
+      "ca_m_fcfa": 4849.9
     }
   ]
 }

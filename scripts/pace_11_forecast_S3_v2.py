@@ -163,27 +163,45 @@ df_all.loc[mask_cap, 'tonnes'] = df_all.loc[mask_cap, 'tonnes'] * cap_factor
 df_all.loc[mask_cap, 'sacs_50'] = df_all.loc[mask_cap, 'sacs_50'] * cap_factor
 df_all.loc[mask_cap, 'kg'] = df_all.loc[mask_cap, 'kg'] * cap_factor
 
-# === Prix Q4 2026 ===
-print("\n=== PRIX Q4 2026 ===")
+# === Prix Q4 2026 — CORRIGE avec prix reels 2026 ===
+print("\n=== PRIX Q4 2026 (corriges avec prix reels 2026) ===")
+# Load real 2026 prices per unit (par sac/piece/bidon)
+prix_reels = json.load(open("/home/z/my-project/scripts/prix_reels_2026.json"))
+# Load original forecast prices (for 50kg products)
 prix_forecast = json.load(open("/home/z/my-project/scripts/prix_forecast.json"))
 prix_q4 = prix_forecast['stable_Q4'].copy()
-
-# Update soja price to 25 000 FCFA/sac
-for ref in SOJA_REFS:
-    if ref in prix_q4:
-        prix_q4[ref] = 25000 if ref == 'T102' else int(prix_q4[ref] * 25000 / 20600)
-
-# Add PREMIX prices
-PREMIX_PRICES = {'P102N2': 95147, 'P104N2': 91096, 'P109': 34000}
-prix_q4.update(PREMIX_PRICES)
-
-# COMPLEMENT_ALIMENTAIRE — V300 1L only (V305 EXCLU)
-COMPLEMENT_PRICES = {
-    'V300': 2500, 'CA003.1': 8000, 'CA004.1': 9800, 'CA006.1': 6500,
-    'CA001.1': 5500, 'CA002.1': 10500, 'CA005.1': 15000, 'CA007.1': 8000,
-    'CA008.1': 14000,
+# Override with real 2026 prices (per unit) for non-50kg products
+prix_q4.update(prix_reels)
+# Update soja T102 price to 25 000 FCFA/sac
+prix_q4['T102'] = 25000
+# === Weight per unit (kg per sac/piece/bidon) — for converting tonnes to units ===
+WEIGHT_MAP = {
+    'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25,
+    'C101': 50, 'C102': 50, 'C103': 50, 'C104': 50, 'C1042': 1, 'C1043': 5, 'C1044': 25,
+    'C105': 50, 'C1053': 1, 'C1054': 5, 'C1055': 25, 'C108': 50, 'C1022': 5,
+    'CB100': 25, 'CB200': 25, 'CB101': 5, 'CB201': 5, 'PB100': 25, 'PB200': 25, 'DB100': 25, 'DB200': 25, 'ALAP25': 25,
+    'B100': 25, 'B1001': 1, 'B1003': 5, 'B1004': 25,
+    'E101': 25, 'E1011': 1, 'E1013': 5, 'E1014': 0.2,
+    'I105': 25, 'I1051': 1, 'I1053': 5, 'I1054': 25,
+    'I106': 25, 'I1061': 1, 'I107': 25, 'I1071': 1,
+    'P105': 25, 'P1051': 1, 'P1053': 5,
+    'F114': 50, 'F1145': 50, 'F1146': 25, 'F1147': 1,
+    'P102N2': 25, 'P104N2': 25, 'P109': 25,
+    'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25,
+    'V300': 1, 'CA003.1': 1, 'CA004.1': 1, 'CA006.1': 1, 'CA001.1': 1,
+    'CA002.1': 1, 'CA005.1': 1, 'CA007.1': 1, 'CA008.1': 1,
+    'MAT011-80010002': 1, 'MAT014-80010003': 1, 'MAT015': 1, 'MAT017': 1,
+    'MAT003': 1, 'MAT004': 1, 'MAT005': 1, 'MAT006': 1, 'MAT007': 1, 'MAT008': 1, 'MAT009': 1,
+    'MAT020': 1, 'MAT023': 1, 'MAT029': 1, 'MAT030': 1, 'MAT033': 1, 'MAT039': 1, 'MAT040': 1, 'MAT042': 1,
+    'MAT049': 1, 'MAT050': 1, 'MAT053': 1, 'MAT054': 1, 'MAT055': 1, 'MAT073': 1,
+    'ME100': 1, 'ME1001': 1, 'ME101': 1, 'ME102': 1, 'ME103': 1, 'ME104': 1, 'ME1041': 1, 'ME105': 1, 'ME106': 1, 'ME107': 1,
 }
-prix_q4.update(COMPLEMENT_PRICES)
+
+def get_units_from_tonnes(ref, tonnes):
+    """Convert tonnes to number of units based on product weight per unit."""
+    weight = WEIGHT_MAP.get(ref, 50)  # default 50kg
+    units = tonnes * 1000 / weight
+    return units
 
 # === Agrégation mensuelle ===
 print("\n=== AGRÉGATION MENSUELLE ===")
@@ -334,21 +352,17 @@ for _, fcst_row in forecasts_fr_df.iterrows():
         # For TOURTEAUX S3: apply 0.7 factor in September (partial rupture assumption already neutralized)
         if family == 'TOURTEAUX' and month == 9:
             tonnes_total *= 0.7
-        # Calculate CA via prices
+        # Calculate CA via real prices per unit (CORRIGE)
         pa_subset = monthly_pa[(monthly_pa['family'] == family) & (monthly_pa['region'] == region)]
         ca_total_m_fcfa = 0
         for _, pa_row in pa_subset.iterrows():
             ref = pa_row['ref']
             share_t = pa_row['share_tonnes']
             tonnes_combo = tonnes_total * share_t
-            if family == 'COMPLEMENT_ALIMENTAIRE':
-                litres = tonnes_combo * 1000
-                prix = prix_q4.get(ref, 0)
-                ca_total_m_fcfa += litres * prix / 1e6
-            else:
-                sacs_50 = tonnes_combo * 1000 / 50
-                prix = prix_q4.get(ref, 0)
-                ca_total_m_fcfa += sacs_50 * prix / 1e6
+            # CORRIGE: units = tonnes * 1000 / weight_per_unit; CA = units * prix_unit
+            units = get_units_from_tonnes(ref, tonnes_combo)
+            prix = prix_q4.get(ref, 0)
+            ca_total_m_fcfa += units * prix / 1e6
     
     pa_subset = monthly_pa[(monthly_pa['family'] == family) & (monthly_pa['region'] == region)]
     
@@ -361,16 +375,12 @@ for _, fcst_row in forecasts_fr_df.iterrows():
         
         if is_ca_only:
             tonnes_combo = 0
-            sacs_50 = 0
+            units = 0
             prix = 0
         else:
             tonnes_combo = tonnes_total * pa_row['share_tonnes']
-            if family == 'COMPLEMENT_ALIMENTAIRE':
-                sacs_50 = 0
-                prix = prix_q4.get(ref, 0)
-            else:
-                sacs_50 = tonnes_combo * 1000 / 50
-                prix = prix_q4.get(ref, 0)
+            units = get_units_from_tonnes(ref, tonnes_combo)
+            prix = prix_q4.get(ref, 0)
         
         all_forecasts.append({
             'scenario': 'S3_reappro_100',
@@ -382,8 +392,8 @@ for _, fcst_row in forecasts_fr_df.iterrows():
             'month': month,
             'year': year,
             'tonnes': round(tonnes_combo, 2),
-            'sacs_50': round(sacs_50, 1),
-            'prix_ttc_sac': prix,
+            'sacs_50': round(units, 1),  # Now contains units (not sacs 50kg)
+            'prix_ttc_sac': prix,  # Now contains prix per unit
             'ca_m_fcfa': round(ca_m_fcfa_combo, 2),
         })
 
@@ -411,14 +421,14 @@ for (region, month), group in fcst_df.groupby(['region', 'month']):
             mask = (fcst_df['region'] == region) & (fcst_df['month'] == month) & (fcst_df['family'] == 'CONCENTRES')
             fcst_df.loc[mask, 'tonnes'] = fcst_df.loc[mask, 'tonnes'] * adjustment_factor
             fcst_df.loc[mask, 'sacs_50'] = fcst_df.loc[mask, 'sacs_50'] * adjustment_factor
-            # Recalculate CA for CONCENTRES
+            # Recalculate CA for CONCENTRES (CORRIGE: units, not sacs_50)
             for idx in fcst_df[mask].index:
                 ref = fcst_df.at[idx, 'ref']
                 new_tonnes = fcst_df.at[idx, 'tonnes']
-                sacs = new_tonnes * 1000 / 50
+                units = get_units_from_tonnes(ref, new_tonnes)
                 prix = prix_q4.get(ref, 0)
-                fcst_df.at[idx, 'ca_m_fcfa'] = round(sacs * prix / 1e6, 2)
-                fcst_df.at[idx, 'sacs_50'] = round(sacs, 1)
+                fcst_df.at[idx, 'ca_m_fcfa'] = round(units * prix / 1e6, 2)
+                fcst_df.at[idx, 'sacs_50'] = round(units, 1)
             adjustments_made += 1
             print(f"  {region} × {month}/2026: ratio {ratio:.2f} → {BUNDLE_RATIO}:1 (CONCENTRES ×{adjustment_factor:.2f})")
 
