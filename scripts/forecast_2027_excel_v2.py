@@ -64,7 +64,7 @@ wb.remove(wb.active)
 ws = wb.create_sheet("1. Synthèse")
 ws['A1'] = 'BELGOCAM SA - Forecast 2027 (Janvier - Décembre)'
 ws['A1'].font = Font(bold=True, size=16, color='1F4E78')
-ws['A2'] = 'Scénario S3 | Désaisonnalisation effet soja | En cours+Validées inclus | Prix soja 25 000 FCFA/sac | Données 2023-2026'
+ws['A2'] = 'Scénario S3 | Désaisonnalisation effet soja | En cours+Validées inclus | Prix soja médian 18 590 FCFA/sac | Données 2023-2026'
 ws['A2'].font = Font(italic=True, size=10, color='595959')
 
 total_t = fcst['tonnes'].sum()
@@ -85,14 +85,14 @@ global_data = [
     ('CA total 2027', f"{total_ca:,.1f}", 'M FCFA'),
     ('Période forecast', 'Janvier - Décembre 2027', '12 mois'),
     ('Scénario', 'S3 - Réappro soja 100%', '—'),
-    ('Nb familles', '8', 'TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE'),
+    ('Nb familles', '8', 'TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE, ALVEOLES'),
     ('Nb produits', f"{fcst['ref'].nunique()}", 'références'),
     ('Nb agences', f"{fcst['agence'].nunique()}", 'agences'),
     ('Méthode', 'Prophet (5 familles) + Extrapolation (MAT+PREMIX)', '—'),
     ('Désaisonnalisation', 'Effet soja Jul-Août 2026 neutralisé (cap S1 avg)', '—'),
     ('En cours + Validées', 'Incluses comme potentielles Livrées', '—'),
     ('Données historiques', '176 576 enregistrements (Jan 2023 - Août 2026)', '44 mois'),
-    ('NOUVEAU: COMPLEMENT_ALIMENTAIRE', 'Ajouté au forecast (1L=1kg, proxy BELGOKILL)', '10 produits'),
+    ('COMPLEMENT_ALIMENTAIRE', 'Ajouté au forecast (1L=1kg, proxy BELGOKILL)', '10 produits'),
 ]
 for label, val, unit in global_data:
     ws.cell(row=row, column=1, value=label).font = Font(bold=True)
@@ -314,33 +314,33 @@ ws.freeze_panes = 'A4'
 
 # === Sheet 7: Hypothèses ===
 ws = wb.create_sheet("7. Hypothèses")
-ws['A1'] = 'HYPOTHÈSES DU FORECAST 2027 (VERSION 2 - AVEC COMPLEMENT ALIMENTAIRE)'
+ws['A1'] = 'HYPOTHÈSES DU FORECAST 2027 (S3)'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 hyp = [
     ('PÉRIODE', 'Janvier - Décembre 2027 (12 mois)'),
     ('SCÉNARIO', 'S3 - Réappro soja 100% (situation normale)'),
     ('MÉTHODE', 'Prophet (5 familles alimentaires) + Extrapolation (MAT+PREMIX)'),
     ('', ''),
-    ('NOUVEAUTÉS VS VERSION PRÉCÉDENTE', ''),
+    ('MÉTHODE', ''),
     ('Données historiques', '44 mois (Jan 2023 - Août 2026). Années 2021-2022 exclues, 2023 incluse.'),
-    ('Famille COMPLEMENT_ALIMENTAIRE', 'AJOUTÉE: 10 produits (BELGOKILL V300/V305, BELGO HARMONY, BELGO PROTECT, etc.)'),
+    ('Famille COMPLEMENT_ALIMENTAIRE', '9 produits (BELGOKILL V300 1L, BELGO HARMONY, BELGO PROTECT, etc.), 1L=1kg'),
     ('Conversion 1L=1kg', 'Pour COMPLEMENT_ALIMENTAIRE: 1 litre = 1 kg (qte = kg, tonnes = qte/1000)'),
-    ('Proxy BELGOKILL', 'BELGOKILL (V300 1L + V305 200L) représente 38% du CA famille — tendance utilisée comme proxy'),
+    ('Proxy BELGOKILL', 'BELGOKILL V300 1L représente 38% du CA famille — tendance utilisée comme proxy'),
     ('', ''),
-    ('INNOVATIONS CONSERVÉES', ''),
+    ('PARAMÈTRES', ''),
     ('En cours + Validées', 'Commandes En cours et Validées d\'août 2026 incluses comme potentielles Livrées'),
     ('Désaisonnalisation soja', 'Volumes soja Jul-Août 2026 neutralisés (cap à moyenne S1 2026) pour éviter le biais de la rupture concurrente'),
-    ('Prix soja actualisé', '25 000 FCFA/sac (prix au 24/08/2026) au lieu de 20 600'),
+    ('Prix soja actualisé', '18 590 FCFA/sac (médian 2023-2026, non circonstanciel)'),
     ('Forecast 12 mois', 'Période complète Jan-Déc 2027 (vs 4 mois pour Q4 2026)'),
     ('', ''),
-    ('FAMILLES INCLUSES (7)', 'TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE'),
+    ('FAMILLES INCLUSES (8)', 'TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE, ALVEOLES'),
     ('FAMILLES EXCLUES', 'MAIS (produit opportuniste), DIVERS'),
     ('PRODUITS OPPORTUNISTES', 'MAÏs (M1051, M1052) — exclus du périmètre'),
     ('', ''),
     ('DONNÉES HISTORIQUES', '176 576 enregistrements (Jan 2023 - Août 2026) + En cours/Validées août'),
     ('LIMITES', '44 mois d\'historique (Prophet recommande 2+ ans pour yearly seasonality — OK)'),
-    ('PRODUITS COMPLEMENT_ALIMENTAIRE', 'V300 (BELGOKILL 1L), V305 (BELGOKILL 200L), CA001-CA008 (BELGO xxx 1L)'),
-    ('MISE À JOUR', 'Pipeline: python scripts/forecast_2027_v3.py + scripts/forecast_2027_excel_v2.py'),
+    ('PRODUITS COMPLEMENT_ALIMENTAIRE', 'V300 (BELGOKILL 1L), CA001-CA008 (BELGO xxx 1L) — V305 exclu'),
+    ('MISE À JOUR', 'Pipeline: scripts/forecast_2027.py + scripts/forecast_2027_excel.py'),
 ]
 row = 3
 for label, value in hyp:
@@ -358,13 +358,13 @@ ws.column_dimensions['A'].width = 35; ws.column_dimensions['B'].width = 95
 
 # === Sheet 8: Saisonnalité (NOUVEAU) ===
 ws = wb.create_sheet("8. Saisonnalité")
-ws['A1'] = 'COEFFICIENTS SAISONNIERS - 2025 (HISTORIQUE) VS 2027 (FORECAST)'
+ws['A1'] = 'COEFFICIENTS SAISONNIERS - 2023-2026 (HISTORIQUE) VS 2027 (FORECAST)'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 
 # Calculate seasonal coefficients from 2025 historical data
 df_hist = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv", parse_dates=['date'], low_memory=False)
-df_2025 = df_hist[df_hist['date'].dt.year == 2025]
-df_2025_fam = df_2025.groupby(['family', df_2025['date'].dt.month])['tonnes'].sum().reset_index()
+df_hist_multi = df_hist[df_hist['date'].dt.year.isin([2023, 2024, 2025, 2026])]
+df_2025_fam = df_hist_multi.groupby(['family', df_hist_multi['date'].dt.month])['tonnes'].sum().reset_index()
 df_2025_fam.columns = ['family', 'month', 'tonnes']
 df_2025_avg = df_2025_fam.groupby('family')['tonnes'].mean().reset_index()
 df_2025_avg.columns = ['family', 'avg_tonnes']
@@ -391,7 +391,7 @@ for fam in FAMILIES:
     avg_2025 = avg_2025[0] if len(avg_2025) > 0 and avg_2025[0] > 0 else 1
     
     ws.cell(row=row, column=1, value=fam)
-    ws.cell(row=row, column=2, value='2025 (hist)')
+    ws.cell(row=row, column=2, value='2023-2026 (hist)')
     for i, m in enumerate(MONTHS, 3):
         v = sub_2025[sub_2025['month'] == m]['tonnes'].values
         v = v[0] if len(v) > 0 else 0
@@ -424,7 +424,7 @@ row += 1
 ws.cell(row=row, column=1, value='Pour TOURTEAUX: pic Oct-Déc (Q4) = saisonnalité annuelle forte.')
 ws.cell(row=row, column=1).font = Font(italic=True, color='595959')
 row += 1
-ws.cell(row=row, column=1, value='Pour COMPLEMENT_ALIMENTAIRE: tendance BELGOKILL (V300) dominante, 38% du CA famille.')
+ws.cell(row=row, column=1, value='Pour COMPLEMENT_ALIMENTAIRE: tendance BELGOKILL V300 1L dominante.')
 ws.cell(row=row, column=1).font = Font(italic=True, color='595959')
 
 ws.column_dimensions['A'].width = 25

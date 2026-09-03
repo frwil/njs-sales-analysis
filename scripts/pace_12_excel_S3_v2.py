@@ -64,9 +64,9 @@ wb.remove(wb.active)
 # === Sheet 1: Synthèse ===
 print("Creating sheet 1: Synthèse...")
 ws = wb.create_sheet("1. Synthèse")
-ws['A1'] = 'BELGOCAM SA - Forecast Q4 2026 (Septembre - Décembre) - Version 2'
+ws['A1'] = 'BELGOCAM SA - Forecast Q4 2026 (Septembre - Décembre)'
 ws['A1'].font = Font(bold=True, size=16, color='1F4E78')
-ws['A2'] = 'S3 | Données 2023-2026 (44 mois) | 7 familles | Sans Maïs | MATERIEL_ELEVAGE tonnes=0 | COMPLEMENT_ALIMENTAIRE V300 1L only'
+ws['A2'] = 'S3 | Données 2023-2026 (44 mois) | 8 familles | 25 agences | Prix soja médian 18 590 FCFA/sac'
 ws['A2'].font = Font(italic=True, size=10, color='595959')
 
 ws['A4'] = 'SYNTHÈSE GLOBALE Q4 2026'
@@ -92,10 +92,10 @@ global_data = [
     ('Nb agences', f"{fcst['agence'].nunique()}", 'agences'),
     ('Nb régions', f"{fcst['region'].nunique()}", 'régions'),
     ('Méthode', 'Prophet (5 familles) + Extrapolation (MAT_ELEVAGE, PREMIX, ALVEOLES)', '—'),
-    ('Prix', 'Prix août 2026 + soja 25 000 FCFA/sac', 'Option A - extrapolation CA/qté'),
-    ('NOUVEAU: COMPLEMENT_ALIMENTAIRE', 'V300 1L only (V305 200L exclu), 1L=1kg', '9 produits'),
-    ('NOUVEAU: ALVEOLES séparé', '4 refs (MAT011, MAT014, MAT015, MAT017), tonnes=0', 'CA only'),
-    ('NOUVEAU: Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026)', '176 576 records'),
+    ('Prix', 'Prix 2026 réels par unité + soja médian 18 590 FCFA/sac', 'Option A - extrapolation CA/qté'),
+    ('COMPLEMENT_ALIMENTAIRE', 'V300 1L only (V305 200L exclu), 1L=1kg', '9 produits'),
+    ('ALVEOLES (séparé du MAT_ELEVAGE)', '4 refs (MAT011, MAT014, MAT015, MAT017), tonnes=0', 'CA only'),
+    ('Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026)', '176 576 records'),
 ]
 
 row = 6
@@ -432,10 +432,10 @@ hypotheses = [
     ('MÉTHODE', 'Prophet (TOURTEAUX, CONCENTRES, INGREDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE) + Extrapolation moyenne (MATERIEL_ELEVAGE, PREMIX, ALVEOLES)'),
     ('NIVEAU DE DÉTAIL', '15 modèles Prophet famille × région + 9 extrapolations, désagrégés en produit × agence'),
     ('', ''),
-    ('NOUVEAUTÉS VERSION 3', ''),
+    ('MÉTHODE', ''),
     ('Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026), 176 576 records'),
     ('Famille COMPLEMENT_ALIMENTAIRE', '9 produits liquides (V300 BELGOKILL 1L + CA001-CA008), 1L=1kg'),
-    ('Famille ALVEOLES (NOUVEAU v3)', '4 refs (MAT011-80010002, MAT014-80010003, MAT015, MAT017), tonnes=0, CA only'),
+    ('Famille ALVEOLES (séparé du MAT_ELEVAGE)', '4 refs (MAT011-80010002, MAT014-80010003, MAT015, MAT017), tonnes=0, CA only'),
     ('V305 (BELGOKILL 200L)', 'EXCLU du forecast selon demande utilisateur'),
     ('MATERIEL_ELEVAGE', 'Tonnes toujours à 0 (CA only). ALVEOLES désormais séparés.'),
     ('', ''),
@@ -459,7 +459,7 @@ hypotheses = [
     ('Septembre', 'Volume soja × 0.7 (réappro mi-mois)'),
     ('Octobre - Décembre', 'Volume soja × 1.0 (stock reconstitué)'),
     ('', ''),
-    ('PRIX', 'Prix août 2026 + soja 25 000 FCFA/sac (actualisé 24/08/2026)'),
+    ('PRIX', 'Prix 2026 réels par unité (66 refs) + soja médian 18 590 FCFA/sac (2023-2026)'),
     ('STOCK SOJA (BEKOKO)', '71 230 sacs net au 08/08/2026, rupture probable 16/09 sans réappro'),
     ('SAISONNALITÉ Q4', 'Q4 = 35-46% du volume annuel selon les familles'),
     ('LIMITES', '44 mois d\'historique (suffisant pour Prophet yearly seasonality)'),
