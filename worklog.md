@@ -1075,3 +1075,71 @@ Stage Summary:
 - Top 5 agences 2027: FAMLA 15 724 M, NDOBO 7 740 M, MESSASSI 4 545 M, DJELENG 4 500 M, VILLAGE 2 900 M
 - Top 5 agences Q4 2026: FAMLA 4 519 M, NDOBO 2 612 M, MESSASSI 1 492 M, DJELENG 1 287 M, VILLAGE 978 M
 - Conclusion: La correction des prix (par unite reelle au lieu de sac 50kg) reduit le forecast 2027 de 1 080 M FCFA. Les principales corrections concernent INGREDIENTS (P105, E101, I106, I107, etc.) et ALIMENT_COMPLET (CB100, CB200). La progression 2027 vs 2026 est maintenant de +14% volume, +30% CA (vs +33% errone avant).
+
+---
+Task ID: forecast-v5-prix-soja-median-18590
+Agent: main
+Task: Utiliser le prix median T102 = 18 590 FCFA/sac (median 2023-2026) au lieu de 25 000 FCFA/sac (circonstanciel, hausse aout 2026) pour eviter de surestimer l'objectif 2027 si la situation revient a la normale.
+
+Work Log:
+- Analyse prix T102 (TOURTEAUX DE SOJA 50kg) 2021-2026:
+  - 2021: 19 323 (moyenne)
+  - 2022: 24 784 (moyenne)
+  - 2023: 25 044 (moyenne, plus haut)
+  - 2024: 20 488 (moyenne)
+  - 2025: 17 503 (moyenne, plus bas)
+  - 2026: 19 193 (moyenne, avec hausse aout 25 000)
+  - 2023-2026 (4 ans): mediane 18 590, moyenne 18 660
+- Prix median 18 590 retenu (Option B utilisateur) car robuste aux valeurs extremes (25 000 aout 2026, 17 000 certains mois 2025)
+
+- Mise a jour des scripts forecast:
+  - pace_11_forecast_S3_v2.py: prix_q4['T102'] = 18590 (au lieu de 25000)
+  - forecast_2027_v3.py: prix_2027['T102'] = 18590
+
+- Re-run Q4 2026: 29 347 t, 14 149 M FCFA (vs 16 707 M avant = -2 558 M, -15% CA)
+  - TOURTEAUX: 7 430 M (vs 9 988 M avant, -25% CA soja)
+  - FAMLA: 3 807 M (vs 4 519 M avant)
+  
+- Re-run 2027: 96 102 t, 44 726 M FCFA (vs 53 218 M avant = -8 492 M, -16% CA)
+  - TOURTEAUX: 24 639 M (vs 33 132 M avant, -26% CA soja)
+  - CONCENTRES: 18 447 M (inchange, pas d'effet prix soja sur CONCENTRES)
+  - INGREDIENTS: 778 M (inchange)
+  - ALIMENT_COMPLET: 326 M (inchange)
+  - PREMIX: 192 M (inchange)
+  - MATERIEL_ELEVAGE: 214 M (inchange)
+  - COMPLEMENT_ALIM: 29 M (inchange)
+  - ALVEOLES: 101 M (inchange)
+
+- Top 5 agences 2027 (apres correction prix soja):
+  - FAMLA 13 158 M (vs 15 878 M avant, -17%)
+  - NDOBO 6 385 M (vs 7 983 M avant)
+  - MESSASSI 3 816 M (vs 4 677 M avant)
+  - DJELENG 3 788 M (vs 4 536 M avant)
+  - VILLAGE 2 492 M (vs 2 990 M avant)
+
+- Progression 2027 vs 2026 (apres correction prix soja):
+  - TOURTEAUX: +8,8% vol / +15,5% CA (vs +38,8% avant)
+  - CONCENTRES: +30,5% vol / +29,8% CA (vs +30,1% avant)
+  - ALIMENT_COMPLET: -4,0% vol / -55,5% CA (correction prix reels)
+  - INGREDIENTS: +4,3% vol / -45,5% CA (correction prix reels)
+  - PREMIX: 0 vol / -14,9% CA
+  - COMPLEMENT_ALIM: -6,1% vol / -2,1% CA
+  - ALVEOLES: 0 vol / +97% CA (forfait SPC)
+  - MATERIEL_ELEVAGE: 0 vol / -20,8% CA
+  - TOTAL: +14,0% vol / +16,8% CA (vs +30,4% avant = -13,6 pts)
+
+- Regeneration 10 PDFs:
+  - Q4 2026: 29 347 t, 14 149 M FCFA (mention "prix soja median 18 590")
+  - 2027: 96 102 t, 44 726 M FCFA (mention "prix soja median 18 590")
+  - Section progression 2027 vs 2026 mise a jour avec nouveaux chiffres
+  - Insight 1 modifie: "+15,5% CA (prix median 18 590, pas 25 000)"
+  - Insight 6 modifie: "+14% volume, +17% CA"
+  - Argumentaire commercial mis a jour
+
+Stage Summary:
+- v5 finale (avec prix soja median 18 590): 96 102 t, 44 726 M FCFA pour 2027
+- Reduction CA de 8 492 M FCFA vs version precedente (25 000) = -16% CA total
+- TOURTEAUX CA passe de 33 132 M a 24 639 M (-26%)
+- La progression 2027 vs 2026 est maintenant de +14% volume, +17% CA (vs +30% avant)
+- Cette version est plus conservative et plus representative d'un retour a la normale du marche soja
+- Le prix de 25 000 FCFA/sac etait circonstanciel (rupture concurrente + hausse aout 2026), le prix median 18 590 (4 ans d'historique) est plus realiste pour 2027

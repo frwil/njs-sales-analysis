@@ -173,7 +173,7 @@ prix_q4 = prix_forecast['stable_Q4'].copy()
 # Override with real 2026 prices (per unit) for non-50kg products
 prix_q4.update(prix_reels)
 # Update soja T102 price to 25 000 FCFA/sac
-prix_q4['T102'] = 25000
+prix_q4['T102'] = 18590  # Median 2023-2026 (vs 25000 circonstanciel)
 # === Weight per unit (kg per sac/piece/bidon) — for converting tonnes to units ===
 WEIGHT_MAP = {
     'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25,

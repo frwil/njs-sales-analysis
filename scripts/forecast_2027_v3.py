@@ -205,7 +205,7 @@ COMPLEMENT_PRICES = {
 # Override with real 2026 prices (CORRIGE)
 prix_reels_2026 = json.load(open("/home/z/my-project/scripts/prix_reels_2026.json"))
 prix_2027.update(prix_reels_2026)
-prix_2027['T102'] = 25000
+prix_2027['T102'] = 18590  # Median 2023-2026 (vs 25000 circonstanciel)
 
 # Weight per unit (kg per sac/piece/bidon) — for converting tonnes to units
 WEIGHT_MAP = {

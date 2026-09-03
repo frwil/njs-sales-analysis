@@ -1,6 +1,6 @@
 {
   "total_tonnes": 29346.862,
-  "total_ca_m_fcfa": 16706.69,
+  "total_ca_m_fcfa": 14148.740000000002,
   "n_products": 121,
   "n_agences": 25,
   "n_families": 8,
@@ -10,7 +10,7 @@
       "family": "ALIMENT_COMPLET",
       "tonnes": 267.0,
       "ca_m_fcfa": 201.8,
-      "part_ca_pct": 1.2
+      "part_ca_pct": 1.4
     },
     {
       "family": "ALVEOLES",
@@ -28,19 +28,19 @@
       "family": "CONCENTRES",
       "tonnes": 8703.0,
       "ca_m_fcfa": 5778.3,
-      "part_ca_pct": 34.6
+      "part_ca_pct": 40.8
     },
     {
       "family": "INGREDIENTS",
       "tonnes": 394.0,
       "ca_m_fcfa": 551.9,
-      "part_ca_pct": 3.3
+      "part_ca_pct": 3.9
     },
     {
       "family": "MATERIEL_ELEVAGE",
       "tonnes": 0.0,
       "ca_m_fcfa": 81.8,
-      "part_ca_pct": 0.5
+      "part_ca_pct": 0.6
     },
     {
       "family": "PREMIX",
@@ -51,47 +51,47 @@
     {
       "family": "TOURTEAUX",
       "tonnes": 19982.0,
-      "ca_m_fcfa": 9988.1,
-      "part_ca_pct": 59.8
+      "ca_m_fcfa": 7430.2,
+      "part_ca_pct": 52.5
     }
   ],
   "by_region": [
     {
       "region": "Centre",
       "tonnes": 7414.0,
-      "ca_m_fcfa": 4287.2
+      "ca_m_fcfa": 3670.0
     },
     {
       "region": "Littoral",
       "tonnes": 10240.0,
-      "ca_m_fcfa": 5774.0
+      "ca_m_fcfa": 4866.3
     },
     {
       "region": "Ouest",
       "tonnes": 11693.0,
-      "ca_m_fcfa": 6645.5
+      "ca_m_fcfa": 5612.4
     }
   ],
   "by_month": [
     {
       "index": "Sep",
       "tonnes": 4449.0,
-      "ca_m_fcfa": 2626.5
+      "ca_m_fcfa": 2274.8
     },
     {
       "index": "Oct",
       "tonnes": 9021.0,
-      "ca_m_fcfa": 5085.1
+      "ca_m_fcfa": 4276.9
     },
     {
       "index": "Nov",
       "tonnes": 7691.0,
-      "ca_m_fcfa": 4379.6
+      "ca_m_fcfa": 3713.7
     },
     {
       "index": "D\u00e9c",
       "tonnes": 8186.0,
-      "ca_m_fcfa": 4615.5
+      "ca_m_fcfa": 3883.4
     }
   ]
 }
