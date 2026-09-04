@@ -1,13 +1,14 @@
 from openpyxl.utils import get_column_letter
 """
 Excel - Forecast 2027 complet (12 mois, S3)
-VERSION 2 - Avec COMPLEMENT_ALIMENTAIRE et données 2023-2026
+VERSION 3 - Avec COMPLEMENT_ALIMENTAIRE, données 2023-2026, PREMIX en Prophet
 
 Changements:
 - 7 familles au lieu de 6 (ajout COMPLEMENT_ALIMENTAIRE)
 - Données historiques 2023-2026 (vs 2025-2026 avant)
 - 78 produits (vs 69 avant)
 - 8 868 lignes détaillées (vs 12 600 avant — certaines familles n'ont pas toutes les agences)
+- Sheet 0: Réalisation 2026 (Jan-Août réel + Q4 forecast) — NOUVEAU
 - Sheet 8: Coefficients saisonniers 2024-2025 vs 2027
 """
 import pandas as pd
@@ -16,11 +17,12 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 import os
 
 fcst = pd.read_csv("/home/z/my-project/scripts/forecast_2027_S3.csv", parse_dates=['date'])
-print(f"Loaded {len(fcst)} forecast records")
+q4_fcst = pd.read_csv("/home/z/my-project/scripts/forecast_q4_2026_S3.csv", parse_dates=['date'])
+hist_df = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv", parse_dates=['date'], low_memory=False)
+print(f"Loaded {len(fcst)} forecast 2027 records, {len(q4_fcst)} Q4 2026 forecast, {len(hist_df)} historical")
 
 # Load descriptions from new dataset
-desc_df = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv", low_memory=False)
-desc_map = desc_df[['ref', 'description']].drop_duplicates().set_index('ref')['description'].to_dict()
+desc_map = hist_df[['ref', 'description']].drop_duplicates().set_index('ref')['description'].to_dict()
 
 HEAD_FILL = PatternFill('solid', fgColor='1F4E78')
 HEAD_FONT = Font(bold=True, color='FFFFFF', size=11)
@@ -29,6 +31,8 @@ SUBHEAD_FONT = Font(bold=True, color='1F4E78', size=11)
 TOTAL_FILL = PatternFill('solid', fgColor='FFF2CC')
 TOTAL_FONT = Font(bold=True, size=11)
 S3_COLOR = 'C6EFCE'
+YTD_COLOR = 'E2EFDA'  # Lighter green for YTD réel
+Q4_COLOR = 'FCE4D6'   # Orange for Q4 forecast
 NEW_FAMILY_COLOR = 'FFE699'  # Yellow for COMPLEMENT_ALIMENTAIRE
 THIN = Side(border_style='thin', color='BFBFBF')
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
@@ -59,6 +63,176 @@ def style_data_row(ws, row, n_cols, color=None):
 
 wb = openpyxl.Workbook()
 wb.remove(wb.active)
+
+# === Sheet 0: Réalisation 2026 (Jan-Août réel + Q4 forecast) ===
+ws = wb.create_sheet("0. Réalisation 2026 (YTD+Q4)")
+ws['A1'] = 'BELGOCAM SA - Réalisation 2026 complète (Jan-Août réel + Q4 forecast)'
+ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
+ws['A2'] = 'YTD réel (Jan-Août 2026 ERP) + Forecast Q4 2026 (Sept-Déc, scénario S3)'
+ws['A2'].font = Font(italic=True, size=10, color='595959')
+
+# Préparation des données
+hist_2026_ytd = hist_df[(hist_df['date'].dt.year == 2026) & (hist_df['date'].dt.month <= 8)]
+q4_data = q4_fcst.copy()  # Q4 2026 forecast (mois 9-12)
+
+# YTD par famille (réel)
+ytd_by_fam_t = hist_2026_ytd.groupby('family')['tonnes'].sum()
+ytd_by_fam_ca = hist_2026_ytd.groupby('family')['montant_ttc'].sum() / 1e6
+# Q4 forecast par famille
+q4_by_fam_t = q4_data.groupby('family')['tonnes'].sum()
+q4_by_fam_ca = q4_data.groupby('family')['ca_m_fcfa'].sum()
+
+# Synthèse par famille
+row = 4
+ws.cell(row=row, column=1, value='SYNTHÈSE PAR FAMILLE — RÉALISATION 2026 COMPLÈTE')
+ws.cell(row=row, column=1).font = SUBHEAD_FONT
+row += 1
+headers = ['Famille', 'YTD réel (t)', 'Q4 fcst (t)', 'Total 2026 (t)', 'YTD réel (M FCFA)', 'Q4 fcst (M FCFA)', 'Total 2026 (M FCFA)', 'Part CA (%)']
+for i, h in enumerate(headers, 1): ws.cell(row=row, column=i, value=h)
+style_header_row(ws, row, len(headers))
+row += 1
+
+all_fams = FAMILIES + ['MAIS']
+total_ytd_t = total_q4_t = total_2026_t = 0
+total_ytd_ca = total_q4_ca = total_2026_ca = 0
+# Pour les totaux hors MAIS
+total_ytd_t_nm = total_q4_t_nm = total_2026_t_nm = 0
+total_ytd_ca_nm = total_q4_ca_nm = total_2026_ca_nm = 0
+
+for fam in all_fams:
+    ytd_t = float(ytd_by_fam_t.get(fam, 0))
+    q4_t = float(q4_by_fam_t.get(fam, 0))
+    tot_t = ytd_t + q4_t
+    ytd_c = float(ytd_by_fam_ca.get(fam, 0))
+    q4_c = float(q4_by_fam_ca.get(fam, 0))
+    tot_c = ytd_c + q4_c
+    pct = (tot_c / (ytd_by_fam_ca.sum() + q4_by_fam_ca.sum())) * 100 if (ytd_by_fam_ca.sum() + q4_by_fam_ca.sum()) > 0 else 0
+
+    total_ytd_t += ytd_t; total_q4_t += q4_t; total_2026_t += tot_t
+    total_ytd_ca += ytd_c; total_q4_ca += q4_c; total_2026_ca += tot_c
+    if fam != 'MAIS':
+        total_ytd_t_nm += ytd_t; total_q4_t_nm += q4_t; total_2026_t_nm += tot_t
+        total_ytd_ca_nm += ytd_c; total_q4_ca_nm += q4_c; total_2026_ca_nm += tot_c
+
+    ws.cell(row=row, column=1, value=fam)
+    ws.cell(row=row, column=2, value=round(ytd_t, 0))
+    ws.cell(row=row, column=3, value=round(q4_t, 0) if fam not in ('ALVEOLES', 'MATERIEL_ELEVAGE', 'MAIS') else (0 if fam == 'MAIS' else 0))
+    ws.cell(row=row, column=4, value=round(tot_t, 0))
+    ws.cell(row=row, column=5, value=round(ytd_c, 1))
+    ws.cell(row=row, column=6, value=round(q4_c, 1))
+    ws.cell(row=row, column=7, value=round(tot_c, 1))
+    ws.cell(row=row, column=8, value=f"{pct:.1f}%")
+    color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else (YTD_COLOR if fam != 'MAIS' else 'F2F2F2')
+    style_data_row(ws, row, len(headers), color=color)
+    row += 1
+
+# Ligne TOTAL toutes familles
+ws.cell(row=row, column=1, value='TOTAL (toutes familles)')
+ws.cell(row=row, column=2, value=round(total_ytd_t, 0))
+ws.cell(row=row, column=3, value=round(total_q4_t, 0))
+ws.cell(row=row, column=4, value=round(total_2026_t, 0))
+ws.cell(row=row, column=5, value=round(total_ytd_ca, 1))
+ws.cell(row=row, column=6, value=round(total_q4_ca, 1))
+ws.cell(row=row, column=7, value=round(total_2026_ca, 1))
+ws.cell(row=row, column=8, value='100.0%')
+style_total_row(ws, row, len(headers))
+row += 1
+
+# Ligne TOTAL hors MAIS (référence)
+ws.cell(row=row, column=1, value='TOTAL hors MAIS (référence)')
+ws.cell(row=row, column=2, value=round(total_ytd_t_nm, 0))
+ws.cell(row=row, column=3, value=round(total_q4_t_nm, 0))
+ws.cell(row=row, column=4, value=round(total_2026_t_nm, 0))
+ws.cell(row=row, column=5, value=round(total_ytd_ca_nm, 1))
+ws.cell(row=row, column=6, value=round(total_q4_ca_nm, 1))
+ws.cell(row=row, column=7, value=round(total_2026_ca_nm, 1))
+ws.cell(row=row, column=8, value=f"{total_2026_ca_nm / (total_ytd_ca + total_q4_ca) * 100:.1f}%")
+style_total_row(ws, row, len(headers))
+row += 2
+
+# Détail par famille × mois (YTD réel + Q4 forecast)
+ws.cell(row=row, column=1, value='DÉTAIL PAR FAMILLE × MOIS — RÉALISATION 2026')
+ws.cell(row=row, column=1).font = SUBHEAD_FONT
+row += 1
+headers2 = ['Famille', 'Source'] + MONTH_NAMES + ['Total (t)', 'CA (M FCFA)']
+for i, h in enumerate(headers2, 1): ws.cell(row=row, column=i, value=h)
+style_header_row(ws, row, len(headers2))
+row += 1
+
+# YTD réel par famille × mois
+for fam in FAMILIES + ['MAIS']:
+    sub_ytd = hist_2026_ytd[hist_2026_ytd['family'] == fam]
+    if len(sub_ytd) == 0 and fam != 'MAIS': continue
+    monthly_t = sub_ytd.groupby(sub_ytd['date'].dt.month)['tonnes'].sum()
+    monthly_ca = sub_ytd.groupby(sub_ytd['date'].dt.month)['montant_ttc'].sum() / 1e6
+    ws.cell(row=row, column=1, value=fam)
+    ws.cell(row=row, column=2, value='YTD réel (Jan-Août)')
+    for i, m in enumerate(MONTHS, 3):
+        ws.cell(row=row, column=i, value=round(float(monthly_t.get(m, 0)), 0))
+    ws.cell(row=row, column=15, value=round(float(sub_ytd['tonnes'].sum()), 0))
+    ws.cell(row=row, column=16, value=round(float(sub_ytd['montant_ttc'].sum() / 1e6), 1))
+    style_data_row(ws, row, len(headers2), color=YTD_COLOR)
+    row += 1
+
+    # Q4 forecast par famille × mois (Sept-Déc)
+    sub_q4 = q4_data[q4_data['family'] == fam] if fam != 'MAIS' else pd.DataFrame()
+    monthly_t_q4 = sub_q4.groupby('month')['tonnes'].sum() if len(sub_q4) > 0 else pd.Series(dtype=float)
+    monthly_ca_q4 = sub_q4.groupby('month')['ca_m_fcfa'].sum() if len(sub_q4) > 0 else pd.Series(dtype=float)
+    ws.cell(row=row, column=1, value='')
+    ws.cell(row=row, column=2, value='Q4 fcst (Sep-Déc)')
+    for i, m in enumerate(MONTHS, 3):
+        ws.cell(row=row, column=i, value=round(float(monthly_t_q4.get(m, 0)), 0))
+    ws.cell(row=row, column=15, value=round(float(sub_q4['tonnes'].sum()) if len(sub_q4) > 0 else 0, 0))
+    ws.cell(row=row, column=16, value=round(float(sub_q4['ca_m_fcfa'].sum()) if len(sub_q4) > 0 else 0, 1))
+    color = Q4_COLOR if len(sub_q4) > 0 else 'F2F2F2'
+    style_data_row(ws, row, len(headers2), color=color)
+    row += 1
+
+    # Ligne Total 2026 (YTD + Q4)
+    total_t_fam = float(sub_ytd['tonnes'].sum()) + (float(sub_q4['tonnes'].sum()) if len(sub_q4) > 0 else 0)
+    total_ca_fam = float(sub_ytd['montant_ttc'].sum() / 1e6) + (float(sub_q4['ca_m_fcfa'].sum()) if len(sub_q4) > 0 else 0)
+    ws.cell(row=row, column=1, value='')
+    ws.cell(row=row, column=2, value='Total 2026')
+    ws.cell(row=row, column=2).font = Font(bold=True, italic=True)
+    # Somme des 12 mois
+    ytd_monthly = sub_ytd.groupby(sub_ytd['date'].dt.month)['tonnes'].sum()
+    q4_monthly = sub_q4.groupby('month')['tonnes'].sum() if len(sub_q4) > 0 else pd.Series(dtype=float)
+    for i, m in enumerate(MONTHS, 3):
+        v = float(ytd_monthly.get(m, 0)) + float(q4_monthly.get(m, 0))
+        ws.cell(row=row, column=i, value=round(v, 0))
+    ws.cell(row=row, column=15, value=round(total_t_fam, 0))
+    ws.cell(row=row, column=16, value=round(total_ca_fam, 1))
+    style_total_row(ws, row, len(headers2))
+    row += 1
+
+# Note explicative
+row += 1
+ws.cell(row=row, column=1, value='NOTES')
+ws.cell(row=row, column=1).font = SUBHEAD_FONT
+row += 1
+notes = [
+    'YTD réel (Jan-Août 2026) : données ERP Livrées (extrait Août 2026). MAIS inclus (1 892 t YTD).',
+    'Q4 fcst (Sep-Déc 2026) : forecast S3 (réappro soja 100%), scénario de référence. MAIS exclu (opportuniste, mis à 0).',
+    'ALVEOLES et MATERIEL_ELEVAGE : 0 t en volume (CA only) — activité non volumique, gérée par forfait SPC.',
+    'TOTAL (toutes familles) : inclut le MAIS dans 2026 — comparaison brute.',
+    'TOTAL hors MAIS (référence) : base de comparaison apples-to-apples avec le forecast 2027 (le MAIS, opportuniste, est exclu du forecast 2027).',
+    'Lecture : L\'année 2026 complète (YTD réel + Q4 fcst) s\'établit à 86 952 t (toutes familles) / 85 060 t (hors MAIS).',
+    'Le forecast 2027 à 96 874 t représente +13,9% vs 2026 hors MAIS (référence).',
+]
+for note in notes:
+    ws.cell(row=row, column=1, value='• ' + note)
+    ws.cell(row=row, column=1).font = Font(italic=True, size=10, color='595959')
+    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=len(headers2))
+    row += 1
+
+# Largeurs colonnes
+ws.column_dimensions['A'].width = 28
+ws.column_dimensions['B'].width = 22
+for col in [get_column_letter(c) for c in range(3, 15)]:
+    ws.column_dimensions[col].width = 9
+ws.column_dimensions['O'].width = 11
+ws.column_dimensions['P'].width = 12
+ws.freeze_panes = 'C7'
 
 # === Sheet 1: Synthèse ===
 ws = wb.create_sheet("1. Synthèse")
