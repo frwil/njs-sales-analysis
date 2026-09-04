@@ -298,6 +298,54 @@ def build_2027_q_detail_table():
             rows.append([q_names[q], fmt_t(sub['t'].iloc[0]), fmt_ca(sub['ca'].iloc[0]), fmt_pct(sub['pct'].iloc[0]), readings[q]])
     return rows
 
+def build_2026_full_year_table():
+    """Réalisation 2026 complète = YTD réel (Jan-Août) + Q4 forecast (Sept-Déc) par famille.
+    Affiché dans le résumé exécutif 2027 pour retracer l'année 2026 avant le forecast 2027."""
+    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX',
+                 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE', 'MAIS']
+    rows = [["Famille", "YTD réel (t)", "Q4 fcst (t)", "Total 2026 (t)", "2027 fcst (t)", "Δ Vol %"]]
+    total_ytd = 0
+    total_q4 = 0
+    total_2026 = 0
+    total_2027 = 0
+    # Pour le total hors MAIS (comparaison apples-to-apples avec 2027)
+    total_ytd_no_mais = 0
+    total_q4_no_mais = 0
+    total_2026_no_mais = 0
+    total_2027_no_mais = 0
+    for fam in fam_order:
+        ytd = YTD_2026_BY_FAM.get(fam, 0)
+        q4 = Q4_FAM_BY_FAM.get(fam, 0)
+        total_2026_fam = ytd + q4
+        t27 = F2027_FAM[F2027_FAM['family']==fam]['t'].iloc[0] if len(F2027_FAM[F2027_FAM['family']==fam])>0 else 0
+        var = (t27/total_2026_fam - 1) * 100 if total_2026_fam > 0 else None
+        total_ytd += ytd
+        total_q4 += q4
+        total_2026 += total_2026_fam
+        total_2027 += t27
+        if fam != 'MAIS':
+            total_ytd_no_mais += ytd
+            total_q4_no_mais += q4
+            total_2026_no_mais += total_2026_fam
+            total_2027_no_mais += t27
+        # Pour ALVEOLES et MATERIEL_ELEVAGE, YTD réel est 0 (pas de volume) et Q4 = 0 (CA only)
+        if fam in ('ALVEOLES', 'MATERIEL_ELEVAGE'):
+            q4_display = "0 (CA only)"
+        else:
+            q4_display = fmt_t(q4)
+        # Pour MAIS, Q4 = 0 (exclu du forecast)
+        if fam == 'MAIS':
+            q4_display = "0 (exclu)"
+        rows.append([fam, fmt_t(ytd), q4_display, fmt_t(total_2026_fam), fmt_t(t27),
+                    fmt_pct_signed(var) if var is not None else "—"])
+    var_total_avec_mais = (total_2027/total_2026 - 1) * 100 if total_2026 > 0 else 0
+    var_total_hors_mais = (total_2027_no_mais/total_2026_no_mais - 1) * 100 if total_2026_no_mais > 0 else 0
+    rows.append(["TOTAL (toutes familles)", fmt_t(total_ytd), fmt_t(total_q4), fmt_t(total_2026),
+                fmt_t(total_2027), fmt_pct_signed(var_total_avec_mais)])
+    rows.append(["TOTAL hors MAIS (référence)", fmt_t(total_ytd_no_mais), fmt_t(total_q4_no_mais),
+                fmt_t(total_2026_no_mais), fmt_t(total_2027_no_mais), fmt_pct_signed(var_total_hors_mais)])
+    return rows
+
 def build_2027_progression_table():
     """Progression 2027 vs 2026 LY par famille"""
     fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE']
@@ -1056,16 +1104,6 @@ story.append(make_table(top_data, col_widths=[1.5*cm, 4*cm, 3*cm, 4.5*cm], font_
 
 story.append(PageBreak())
 
-story.append(Paragraph("<b>Historique 2023-2026 vs Forecast 2027</b>", H3))
-story.append(Paragraph(
-    "Le forecast 2027 s'appuie sur 4 ans d'historique (Jan 2023 - Août 2026). Le tableau ci-dessous présente "
-    "l'évolution par famille et par année.",
-    BODY))
-
-hist_data = build_2027_hist_table()
-story.append(make_table(hist_data, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.4*cm], font_size=8, highlight_rows=[6, 7]))
-story.append(Spacer(1, 0.3*cm))
-
 # Calculs dynamiques pour les insights — comparaison cohérente "apples-to-apples"
 # MAIS est exclu du forecast (opportuniste, mis à 0). Pour comparer 2027 vs 2026
 # de manière cohérente, on exclut MAIS des deux côtés (sinon on sous-estime la croissance
@@ -1093,6 +1131,37 @@ _pm_var_ca = (_pm_2027_ca/_pm_2026_ca - 1) * 100 if _pm_2026_ca > 0 else 0
 _ing_var_ca = (F2027_FAM[F2027_FAM['family']=='INGREDIENTS']['ca'].iloc[0]/LY_2026_CA_BY_FAM.get('INGREDIENTS', 1) - 1) * 100 if LY_2026_CA_BY_FAM.get('INGREDIENTS', 0) > 0 else 0
 _conc_var_ca = (F2027_FAM[F2027_FAM['family']=='CONCENTRES']['ca'].iloc[0]/LY_2026_CA_BY_FAM.get('CONCENTRES', 1) - 1) * 100 if LY_2026_CA_BY_FAM.get('CONCENTRES', 0) > 0 else 0
 _tour_var_ca = (F2027_FAM[F2027_FAM['family']=='TOURTEAUX']['ca'].iloc[0]/LY_2026_CA_BY_FAM.get('TOURTEAUX', 1) - 1) * 100 if LY_2026_CA_BY_FAM.get('TOURTEAUX', 0) > 0 else 0
+
+story.append(Paragraph("<b>Réalisation 2026 complète (Jan-Août réel + Q4 forecast)</b>", H3))
+story.append(Paragraph(
+    "Le tableau ci-dessous retrace l'année 2026 dans son intégralité : volumes réalisés de janvier à août 2026 "
+    "(issus de l'ERP, <b>YTD réel</b>), auxquels s'ajoute le <b>forecast Q4 2026</b> (septembre-décembre, "
+    "scénario S3 réappro soja 100%). La colonne <b>Total 2026</b> représente l'année complète reconstruite, "
+    "qui sert de base de comparaison au forecast 2027.",
+    BODY))
+
+realisation_2026_data = build_2026_full_year_table()
+story.append(make_table(realisation_2026_data, col_widths=[3.5*cm, 2.3*cm, 2.3*cm, 2.3*cm, 2.3*cm, 1.6*cm], font_size=8, highlight_rows=[10, 11]))
+story.append(Spacer(1, 0.3*cm))
+
+story.append(Paragraph(
+    f"<b>Lecture</b> : L'année 2026 complète (réalisée + forecast Q4) s'établit à <b>{fmt_t(LY_2026_TOTAL_T)} t</b> "
+    f"(dont {fmt_t(YTD_2026_TOTAL_T)} t déjà réalisés sur Jan-Août et {fmt_t(Q4_TOTAL_T)} t en forecast Q4). "
+    f"Le forecast 2027 à {fmt_t(F2027_TOTAL_T)} t représente <b>{fmt_pct_signed(_var_t_total)}</b> vs 2026 hors MAIS "
+    f"(le MAIS, opportuniste, est exclu du forecast 2027). La dynamique de croissance est portée par les "
+    "CONCENTRÉS (bundle 2.5:1), ALIMENT_COMPLET (filtrage 2024 + reprise +15%) et PREMIX (restauré en Prophet avec volumes).",
+    BODY))
+story.append(Spacer(1, 0.3*cm))
+
+story.append(Paragraph("<b>Historique 2023-2026 vs Forecast 2027</b>", H3))
+story.append(Paragraph(
+    "Le forecast 2027 s'appuie sur 4 ans d'historique (Jan 2023 - Août 2026). Le tableau ci-dessous présente "
+    "l'évolution par famille et par année.",
+    BODY))
+
+hist_data = build_2027_hist_table()
+story.append(make_table(hist_data, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.4*cm], font_size=8, highlight_rows=[6, 7]))
+story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph(
     f"<b>Lecture</b> : Le TOURTEAUX montre une trajectoire haussière ({fmt_t(HIST_BY_YEAR_FAM[2023].get('TOURTEAUX', 0))} t en 2023 → {fmt_t(F2027_FAM[F2027_FAM['family']=='TOURTEAUX']['t'].iloc[0])} t forecast 2027). "
