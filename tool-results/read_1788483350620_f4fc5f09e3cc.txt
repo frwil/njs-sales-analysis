@@ -1,0 +1,590 @@
+     1→"""
+     2→Forecast 2027 complet (12 mois) - Volume + Valeur
+     3→Scénario S3 (réappro soja 100%)
+     4→
+     5→VERSION 3 (mise à jour):
+     6→1. Utilise données 2023-2026 (44 mois, 176 576 records)
+     7→2. Inclut la famille COMPLEMENT_ALIMENTAIRE (BELGOKILL V300 1L only + autres CA001-CA008)
+     8→   - V305 (BELGOKILL 200L) EXCLU selon demande utilisateur
+     9→   - Conversion 1L = 1kg
+    10→3. MATERIEL_ELEVAGE toujours à 0 en tonnes (CA only)
+    11→4. Désaisonnalisation effet soja (cap moyenne S1 2026) maintenue
+    12→5. En cours + Validées inclus
+    13→6. Prix soja actualisé 25 000 FCFA/sac
+    14→
+    15→Méthode:
+    16→  - Prophet pour 5 familles (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE)
+    17→  - Extrapolation pour MATERIEL_ELEVAGE et PREMIX (CA only)
+    18→"""
+    19→import pandas as pd
+    20→import numpy as np
+    21→import json
+    22→import os
+    23→import warnings
+    24→import logging
+    25→warnings.filterwarnings('ignore')
+    26→logging.getLogger('cmdstanpy').setLevel(logging.WARNING)
+    27→logging.getLogger('prophet').setLevel(logging.WARNING)
+    28→
+    29→from prophet import Prophet
+    30→
+    31→# === Load dataset 2023-2026 (nouveau) ===
+    32→df = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv", parse_dates=['date'], low_memory=False)
+    33→print(f"Loaded {len(df)} records (Livrée only, 2023-2026)")
+    34→print(f"Date range: {df['date'].min().date()} → {df['date'].max().date()}")
+    35→print(f"\nBy family:")
+    36→print(df['family'].value_counts())
+    37→
+    38→# === Load En cours + Validées from latest extraction ===
+    39→print("\n=== Loading En cours + Validées from latest extraction ===")
+    40→import openpyxl
+    41→
+    42→FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (27).xlsx"
+    43→wb = openpyxl.load_workbook(FILE_AOUT, read_only=True, data_only=True)
+    44→ws = wb['Sheet 1']
+    45→
+    46→# Product refs and weights (same as dataset_2024_2026)
+    47→SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}
+    48→CONC_REFS = {'C101': 50, 'C102': 50, 'C103': 50, 'C104': 50, 'C1042': 1, 'C1043': 5, 'C1044': 25,
+    49→             'C105': 50, 'C1053': 1, 'C1054': 5, 'C1055': 25, 'C108': 50, 'C1022': 5}
+    50→ALIMENT_REFS = {'CB100': 25, 'CB200': 25, 'CB101': 5, 'CB201': 5, 'PB100': 25, 'PB200': 25, 
+    51→                'DB100': 25, 'DB200': 25, 'ALAP25': 25}
+    52→INGREDIENT_REFS = {'B100': 25, 'E101': 25, 'I105': 25, 'B1001': 1, 'B1003': 5, 'B1004': 25,
+    53→                   'E1011': 1, 'E1013': 5, 'E1014': 0.2, 'I1051': 1, 'I1053': 5, 'I1054': 25,
+    54→                   'I106': 25, 'I1061': 1, 'I107': 25, 'I1071': 1, 'P105': 25, 'P1051': 1, 'P1053': 5,
+    55→                   'F114': 50, 'F1145': 50, 'F1146': 25, 'F1147': 1}
+    56→PREMIX_REFS = {'P102N2': 25, 'P104N2': 25, 'P109': 25, 'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25}
+    57→MATERIEL_REFS = {f'MAT{i:03d}': 1 for i in range(1, 100)}
+    58→MATERIEL_REFS.update({'MAT014-80010003': 1, 'MAT011-80010002': 1})
+    59→# NOUVEAU: COMPLEMENT ALIMENTAIRE (liquides) — V300 1L only (V305 200L EXCLU)
+    60→COMPLEMENT_REFS = {
+    61→    'V300': 1,        # BELGOKILL 1L = 1 kg
+    62→    'CA003.1': 1,     # BELGO HARMONY 1L = 1 kg
+    63→    'CA004.1': 1,     # BELGO PROTECT 1L = 1 kg
+    64→    'CA006.1': 1,     # BELGO DRY LIT 1L = 1 kg
+    65→    'CA001.1': 1,     # BELGO WATER CLEAN 1L = 1 kg
+    66→    'CA002.1': 1,     # BELGO VIT Ese 1L = 1 kg
+    67→    'CA005.1': 1,     # BELGO THERMO 1L = 1 kg
+    68→    'CA007.1': 1,     # BELGO BIO SELECT 1L = 1 kg
+    69→    'CA008.1': 1,     # BELGO FRESH 1L = 1 kg
+    70→}
+    71→
+    72→ALL_REFS = {**SOJA_REFS, **CONC_REFS, **ALIMENT_REFS, **INGREDIENT_REFS, 
+    73→            **PREMIX_REFS, **MATERIEL_REFS, **COMPLEMENT_REFS}
+    74→
+    75→# ALVEOLES refs (separated from MATERIEL_ELEVAGE)
+    76→ALVEOLES_REFS = {'MAT011-80010002', 'MAT014-80010003', 'MAT015', 'MAT017'}
+    77→
+    78→def get_family_2027(ref):
+    79→    if ref in SOJA_REFS: return 'TOURTEAUX'
+    80→    if ref in CONC_REFS: return 'CONCENTRES'
+    81→    if ref in ALIMENT_REFS: return 'ALIMENT_COMPLET'
+    82→    if ref in INGREDIENT_REFS: return 'INGREDIENTS'
+    83→    if ref in PREMIX_REFS: return 'PREMIX'
+    84→    if ref in ALVEOLES_REFS: return 'ALVEOLES'
+    85→    if ref in MATERIEL_REFS or ref.startswith('MAT') or ref.startswith('ME'): return 'MATERIEL_ELEVAGE'
+    86→    if ref in COMPLEMENT_REFS: return 'COMPLEMENT_ALIMENTAIRE'
+    87→    return None
+    88→
+    89→AGENCE_MAP = {
+    90→    'AGENCE FAMLA': ('Famla', 'Ouest'), 'AGENCE MESSASSI': ('Messassi', 'Centre'),
+    91→    'AGENCE BERTOUA': ('Bertoua', 'Centre'), 'AGENCE NDOBO': ('Ndobo', 'Littoral'),
+    92→    'AGENCE DJELENG': ('Djeleng', 'Ouest'), 'AGENCE VILLAGE': ('Village', 'Littoral'),
+    93→    'AGENCE PK11': ('Pk11', 'Littoral'), 'AGENCE NGAOUNDERE': ('Ngaoundere', 'Centre'),
+    94→    'AGENCE AHALA': ('Ahala', 'Centre'), 'AGENCE NKONGSAMBA': ('Nkongsamba', 'Littoral'),
+    95→    'AGENCE NKOLBISSON': ('Nkolbisson', 'Centre'), 'AGENCE NKOABANG': ('Nkoabang', 'Centre'),
+    96→    'AGENCE DE BAMENDA - DEPOT MBOUDA': ('Mbouda', 'Ouest'), 'AGENCE BUEA': ('Buea', 'Littoral'),
+    97→}
+    98→
+    99→# Collect En cours + Validées
+   100→extra_records = []
+   101→for r in ws.iter_rows(min_row=3, values_only=True):
+   102→    if not r or not r[0] or r[0] == 'Total': continue
+   103→    ref = str(r[0])
+   104→    family = get_family_2027(ref)
+   105→    if family is None: continue
+   106→    etat = str(r[13]).strip() if r[13] else ''
+   107→    if etat not in ('En cours', 'Validée'): continue  # Only non-Livrée
+   108→    date_str = str(r[6])[:10] if r[6] else ''
+   109→    if '/08/2026' not in date_str: continue
+   110→    agence_raw = r[15] if r[15] else ''
+   111→    if agence_raw not in AGENCE_MAP: continue
+   112→    agence, region = AGENCE_MAP[agence_raw]
+   113→    qte = r[2] or 0
+   114→    weight = ALL_REFS.get(ref, 1)
+   115→    kg = qte * weight
+   116→    montant_ttc = r[9] or 0
+   117→    # Parse date
+   118→    try:
+   119→        date = pd.to_datetime(date_str, format='%d/%m/%Y')
+   120→    except:
+   121→        continue
+   122→    
+   123→    # For MATERIEL_ELEVAGE, ALVEOLES: tonnes=0 (CA only)
+   124→    if family in ('MATERIEL_ELEVAGE', 'ALVEOLES'):
+   125→        tonnes_val = 0
+   126→    else:
+   127→        tonnes_val = kg / 1000
+   128→    
+   129→    extra_records.append({
+   130→        'date': date, 'year': date.year, 'month': date.month,
+   131→        'ref': ref, 'family': family, 'description': r[1],
+   132→        'agence': agence, 'region': region,
+   133→        'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': tonnes_val,
+   134→        'sacs_50': kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else 0,
+   135→        'montant_ttc': montant_ttc, 'montant_ht': 0,
+   136→        'source': 'En_cours_Validee'
+   137→    })
+   138→
+   139→print(f"  En cours + Validées: {len(extra_records)} records")
+   140→df_extra = pd.DataFrame(extra_records)
+   141→
+   142→# === Merge Livrée + En cours/Validées ===
+   143→df_all = pd.concat([df, df_extra], ignore_index=True)
+   144→print(f"\nDataset total (Livrée + En cours + Validées): {len(df_all)} records")
+   145→print(f"Date range: {df_all['date'].min().date()} → {df_all['date'].max().date()}")
+   146→
+   147→# === Désaisonnalisation de l'effet soja exceptionnel ===
+   148→print("\n=== DÉSAISONNALISATION EFFET SOJA EXCEPTIONNEL ===")
+   149→df_all['year_month'] = df_all['date'].dt.to_period('M')
+   150→
+   151→# Calculate S1 average monthly soja volume (Jan-Juin 2026)
+   152→soja_s1 = df_all[(df_all['family'] == 'TOURTEAUX') & (df_all['date'] < '2026-07-01') & (df_all['date'] >= '2026-01-01')]
+   153→soja_s1_monthly = soja_s1.groupby('year_month')['tonnes'].sum()
+   154→soja_s1_avg = soja_s1_monthly.mean()
+   155→print(f"  S1 2026 average monthly soja: {soja_s1_avg:.0f} t")
+   156→
+   157→# July-August 2026 soja volume
+   158→soja_juil_aout = df_all[(df_all['family'] == 'TOURTEAUX') & 
+   159→                         (df_all['date'] >= '2026-07-01') & 
+   160→                         (df_all['date'] <= '2026-08-31')]
+   161→soja_juil_aout_monthly = soja_juil_aout.groupby('year_month')['tonnes'].sum()
+   162→print(f"  Jul-Aug 2026 soja monthly volumes:")
+   163→for ym, t in soja_juil_aout_monthly.items():
+   164→    print(f"    {ym}: {t:.0f} t")
+   165→
+   166→# Cap soja to S1 average for July-August 2026
+   167→cap_factor = soja_s1_avg / soja_juil_aout_monthly.max() if soja_juil_aout_monthly.max() > 0 else 1.0
+   168→print(f"  Cap factor: {cap_factor:.2f} (soja Jul-Aug capped at S1 avg {soja_s1_avg:.0f} t)")
+   169→
+   170→# Apply cap to soja records in Jul-Aug 2026
+   171→mask_cap = (df_all['family'] == 'TOURTEAUX') & (df_all['date'] >= '2026-07-01') & (df_all['date'] <= '2026-08-31')
+   172→df_all.loc[mask_cap, 'tonnes'] = df_all.loc[mask_cap, 'tonnes'] * cap_factor
+   173→df_all.loc[mask_cap, 'sacs_50'] = df_all.loc[mask_cap, 'sacs_50'] * cap_factor
+   174→df_all.loc[mask_cap, 'kg'] = df_all.loc[mask_cap, 'kg'] * cap_factor
+   175→
+   176→# === Prix 2027 ===
+   177→print("\n=== PRIX 2027 ===")
+   178→# Load current prices
+   179→prix_forecast = json.load(open("/home/z/my-project/scripts/prix_forecast.json"))
+   180→prix_2027 = prix_forecast['stable_Q4'].copy()
+   181→
+   182→# Update soja price to 25 000 FCFA/sac (effective 24/08/2026)
+   183→for ref in SOJA_REFS:
+   184→    if ref in prix_2027:
+   185→        prix_2027[ref] = 25000 if ref == 'T102' else int(prix_2027[ref] * 25000 / 20600)
+   186→
+   187→# Add PREMIX prices
+   188→PREMIX_PRICES = {'P102N2': 95147, 'P104N2': 91096, 'P109': 34000}
+   189→prix_2027.update(PREMIX_PRICES)
+   190→
+   191→# NOUVEAU: Prix COMPLEMENT ALIMENTAIRE (par unité = 1L)
+   192→# Basé sur les prix moyens historiques observés
+   193→# V305 EXCLU — seul V300 1L conservé
+   194→COMPLEMENT_PRICES = {
+   195→    'V300': 2500,      # BELGOKILL 1L (~2 500 FCFA/L)
+   196→    'CA003.1': 8000,   # BELGO HARMONY 1L
+   197→    'CA004.1': 9800,   # BELGO PROTECT 1L
+   198→    'CA006.1': 6500,   # BELGO DRY LIT 1L
+   199→    'CA001.1': 5500,   # BELGO WATER CLEAN 1L
+   200→    'CA002.1': 10500,  # BELGO VIT Ese 1L
+   201→    'CA005.1': 15000,  # BELGO THERMO 1L
+   202→    'CA007.1': 8000,   # BELGO BIO SELECT 1L
+   203→    'CA008.1': 14000,  # BELGO FRESH 1L
+   204→}
+   205→# Override with real 2026 prices (CORRIGE)
+   206→prix_reels_2026 = json.load(open("/home/z/my-project/scripts/prix_reels_2026.json"))
+   207→prix_2027.update(prix_reels_2026)
+   208→prix_2027['T102'] = 16800  # Mediane YTD 2026 (Jan-Aout)
+   209→
+   210→# Weight per unit (kg per sac/piece/bidon) — for converting tonnes to units
+   211→WEIGHT_MAP = {
+   212→    'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25,
+   213→    'C101': 50, 'C102': 50, 'C103': 50, 'C104': 50, 'C1042': 1, 'C1043': 5, 'C1044': 25,
+   214→    'C105': 50, 'C1053': 1, 'C1054': 5, 'C1055': 25, 'C108': 50, 'C1022': 5,
+   215→    'CB100': 25, 'CB200': 25, 'CB101': 5, 'CB201': 5, 'PB100': 25, 'PB200': 25, 'DB100': 25, 'DB200': 25, 'ALAP25': 25,
+   216→    'B100': 25, 'B1001': 1, 'B1003': 5, 'B1004': 25,
+   217→    'E101': 25, 'E1011': 1, 'E1013': 5, 'E1014': 0.2,
+   218→    'I105': 25, 'I1051': 1, 'I1053': 5, 'I1054': 25,
+   219→    'I106': 25, 'I1061': 1, 'I107': 25, 'I1071': 1,
+   220→    'P105': 25, 'P1051': 1, 'P1053': 5,
+   221→    'F114': 50, 'F1145': 50, 'F1146': 25, 'F1147': 1,
+   222→    'P102N2': 25, 'P104N2': 25, 'P109': 25,
+   223→    'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25,
+   224→    'V300': 1, 'CA003.1': 1, 'CA004.1': 1, 'CA006.1': 1, 'CA001.1': 1,
+   225→    'CA002.1': 1, 'CA005.1': 1, 'CA007.1': 1, 'CA008.1': 1,
+   226→    'MAT011-80010002': 1, 'MAT014-80010003': 1, 'MAT015': 1, 'MAT017': 1,
+   227→    'MAT003': 1, 'MAT004': 1, 'MAT005': 1, 'MAT006': 1, 'MAT007': 1, 'MAT008': 1, 'MAT009': 1,
+   228→    'MAT020': 1, 'MAT023': 1, 'MAT029': 1, 'MAT030': 1, 'MAT033': 1, 'MAT039': 1, 'MAT040': 1, 'MAT042': 1,
+   229→    'MAT049': 1, 'MAT050': 1, 'MAT053': 1, 'MAT054': 1, 'MAT055': 1, 'MAT073': 1,
+   230→    'ME100': 1, 'ME1001': 1, 'ME101': 1, 'ME102': 1, 'ME103': 1, 'ME104': 1, 'ME1041': 1, 'ME105': 1, 'ME106': 1, 'ME107': 1,
+   231→    'APCL2': 15,
+   232→    'APCL25': 25,
+   233→    'APCL3': 15,
+   234→    'APCL30': 1,
+   235→    'APCL35': 5,
+   236→    'APCL4.5': 15,
+   237→    'APCL4.55': 5,
+   238→    'APCL450': 1,
+   239→    'APCL6': 15,
+   240→    'APCL65': 5,
+   241→    'APCL8': 15,
+   242→    'APCL80': 1,
+   243→    'APCL85': 5,
+   244→    'APTOR3': 15,
+   245→    'APTOR31': 1,
+   246→    'APTOR35': 5,
+   247→    'APTOR4.5': 15,
+   248→    'APTOR4.55': 5,
+   249→    'APTSA2': 15,
+   250→    'APTSA21': 1,
+   251→    'APTSA25': 5,
+   252→    'F1142': 1,
+   253→    'F1143': 25,
+   254→    'I1063': 5,
+   255→    'I10711': 1,
+   256→    'MAT001': 1,
+   257→    'MAT026': 1,
+   258→    'MAT047': 1,
+   259→    'MAT048': 1,
+   260→    'MAT060': 1,
+   261→    'MAT096': 1,
+   262→    'P102': 25,
+   263→    'P104': 25,
+   264→    'P1040': 25,
+   265→}
+   266→
+   267→def get_units_from_tonnes(ref, tonnes):
+   268→    """Convert tonnes to number of units based on product weight per unit."""
+   269→    weight = WEIGHT_MAP.get(ref, 50)
+   270→    return tonnes * 1000 / weight
+   271→
+   272→print(f"  Prix soja T102: {prix_2027.get('T102', 'N/A')} FCFA/sac")
+   273→print(f"  Prix C104: {prix_2027.get('C104', 'N/A')} FCFA/sac")
+   274→print(f"  Prix V300 (BELGOKILL 1L): {prix_2027.get('V300', 'N/A')} FCFA/L")
+   275→print(f"  Prix CA003.1 (BELGO HARMONY): {prix_2027.get('CA003.1', 'N/A')} FCFA/L")
+   276→
+   277→# === Agrégation mensuelle par famille × région ===
+   278→print("\n=== AGRÉGATION MENSUELLE ===")
+   279→df_all['year_month_dt'] = df_all['year_month'].dt.to_timestamp()
+   280→
+   281→monthly_fr_vol = df_all.groupby(['family', 'region', 'year_month'])['tonnes'].sum().reset_index()
+   282→monthly_fr_vol['date'] = monthly_fr_vol['year_month'].dt.to_timestamp()
+   283→
+   284→monthly_fr_ca = df_all.groupby(['family', 'region', 'year_month'])['montant_ttc'].sum().reset_index()
+   285→monthly_fr_ca['date'] = monthly_fr_ca['year_month'].dt.to_timestamp()
+   286→# For older records (LY_24) montant_ttc is 0 — use montant_ht as fallback
+   287→df_all_fallback = df_all.copy()
+   288→df_all_fallback['ca_combined'] = df_all_fallback['montant_ttc'].where(
+   289→    df_all_fallback['montant_ttc'] > 0, df_all_fallback['montant_ht']
+   290→)
+   291→monthly_fr_ca_fallback = df_all_fallback.groupby(['family', 'region', 'year_month'])['ca_combined'].sum().reset_index()
+   292→monthly_fr_ca_fallback['date'] = monthly_fr_ca_fallback['year_month'].dt.to_timestamp()
+   293→monthly_fr_ca_fallback['ca_m_fcfa'] = monthly_fr_ca_fallback['ca_combined'] / 1e6
+   294→# Use the fallback version (more complete)
+   295→monthly_fr_ca = monthly_fr_ca_fallback
+   296→
+   297→# Parts historiques produit × agence
+   298→monthly_pa = df_all.groupby(['ref', 'agence', 'family', 'region']).agg(
+   299→    tonnes=('tonnes', 'sum'),
+   300→    ca_ttc=('montant_ttc', 'sum'),
+   301→    ca_ht=('montant_ht', 'sum'),
+   302→).reset_index()
+   303→# Combined CA: TTC or HT fallback
+   304→monthly_pa['ca_combined'] = monthly_pa['ca_ttc'].where(monthly_pa['ca_ttc'] > 0, monthly_pa['ca_ht'])
+   305→total_fr_ca = monthly_pa.groupby(['family', 'region'])['ca_combined'].transform('sum')
+   306→monthly_pa['share_ca'] = monthly_pa['ca_combined'] / total_fr_ca
+   307→total_fr_t = monthly_pa.groupby(['family', 'region'])['tonnes'].transform('sum')
+   308→monthly_pa['share_tonnes'] = monthly_pa['tonnes'] / total_fr_t.replace(0, 1)
+   309→
+   310→combos_fr = df_all.groupby(['family', 'region']).size().reset_index()
+   311→combos_fr.columns = ['family', 'region', 'n_months']
+   312→print(f"  {len(combos_fr)} combinaisons famille × région")
+   313→
+   314→# === Fonction Prophet ===
+   315→def fit_prophet_fast(history_df, periods=12, freq='MS'):
+   316→    """Fit Prophet and forecast 12 months starting from Jan 2027."""
+   317→    future_dates = pd.date_range(start='2027-01-01', periods=periods, freq=freq)
+   318→    if len(history_df) < 4:
+   319→        avg = history_df['y'].mean() if len(history_df) > 0 else 0
+   320→        return pd.DataFrame({'ds': future_dates, 'yhat': [avg] * periods,
+   321→                             'yhat_lower': [avg * 0.8] * periods, 'yhat_upper': [avg * 1.2] * periods})
+   322→    try:
+   323→        m = Prophet(yearly_seasonality=True, weekly_seasonality=False, daily_seasonality=False,
+   324→                    seasonality_mode='multiplicative', changepoint_prior_scale=0.05,
+   325→                    interval_width=0.8, mcmc_samples=0)
+   326→        m.fit(history_df[['ds', 'y']])
+   327→        future = pd.DataFrame({'ds': future_dates})
+   328→        forecast = m.predict(future)
+   329→        return forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
+   330→    except Exception as e:
+   331→        print(f"    Prophet error: {e}")
+   332→        avg = history_df['y'].mean()
+   333→        return pd.DataFrame({'ds': future_dates, 'yhat': [avg] * periods,
+   334→                             'yhat_lower': [avg * 0.8] * periods, 'yhat_upper': [avg * 1.2] * periods})
+   335→
+   336→def extrapolate_mean(history_df, periods=12, freq='MS', value_col='y', family=None):
+   337→    """Extrapolate using historical monthly average for 2027.
+   338→    For ALVEOLES: use 2026 monthly average (very low) instead of 2025 spike."""
+   339→    future_dates = pd.date_range(start='2027-01-01', periods=periods, freq=freq)
+   340→    
+   341→    # SPECIAL CASE: ALVEOLES — use 2026 monthly average (very low) instead of 2025 spike
+   342→    if family == 'ALVEOLES':
+   343→        # 2026 ALVEOLES: 11 records, 13.9 M HT over 8 months → ~1.7 M/month
+   344→        avg_2026 = history_df[history_df['ds'].dt.year == 2026][value_col].mean()
+   345→        if pd.isna(avg_2026) or avg_2026 == 0:
+   346→            avg_2026 = 1.5  # Fallback: ~1.5 M/month
+   347→        # Apply seasonal weights (Q4 slight uptick for year-end)
+   348→        weights = [0.8, 0.9, 1.0, 1.0, 1.1, 1.0, 0.9, 0.9, 0.9, 1.2, 1.1, 1.0]
+   349→        return pd.DataFrame({
+   350→            'ds': future_dates,
+   351→            'yhat': [avg_2026 * w for w in weights],
+   352→            'yhat_lower': [avg_2026 * w * 0.7 for w in weights],
+   353→            'yhat_upper': [avg_2026 * w * 1.3 for w in weights],
+   354→        })
+   355→    
+   356→    avg = history_df[value_col].mean() if len(history_df) > 0 else 0
+   357→    return pd.DataFrame({'ds': future_dates, 'yhat': [avg] * periods,
+   358→                         'yhat_lower': [avg * 0.7] * periods, 'yhat_upper': [avg * 1.3] * periods})
+   359→
+   360→# === Forecast 2027 (12 mois) ===
+   361→print("\n=== FORECAST 2027 (12 mois, S3) ===")
+   362→forecasts_fr = []
+   363→
+   364→# NOUVEAU: 5 familles avec Prophet (vs 4 avant), 2 familles avec extrapolation
+   365→PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE']  # MAIS excluded (opportuniste, forecast=0)
+   366→EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX', 'ALVEOLES']  # MAIS excluded entirely (forecast=0)
+   367→
+   368→# Exclude MAIS from forecast (opportuniste, forecast=0)
+   369→combos_fr = combos_fr[combos_fr['family'] != 'MAIS']
+   370→
+   371→for idx, row in combos_fr.iterrows():
+   372→    family = row['family']
+   373→    region = row['region']
+   374→    
+   375→    if family in EXTRAPOL_FAMILIES:
+   376→        history = monthly_fr_ca[(monthly_fr_ca['family'] == family) & (monthly_fr_ca['region'] == region)].copy()
+   377→        history = history[['date', 'ca_m_fcfa']].rename(columns={'date': 'ds', 'ca_m_fcfa': 'y'})
+   378→        history = history.sort_values('ds')
+   379→        history['y'] = history['y'].clip(lower=0)
+   380→        forecast = extrapolate_mean(history, periods=12, freq='MS', value_col='y', family=family)
+   381→        is_ca_only = True
+   382→    else:
+   383→        history = monthly_fr_vol[(monthly_fr_vol['family'] == family) & (monthly_fr_vol['region'] == region)].copy()
+   384→        history = history[['date', 'tonnes']].rename(columns={'date': 'ds', 'tonnes': 'y'})
+   385→        history = history.sort_values('ds')
+   386→        history['y'] = history['y'].clip(lower=0)
+   387→        forecast = fit_prophet_fast(history, periods=12, freq='MS')
+   388→        is_ca_only = False
+   389→    
+   390→    forecast['yhat'] = forecast['yhat'].clip(lower=0)
+   391→    forecast['family'] = family
+   392→    forecast['region'] = region
+   393→    forecast['is_ca_only'] = is_ca_only
+   394→    
+   395→    forecasts_fr.append(forecast)
+   396→    val_sum = forecast['yhat'].sum()
+   397→    unit = 'M FCFA' if is_ca_only else 't'
+   398→    print(f"  ✓ {family} × {region}: forecast {val_sum:.1f} {unit}")
+   399→
+   400→forecasts_fr_df = pd.concat(forecasts_fr, ignore_index=True)
+   401→
+   402→# === Désagrégation par produit × agence ===
+   403→print("\n=== DÉSAGRÉGATION PAR PRODUIT × AGENCE ===")
+   404→all_forecasts = []
+   405→
+   406→for _, fcst_row in forecasts_fr_df.iterrows():
+   407→    family = fcst_row['family']
+   408→    region = fcst_row['region']
+   409→    date = fcst_row['ds']
+   410→    month = date.month
+   411→    year = date.year
+   412→    is_ca_only = fcst_row['is_ca_only']
+   413→    
+   414→    if is_ca_only:
+   415→        ca_total_m_fcfa = fcst_row['yhat']
+   416→        tonnes_total = 0
+   417→    else:
+   418→        tonnes_total = fcst_row['yhat']
+   419→        # Calculate CA via prices
+   420→        pa_subset = monthly_pa[(monthly_pa['family'] == family) & (monthly_pa['region'] == region)]
+   421→        ca_total_m_fcfa = 0
+   422→        for _, pa_row in pa_subset.iterrows():
+   423→            ref = pa_row['ref']
+   424→            share_t = pa_row['share_tonnes']
+   425→            tonnes_combo = tonnes_total * share_t
+   426→            # For COMPLEMENT_ALIMENTAIRE, prix is per L (not per sac 50kg)
+   427→            if family == 'COMPLEMENT_ALIMENTAIRE':
+   428→                litres = tonnes_combo * 1000  # 1L = 1kg
+   429→                prix = prix_2027.get(ref, 0)
+   430→                ca_total_m_fcfa += litres * prix / 1e6
+   431→            else:
+   432→                units = get_units_from_tonnes(ref, tonnes_combo)
+   433→                prix = prix_2027.get(ref, 0)
+   434→                ca_total_m_fcfa += units * prix / 1e6
+   435→    
+   436→    pa_subset = monthly_pa[(monthly_pa['family'] == family) & (monthly_pa['region'] == region)]
+   437→    
+   438→    for _, pa_row in pa_subset.iterrows():
+   439→        ref = pa_row['ref']
+   440→        agence = pa_row['agence']
+   441→        share_ca = pa_row['share_ca']
+   442→        
+   443→        ca_m_fcfa_combo = ca_total_m_fcfa * share_ca
+   444→        
+   445→        if is_ca_only:
+   446→            tonnes_combo = 0
+   447→            sacs_50 = 0
+   448→            prix = 0
+   449→        else:
+   450→            tonnes_combo = tonnes_total * pa_row['share_tonnes']
+   451→            if family == 'COMPLEMENT_ALIMENTAIRE':
+   452→                sacs_50 = 0  # Pas de sacs, liquide
+   453→                prix = prix_2027.get(ref, 0)  # Prix par L
+   454→            else:
+   455→                sacs_50 = tonnes_combo * 1000 / 50
+   456→                prix = prix_2027.get(ref, 0)
+   457→        
+   458→        all_forecasts.append({
+   459→            'scenario': 'S3_reappro_100',
+   460→            'ref': ref,
+   461→            'family': family,
+   462→            'agence': agence,
+   463→            'region': region,
+   464→            'date': date,
+   465→            'month': month,
+   466→            'year': year,
+   467→            'tonnes': round(tonnes_combo, 2),
+   468→            'sacs_50': round(units, 1),
+   469→            'prix_ttc_sac': prix,
+   470→            'ca_m_fcfa': round(ca_m_fcfa_combo, 2),
+   471→        })
+   472→
+   473→fcst_df = pd.DataFrame(all_forecasts)
+   474→# Filter 2027 only
+   475→fcst_df = fcst_df[fcst_df['year'] == 2027]
+   476→print(f"\n{len(fcst_df)} forecasts détaillés générés (2027, 12 mois)")
+   477→
+   478→# === BUNDLE 2.5:1 (soja:concentré) constraint ===
+   479→print("\n=== APPLICATION BUNDLE 2.5:1 (soja:concentré) ===")
+   480→BUNDLE_RATIO = 2.5
+   481→adjustments_made = 0
+   482→for (region, month), group in fcst_df.groupby(['region', 'month']):
+   483→    soja_t = group[group['family'] == 'TOURTEAUX']['tonnes'].sum()
+   484→    conc_t = group[group['family'] == 'CONCENTRES']['tonnes'].sum()
+   485→    if soja_t > 0 and conc_t > 0:
+   486→        ratio = soja_t / conc_t
+   487→        if ratio > BUNDLE_RATIO:
+   488→            # Increase CONCENTRÉS to reach 2.5:1
+   489→            target_conc = soja_t / BUNDLE_RATIO
+   490→            adjustment_factor = target_conc / conc_t
+   491→            mask = (fcst_df['region'] == region) & (fcst_df['month'] == month) & (fcst_df['family'] == 'CONCENTRES')
+   492→            fcst_df.loc[mask, 'tonnes'] = fcst_df.loc[mask, 'tonnes'] * adjustment_factor
+   493→            fcst_df.loc[mask, 'sacs_50'] = fcst_df.loc[mask, 'sacs_50'] * adjustment_factor
+   494→            # Recalculate CA for CONCENTRES (CORRIGE: units, not sacs_50)
+   495→            for idx in fcst_df[mask].index:
+   496→                ref = fcst_df.at[idx, 'ref']
+   497→                new_tonnes = fcst_df.at[idx, 'tonnes']
+   498→                units = get_units_from_tonnes(ref, new_tonnes)
+   499→                prix = prix_2027.get(ref, 0)
+   500→                fcst_df.at[idx, 'ca_m_fcfa'] = round(units * prix / 1e6, 2)
+   501→                fcst_df.at[idx, 'sacs_50'] = round(units, 1)
+   502→            adjustments_made += 1
+   503→            if adjustments_made <= 10:  # Show only first 10
+   504→                print(f"  {region} × {month}/2027: ratio {ratio:.2f} → {BUNDLE_RATIO}:1 (CONCENTRES ×{adjustment_factor:.2f})")
+   505→
+   506→print(f"  Total adjustments: {adjustments_made}")
+   507→
+   508→# === FORFAIT SPC (ALVEOLES + MATERIEL_ELEVAGE) ===
+   509→print("\n=== APPLICATION FORFAIT SPC (ALVEOLES + MAT_ELEVAGE) ===")
+   510→import sys
+   511→sys.path.insert(0, "/home/z/my-project/scripts")
+   512→from spc_forfait import generate_spc_forfait_2027
+   513→
+   514→spc_forfait_records = generate_spc_forfait_2027()
+   515→spc_df = pd.DataFrame(spc_forfait_records)
+   516→print(f"  Forfait SPC: {len(spc_df)} records, CA total = {spc_df['ca_m_fcfa'].sum():.1f} M FCFA")
+   517→print(f"    - ALVEOLES: {spc_df[spc_df['family']=='ALVEOLES']['ca_m_fcfa'].sum():.1f} M (basé sur 2025)")
+   518→print(f"    - MAT_ELEVAGE: {spc_df[spc_df['family']=='MATERIEL_ELEVAGE']['ca_m_fcfa'].sum():.1f} M (basé sur 2025)")
+   519→print(f"    - SPC PK15 forfait réaliste: 0.5 M ALV + 0.5 M MAT (annuel)")
+   520→
+   521→# Add forfait to forecast
+   522→fcst_df = pd.concat([fcst_df, spc_df], ignore_index=True)
+   523→print(f"  Total forecast après forfait: {len(fcst_df)} records, CA = {fcst_df['ca_m_fcfa'].sum():.1f} M FCFA")
+   524→
+   525→# Save
+   526→output_path = "/home/z/my-project/scripts/forecast_2027_S3.csv"
+   527→fcst_df.to_csv(output_path, index=False)
+   528→print(f"Saved: {output_path}")
+   529→
+   530→# === Synthèse ===
+   531→print("\n=== SYNTHÈSE FORECAST 2027 (S3) ===")
+   532→print("\n--- PAR FAMILLE ---")
+   533→synth_fam = fcst_df.groupby('family').agg(
+   534→    tonnes=('tonnes', 'sum'),
+   535→    ca_m_fcfa=('ca_m_fcfa', 'sum'),
+   536→).round({'tonnes': 0, 'ca_m_fcfa': 1})
+   537→total_ca = fcst_df['ca_m_fcfa'].sum()
+   538→synth_fam['part_ca_pct'] = (synth_fam['ca_m_fcfa'] / total_ca * 100).round(1)
+   539→print(synth_fam)
+   540→
+   541→print("\n--- PAR TRIMESTRE ---")
+   542→fcst_df['quarter'] = ((fcst_df['month'] - 1) // 3) + 1
+   543→synth_q = fcst_df.groupby('quarter').agg(
+   544→    tonnes=('tonnes', 'sum'),
+   545→    ca_m_fcfa=('ca_m_fcfa', 'sum'),
+   546→).round({'tonnes': 0, 'ca_m_fcfa': 1})
+   547→synth_q.index = ['Q1 (Jan-Mar)', 'Q2 (Avr-Juin)', 'Q3 (Juil-Sept)', 'Q4 (Oct-Déc)']
+   548→print(synth_q)
+   549→
+   550→print("\n--- PAR MOIS ---")
+   551→synth_month = fcst_df.groupby('month').agg(
+   552→    tonnes=('tonnes', 'sum'),
+   553→    ca_m_fcfa=('ca_m_fcfa', 'sum'),
+   554→).round({'tonnes': 0, 'ca_m_fcfa': 1})
+   555→month_names = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc']
+   556→synth_month.index = month_names
+   557→print(synth_month)
+   558→
+   559→print("\n--- PAR RÉGION ---")
+   560→synth_reg = fcst_df.groupby('region').agg(
+   561→    tonnes=('tonnes', 'sum'),
+   562→    ca_m_fcfa=('ca_m_fcfa', 'sum'),
+   563→).round({'tonnes': 0, 'ca_m_fcfa': 1})
+   564→print(synth_reg)
+   565→
+   566→print("\n--- TOTAL 2027 ---")
+   567→print(f"Volume: {fcst_df['tonnes'].sum():.0f} t")
+   568→print(f"CA: {fcst_df['ca_m_fcfa'].sum():.1f} M FCFA")
+   569→print(f"Nb produits: {fcst_df['ref'].nunique()}")
+   570→print(f"Nb agences: {fcst_df['agence'].nunique()}")
+   571→print(f"Nb familles: {fcst_df['family'].nunique()}")
+   572→print(f"Nb lignes: {len(fcst_df)}")
+   573→
+   574→# Save synthesis as JSON for PDF generation
+   575→synth_json = {
+   576→    'total_tonnes': float(fcst_df['tonnes'].sum()),
+   577→    'total_ca_m_fcfa': float(fcst_df['ca_m_fcfa'].sum()),
+   578→    'n_products': int(fcst_df['ref'].nunique()),
+   579→    'n_agences': int(fcst_df['agence'].nunique()),
+   580→    'n_families': int(fcst_df['family'].nunique()),
+   581→    'n_lines': int(len(fcst_df)),
+   582→    'by_family': synth_fam.reset_index().to_dict(orient='records'),
+   583→    'by_quarter': synth_q.reset_index().rename(columns={'index': 'quarter'}).to_dict(orient='records'),
+   584→    'by_region': synth_reg.reset_index().to_dict(orient='records'),
+   585→    'by_month': synth_month.reset_index().rename(columns={'index': 'month'}).to_dict(orient='records'),
+   586→}
+   587→with open('/home/z/my-project/scripts/forecast_2027_synth.json', 'w') as f:
+   588→    json.dump(synth_json, f, indent=2, default=str)
+   589→print(f"\nSynthèse sauvée: /home/z/my-project/scripts/forecast_2027_synth.json")
+   590→
