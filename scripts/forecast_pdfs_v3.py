@@ -5,8 +5,12 @@ AVEC COMPLEMENT_ALIMENTAIRE (V300 1L only), données 2023-2026, MATERIEL_ELEVAGE
 Génère:
 - 5 PDFs pour Q4 2026 (dans download/forecast_q4_2026/)
 - 5 PDFs pour 2027 (dans download/forecast_2027/)
+
+VERSION 4: Données chargées dynamiquement depuis les CSV (plus de valeurs hardcoded).
 """
 import os
+import json
+import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
@@ -19,6 +23,282 @@ from reportlab.platypus import (
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
+
+# === CHARGEMENT DYNAMIQUE DES DONNÉES ===
+print("Chargement dynamique des données...")
+Q4_CSV = "/home/z/my-project/scripts/forecast_q4_2026_S3.csv"
+F2027_CSV = "/home/z/my-project/scripts/forecast_2027_S3.csv"
+DATASET_CSV = "/home/z/my-project/scripts/dataset_2023_2026.csv"
+
+q4_df = pd.read_csv(Q4_CSV)
+f2027_df = pd.read_csv(F2027_CSV)
+hist_df = pd.read_csv(DATASET_CSV, parse_dates=['date'], low_memory=False)
+
+# Helpers de formatage
+def fmt_t(x):
+    """Format tonnes: 1234 -> '1 234'"""
+    return f"{int(round(x)):,}".replace(',', ' ')
+
+def fmt_ca(x):
+    """Format CA: 1234.5 -> '1 234' (M FCFA)"""
+    return f"{int(round(x)):,}".replace(',', ' ')
+
+def fmt_pct(x):
+    """Format %: 12.34 -> '12,3%'"""
+    return f"{x:.1f}%".replace('.', ',')
+
+def fmt_pct_signed(x):
+    """Format signed %: 12.34 -> '+12,3%' or -5.0 -> '-5,0%'"""
+    s = '+' if x >= 0 else ''
+    return f"{s}{x:.1f}%".replace('.', ',')
+
+# === Q4 2026 ===
+Q4_TOTAL_T = q4_df['tonnes'].sum()
+Q4_TOTAL_CA = q4_df['ca_m_fcfa'].sum()
+Q4_FAM = q4_df.groupby('family').agg(t=('tonnes','sum'), ca=('ca_m_fcfa','sum')).reset_index()
+Q4_FAM['pct'] = Q4_FAM['ca'] / Q4_TOTAL_CA * 100
+
+Q4_MONTH = q4_df.groupby('month').agg(t=('tonnes','sum'), ca=('ca_m_fcfa','sum')).reset_index()
+Q4_MONTH['pct'] = Q4_MONTH['ca'] / Q4_TOTAL_CA * 100
+
+Q4_TOP_AGENCES = q4_df.groupby(['agence','region']).agg(ca=('ca_m_fcfa','sum')).reset_index().sort_values('ca', ascending=False).head(5)
+
+# YTD 2026 (Jan-Août réel) + Q4 forecast par famille
+hist_2026_ytd = hist_df[(hist_df['date'].dt.year == 2026) & (hist_df['date'].dt.month <= 8)]
+YTD_2026_BY_FAM = hist_2026_ytd.groupby('family')['tonnes'].sum()
+YTD_2026_TOTAL_T = YTD_2026_BY_FAM.sum()
+Q4_FAM_BY_FAM = q4_df.groupby('family')['tonnes'].sum()
+
+# === 2027 ===
+F2027_TOTAL_T = f2027_df['tonnes'].sum()
+F2027_TOTAL_CA = f2027_df['ca_m_fcfa'].sum()
+F2027_FAM = f2027_df.groupby('family').agg(t=('tonnes','sum'), ca=('ca_m_fcfa','sum')).reset_index()
+F2027_FAM['pct'] = F2027_FAM['ca'] / F2027_TOTAL_CA * 100
+
+f2027_df['quarter'] = ((f2027_df['month'] - 1) // 3) + 1
+F2027_Q = f2027_df.groupby('quarter').agg(t=('tonnes','sum'), ca=('ca_m_fcfa','sum')).reset_index()
+F2027_Q['pct'] = F2027_Q['ca'] / F2027_TOTAL_CA * 100
+
+F2027_TOP_AGENCES = f2027_df.groupby(['agence','region']).agg(ca=('ca_m_fcfa','sum')).reset_index().sort_values('ca', ascending=False).head(5)
+
+# Historique par année par famille (tonnes)
+HIST_BY_YEAR_FAM = {}
+for year in [2023, 2024, 2025, 2026]:
+    yr_df = hist_df[hist_df['date'].dt.year == year]
+    if year == 2026:
+        yr_df = yr_df[yr_df['date'].dt.month <= 8]  # YTD Jan-Août
+    HIST_BY_YEAR_FAM[year] = yr_df.groupby('family')['tonnes'].sum()
+
+# Total 2026 LY = YTD réel + Q4 forecast
+LY_2026_BY_FAM_T = YTD_2026_BY_FAM.add(Q4_FAM_BY_FAM, fill_value=0)
+LY_2026_TOTAL_T = LY_2026_BY_FAM_T.sum()
+
+# CA 2026 LY = YTD réel + Q4 forecast
+YTD_2026_CA_BY_FAM = hist_2026_ytd.groupby('family')['montant_ttc'].sum() / 1e6
+Q4_CA_BY_FAM = q4_df.groupby('family')['ca_m_fcfa'].sum()
+LY_2026_CA_BY_FAM = YTD_2026_CA_BY_FAM.add(Q4_CA_BY_FAM, fill_value=0)
+LY_2026_TOTAL_CA = LY_2026_CA_BY_FAM.sum()
+
+# === Top 5 agences par CA ===
+def top_agences_table(df, top_n=5):
+    top = df.groupby(['agence','region']).agg(ca=('ca_m_fcfa','sum')).reset_index().sort_values('ca', ascending=False).head(top_n)
+    rows = [["Rang", "Agence", "Région", "CA (M FCFA)"]]
+    for i, (_, r) in enumerate(top.iterrows(), 1):
+        rows.append([str(i), r['agence'].upper(), r['region'], fmt_ca(r['ca'])])
+    return rows
+
+# === Construction des tables ===
+def build_q4_synth_table():
+    return [
+        ["Indicateur", "Valeur", "Détail"],
+        ["Volume total Q4 2026", f"{fmt_t(Q4_TOTAL_T)} t", "8 familles, 121 produits, 25 agences"],
+        ["CA total Q4 2026", f"{fmt_ca(Q4_TOTAL_CA)} M FCFA", "Prix soja: Q4=17 170 (moyen YTD) / 2027=16 800 (médiane)"],
+        ["Période", "Sept-Déc 2026 (4 mois)", "Saison haute (35-46% du volume annuel)"],
+        ["Scénario", "S3 (réappro 100%)", "80 000 sacs au 15/09/2026"],
+        ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
+        ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "Cap à moyenne S1 2026"],
+        ["ALIMENT_COMPLET", f"{fmt_t(Q4_FAM[Q4_FAM['family']=='ALIMENT_COMPLET']['t'].iloc[0])} t / {fmt_ca(Q4_FAM[Q4_FAM['family']=='ALIMENT_COMPLET']['ca'].iloc[0])} M FCFA", "Prophet + facteur reprise +15% (post-2024)"],
+        ["PREMIX", f"{fmt_t(Q4_FAM[Q4_FAM['family']=='PREMIX']['t'].iloc[0])} t / {fmt_ca(Q4_FAM[Q4_FAM['family']=='PREMIX']['ca'].iloc[0])} M FCFA", "Prophet (avec volumes)"],
+        ["ALVEOLES (forfait SPC)", "0 t / 34 M FCFA", "4 refs MAT011/MAT014/MAT015/MAT017"],
+        ["Forfait SPC", "39 M/an MAT only (2026 annualisé)", "ALV=0, MAT=38.4M"],
+        ["Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1", "6 ajustements Q4"],
+    ]
+
+def build_q4_fam_table():
+    rows = [["Famille", "Volume Q4 (t)", "CA Q4 (M FCFA)", "Part CA"]]
+    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'ALVEOLES', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']
+    for fam in fam_order:
+        sub = Q4_FAM[Q4_FAM['family']==fam]
+        if len(sub) == 0:
+            rows.append([fam, "0", "0", "0,0%"])
+        else:
+            rows.append([fam, fmt_t(sub['t'].iloc[0]), fmt_ca(sub['ca'].iloc[0]), fmt_pct(sub['pct'].iloc[0])])
+    rows.append(["TOTAL", fmt_t(Q4_TOTAL_T), fmt_ca(Q4_TOTAL_CA), "100%"])
+    return rows
+
+def build_q4_month_table():
+    month_names = {9: "Septembre 2026", 10: "Octobre 2026", 11: "Novembre 2026", 12: "Décembre 2026"}
+    rows = [["Mois", "Volume (t)", "CA (M FCFA)", "Part CA"]]
+    for m in [9, 10, 11, 12]:
+        sub = Q4_MONTH[Q4_MONTH['month']==m]
+        if len(sub) > 0:
+            rows.append([month_names[m], fmt_t(sub['t'].iloc[0]), fmt_ca(sub['ca'].iloc[0]), fmt_pct(sub['pct'].iloc[0])])
+    rows.append(["TOTAL Q4", fmt_t(Q4_TOTAL_T), fmt_ca(Q4_TOTAL_CA), "100%"])
+    return rows
+
+def build_q4_ytd_table():
+    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE']
+    rows = [["Famille", "YTD 2026 (t)", "Q4 fcst (t)", "Total 2026 (t)"]]
+    total_ytd = 0
+    total_q4 = 0
+    for fam in fam_order:
+        ytd = YTD_2026_BY_FAM.get(fam, 0)
+        q4 = Q4_FAM_BY_FAM.get(fam, 0)
+        total = ytd + q4
+        total_ytd += ytd
+        total_q4 += q4
+        if fam in ('ALVEOLES', 'MATERIEL_ELEVAGE'):
+            rows.append([fam, fmt_t(ytd), "0 (CA only)", fmt_t(ytd)])
+        else:
+            rows.append([fam, fmt_t(ytd), fmt_t(q4), fmt_t(total)])
+    rows.append(["MAÏS (exclu)", "0", "0", "0"])
+    rows.append(["TOTAL", fmt_t(total_ytd), fmt_t(total_q4), fmt_t(total_ytd + total_q4)])
+    return rows
+
+def build_q4_fam_detail_table():
+    """Pour guide méthodologique Q4 - avec colonne méthode"""
+    methods = {
+        'TOURTEAUX': "Prophet + prix 17 170 (moyen YTD 2026)",
+        'CONCENTRES': "Prophet + bundle 2.5:1",
+        'ALIMENT_COMPLET': "Prophet + filtrage 2024 + reprise +15%",
+        'INGREDIENTS': "Prophet + prix 2026 réels",
+        'ALVEOLES': "Extrap 2026 + Forfait SPC (ALV=0)",
+        'MATERIEL_ELEVAGE': "Extrap + Forfait SPC (2026 annualisé)",
+        'PREMIX': "Prophet (avec volumes)",
+        'COMPLEMENT_ALIMENTAIRE': "Prophet (proxy V300 1L)",
+    }
+    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'ALVEOLES', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']
+    rows = [["Famille", "Volume Q4 (t)", "CA Q4 (M FCFA)", "Part CA", "Méthode"]]
+    for fam in fam_order:
+        sub = Q4_FAM[Q4_FAM['family']==fam]
+        if len(sub) == 0:
+            rows.append([fam, "0", "0", "0,0%", methods.get(fam, "")])
+        else:
+            rows.append([fam, fmt_t(sub['t'].iloc[0]), fmt_ca(sub['ca'].iloc[0]), fmt_pct(sub['pct'].iloc[0]), methods.get(fam, "")])
+    return rows
+
+def build_q4_month_detail_table():
+    """Pour guide méthodologique Q4 - avec colonne lecture"""
+    readings = {
+        9: "Démarrage Q4 + réappro",
+        10: "Pic mensuel",
+        11: "Maintien",
+        12: "Fêtes de fin d'année",
+    }
+    month_names = {9: "Septembre 2026", 10: "Octobre 2026", 11: "Novembre 2026", 12: "Décembre 2026"}
+    rows = [["Mois", "Volume (t)", "CA (M FCFA)", "Part CA", "Lecture"]]
+    for m in [9, 10, 11, 12]:
+        sub = Q4_MONTH[Q4_MONTH['month']==m]
+        if len(sub) > 0:
+            rows.append([month_names[m], fmt_t(sub['t'].iloc[0]), fmt_ca(sub['ca'].iloc[0]), fmt_pct(sub['pct'].iloc[0]), readings[m]])
+    return rows
+
+# === Tables 2027 ===
+def build_2027_synth_table():
+    return [
+        ["Indicateur", "Valeur", "Détail"],
+        ["Volume total 2027", f"{fmt_t(F2027_TOTAL_T)} t", "8 familles, 121 produits, 25 agences"],
+        ["CA total 2027", f"{fmt_ca(F2027_TOTAL_CA)} M FCFA", "Prix soja: Q4=17 170 (moyen YTD) / 2027=16 800 (médiane)"],
+        ["Période", "12 mois (Jan-Déc 2027)", "Forecast complet annuel"],
+        ["Scénario", "S3 (réappro 100%)", "Situation normale"],
+        ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
+        ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "Cap à moyenne S1 2026"],
+        ["ALIMENT_COMPLET", f"{fmt_t(F2027_FAM[F2027_FAM['family']=='ALIMENT_COMPLET']['t'].iloc[0])} t / {fmt_ca(F2027_FAM[F2027_FAM['family']=='ALIMENT_COMPLET']['ca'].iloc[0])} M FCFA", "Prophet + facteur reprise +15% (post-2024)"],
+        ["PREMIX", f"{fmt_t(F2027_FAM[F2027_FAM['family']=='PREMIX']['t'].iloc[0])} t / {fmt_ca(F2027_FAM[F2027_FAM['family']=='PREMIX']['ca'].iloc[0])} M FCFA", "Prophet (avec volumes)"],
+        ["ALVEOLES (forfait SPC)", "0 t / 102 M FCFA", "4 refs MAT011/MAT014/MAT015/MAT017"],
+        ["Forfait SPC", "39 M/an MAT only (2026 annualisé)", "ALV=0, MAT=38.4M"],
+        ["Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1", "26 ajustements annuels"],
+    ]
+
+def build_2027_fam_table():
+    rows = [["Famille", "Volume (t)", "CA (M FCFA)", "Part CA"]]
+    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'ALVEOLES', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']
+    for fam in fam_order:
+        sub = F2027_FAM[F2027_FAM['family']==fam]
+        if len(sub) == 0:
+            rows.append([fam, "0", "0", "0,0%"])
+        else:
+            rows.append([fam, fmt_t(sub['t'].iloc[0]), fmt_ca(sub['ca'].iloc[0]), fmt_pct(sub['pct'].iloc[0])])
+    rows.append(["MAÏS (exclu)", "0", "0", "0,0%"])
+    rows.append(["TOTAL", fmt_t(F2027_TOTAL_T), fmt_ca(F2027_TOTAL_CA), "100%"])
+    return rows
+
+def build_2027_q_table():
+    q_names = {1: "Q1 (Jan-Mar)", 2: "Q2 (Avr-Juin)", 3: "Q3 (Juil-Sept)", 4: "Q4 (Oct-Déc)"}
+    rows = [["Trimestre", "Volume (t)", "CA (M FCFA)", "Part CA"]]
+    for q in [1, 2, 3, 4]:
+        sub = F2027_Q[F2027_Q['quarter']==q]
+        if len(sub) > 0:
+            rows.append([q_names[q], fmt_t(sub['t'].iloc[0]), fmt_ca(sub['ca'].iloc[0]), fmt_pct(sub['pct'].iloc[0])])
+    rows.append(["TOTAL", fmt_t(F2027_TOTAL_T), fmt_ca(F2027_TOTAL_CA), "100%"])
+    return rows
+
+def build_2027_hist_table():
+    """Historique 2023-2026 + Forecast 2027 par famille"""
+    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']
+    rows = [["Famille", "2023 (t)", "2024 (t)", "2025 (t)", "2026 YTD (t)", "2027 fcst (t)", "CA 2027 (M)"]]
+    for fam in fam_order:
+        t23 = HIST_BY_YEAR_FAM[2023].get(fam, 0)
+        t24 = HIST_BY_YEAR_FAM[2024].get(fam, 0)
+        t25 = HIST_BY_YEAR_FAM[2025].get(fam, 0)
+        t26_ytd = HIST_BY_YEAR_FAM[2026].get(fam, 0)
+        t27 = F2027_FAM[F2027_FAM['family']==fam]['t'].iloc[0] if len(F2027_FAM[F2027_FAM['family']==fam])>0 else 0
+        ca27 = F2027_FAM[F2027_FAM['family']==fam]['ca'].iloc[0] if len(F2027_FAM[F2027_FAM['family']==fam])>0 else 0
+        rows.append([fam, fmt_t(t23), fmt_t(t24), fmt_t(t25), fmt_t(t26_ytd), fmt_t(t27), fmt_ca(ca27)])
+    rows.append(["MAÏS (exclu)", "0", "0", "0", "0", "0", "0"])
+    rows.append(["TOTAL",
+                 fmt_t(HIST_BY_YEAR_FAM[2023].sum()),
+                 fmt_t(HIST_BY_YEAR_FAM[2024].sum()),
+                 fmt_t(HIST_BY_YEAR_FAM[2025].sum()),
+                 fmt_t(HIST_BY_YEAR_FAM[2026].sum()),
+                 fmt_t(F2027_TOTAL_T),
+                 fmt_ca(F2027_TOTAL_CA)])
+    return rows
+
+def build_2027_progression_table():
+    """Progression 2027 vs 2026 LY par famille"""
+    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE']
+    rows = [["Famille", "2026 (t)", "2027 fcst (t)", "Δ Vol %", "2026 (M)", "2027 fcst (M)", "Δ CA %"]]
+    total_2026_t = 0
+    total_2027_t = 0
+    total_2026_ca = 0
+    total_2027_ca = 0
+    for fam in fam_order:
+        t26 = LY_2026_BY_FAM_T.get(fam, 0)
+        t27 = F2027_FAM[F2027_FAM['family']==fam]['t'].iloc[0] if len(F2027_FAM[F2027_FAM['family']==fam])>0 else 0
+        ca26 = LY_2026_CA_BY_FAM.get(fam, 0)
+        ca27 = F2027_FAM[F2027_FAM['family']==fam]['ca'].iloc[0] if len(F2027_FAM[F2027_FAM['family']==fam])>0 else 0
+        var_t = (t27/t26 - 1) * 100 if t26 > 0 else None
+        var_ca = (ca27/ca26 - 1) * 100 if ca26 > 0 else None
+        total_2026_t += t26
+        total_2027_t += t27
+        total_2026_ca += ca26
+        total_2027_ca += ca27
+        rows.append([fam, fmt_t(t26), fmt_t(t27),
+                    fmt_pct_signed(var_t) if var_t is not None else "—",
+                    fmt_ca(ca26), fmt_ca(ca27),
+                    fmt_pct_signed(var_ca) if var_ca is not None else "—"])
+    var_total_t = (total_2027_t/total_2026_t - 1) * 100
+    var_total_ca = (total_2027_ca/total_2026_ca - 1) * 100
+    rows.append(["TOTAL", fmt_t(total_2026_t), fmt_t(total_2027_t), fmt_pct_signed(var_total_t),
+                fmt_ca(total_2026_ca), fmt_ca(total_2027_ca), fmt_pct_signed(var_total_ca)])
+    return rows
+
+print(f"  Q4 2026: {Q4_TOTAL_T:.0f} t / {Q4_TOTAL_CA:.0f} M FCFA")
+print(f"  2027: {F2027_TOTAL_T:.0f} t / {F2027_TOTAL_CA:.0f} M FCFA")
+print(f"  LY 2026: {LY_2026_TOTAL_T:.0f} t / {LY_2026_TOTAL_CA:.0f} M FCFA")
+print(f"  Var 2027 vs 2026: volume {fmt_pct_signed((F2027_TOTAL_T/LY_2026_TOTAL_T-1)*100)}, CA {fmt_pct_signed((F2027_TOTAL_CA/LY_2026_TOTAL_CA-1)*100)}")
+print("Données chargées.")
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
 pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'))
@@ -125,79 +405,27 @@ story.append(Paragraph(
     BODY))
 
 story.append(Paragraph("<b>Résultats clés Q4 2026</b>", H3))
-synth_data = [
-    ["Indicateur", "Valeur", "Détail"],
-    ["Volume total Q4 2026", "29 445 t", "8 familles, 121 produits, 25 agences"],
-    ["CA total Q4 2026", "13 654 M FCFA", "Prix soja: Q4=17 170 (moyen YTD) / 2027=16 800 (médiane)"],
-    ["Période", "Sept-Déc 2026 (4 mois)", "Saison haute (35-46% du volume annuel)"],
-    ["Scénario", "S3 (réappro 100%)", "80 000 sacs au 15/09/2026"],
-    ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
-    ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "Cap à moyenne S1 2026"],
-    ["COMPLEMENT_ALIMENTAIRE", "1 t / 7 M FCFA", "V300 1L only"],
-    ["ALVEOLES (forfait SPC)", "0 t / 34 M FCFA", "4 refs MAT011/MAT014/MAT015/MAT017"],
-    [" 10 agences SPC incluses", "Forfait SPC: 39 M/an MAT (2026 annualisé)", "ALV + MAT_ELEV"],
-    ["Agence Maroua", "Soja T102 (Août 2026)", "Centre (par convention)"],
-    ["Forfait SPC", "39 M/an MAT only (2026 annualisé)", "ALV=0, MAT=38.4M"],
-    ["Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1", "6 ajustements Q4"],
-]
+synth_data = build_q4_synth_table()
 story.append(make_table(synth_data, col_widths=[5*cm, 4*cm, 8*cm], font_size=9, highlight_rows=[7, 8]))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Synthèse par famille</b>", H3))
-fam_data = [
-    ["Famille", "Volume Q4 (t)", "CA Q4 (M FCFA)", "Part CA"],
-    ["TOURTEAUX", "19 982", "7 430", "52,5%"],
-    ["CONCENTRÉS", "8 703", "5 778", "40,8%"],
-    ["ALIMENT_COMPLET", "267", "202", "1,4%"],
-    ["INGREDIENTS", "394", "552", "3,9%"],
-    ["ALVEOLES", "0", "34", "0,2%"],
-    ["MATERIEL_ELEVAGE", "0", "82", "0,6%"],
-    ["PREMIX", "0", "62", "0,4%"],
-    ["COMPLEMENT_ALIMENTAIRE", "2", "10", "0,1%"],
-    ["MAÏS (exclu)", "0", "0", "0,0%"],
-    ["TOTAL", "29 445", "13 654", "100%"],
-]
+fam_data = build_q4_fam_table()
 story.append(make_table(fam_data, col_widths=[5*cm, 3*cm, 3*cm, 2.5*cm], font_size=9, highlight_rows=[4, 8]))
 story.append(Spacer(1, 0.2*cm))
 
 story.append(Paragraph("<b>Synthèse par mois</b>", H3))
-month_data = [
-    ["Mois", "Volume (t)", "CA (M FCFA)", "Part CA"],
-    ["Septembre 2026", "4 460", "2 209", "16,2%"],
-    ["Octobre 2026", "9 045", "4 117", "30,1%"],
-    ["Novembre 2026", "7 725", "3 589", "26,3%"],
-    ["Décembre 2026", "8 215", "3 739", "27,4%"],
-    ["TOTAL Q4", "29 445", "13 654", "100%"],
-]
+month_data = build_q4_month_table()
 story.append(make_table(month_data, col_widths=[4*cm, 3.5*cm, 3.5*cm, 2.5*cm], font_size=9))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Top 5 agences par CA Q4 2026</b>", H3))
-top_data = [
-    ["Rang", "Agence", "Région", "CA (M FCFA)"],
-    ["1", "FAMLA", "Ouest", "3 662"],
-    ["2", "NDOBO", "Littoral", "2 096"],
-    ["3", "MESSASSI", "Centre", "1 222"],
-    ["4", "DJELENG", "Ouest", "1 047"],
-    ["5", "VILLAGE", "Littoral", "826"],
-]
+top_data = top_agences_table(q4_df)
 story.append(make_table(top_data, col_widths=[1.5*cm, 4*cm, 3*cm, 4.5*cm], font_size=9))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Réalisation 2026 YTD + Projection fin d'année</b>", H3))
-ytd_data = [
-    ["Famille", "YTD 2026 (t)", "Q4 fcst (t)", "Total 2026 (t)"],
-    ["TOURTEAUX", "39 045", "18 321", "57 366"],
-    ["CONCENTRÉS", "11 932", "6 610", "18 542"],
-    ["ALIMENT_COMPLET", "502", "187", "689"],
-    ["INGRÉDIENTS", "531", "291", "822"],
-    ["PREMIX", "60", "0", "60"],
-    ["COMPLEMENT_ALIM.", "3", "1", "4"],
-    ["ALVEOLES", "0", "0 (CA only)", "0"],
-    ["MATERIEL_ELEVAGE", "0", "0 (CA only)", "0"],
-    ["MAÏS (exclu)", "0", "0", "0"],
-    ["TOTAL", "52 073", "29 445", "77 483"],
-]
+ytd_data = build_q4_ytd_table()
 story.append(make_table(ytd_data, col_widths=[3.5*cm, 3*cm, 3*cm, 3*cm], font_size=9, highlight_rows=[6, 7]))
 story.append(Spacer(1, 0.3*cm))
 
@@ -510,27 +738,11 @@ story.append(make_table(config_data, col_widths=[5*cm, 5*cm, 7*cm], font_size=9,
 
 story.append(Paragraph("4. Résultats par famille et mois", H1))
 story.append(Paragraph("4.1 Par famille", H2))
-fam_detail = [
-    ["Famille", "Volume Q4 (t)", "CA Q4 (M FCFA)", "Part CA", "Méthode"],
-    ["TOURTEAUX", "19 982", "7 430", "52,5%", "Prophet + prix 17 170 (moyen YTD 2026)"],
-    ["CONCENTRÉS", "8 703", "5 778", "40,8%", "Prophet + bundle 2.5:1"],
-    ["ALIMENT_COMPLET", "267", "202", "1,4%", "Prophet + prix 2026 réels"],
-    ["INGREDIENTS", "394", "552", "3,9%", "Prophet + prix 2026 réels"],
-    ["ALVEOLES", "0", "34", "0,2%", "Extrap 2026 + Forfait SPC (ALV=0)"],
-    ["MATERIEL_ELEVAGE", "0", "82", "0,6%", "Extrap + Forfait SPC (2026 annualisé)"],
-    ["PREMIX", "0", "62", "0,4%", "Extrapolation CA"],
-    ["COMPLEMENT_ALIM.", "2", "10", "0,1%", "Prophet (proxy V300 1L)"],
-]
+fam_detail = build_q4_fam_detail_table()
 story.append(make_table(fam_detail, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 4*cm], font_size=9, highlight_rows=[4, 8]))
 
 story.append(Paragraph("4.2 Par mois", H2))
-month_detail = [
-    ["Mois", "Volume (t)", "CA (M FCFA)", "Part CA", "Lecture"],
-    ["Septembre 2026", "4 054", "2 313", "16,5%", "Démarrage Q4 + réappro"],
-    ["Octobre 2026", "7 628", "4 131", "29,3%", "Pic mensuel"],
-    ["Novembre 2026", "6 609", "3 653", "26,1%", "Maintien"],
-    ["Décembre 2026", "7 118", "3 896", "27,9%", "Fêtes de fin d'année"],
-]
+month_detail = build_q4_month_detail_table()
 story.append(make_table(month_detail, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 4.5*cm], font_size=9))
 
 story.append(Paragraph("5. Plan de déploiement", H1))
@@ -786,61 +998,22 @@ story.append(Paragraph(
     BODY))
 
 story.append(Paragraph("<b>Résultats clés 2027</b>", H3))
-synth_data = [
-    ["Indicateur", "Valeur", "Détail"],
-    ["Volume total 2027", "96 529 t", "8 familles, 121 produits, 25 agences"],
-    ["CA total 2027", "43 767 M FCFA", "Prix soja: Q4=17 170 (moyen YTD) / 2027=16 800 (médiane)"],
-    ["Période", "12 mois (Jan-Déc 2027)", "Forecast complet annuel"],
-    ["Scénario", "S3 (réappro 100%)", "Situation normale"],
-    ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
-    ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "Cap à moyenne S1 2026"],
-    ["COMPLEMENT_ALIM.", "3 t / 18 M FCFA", "V300 1L only"],
-    ["ALVEOLES (forfait SPC)", "0 t / 101 M FCFA", "4 refs MAT011/MAT014/MAT015/MAT017"],
-    [" SPC agences incluses", "5 agences SPC + Maroua", "25 agences total"],
-    ["Forfait SPC", "39 M/an MAT only (2026 annualisé)", "ALV=0, MAT=38.4M"],
-    ["Bundle 2.5:1", "Ratio soja:concentré <= 2.5:1", "26 ajustements annuels"],
-]
+synth_data = build_2027_synth_table()
 story.append(make_table(synth_data, col_widths=[5*cm, 4*cm, 8*cm], font_size=9, highlight_rows=[7, 8]))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Synthèse par famille</b>", H3))
-fam_data = [
-    ["Famille", "Volume (t)", "CA (M FCFA)", "Part CA"],
-    ["TOURTEAUX", "66 597", "22 383", "51,1%"],
-    ["CONCENTRÉS", "27 980", "18 598", "42,5%"],
-    ["ALIMENT_COMPLET", "884", "730", "1,7%"],
-    ["INGREDIENTS", "1 062", "1 519", "3,5%"],
-    ["ALVEOLES", "0", "102", "0,2%"],
-    ["MATERIEL_ELEVAGE", "0", "214", "0,5%"],
-    ["PREMIX", "0", "193", "0,4%"],
-    ["COMPLEMENT_ALIMENTAIRE", "5", "29", "0,1%"],
-    ["MAÏS (exclu)", "0", "0", "0,0%"],
-    ["TOTAL", "96 529", "43 767", "100%"],
-]
+fam_data = build_2027_fam_table()
 story.append(make_table(fam_data, col_widths=[5*cm, 3*cm, 3*cm, 2.5*cm], font_size=9, highlight_rows=[4, 8]))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Synthèse par trimestre</b>", H3))
-q_data = [
-    ["Trimestre", "Volume (t)", "CA (M FCFA)", "Part CA"],
-    ["Q1 (Jan-Mar)", "25 295", "13 992", "26,3%"],
-    ["Q2 (Avr-Juin)", "24 316", "13 443", "25,3%"],
-    ["Q3 (Juil-Sept)", "19 515", "10 881", "20,4%"],
-    ["Q4 (Oct-Déc)", "26 975", "14 903", "28,0%"],
-    ["TOTAL", "96 529", "43 767", "100%"],
-]
+q_data = build_2027_q_table()
 story.append(make_table(q_data, col_widths=[4*cm, 3.5*cm, 3.5*cm, 2.5*cm], font_size=9))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Top 5 agences par CA 2027</b>", H3))
-top_data = [
-    ["Rang", "Agence", "Région", "CA (M FCFA)"],
-    ["1", "FAMLA", "Ouest", "12 641"],
-    ["2", "NDOBO", "Littoral", "6 344"],
-    ["3", "MESSASSI", "Centre", "3 785"],
-    ["4", "DJELENG", "Ouest", "3 630"],
-    ["5", "VILLAGE", "Littoral", "2 512"],
-]
+top_data = top_agences_table(f2027_df)
 story.append(make_table(top_data, col_widths=[1.5*cm, 4*cm, 3*cm, 4.5*cm], font_size=9))
 
 story.append(PageBreak())
@@ -851,24 +1024,34 @@ story.append(Paragraph(
     "l'évolution par famille et par année.",
     BODY))
 
-hist_data = [
-    ["Famille", "2023 (t)", "2024 (t)", "2025 (t)", "2026 YTD (t)", "2027 fcst (t)", "CA 2027 (M)"],
-    ["TOURTEAUX", "33 323", "19 296", "44 584", "39 045", "66 338", "24 639"],
-    ["CONCENTRÉS", "14 963", "8 207", "17 319", "11 932", "27 822", "18 447"],
-    ["ALIMENT_COMPLET", "709", "296", "500", "502", "877", "326"],
-    ["INGRÉDIENTS", "964", "606", "733", "531", "1 059", "778"],
-    ["PREMIX", "75", "41", "86", "60", "0 (CA)", "192"],
-    ["COMPLEMENT_ALIM.", "8", "3", "6", "3", "5", "29"],
-    ["MAÏS (exclu)", "0", "0", "0", "0", "0", "0"],
-    ["TOTAL", "50 041", "28 450", "63 228", "52 073", "96 529", "43 767"],
-]
+hist_data = build_2027_hist_table()
 story.append(make_table(hist_data, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.4*cm], font_size=8, highlight_rows=[6, 7]))
 story.append(Spacer(1, 0.3*cm))
 
+# Calculs dynamiques pour les insights
+_tt_2027 = F2027_TOTAL_T
+_tt_2026 = LY_2026_TOTAL_T
+_ca_2027 = F2027_TOTAL_CA
+_ca_2026 = LY_2026_TOTAL_CA
+_var_t_total = (_tt_2027/_tt_2026 - 1) * 100
+_var_ca_total = (_ca_2027/_ca_2026 - 1) * 100
+_ac_2027_t = F2027_FAM[F2027_FAM['family']=='ALIMENT_COMPLET']['t'].iloc[0] if len(F2027_FAM[F2027_FAM['family']=='ALIMENT_COMPLET'])>0 else 0
+_ac_2026_t = LY_2026_BY_FAM_T.get('ALIMENT_COMPLET', 0)
+_ac_var_t = (_ac_2027_t/_ac_2026_t - 1) * 100 if _ac_2026_t > 0 else 0
+_pm_2027_t = F2027_FAM[F2027_FAM['family']=='PREMIX']['t'].iloc[0] if len(F2027_FAM[F2027_FAM['family']=='PREMIX'])>0 else 0
+_pm_2027_ca = F2027_FAM[F2027_FAM['family']=='PREMIX']['ca'].iloc[0] if len(F2027_FAM[F2027_FAM['family']=='PREMIX'])>0 else 0
+_pm_2026_ca = LY_2026_CA_BY_FAM.get('PREMIX', 0)
+_pm_var_ca = (_pm_2027_ca/_pm_2026_ca - 1) * 100 if _pm_2026_ca > 0 else 0
+_ing_var_ca = (F2027_FAM[F2027_FAM['family']=='INGREDIENTS']['ca'].iloc[0]/LY_2026_CA_BY_FAM.get('INGREDIENTS', 1) - 1) * 100 if LY_2026_CA_BY_FAM.get('INGREDIENTS', 0) > 0 else 0
+_conc_var_ca = (F2027_FAM[F2027_FAM['family']=='CONCENTRES']['ca'].iloc[0]/LY_2026_CA_BY_FAM.get('CONCENTRES', 1) - 1) * 100 if LY_2026_CA_BY_FAM.get('CONCENTRES', 0) > 0 else 0
+_tour_var_ca = (F2027_FAM[F2027_FAM['family']=='TOURTEAUX']['ca'].iloc[0]/LY_2026_CA_BY_FAM.get('TOURTEAUX', 1) - 1) * 100 if LY_2026_CA_BY_FAM.get('TOURTEAUX', 0) > 0 else 0
+
 story.append(Paragraph(
-    "<b>Lecture</b> : Le TOURTEAUX montre une trajectoire haussière (33 323 t en 2023 → 66 338 t forecast 2027, +99%). "
-    "Les CONCENTRÉS progressent également (+31% vs 2026 annualisé). COMPLEMENT_ALIMENTAIRE reste stable autour de "
-    "3-7 t/an (V300 1L proxy). Progression globale 2027 vs 2026 annualisé : <b>+16,6%</b> en volume.",
+    f"<b>Lecture</b> : Le TOURTEAUX montre une trajectoire haussière ({fmt_t(HIST_BY_YEAR_FAM[2023].get('TOURTEAUX', 0))} t en 2023 → {fmt_t(F2027_FAM[F2027_FAM['family']=='TOURTEAUX']['t'].iloc[0])} t forecast 2027). "
+    f"Les CONCENTRÉS progressent également ({fmt_pct_signed(_conc_var_ca)} CA vs 2026). ALIMENT_COMPLET bénéficie du filtrage du creux 2024 "
+    f"et d'un facteur reprise +15% ({fmt_t(_ac_2027_t)} t, {fmt_pct_signed(_ac_var_t)} vs 2026). PREMIX restauré à {fmt_t(_pm_2027_t)} t "
+    f"(mode Prophet avec volumes). Progression globale 2027 vs 2026 : <b>{fmt_pct_signed(_var_t_total)}</b> en volume, "
+    f"<b>{fmt_pct_signed(_var_ca_total)}</b> en CA.",
     BODY))
 story.append(Spacer(1, 0.3*cm))
 
@@ -877,35 +1060,24 @@ story.append(Paragraph(
     "Le tableau ci-dessous présente la progression détaillée 2027 vs 2026 (YTD réel + Q4 forecast) par famille, "
     "en volume et en chiffre d\'affaires. Cette progression reflète l\'effet cumulé des innovations : "
     "ajustement bundle 2.5:1 (augmente CONCENTRÉS), forfait SPC (ALVEOLES=0, MAT_ELEV=38,4 M annualisé), "
-    "et prix INGREDIENTS 2026 réels (correction majeure sur P105, I106, I107, etc.).",
+    "filtrage 2024 + facteur reprise +15% sur ALIMENT_COMPLET, et PREMIX en Prophet avec volumes.",
     BODY))
 
-progression_data = [
-    ["Famille", "2026 (t)", "2027 fcst (t)", "Δ Vol %", "2026 (M)", "2027 fcst (M)", "Δ CA %"],
-    ["TOURTEAUX", "60 971", "66 338", "+8,8%", "21 342", "24 639", "+15,6%"],
-    ["CONCENTRÉS", "21 313", "27 822", "+30,5%", "14 217", "18 447", "+29,8%"],
-    ["ALIMENT_COMPLET", "914", "877", "-4,0%", "732", "326", "-55,5%"],
-    ["INGREDIENTS", "1 016", "1 059", "+4,3%", "1 426", "778", "-45,5%"],
-    ["PREMIX", "88", "0 (CA)", "—", "225", "192", "-14,9%"],
-    ["COMPLEMENT_ALIM.", "6", "5", "-6,1%", "29", "29", "-2,1%"],
-    ["ALVEOLES", "0", "0", "—", "51", "101", "+97,0%"],
-    ["MATERIEL_ELEVAGE", "0", "0", "—", "270", "214", "-20,8%"],
-    ["TOTAL", "84 307", "96 529", "+14,0%", "38 292", "43 767", "+15,1%"],
-]
+progression_data = build_2027_progression_table()
 story.append(make_table(progression_data, col_widths=[3*cm, 1.8*cm, 2.2*cm, 1.4*cm, 1.8*cm, 2.2*cm, 1.4*cm], font_size=7.5))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Insights clés et argumentaires de justification</b>", H3))
 insights_data = [
     ["#", "Insight", "Justification"],
-    ["1", "TOURTEAUX: +6,7% CA (prix 16 800 médiane YTD 2026)", "Prix 16 800 (médiane YTD 2026) + volume +8,3% = +6,7% CA TOURTEAUX"],
-    ["2", "CONCENTRÉS: +29,8% CA (bundle 2.5:1)", "Bundle 2.5:1 force CONCENTRÉS à la hausse quand ratio soja/concentré > 2,5 (26 ajustements 2027)"],
-    ["3", "INGREDIENTS: +5,5% CA (prix 2026 réels, bug sacs 50kg corrigé)", "Prix 2026 réels par unité (CA TTC / qte) — bug sacs 50kg corrigé, tous les prix sont maintenant corrects"],
-    ["4", "ALVEOLES: +97% CA (forfait révisé)", "Forfait ALV=0 (2026 nul) vs 51 M historique 2026 = pic ponctuel non récurrent, activité 2026 nulle"],
-    ["5", "MATERIEL_ELEVAGE: -20,8% CA (normalisation)", "Forfait MAT 38,4 M annualisé 2026 (vs 270 M 2026 incluant pic saisonnier) — retour à normale"],
-    ["6", "Total: +14% volume, +15% CA", "Effet combiné: prix soja (+21%), bundle 2.5:1 (+31% CONCENTRÉS), corrections prix INGREDIENTS"],
-    ["7", "Q4 2027 vs Q4 2026: -8% volume, -9% CA", "Effet normalisation: 2026 Q4 boosté par rupture concurrente (effet non récurrent désaisonnalisé)"],
-    ["8", "Q1-Q3 2027 vs 2026 réel: +26% volume, +31% CA", "Tendance haussière continue 2024-2026 amplifiée par effets prix et bundle"],
+    ["1", f"TOURTEAUX: {fmt_pct_signed(_tour_var_ca)} CA (prix 16 800 médiane YTD 2026)", "Prix 16 800 (médiane YTD 2026) — base de projection réaliste post-réappro"],
+    ["2", f"CONCENTRÉS: {fmt_pct_signed(_conc_var_ca)} CA (bundle 2.5:1)", "Bundle 2.5:1 force CONCENTRÉS à la hausse quand ratio soja/concentré > 2,5 (26 ajustements 2027)"],
+    ["3", f"ALIMENT_COMPLET: {fmt_pct_signed(_ac_var_t)} volume (filtrage 2024 + reprise +15%)", "Année 2024 exclue (anomalie circonstancielle corrigée), facteur reprise +15% pour capter la dynamique 2025→2026"],
+    ["4", f"PREMIX: {fmt_t(_pm_2027_t)} t (restauration des volumes)", "Passage d'extrapolation CA-only à Prophet avec volumes — reflette mieux l'activité réelle"],
+    ["5", f"INGREDIENTS: prix 2026 réels (bug sacs 50kg corrigé)", "Prix 2026 réels par unité (CA TTC / qte) — bug sacs 50kg corrigé, tous les prix sont maintenant corrects"],
+    ["6", "ALVEOLES: 0 t (activité nulle 2026)", "Forfait ALV=0 (activité 2026 nulle) — uniquement CA forfaitaire"],
+    ["7", "MATERIEL_ELEVAGE: 0 t (CA only)", "Forfait MAT 38,4 M annualisé 2026 — activité non volumique"],
+    ["8", f"Total: {fmt_pct_signed(_var_t_total)} volume, {fmt_pct_signed(_var_ca_total)} CA", "Effet combiné: prix soja réaliste, bundle 2.5:1, corrections prix INGREDIENTS, reprise ALIMENT_COMPLET, PREMIX Prophet"],
 ]
 story.append(make_table(insights_data, col_widths=[0.8*cm, 6*cm, 10*cm], font_size=8))
 story.append(Spacer(1, 0.3*cm))

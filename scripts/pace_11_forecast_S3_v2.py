@@ -423,17 +423,21 @@ for _, fcst_row in forecasts_fr_df.iterrows():
         ref = pa_row['ref']
         agence = pa_row['agence']
         share_ca = pa_row['share_ca']
-        
-        ca_m_fcfa_combo = ca_total_m_fcfa * share_ca
+        share_t = pa_row['share_tonnes']
         
         if is_ca_only:
+            # Pour MATERIEL_ELEVAGE et ALVEOLES: pas de volume, CA distribué par share_ca historique
+            ca_m_fcfa_combo = ca_total_m_fcfa * share_ca
             tonnes_combo = 0
             units = 0
             prix = 0
         else:
-            tonnes_combo = tonnes_total * pa_row['share_tonnes']
+            tonnes_combo = tonnes_total * share_t
             units = get_units_from_tonnes(ref, tonnes_combo)
             prix = prix_q4.get(ref, 0)
+            # CORRIGÉ: CA calculé directement (units × prix) au lieu de share_ca
+            # Évite les CA=0 pour des agences sans historique de CA sur ce ref
+            ca_m_fcfa_combo = units * prix / 1e6
         
         all_forecasts.append({
             'scenario': 'S3_reappro_100',

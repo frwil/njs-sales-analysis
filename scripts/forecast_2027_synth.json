@@ -1,6 +1,6 @@
 {
   "total_tonnes": 96873.85800000001,
-  "total_ca_m_fcfa": 44066.35,
+  "total_ca_m_fcfa": 44065.79,
   "n_products": 121,
   "n_agences": 25,
   "n_families": 8,
@@ -9,7 +9,7 @@
     {
       "family": "ALIMENT_COMPLET",
       "tonnes": 1040.0,
-      "ca_m_fcfa": 856.3,
+      "ca_m_fcfa": 856.1,
       "part_ca_pct": 1.9
     },
     {
@@ -21,7 +21,7 @@
     {
       "family": "COMPLEMENT_ALIMENTAIRE",
       "tonnes": 5.0,
-      "ca_m_fcfa": 29.1,
+      "ca_m_fcfa": 29.0,
       "part_ca_pct": 0.1
     },
     {
@@ -33,7 +33,7 @@
     {
       "family": "INGREDIENTS",
       "tonnes": 1062.0,
-      "ca_m_fcfa": 1518.6,
+      "ca_m_fcfa": 1518.4,
       "part_ca_pct": 3.4
     },
     {
@@ -51,7 +51,7 @@
     {
       "family": "TOURTEAUX",
       "tonnes": 66597.0,
-      "ca_m_fcfa": 22383.2,
+      "ca_m_fcfa": 22383.1,
       "part_ca_pct": 50.8
     }
   ],
@@ -59,17 +59,17 @@
     {
       "quarter": "Q1 (Jan-Mar)",
       "tonnes": 25439.0,
-      "ca_m_fcfa": 11562.2
+      "ca_m_fcfa": 11561.8
     },
     {
       "quarter": "Q2 (Avr-Juin)",
       "tonnes": 24605.0,
-      "ca_m_fcfa": 11063.0
+      "ca_m_fcfa": 11062.7
     },
     {
       "quarter": "Q3 (Juil-Sept)",
       "tonnes": 19600.0,
-      "ca_m_fcfa": 9120.5
+      "ca_m_fcfa": 9120.6
     },
     {
       "quarter": "Q4 (Oct-D\u00e9c)",
@@ -81,29 +81,29 @@
     {
       "region": "Centre",
       "tonnes": 23453.0,
-      "ca_m_fcfa": 11001.1
+      "ca_m_fcfa": 11000.8
     },
     {
       "region": "Littoral",
       "tonnes": 31949.0,
-      "ca_m_fcfa": 14507.4
+      "ca_m_fcfa": 14507.1
     },
     {
       "region": "Ouest",
       "tonnes": 41472.0,
-      "ca_m_fcfa": 18557.9
+      "ca_m_fcfa": 18557.8
     }
   ],
   "by_month": [
     {
       "month": "Jan",
       "tonnes": 10544.0,
-      "ca_m_fcfa": 4738.7
+      "ca_m_fcfa": 4738.5
     },
     {
       "month": "F\u00e9v",
       "tonnes": 7554.0,
-      "ca_m_fcfa": 3482.9
+      "ca_m_fcfa": 3482.7
     },
     {
       "month": "Mar",
@@ -118,12 +118,12 @@
     {
       "month": "Mai",
       "tonnes": 7555.0,
-      "ca_m_fcfa": 3392.7
+      "ca_m_fcfa": 3392.6
     },
     {
       "month": "Juin",
       "tonnes": 11210.0,
-      "ca_m_fcfa": 4971.4
+      "ca_m_fcfa": 4971.1
     },
     {
       "month": "Juil",
@@ -133,12 +133,12 @@
     {
       "month": "Ao\u00fbt",
       "tonnes": 5389.0,
-      "ca_m_fcfa": 2596.7
+      "ca_m_fcfa": 2596.8
     },
     {
       "month": "Sep",
       "tonnes": 7028.0,
-      "ca_m_fcfa": 3234.1
+      "ca_m_fcfa": 3234.2
     },
     {
       "month": "Oct",

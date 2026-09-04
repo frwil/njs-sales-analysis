@@ -461,21 +461,32 @@ for _, fcst_row in forecasts_fr_df.iterrows():
         ref = pa_row['ref']
         agence = pa_row['agence']
         share_ca = pa_row['share_ca']
-        
-        ca_m_fcfa_combo = ca_total_m_fcfa * share_ca
+        share_t = pa_row['share_tonnes']
         
         if is_ca_only:
+            # Pour MATERIEL_ELEVAGE et ALVEOLES: pas de volume, CA distribué par share_ca historique
+            ca_m_fcfa_combo = ca_total_m_fcfa * share_ca
             tonnes_combo = 0
             sacs_50 = 0
             prix = 0
         else:
-            tonnes_combo = tonnes_total * pa_row['share_tonnes']
+            tonnes_combo = tonnes_total * share_t
             if family == 'COMPLEMENT_ALIMENTAIRE':
-                sacs_50 = 0  # Pas de sacs, liquide
+                # Liquide: 1L = 1kg
+                litres = tonnes_combo * 1000
+                sacs_50 = litres  # nb de litres
                 prix = prix_2027.get(ref, 0)  # Prix par L
+                # CORRIGÉ: CA calculé directement à partir du volume × prix (au lieu de share_ca)
+                # Évite les CA=0 pour des agences sans historique de CA sur ce ref
+                ca_m_fcfa_combo = litres * prix / 1e6
             else:
-                sacs_50 = tonnes_combo * 1000 / 50
+                # CORRIGÉ: utilisation de get_units_from_tonnes pour respecter le weight per unit
+                # (au lieu de tonnes * 1000 / 50 qui supposait 50kg pour tous les produits)
+                units = get_units_from_tonnes(ref, tonnes_combo)
+                sacs_50 = units
                 prix = prix_2027.get(ref, 0)
+                # CORRIGÉ: CA calculé directement (units × prix) au lieu de share_ca
+                ca_m_fcfa_combo = units * prix / 1e6
         
         all_forecasts.append({
             'scenario': 'S3_reappro_100',
@@ -487,7 +498,7 @@ for _, fcst_row in forecasts_fr_df.iterrows():
             'month': month,
             'year': year,
             'tonnes': round(tonnes_combo, 2),
-            'sacs_50': round(units, 1),
+            'sacs_50': round(sacs_50, 1),
             'prix_ttc_sac': prix,
             'ca_m_fcfa': round(ca_m_fcfa_combo, 2),
         })
