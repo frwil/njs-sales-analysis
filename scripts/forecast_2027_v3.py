@@ -228,6 +228,40 @@ WEIGHT_MAP = {
     'MAT020': 1, 'MAT023': 1, 'MAT029': 1, 'MAT030': 1, 'MAT033': 1, 'MAT039': 1, 'MAT040': 1, 'MAT042': 1,
     'MAT049': 1, 'MAT050': 1, 'MAT053': 1, 'MAT054': 1, 'MAT055': 1, 'MAT073': 1,
     'ME100': 1, 'ME1001': 1, 'ME101': 1, 'ME102': 1, 'ME103': 1, 'ME104': 1, 'ME1041': 1, 'ME105': 1, 'ME106': 1, 'ME107': 1,
+    'APCL2': 15,
+    'APCL25': 25,
+    'APCL3': 15,
+    'APCL30': 1,
+    'APCL35': 5,
+    'APCL4.5': 15,
+    'APCL4.55': 5,
+    'APCL450': 1,
+    'APCL6': 15,
+    'APCL65': 5,
+    'APCL8': 15,
+    'APCL80': 1,
+    'APCL85': 5,
+    'APTOR3': 15,
+    'APTOR31': 1,
+    'APTOR35': 5,
+    'APTOR4.5': 15,
+    'APTOR4.55': 5,
+    'APTSA2': 15,
+    'APTSA21': 1,
+    'APTSA25': 5,
+    'F1142': 1,
+    'F1143': 25,
+    'I1063': 5,
+    'I10711': 1,
+    'MAT001': 1,
+    'MAT026': 1,
+    'MAT047': 1,
+    'MAT048': 1,
+    'MAT060': 1,
+    'MAT096': 1,
+    'P102': 25,
+    'P104': 25,
+    'P1040': 25,
 }
 
 def get_units_from_tonnes(ref, tonnes):
@@ -395,9 +429,9 @@ for _, fcst_row in forecasts_fr_df.iterrows():
                 prix = prix_2027.get(ref, 0)
                 ca_total_m_fcfa += litres * prix / 1e6
             else:
-                sacs_50 = tonnes_combo * 1000 / 50
+                units = get_units_from_tonnes(ref, tonnes_combo)
                 prix = prix_2027.get(ref, 0)
-                ca_total_m_fcfa += sacs_50 * prix / 1e6
+                ca_total_m_fcfa += units * prix / 1e6
     
     pa_subset = monthly_pa[(monthly_pa['family'] == family) & (monthly_pa['region'] == region)]
     
@@ -431,7 +465,7 @@ for _, fcst_row in forecasts_fr_df.iterrows():
             'month': month,
             'year': year,
             'tonnes': round(tonnes_combo, 2),
-            'sacs_50': round(sacs_50, 1),
+            'sacs_50': round(units, 1),
             'prix_ttc_sac': prix,
             'ca_m_fcfa': round(ca_m_fcfa_combo, 2),
         })
