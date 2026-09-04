@@ -1,6 +1,6 @@
 {
-  "total_tonnes": 96528.638,
-  "total_ca_m_fcfa": 43767.0,
+  "total_tonnes": 96873.85800000001,
+  "total_ca_m_fcfa": 44066.35,
   "n_products": 121,
   "n_agences": 25,
   "n_families": 8,
@@ -8,9 +8,9 @@
   "by_family": [
     {
       "family": "ALIMENT_COMPLET",
-      "tonnes": 884.0,
-      "ca_m_fcfa": 730.0,
-      "part_ca_pct": 1.7
+      "tonnes": 1040.0,
+      "ca_m_fcfa": 856.3,
+      "part_ca_pct": 1.9
     },
     {
       "family": "ALVEOLES",
@@ -28,13 +28,13 @@
       "family": "CONCENTRES",
       "tonnes": 27980.0,
       "ca_m_fcfa": 18598.2,
-      "part_ca_pct": 42.5
+      "part_ca_pct": 42.2
     },
     {
       "family": "INGREDIENTS",
       "tonnes": 1062.0,
       "ca_m_fcfa": 1518.6,
-      "part_ca_pct": 3.5
+      "part_ca_pct": 3.4
     },
     {
       "family": "MATERIEL_ELEVAGE",
@@ -44,116 +44,116 @@
     },
     {
       "family": "PREMIX",
-      "tonnes": 0.0,
-      "ca_m_fcfa": 192.8,
-      "part_ca_pct": 0.4
+      "tonnes": 190.0,
+      "ca_m_fcfa": 366.0,
+      "part_ca_pct": 0.8
     },
     {
       "family": "TOURTEAUX",
       "tonnes": 66597.0,
       "ca_m_fcfa": 22383.2,
-      "part_ca_pct": 51.1
+      "part_ca_pct": 50.8
     }
   ],
   "by_quarter": [
     {
       "quarter": "Q1 (Jan-Mar)",
-      "tonnes": 25342.0,
-      "ca_m_fcfa": 11467.6
+      "tonnes": 25439.0,
+      "ca_m_fcfa": 11562.2
     },
     {
       "quarter": "Q2 (Avr-Juin)",
-      "tonnes": 24546.0,
-      "ca_m_fcfa": 11036.2
+      "tonnes": 24605.0,
+      "ca_m_fcfa": 11063.0
     },
     {
       "quarter": "Q3 (Juil-Sept)",
-      "tonnes": 19522.0,
-      "ca_m_fcfa": 9059.3
+      "tonnes": 19600.0,
+      "ca_m_fcfa": 9120.5
     },
     {
       "quarter": "Q4 (Oct-D\u00e9c)",
-      "tonnes": 27119.0,
-      "ca_m_fcfa": 12203.9
+      "tonnes": 27229.0,
+      "ca_m_fcfa": 12320.7
     }
   ],
   "by_region": [
     {
       "region": "Centre",
-      "tonnes": 23367.0,
-      "ca_m_fcfa": 10948.2
+      "tonnes": 23453.0,
+      "ca_m_fcfa": 11001.1
     },
     {
       "region": "Littoral",
-      "tonnes": 31738.0,
-      "ca_m_fcfa": 14260.2
+      "tonnes": 31949.0,
+      "ca_m_fcfa": 14507.4
     },
     {
       "region": "Ouest",
-      "tonnes": 41424.0,
-      "ca_m_fcfa": 18558.6
+      "tonnes": 41472.0,
+      "ca_m_fcfa": 18557.9
     }
   ],
   "by_month": [
     {
       "month": "Jan",
-      "tonnes": 10514.0,
-      "ca_m_fcfa": 4719.8
+      "tonnes": 10544.0,
+      "ca_m_fcfa": 4738.7
     },
     {
       "month": "F\u00e9v",
-      "tonnes": 7502.0,
-      "ca_m_fcfa": 3414.2
+      "tonnes": 7554.0,
+      "ca_m_fcfa": 3482.9
     },
     {
       "month": "Mar",
-      "tonnes": 7326.0,
-      "ca_m_fcfa": 3333.5
+      "tonnes": 7342.0,
+      "ca_m_fcfa": 3340.6
     },
     {
       "month": "Avr",
-      "tonnes": 5822.0,
-      "ca_m_fcfa": 2689.1
+      "tonnes": 5840.0,
+      "ca_m_fcfa": 2698.9
     },
     {
       "month": "Mai",
-      "tonnes": 7534.0,
-      "ca_m_fcfa": 3379.0
+      "tonnes": 7555.0,
+      "ca_m_fcfa": 3392.7
     },
     {
       "month": "Juin",
-      "tonnes": 11190.0,
-      "ca_m_fcfa": 4968.1
+      "tonnes": 11210.0,
+      "ca_m_fcfa": 4971.4
     },
     {
       "month": "Juil",
-      "tonnes": 7155.0,
-      "ca_m_fcfa": 3267.1
+      "tonnes": 7183.0,
+      "ca_m_fcfa": 3289.7
     },
     {
       "month": "Ao\u00fbt",
-      "tonnes": 5365.0,
-      "ca_m_fcfa": 2581.1
+      "tonnes": 5389.0,
+      "ca_m_fcfa": 2596.7
     },
     {
       "month": "Sep",
-      "tonnes": 7002.0,
-      "ca_m_fcfa": 3211.1
+      "tonnes": 7028.0,
+      "ca_m_fcfa": 3234.1
     },
     {
       "month": "Oct",
-      "tonnes": 9477.0,
-      "ca_m_fcfa": 4267.9
+      "tonnes": 9506.0,
+      "ca_m_fcfa": 4280.3
     },
     {
       "month": "Nov",
-      "tonnes": 8815.0,
-      "ca_m_fcfa": 4011.5
+      "tonnes": 8851.0,
+      "ca_m_fcfa": 4047.1
     },
     {
       "month": "D\u00e9c",
-      "tonnes": 8827.0,
-      "ca_m_fcfa": 3924.5
+      "tonnes": 8872.0,
+      "ca_m_fcfa": 3993.3
     }
   ]
 }

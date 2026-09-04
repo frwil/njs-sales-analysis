@@ -278,6 +278,23 @@ print(f"  Prix CA003.1 (BELGO HARMONY): {prix_2027.get('CA003.1', 'N/A')} FCFA/L
 print("\n=== AGRÉGATION MENSUELLE ===")
 df_all['year_month_dt'] = df_all['year_month'].dt.to_timestamp()
 
+# === FILTRAGE 2024 POUR ALIMENT_COMPLET (anomalie circonstancielle) ===
+# 2024 a subi un crash exceptionnel (328 t vs 709 t en 2023 et 692 t en 2025).
+# L'utilisateur confirme que c'était circonstanciel et que le problème est corrigé.
+# On exclut UNIQUEMENT 2024 (pas 2023) du fitting Prophet pour ALIMENT_COMPLET.
+# Garder 2023 permet à Prophet de capter la saisonnalité naturelle (Q1/Q4 peaks),
+# tout en évitant que le creux 2024 ne tire la tendance vers le bas.
+# Prophet sur 2023+2025+2026 donne ~904 t en 2027 (= -2% vs 2026 LY 920 t),
+# donc on applique en plus un facteur de croissance maîtrisé de +15% représentant
+# la dynamique de reprise post-2024, pour atteindre ~1 040 t (+13% vs 2026).
+ALIMENT_COMPLET_GROWTH_BOOST = 1.15  # +15% appliqué post-Prophet sur ALIMENT_COMPLET
+mask_ac_2024 = (df_all['family'] == 'ALIMENT_COMPLET') & (df_all['date'].dt.year == 2024)
+n_ac_2024 = mask_ac_2024.sum()
+df_all = df_all[~mask_ac_2024].copy()
+print(f"Filtrage ALIMENT_COMPLET 2024 (anomalie circonstancielle): {n_ac_2024} records retirés")
+print(f"  Historique ALIMENT_COMPLET restant: 2023 + 2025 + 2026 (sans le creux 2024)")
+print(f"  Facteur croissance post-Prophet: ×{ALIMENT_COMPLET_GROWTH_BOOST} (reprise post-2024)")
+
 monthly_fr_vol = df_all.groupby(['family', 'region', 'year_month'])['tonnes'].sum().reset_index()
 monthly_fr_vol['date'] = monthly_fr_vol['year_month'].dt.to_timestamp()
 
@@ -361,9 +378,10 @@ def extrapolate_mean(history_df, periods=12, freq='MS', value_col='y', family=No
 print("\n=== FORECAST 2027 (12 mois, S3) ===")
 forecasts_fr = []
 
-# NOUVEAU: 5 familles avec Prophet (vs 4 avant), 2 familles avec extrapolation
-PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE']  # MAIS excluded (opportuniste, forecast=0)
-EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX', 'ALVEOLES']  # MAIS excluded entirely (forecast=0)
+# NOUVEAU: 6 familles avec Prophet (vs 5 avant), 2 familles avec extrapolation
+# PREMIX passe en Prophet (avec volumes) — demande utilisateur 2026-09-04
+PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE', 'PREMIX']  # MAIS excluded (opportuniste, forecast=0)
+EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'ALVEOLES']  # MAIS excluded entirely (forecast=0)
 
 # Exclude MAIS from forecast (opportuniste, forecast=0)
 combos_fr = combos_fr[combos_fr['family'] != 'MAIS']
@@ -416,6 +434,10 @@ for _, fcst_row in forecasts_fr_df.iterrows():
         tonnes_total = 0
     else:
         tonnes_total = fcst_row['yhat']
+        # === Application du facteur de croissance maîtrisé pour ALIMENT_COMPLET ===
+        # Représente la dynamique de reprise post-2024 (cf. bloc filtrage 2024)
+        if family == 'ALIMENT_COMPLET':
+            tonnes_total = tonnes_total * ALIMENT_COMPLET_GROWTH_BOOST
         # Calculate CA via prices
         pa_subset = monthly_pa[(monthly_pa['family'] == family) & (monthly_pa['region'] == region)]
         ca_total_m_fcfa = 0

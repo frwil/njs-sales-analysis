@@ -241,6 +241,18 @@ def get_units_from_tonnes(ref, tonnes):
 print("\n=== AGRÉGATION MENSUELLE ===")
 df_all['year_month_dt'] = df_all['year_month'].dt.to_timestamp()
 
+# === FILTRAGE 2024 POUR ALIMENT_COMPLET (anomalie circonstancielle) ===
+# 2024 a subi un crash exceptionnel (328 t vs 709 t en 2023 et 692 t en 2025).
+# L'utilisateur confirme que c'était circonstanciel et que le problème est corrigé.
+# On exclut UNIQUEMENT 2024 du fitting Prophet pour ALIMENT_COMPLET.
+# Un facteur de croissance maîtrisé de +15% est appliqué post-Prophet pour
+# représenter la dynamique de reprise post-2024 (cf. bloc désagrégation).
+ALIMENT_COMPLET_GROWTH_BOOST = 1.15
+mask_ac_2024 = (df_all['family'] == 'ALIMENT_COMPLET') & (df_all['date'].dt.year == 2024)
+n_ac_2024 = mask_ac_2024.sum()
+df_all = df_all[~mask_ac_2024].copy()
+print(f"Filtrage ALIMENT_COMPLET 2024 (anomalie circonstancielle): {n_ac_2024} records retirés")
+
 monthly_fr_vol = df_all.groupby(['family', 'region', 'year_month'])['tonnes'].sum().reset_index()
 monthly_fr_vol['date'] = monthly_fr_vol['year_month'].dt.to_timestamp()
 
@@ -332,8 +344,9 @@ def extrapolate_mean_q4(history_df, periods=4, freq='MS', value_col='y', family=
 print("\n=== FORECAST Q4 2026 (S3) ===")
 forecasts_fr = []
 
-PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE']  # MAIS excluded (opportuniste, forecast=0)
-EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'PREMIX', 'ALVEOLES']  # MAIS excluded entirely (forecast=0)
+# NOUVEAU: 6 familles avec Prophet (PREMIX ajouté avec volumes), 2 avec extrapolation
+PROPHET_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'COMPLEMENT_ALIMENTAIRE', 'PREMIX']  # MAIS excluded (opportuniste, forecast=0)
+EXTRAPOL_FAMILIES = ['MATERIEL_ELEVAGE', 'ALVEOLES']  # MAIS excluded entirely (forecast=0)
 
 # Exclude MAIS from forecast (opportuniste, forecast=0)
 combos_fr = combos_fr[combos_fr['family'] != 'MAIS']
@@ -389,6 +402,9 @@ for _, fcst_row in forecasts_fr_df.iterrows():
         # For TOURTEAUX S3: apply 0.7 factor in September (partial rupture assumption already neutralized)
         if family == 'TOURTEAUX' and month == 9:
             tonnes_total *= 0.7
+        # === Facteur croissance maîtrisé pour ALIMENT_COMPLET (reprise post-2024) ===
+        if family == 'ALIMENT_COMPLET':
+            tonnes_total *= ALIMENT_COMPLET_GROWTH_BOOST
         # Calculate CA via real prices per unit (CORRIGE)
         pa_subset = monthly_pa[(monthly_pa['family'] == family) & (monthly_pa['region'] == region)]
         ca_total_m_fcfa = 0
