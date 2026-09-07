@@ -76,7 +76,9 @@ story.append(Paragraph("BELGOCAM SA — Pitch Septembre 2026 MTD", H1))
 story.append(Paragraph(f"Performance Commerciale au {MTD['update_date']} ({MTD['days_elapsed']}j/{MTD['total_days_sep']}j = {MTD['pct_elapsed']}% du mois)", 
                        ParagraphStyle('SubH', parent=BODY, fontSize=10, textColor=GRAY, alignment=TA_CENTER, spaceAfter=4)))
 story.append(Paragraph(f"<b>⚠ Hausse prix soja le 04/09/2026 : 25 000 → 27 000 FCFA/sac (+8%)</b>",
-                       ParagraphStyle('Alert', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=8)))
+                       ParagraphStyle('Alert', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=4)))
+story.append(Paragraph(f"<b>🔴 ALERTE STOCK CRITIQUE — Magasin central BEKOKO : 2 716 sacs (135 t) + 296 prod = 3 012 sacs. Rupture 08/09/2026 (1,6 jour de stock)</b>",
+                       ParagraphStyle('Alert2', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=8, backColor=colors.HexColor('#FCE4EC'), borderPadding=4)))
 story.append(HRFlowable(width="100%", thickness=1, color=NAVY))
 story.append(Spacer(1, 0.2*cm))
 
@@ -224,9 +226,9 @@ insights_data = [
     [Paragraph("Bundle ratio 1,8:1", CELL),
      Paragraph(f"357/370 cmds soja avec conc = {b['pct_bundle']}% cross-sell", CELL),
      Paragraph("✅ Maintien du cross-sell malgré la hausse prix — discipline commerciale préservée", CELL)],
-    [Paragraph("Stock soja BEKOKO", CELL),
-     Paragraph(f"{fmt(s['net_sacs'])} sacs ({fmt(s['net_t'])} t) au {s['date']}, {s['jours_stock']} jours", CELL),
-     Paragraph(f"Rupture probable {s['rupture_date']} — réappro à programmer", CELL)],
+    [Paragraph("🔴 Stock soja BEKOKO", CELL),
+     Paragraph(f"<b>{fmt(s['brut_sacs'])} sacs</b> ({fmt(s['brut_t'])} t) + {fmt(s['production_en_cours_sacs'])} prod = {fmt(s['stock_avec_prod_sacs'])} sacs", CELL),
+     Paragraph(f"<b>{s['jours_stock_brut']} jour(s) de stock central</b> — rupture <b>{s['rupture_date_brut']}</b>. Manque sept: {fmt(s['manque_septembre_sacs'])} sacs. RÉAPPRO URGENT", CELL)],
     [Paragraph("Top agence CONCENTRES", CELL),
      Paragraph("FAMLA (Ouest) — 66 t MTD, proj 341 t", CELL),
      Paragraph("22% du volume CONCENTRES national — pilier de la performance", CELL)],
@@ -252,9 +254,9 @@ story.append(Spacer(1, 0.2*cm))
 story.append(Paragraph("4. Recommandations & Actions", H2))
 
 recos = [
-    ("ACTION IMMÉDIATE", "Confirmer le réapprovisionnement soja",
-     f"Stock net {fmt(s['net_sacs'])} sacs = {s['jours_stock']}j → rupture {s['rupture_date']}. Commander 80 000 sacs min. avant le 15/09.",
-     "Logistique / Direction Achats", "Avant 15/09/2026"),
+    ("ACTION IMMÉDIATE", "🔴 RÉAPPRO URGENT soja central",
+     f"Stock BEKOKO = {fmt(s['brut_sacs'])} sacs ({fmt(s['brut_t'])} t) + {fmt(s['production_en_cours_sacs'])} prod = {fmt(s['stock_avec_prod_sacs'])} sacs. <b>{s['jours_stock_brut']} jour(s) de stock</b> — rupture {s['rupture_date_brut']}. Besoin sept = {fmt(s['besoin_septembre_sacs'])} sacs, <b>manque {fmt(s['manque_septembre_sacs'])} sacs</b>.",
+     "Logistique / Direction Achats / DG", "AVANT 08/09/2026"),
     ("ACTION COMMERCIALE", "Push CONCENTRES sur Littoral",
      f"NDOBO + VILLAGE + NKONGSAMBA = {PITCH['regions']['Littoral']['conc_t_mtd']:.0f} t MTD vs projection {PITCH['regions']['Littoral']['conc_proj_t']:.0f} t (66% obj). Activer promotions bundle.",
      "RA Littoral + Direction Commerciale", "Semaine 38 (08-14/09)"),
