@@ -1,0 +1,1256 @@
+     1→"""
+     2→BELGOCAM SA - Analyse Zéro Achat (Standalone PDF)
+     3→Suivi continu Janvier-Decembre 2026
+     4→
+     5→PDF genere via ReportLab.
+     6→Reutilise les memes polices, couleurs et fonctions utilitaires que build_pdf_report_v3.py.
+     7→
+     8→Auteur/redacteur: William Francis Fohom, Data Analyst, Administrateur National de Ventes
+     9→"""
+    10→import os
+    11→from reportlab.lib import colors
+    12→from reportlab.lib.pagesizes import A4
+    13→from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    14→from reportlab.lib.units import cm, mm
+    15→from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER, TA_JUSTIFY
+    16→from reportlab.pdfbase import pdfmetrics
+    17→from reportlab.pdfbase.ttfonts import TTFont
+    18→from reportlab.pdfbase.pdfmetrics import registerFontFamily
+    19→from reportlab.platypus import (
+    20→    Paragraph, Spacer, PageBreak, Table, TableStyle,
+    21→    Image, KeepTogether, NextPageTemplate, PageTemplate, Frame, BaseDocTemplate
+    22→)
+    23→from reportlab.platypus.flowables import HRFlowable
+    24→
+    25→# ===== FONTS =====
+    26→FONT_DIR = '/usr/share/fonts'
+    27→pdfmetrics.registerFont(TTFont('NotoSerifSC', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Regular.ttf'))
+    28→pdfmetrics.registerFont(TTFont('NotoSerifSC-Bold', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Bold.ttf'))
+    29→pdfmetrics.registerFont(TTFont('NotoSerifSC-Light', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Light.ttf'))
+    30→registerFontFamily('NotoSerifSC', normal='NotoSerifSC', bold='NotoSerifSC-Bold')
+    31→
+    32→# ===== COLORS (BELGOCAM corporate: navy + gold) — same as build_pdf_report_v3.py =====
+    33→NAVY = colors.HexColor('#1F3A5F')
+    34→NAVY_LIGHT = colors.HexColor('#2E75B6')
+    35→GOLD = colors.HexColor('#C9A961')
+    36→GOLD_DARK = colors.HexColor('#BF8F00')
+    37→RED = colors.HexColor('#C00000')
+    38→GREEN = colors.HexColor('#548235')
+    39→GRAY = colors.HexColor('#5A5A5A')
+    40→GRAY_LIGHT = colors.HexColor('#D9D9D9')
+    41→GRAY_VLIGHT = colors.HexColor('#F2F2F2')
+    42→WHITE = colors.white
+    43→BLACK = colors.black
+    44→
+    45→# ===== STYLES =====
+    46→styles = getSampleStyleSheet()
+    47→
+    48→# Title styles
+    49→H1 = ParagraphStyle('H1', parent=styles['Heading1'], fontName='NotoSerifSC-Bold', fontSize=20,
+    50→                    textColor=NAVY, spaceAfter=14, spaceBefore=10, alignment=TA_LEFT, leading=26)
+    51→H2 = ParagraphStyle('H2', parent=styles['Heading2'], fontName='NotoSerifSC-Bold', fontSize=14,
+    52→                    textColor=NAVY, spaceAfter=10, spaceBefore=14, alignment=TA_LEFT, leading=18,
+    53→                    keepWithNext=1)
+    54→H3 = ParagraphStyle('H3', parent=styles['Heading3'], fontName='NotoSerifSC-Bold', fontSize=12,
+    55→                    textColor=NAVY_LIGHT, spaceAfter=8, spaceBefore=10, alignment=TA_LEFT, leading=15,
+    56→                    keepWithNext=1)
+    57→
+    58→# Body styles
+    59→BODY = ParagraphStyle('Body', parent=styles['BodyText'], fontName='NotoSerifSC', fontSize=10,
+    60→                      textColor=BLACK, alignment=TA_JUSTIFY, leading=14, spaceAfter=8)
+    61→BODY_LEFT = ParagraphStyle('BodyLeft', parent=BODY, alignment=TA_LEFT)
+    62→BODY_BOLD = ParagraphStyle('BodyBold', parent=BODY, fontName='NotoSerifSC-Bold')
+    63→BODY_ITALIC = ParagraphStyle('BodyItalic', parent=BODY, fontName='NotoSerifSC-Light')
+    64→SMALL = ParagraphStyle('Small', parent=BODY, fontSize=9, leading=12, textColor=GRAY)
+    65→CAPTION = ParagraphStyle('Caption', parent=SMALL, alignment=TA_CENTER, fontName='NotoSerifSC-Light')
+    66→
+    67→# Cell styles
+    68→CELL = ParagraphStyle('Cell', fontName='NotoSerifSC', fontSize=9, leading=12, textColor=BLACK, alignment=TA_LEFT)
+    69→CELL_CENTER = ParagraphStyle('CellC', parent=CELL, alignment=TA_CENTER)
+    70→CELL_RIGHT = ParagraphStyle('CellR', parent=CELL, alignment=TA_RIGHT)
+    71→CELL_BOLD = ParagraphStyle('CellB', parent=CELL, fontName='NotoSerifSC-Bold')
+    72→CELL_WHITE = ParagraphStyle('CellW', parent=CELL, textColor=WHITE, fontName='NotoSerifSC-Bold', alignment=TA_CENTER)
+    73→CELL_WHITE_R = ParagraphStyle('CellWR', parent=CELL_WHITE, alignment=TA_RIGHT)
+    74→
+    75→# Bullet styles
+    76→BULLET = ParagraphStyle('Bullet', parent=BODY, leftIndent=18, bulletIndent=6, spaceAfter=4)
+    77→
+    78→
+    79→# ===== PAGE SETUP =====
+    80→PAGE_W, PAGE_H = A4
+    81→MARGIN_L = 1.5*cm
+    82→MARGIN_R = 1.5*cm
+    83→MARGIN_T = 2.2*cm
+    84→MARGIN_B = 1.8*cm
+    85→CONTENT_W = PAGE_W - MARGIN_L - MARGIN_R
+    86→
+    87→
+    88→# ===== COVER PAGE FUNCTION (custom for Analyse Zéro Achat) =====
+    89→def draw_cover(canv, doc):
+    90→    """Draw cover page elements directly on canvas — Analyse Zéro Achat edition."""
+    91→    canv.saveState()
+    92→
+    93→    # Background: full white
+    94→    canv.setFillColor(WHITE)
+    95→    canv.rect(0, 0, PAGE_W, PAGE_H, fill=1, stroke=0)
+    96→
+    97→    # Top navy band (full width)
+    98→    canv.setFillColor(NAVY)
+    99→    canv.rect(0, PAGE_H - 5*cm, PAGE_W, 5*cm, fill=1, stroke=0)
+   100→
+   101→    # Gold accent line
+   102→    canv.setFillColor(GOLD)
+   103→    canv.rect(0, PAGE_H - 5.3*cm, PAGE_W, 0.3*cm, fill=1, stroke=0)
+   104→
+   105→    # Company name (top left, in navy band)
+   106→    canv.setFillColor(WHITE)
+   107→    canv.setFont('NotoSerifSC-Bold', 22)
+   108→    canv.drawString(MARGIN_L, PAGE_H - 2.5*cm, "BELGOCAM SA")
+   109→    canv.setFont('NotoSerifSC', 11)
+   110→    canv.drawString(MARGIN_L, PAGE_H - 3.2*cm, "NJS GROUP — Cameroun")
+   111→    canv.setFont('NotoSerifSC-Light', 10)
+   112→    canv.drawString(MARGIN_L, PAGE_H - 4.0*cm, "Analyse Commerciale & Stratégique")
+   113→
+   114→    # Date (top right)
+   115→    canv.setFont('NotoSerifSC', 10)
+   116→    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Juillet 2026")
+   117→    canv.setFont('NotoSerifSC-Light', 9)
+   118→    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 3.2*cm, "Période analysée : Janvier - Décembre 2026")
+   119→
+   120→    # Main title block (left aligned)
+   121→    canv.setFillColor(NAVY)
+   122→    canv.setFont('NotoSerifSC-Bold', 30)
+   123→    canv.drawString(MARGIN_L, PAGE_H - 9*cm, "Analyse Zéro Achat")
+   124→
+   125→    # Gold separator
+   126→    canv.setFillColor(GOLD)
+   127→    canv.rect(MARGIN_L, PAGE_H - 9.8*cm, 4*cm, 0.15*cm, fill=1, stroke=0)
+   128→
+   129→    # Subtitle
+   130→    canv.setFillColor(GRAY)
+   131→    canv.setFont('NotoSerifSC', 13)
+   132→    canv.drawString(MARGIN_L, PAGE_H - 10.8*cm, "Suivi continu Janvier-Décembre 2026")
+   133→    canv.setFont('NotoSerifSC-Light', 11)
+   134→    canv.drawString(MARGIN_L, PAGE_H - 11.6*cm, "Diagnostic, pertes Q1, transition Q1→Q2 et plan d'action")
+   135→
+   136→    # Key figures box
+   137→    box_y = 7.5*cm
+   138→    box_h = 5*cm
+   139→    canv.setFillColor(GRAY_VLIGHT)
+   140→    canv.rect(MARGIN_L, box_y, CONTENT_W, box_h, fill=1, stroke=0)
+   141→    # Left gold border
+   142→    canv.setFillColor(GOLD)
+   143→    canv.rect(MARGIN_L, box_y, 0.2*cm, box_h, fill=1, stroke=0)
+   144→
+   145→    # 4 KPIs side by side
+   146→    canv.setFillColor(NAVY)
+   147→    canv.setFont('NotoSerifSC-Bold', 20)
+   148→    kpi_y = box_y + box_h - 1.5*cm
+   149→    col_w = CONTENT_W / 4
+   150→    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y, "338")
+   151→    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y, "526")
+   152→    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y, "14")
+   153→    canv.drawCentredString(MARGIN_L + col_w*3.5, kpi_y, "118")
+   154→
+   155→    canv.setFillColor(GRAY)
+   156→    canv.setFont('NotoSerifSC', 8)
+   157→    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 0.7*cm, "Zéro achat global Q1")
+   158→    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 0.7*cm, "Zéro achat concentrés Q1")
+   159→    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 0.7*cm, "Clients 20/80 prioritaires")
+   160→    canv.drawCentredString(MARGIN_L + col_w*3.5, kpi_y - 0.7*cm, "Jamais acquis (6 mois)")
+   161→
+   162→    canv.setFillColor(GRAY)
+   163→    canv.setFont('NotoSerifSC-Light', 7)
+   164→    canv.drawCentredString(MARGIN_L + col_w*0.5, kpi_y - 1.4*cm, "16 produits ciblés")
+   165→    canv.drawCentredString(MARGIN_L + col_w*1.5, kpi_y - 1.4*cm, "12 produits concentrés")
+   166→    canv.drawCentredString(MARGIN_L + col_w*2.5, kpi_y - 1.4*cm, "à réactiver en priorité")
+   167→    canv.drawCentredString(MARGIN_L + col_w*3.5, kpi_y - 1.4*cm, "clients persistants")
+   168→
+   169→    # Bottom figure: bilan net
+   170→    canv.setFillColor(NAVY)
+   171→    canv.setFont('NotoSerifSC-Bold', 14)
+   172→    canv.drawCentredString(PAGE_W/2, kpi_y - 2.6*cm, "Bilan net Q1→Q2 : +276 M FCFA (ciblé)")
+   173→    canv.setFillColor(GRAY)
+   174→    canv.setFont('NotoSerifSC-Light', 8)
+   175→    canv.drawCentredString(PAGE_W/2, kpi_y - 3.2*cm, "Perte Q1 estimée : 1 599 t  /  581 M FCFA  —  1 397 clients externes analysés")
+   176→
+   177→    # Author / redactor block at bottom
+   178→    auth_y = 3.5*cm
+   179→    # Gold accent line above
+   180→    canv.setFillColor(GOLD)
+   181→    canv.rect(MARGIN_L, auth_y + 2.5*cm, 3*cm, 0.1*cm, fill=1, stroke=0)
+   182→
+   183→    canv.setFillColor(GRAY)
+   184→    canv.setFont('NotoSerifSC-Light', 9)
+   185→    canv.drawString(MARGIN_L, auth_y + 1.8*cm, "Rédigé par")
+   186→
+   187→    canv.setFillColor(NAVY)
+   188→    canv.setFont('NotoSerifSC-Bold', 14)
+   189→    canv.drawString(MARGIN_L, auth_y + 1.0*cm, "William Francis Fohom")
+   190→
+   191→    canv.setFillColor(GRAY)
+   192→    canv.setFont('NotoSerifSC', 10)
+   193→    canv.drawString(MARGIN_L, auth_y + 0.4*cm, "Data Analyst")
+   194→    canv.drawString(MARGIN_L, auth_y - 0.1*cm, "Administrateur National de Ventes")
+   195→
+   196→    # Bottom band
+   197→    canv.setFillColor(NAVY)
+   198→    canv.rect(0, 0, PAGE_W, 1.5*cm, fill=1, stroke=0)
+   199→    canv.setFillColor(WHITE)
+   200→    canv.setFont('NotoSerifSC', 9)
+   201→    canv.drawString(MARGIN_L, 0.55*cm, "BELGOCAM SA — Document confidentiel — Usage interne")
+   202→    canv.setFont('NotoSerifSC-Light', 8)
+   203→    canv.drawRightString(PAGE_W - MARGIN_R, 0.55*cm, "Analyse Zéro Achat — Juillet 2026")
+   204→
+   205→    canv.restoreState()
+   206→
+   207→
+   208→def draw_body_page(canv, doc):
+   209→    """Header/footer for body pages — Analyse Zéro Achat."""
+   210→    canv.saveState()
+   211→    # Top header line
+   212→    canv.setStrokeColor(NAVY)
+   213→    canv.setLineWidth(0.5)
+   214→    canv.line(MARGIN_L, PAGE_H - 1.3*cm, PAGE_W - MARGIN_R, PAGE_H - 1.3*cm)
+   215→    canv.setFillColor(NAVY)
+   216→    canv.setFont('NotoSerifSC-Bold', 9)
+   217→    canv.drawString(MARGIN_L, PAGE_H - 1.0*cm, "BELGOCAM SA")
+   218→    canv.setFillColor(GRAY)
+   219→    canv.setFont('NotoSerifSC', 9)
+   220→    canv.drawString(MARGIN_L + 3*cm, PAGE_H - 1.0*cm, "Analyse Zéro Achat — Suivi continu 2026")
+   221→    canv.setFillColor(GRAY)
+   222→    canv.setFont('NotoSerifSC-Light', 8)
+   223→    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 1.0*cm, "William Francis Fohom — Data Analyst")
+   224→
+   225→    # Footer
+   226→    canv.setStrokeColor(GRAY_LIGHT)
+   227→    canv.setLineWidth(0.3)
+   228→    canv.line(MARGIN_L, 1.3*cm, PAGE_W - MARGIN_R, 1.3*cm)
+   229→    canv.setFillColor(GRAY)
+   230→    canv.setFont('NotoSerifSC-Light', 8)
+   231→    canv.drawString(MARGIN_L, 0.9*cm, "BELGOCAM SA — Document confidentiel")
+   232→    page_num = canv.getPageNumber() - 1  # subtract cover
+   233→    canv.drawRightString(PAGE_W - MARGIN_R, 0.9*cm, f"Page {page_num}")
+   234→    canv.restoreState()
+   235→
+   236→
+   237→# ===== HELPER FUNCTIONS (identical to build_pdf_report_v3.py) =====
+   238→def make_table(data, col_widths=None, header_row=True, font_size=9, align='LEFT'):
+   239→    """Create a styled table with BELGOCAM colors. Auto-scales to full content width."""
+   240→    if col_widths is None:
+   241→        n_cols = len(data[0])
+   242→        col_widths = [CONTENT_W / n_cols] * n_cols
+   243→    else:
+   244→        # Auto-scale: if sum of col_widths < CONTENT_W, scale up proportionally
+   245→        total = sum(col_widths)
+   246→        if total < CONTENT_W * 0.95:
+   247→            scale = CONTENT_W / total
+   248→            col_widths = [w * scale for w in col_widths]
+   249→
+   250→    # Wrap text cells in Paragraphs for proper wrapping
+   251→    cell_style = ParagraphStyle('cell_fs', parent=CELL, fontSize=font_size, leading=font_size + 3)
+   252→    cell_style_r = ParagraphStyle('cell_r_fs', parent=CELL_RIGHT, fontSize=font_size, leading=font_size + 3)
+   253→    cell_style_c = ParagraphStyle('cell_c_fs', parent=CELL_CENTER, fontSize=font_size, leading=font_size + 3)
+   254→    cell_style_w = ParagraphStyle('cell_w_fs', parent=CELL_WHITE, fontSize=font_size, leading=font_size + 3)
+   255→
+   256→    wrapped = []
+   257→    for i, row in enumerate(data):
+   258→        wrapped_row = []
+   259→        for j, cell in enumerate(row):
+   260→            if isinstance(cell, str):
+   261→                if i == 0 and header_row:
+   262→                    style = cell_style_w
+   263→                else:
+   264→                    style = cell_style_r if align == 'RIGHT' else cell_style
+   265→                wrapped_row.append(Paragraph(cell, style))
+   266→            else:
+   267→                wrapped_row.append(cell)
+   268→        wrapped.append(wrapped_row)
+   269→
+   270→    t = Table(wrapped, colWidths=col_widths, repeatRows=1 if header_row else 0)
+   271→    ts = TableStyle([
+   272→        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+   273→        ('LEFTPADDING', (0, 0), (-1, -1), 5),
+   274→        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+   275→        ('TOPPADDING', (0, 0), (-1, -1), 3),
+   276→        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+   277→        ('GRID', (0, 0), (-1, -1), 0.4, GRAY_LIGHT),
+   278→    ])
+   279→    if header_row:
+   280→        ts.add('BACKGROUND', (0, 0), (-1, 0), NAVY)
+   281→        ts.add('TEXTCOLOR', (0, 0), (-1, 0), WHITE)
+   282→        ts.add('FONTNAME', (0, 0), (-1, 0), 'NotoSerifSC-Bold')
+   283→    # Banding
+   284→    for i in range(1, len(data)):
+   285→        if i % 2 == 0:
+   286→            ts.add('BACKGROUND', (0, i), (-1, i), GRAY_VLIGHT)
+   287→    t.setStyle(ts)
+   288→    return t
+   289→
+   290→
+   291→def kpi_card(label, value, sublabel=""):
+   292→    """Create a small KPI card as a Table."""
+   293→    data = [
+   294→        [Paragraph(f'<b>{value}</b>', ParagraphStyle('kpi_v', fontName='NotoSerifSC-Bold', fontSize=13, textColor=NAVY, alignment=TA_CENTER, leading=16))],
+   295→        [Paragraph(label, ParagraphStyle('kpi_l', fontName='NotoSerifSC', fontSize=8, textColor=GRAY, alignment=TA_CENTER, leading=10))],
+   296→    ]
+   297→    if sublabel:
+   298→        data.append([Paragraph(sublabel, ParagraphStyle('kpi_s', fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, alignment=TA_CENTER, leading=9))])
+   299→    t = Table(data, colWidths=[3.2*cm])
+   300→    t.setStyle(TableStyle([
+   301→        ('BACKGROUND', (0, 0), (-1, -1), GRAY_VLIGHT),
+   302→        ('LINEBELOW', (0, 0), (-1, 0), 0.5, GOLD),
+   303→        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+   304→        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+   305→        ('TOPPADDING', (0, 0), (-1, -1), 4),
+   306→        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+   307→        ('BOX', (0, 0), (-1, -1), 0.3, GRAY_LIGHT),
+   308→    ]))
+   309→    return t
+   310→
+   311→
+   312→def kpi_row(cards):
+   313→    """Place multiple KPI cards in a row."""
+   314→    n = len(cards)
+   315→    w = CONTENT_W / n
+   316→    t = Table([cards], colWidths=[w]*n)
+   317→    t.setStyle(TableStyle([
+   318→        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+   319→        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+   320→        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+   321→    ]))
+   322→    return t
+   323→
+   324→
+   325→def section_divider():
+   326→    return HRFlowable(width="100%", thickness=0.5, color=GOLD, spaceBefore=6, spaceAfter=10)
+   327→
+   328→
+   329→# ===== BUILD CONTENT =====
+   330→def build_story():
+   331→    story = []
+   332→
+   333→    # ---------- PAGE 1: COVER (drawn by canvas) ----------
+   334→    story.append(Spacer(1, PAGE_H - MARGIN_T - MARGIN_B))  # fill the page
+   335→    story.append(PageBreak())
+   336→
+   337→    # ---------- PAGE 2: SOMMAIRE ----------
+   338→    story.append(Paragraph("Sommaire", H1))
+   339→    story.append(section_divider())
+   340→    story.append(Spacer(1, 0.3*cm))
+   341→
+   342→    toc_data = [
+   343→        ["Section", "Titre", "Page"],
+   344→        ["1", "Analyse Zéro Achat S1 2026 (Janvier-Juin)", "3"],
+   345→        ["1.1", "Vue d'ensemble", "3"],
+   346→        ["1.2", "Top 14 clients 20/80 prioritaires", "4"],
+   347→        ["1.3", "Zéro achat par agence", "5"],
+   348→        ["1.4", "Zéro achat concentrés (analyse distincte)", "6"],
+   349→        ["2", "Pertes Q1 estimées (méthode fréquence)", "7"],
+   350→        ["2.1", "Méthode de calcul", "7"],
+   351→        ["2.2", "Résultats agrégés", "7"],
+   352→        ["2.3", "Top 10 pertes par client", "8"],
+   353→        ["2.4", "Lecture de l'impact de la fréquence", "9"],
+   354→        ["2.5", "Pertes sur concentrés (296 t, 199 M FCFA)", "9"],
+   355→        ["3", "Transition Q1→Q2", "10"],
+   356→        ["3.1", "Matrice de transition", "10"],
+   357→        ["3.2", "Bilan net Q1→Q2 (+276 M FCFA ciblé)", "11"],
+   358→        ["3.3", "Destin des clients fidèles Q1", "12"],
+   359→        ["4", "Plan d'action zéro achat", "13"],
+   360→        ["4.1", "Tableau récapitulatif des priorités", "13"],
+   361→        ["4.2", "Stratégie de récupération Région Ouest (13.3.9)", "14"],
+   362→        ["5", "Suivi S2 2026 (Juil-Déc)", "15"],
+   363→    ]
+   364→    story.append(make_table(toc_data, col_widths=[1.8*cm, 12*cm, 2.5*cm], header_row=True))
+   365→    story.append(Spacer(1, 0.6*cm))
+   366→    story.append(Paragraph(
+   367→        "<i>Ce document est une extraction dédiée de l'analyse complète BELGOCAM SA. Il se concentre sur le diagnostic "
+   368→        "zéro achat, l'estimation des pertes Q1, la dynamique de transition Q1→Q2 et le plan d'action de réactivation. "
+   369→        "L'analyse porte sur 1 397 clients externes (après exclusion de 35 clients internes) et 16 produits ciblés "
+   370→        "(tourteaux de soja + concentrés).</i>",
+   371→        BODY_ITALIC
+   372→    ))
+   373→    story.append(Spacer(1, 0.4*cm))
+   374→    story.append(Paragraph(
+   375→        "<b>Glossaire des abréviations :</b> Q1 = Trimestre 1 (Janvier-Mars 2026) ; Q2 = Trimestre 2 (Avril-Juin 2026) ; "
+   376→        "S1 = Semestre 1 (Janvier-Juin 2026) ; S2 = Semestre 2 (Juillet-Décembre 2026) ; CA = Chiffre d'Affaires ; "
+   377→        "HT = Hors Taxes ; FCFA = Franc CFA ; 20/80 = segmentation Pareto (20% des clients = 80% du CA).",
+   378→        SMALL
+   379→    ))
+   380→
+   381→    story.append(PageBreak())
+   382→
+   383→    # =====================================================================
+   384→    # SECTION 1 — ANALYSE ZÉRO ACHAT S1 2026
+   385→    # =====================================================================
+   386→    story.append(Paragraph("1. Analyse Zéro Achat S1 2026 (Janvier-Juin)", H1))
+   387→    story.append(section_divider())
+   388→
+   389→    # ----- 1.1 Vue d'ensemble -----
+   390→    story.append(Paragraph("1.1 Vue d'ensemble", H2))
+   391→    cards3 = [
+   392→        kpi_card("Zéro achat global Q1", "338", "clients (16 produits)"),
+   393→        kpi_card("Zéro achat concentrés Q1", "526", "clients (12 concentrés)"),
+   394→        kpi_card("20/80 en zéro achat Q1", "14", "clients prioritaires"),
+   395→        kpi_card("Jamais acquis (6 mois)", "118", "clients persistants"),
+   396→    ]
+   397→    story.append(kpi_row(cards3))
+   398→    story.append(Spacer(1, 0.4*cm))
+   399→
+   400→    story.append(Paragraph(
+   401→        "<b>État des lieux détaillé :</b> sur une base de <b>1 397 clients externes</b> analysés, "
+   402→        "<b>338 clients sont en zéro achat combiné (soja + concentré)</b> et <b>526 clients sont en zéro achat sur le concentré seul</b>. "
+   403→        "L'écart entre ces deux chiffres (526 − 338 = 188) correspond aux clients qui ont acheté du soja mais pas de concentré — "
+   404→        "ils représentent la cible prioritaire du bundle soja-concentrés. "
+   405→        "Les <b>14 clients du top 20/80 en zéro achat</b> sont répartis géographiquement comme suit : "
+   406→        "FAMLA (7), NDOBO (4), DJELENG (2), AHALA (1). "
+   407→        "FAMLA concentre donc la moitié des clients prioritaires à réactiver — c'est l'agence où l'enjeu de sauvetage est le plus fort.",
+   408→        BODY
+   409→    ))
+   410→    story.append(Spacer(1, 0.2*cm))
+   411→    story.append(Paragraph(
+   412→        "<b>Lecture dynamique S1 :</b> le gap de volume sur le soja a été <b>rattrapé et dépassé</b> grâce à la rupture concurrente "
+   413→        "(+46,5% YoY en volume TOURTEAUX). En revanche, le gap sur les concentrés <b>reste non comblé</b> — la dynamique positive du soja "
+   414→        "ne s'est pas transmise aux concentrés malgré le potentiel de cross-sell. "
+   415→        "<b>⚠️ Attention à la lecture de juin</b> : une légère amélioration est observée sur le nombre de clients zéro achat concentrés en juin, "
+   416→        "mais elle est <b>trompeuse</b> — elle s'explique par le retour de certains clients chez BELGOCAM <b>faute de stock concurrent</b>, "
+   417→        "non par une fidélisation réelle. Ces clients repartiront chez le concurrent dès que son stock sera reconstitué. "
+   418→        "La fenêtre d'opportunité commerciale est donc <b>limitée dans le temps</b> — d'où l'urgence d'agir maintenant.",
+   419→        BODY_BOLD
+   420→    ))
+   421→
+   422→    story.append(PageBreak())
+   423→
+   424→    # ----- 1.2 Top 14 clients 20/80 prioritaires -----
+   425→    story.append(Paragraph("1.2 Top 14 clients 20/80 prioritaires à réactiver", H2))
+   426→    story.append(Paragraph(
+   427→        "Ces 14 clients font partie du top 20/80 (★) mais n'ont acheté AUCUN produit ciblé en Q1. "
+   428→        "Ils sont à recontacter en priorité absolue pendant la rupture concurrente de soja.",
+   429→        BODY
+   430→    ))
+   431→    top14_data = [
+   432→        ["N°", "Client", "Agence", "CA 6 mois (FCFA)", "Perte Q1 (FCFA)", "Priorité"],
+   433→        ["1", "SIGHELO SARL", "NDOBO", "23 680 000", "23 680 000", "ÉLEVÉE"],
+   434→        ["2", "COMPAGNIE FERMIERE CAMEROUNAISE", "NDOBO", "21 000 000", "21 000 000", "ÉLEVÉE"],
+   435→        ["3", "TEIKING JEAN MARIE", "FAMLA", "20 822 000", "19 632 000", "ÉLEVÉE"],
+   436→        ["4", "FEUDJIO BACK ARMEL", "FAMLA", "17 460 000", "17 460 000", "ÉLEVÉE"],
+   437→        ["5", "KENMEGNE ALAIN", "FAMLA", "20 584 000", "16 600 000", "ÉLEVÉE"],
+   438→        ["6", "STE SATI SARL", "NDOBO", "13 600 000", "13 600 000", "ÉLEVÉE"],
+   439→        ["7", "FOTSO VINCENT", "FAMLA", "17 589 000", "13 464 000", "ÉLEVÉE"],
+   440→        ["8", "DJOUSSI AURORE FLORINDA", "FAMLA", "13 280 000", "13 280 000", "ÉLEVÉE"],
+   441→        ["9", "SADO", "DJELENG", "12 320 000", "12 320 000", "ÉLEVÉE"],
+   442→        ["10", "ETS MEKATALEO", "DJELENG", "12 424 250", "11 975 000", "ÉLEVÉE"],
+   443→        ["11", "MAKOUGANG KEUMBOU HERMINE", "FAMLA", "12 377 600", "11 922 600", "ÉLEVÉE"],
+   444→        ["12", "BAHO", "FAMLA", "14 234 500", "10 920 000", "ÉLEVÉE"],
+   445→        ["13", "MAKUETE Epse MANFOUO EDITH", "NDOBO", "15 400 000", "—", "FAIBLE"],
+   446→        ["14", "TChouabe siakam therese", "AHALA", "13 183 000", "—", "FAIBLE"],
+   447→    ]
+   448→    story.append(make_table(top14_data, col_widths=[0.8*cm, 5.5*cm, 2.5*cm, 3.2*cm, 3.2*cm, 2.6*cm], font_size=8))
+   449→    story.append(Spacer(1, 0.2*cm))
+   450→    story.append(Paragraph(
+   451→        "<b>Concentration géographique :</b> FAMLA (7 clients), NDOBO (4 clients), DJELENG (2 clients), AHALA (1). "
+   452→        "Perte Q1 cumulée des 12 premiers = 173 M FCFA. Action commerciale territoriale à organiser agence par agence.",
+   453→        BODY_BOLD
+   454→    ))
+   455→
+   456→    story.append(PageBreak())
+   457→
+   458→    # ----- 1.3 Zéro achat par agence -----
+   459→    story.append(Paragraph("1.3 Zéro achat par agence", H2))
+   460→    story.append(Paragraph(
+   461→        "Répartition des clients zéro achat Q1 (ciblé) par agence principale, avec décomposition 20/80 vs autres.",
+   462→        BODY
+   463→    ))
+   464→    ag_za_data = [
+   465→        ["Agence", "Total clients", "Actifs Q1", "Zéro achat 20/80", "Zéro achat autres", "Total zéro achat", "% zéro achat"],
+   466→        ["FAMLA", "293", "237", "7", "49", "56", "19,1%"],
+   467→        ["MESSASSI", "167", "111", "0", "56", "56", "33,5%"],
+   468→        ["NDOBO", "154", "109", "4", "41", "45", "29,2%"],
+   469→        ["DJELENG", "107", "80", "2", "25", "27", "25,2%"],
+   470→        ["NGAOUNDERE", "91", "60", "0", "31", "31", "34,1%"],
+   471→        ["Autres agences", "647", "525", "1", "121", "122", "18,9%"],
+   472→        ["TOTAL", "1 397", "1 022", "14", "324", "338", "24,9%"],
+   473→    ]
+   474→    story.append(make_table(ag_za_data, col_widths=[3.2*cm, 1.8*cm, 1.6*cm, 2.2*cm, 2*cm, 2.2*cm, 1.6*cm]))
+   475→    story.append(Spacer(1, 0.3*cm))
+   476→    # Chart: Zero achat par agence
+   477→    chart_path = '/home/z/my-project/scripts/pdf_charts/chart4_zero_agence.png'
+   478→    if os.path.exists(chart_path):
+   479→        img = Image(chart_path, width=15*cm, height=8.3*cm)
+   480→        story.append(img)
+   481→        story.append(Paragraph("Figure 1 — Répartition zéro achat Q1 (ciblé) par agence", CAPTION))
+   482→        story.append(Spacer(1, 0.2*cm))
+   483→    story.append(Paragraph(
+   484→        "<b>Constat :</b> MESSASSI et NGAOUNDERE affichent un taux de zéro achat critique (≥33%), alors qu'aucun client 20/80 "
+   485→        "n'est en zéro achat dans ces agences. Cela suggère un problème de couverture commerciale sur les clients moyens — "
+   486→        "potentiellement un sous-dimensionnement de l'effectif commercial ou un manque de visibilité locale. "
+   487→        "FAMLA concentre la moitié des clients 20/80 en zéro achat (7 sur 14), ce qui en fait l'agence prioritaire pour l'action de sauvetage.",
+   488→        BODY
+   489→    ))
+   490→
+   491→    story.append(PageBreak())
+   492→
+   493→    # ----- 1.4 Zéro achat concentrés -----
+   494→    story.append(Paragraph("1.4 Zéro achat concentrés (analyse distincte)", H2))
+   495→    story.append(Paragraph(
+   496→        "526 clients n'ont acheté aucun concentré en Q1 (vs 338 sur le ciblé global). La différence (188 clients) correspond "
+   497→        "aux clients qui ont acheté du soja en Q1 mais pas de concentrés — ce sont les cibles idéales pour une action de "
+   498→        "cross-sell vers les concentrés.",
+   499→        BODY
+   500→    ))
+   501→    za_c_data = [
+   502→        ["Catégorie", "Nb clients", "Dont 20/80", "Action"],
+   503→        ["Zéro achat ciblé Q1 (16 produits)", "338", "14", "Réactivation complète (soja + concentrés)"],
+   504→        ["Zéro achat concentrés Q1 (12 produits)", "526", "41", "Cross-sell concentrés (soja déjà acheté pour 188)"],
+   505→        ["Jamais acheté de concentrés en 6 mois", "≈ 380", "—", "Prospection longue — offre découverte"],
+   506→    ]
+   507→    story.append(make_table(za_c_data, col_widths=[6*cm, 2.5*cm, 2.5*cm, 6.5*cm]))
+   508→    story.append(Spacer(1, 0.3*cm))
+   509→    story.append(Paragraph(
+   510→        "<b>Insight stratégique :</b> les 188 clients qui achètent du soja mais pas de concentrés sont la cible #1 du cross-sell concentrés. "
+   511→        "Ils connaissent déjà BELGOCAM, ils ont une activité d'élevage, mais ils ne consomment pas le produit le plus marginal. "
+   512→        "Une offre bundle \"soja + concentrés préférentiels\" pourrait convertir une partie significative de ces 188 clients.",
+   513→        BODY_BOLD
+   514→    ))
+   515→
+   516→    story.append(PageBreak())
+   517→
+   518→    # =====================================================================
+   519→    # SECTION 2 — PERTES Q1 ESTIMÉES
+   520→    # =====================================================================
+   521→    story.append(Paragraph("2. Pertes Q1 estimées", H1))
+   522→    story.append(section_divider())
+   523→
+   524→    # ----- 2.1 Méthode de calcul -----
+   525→    story.append(Paragraph("2.1 Méthode de calcul (fréquence d'achat)", H2))
+   526→    story.append(Paragraph(
+   527→        "La perte Q1 estimée pour chaque client \"zéro achat\" est calculée à partir de son comportement Q2, en tenant compte de sa fréquence d'achat :",
+   528→        BODY
+   529→    ))
+   530→    story.append(Paragraph(
+   531→        "<b>Perte Q1 = Σ(moyenne mensuelle par produit) × Fréquence × 3 mois</b>",
+   532→        BODY_BOLD
+   533→    ))
+   534→    story.append(Paragraph(
+   535→        "où :<br/>"
+   536→        "• <b>Moyenne mensuelle par produit P</b> = (volume total Q2 du produit P) / (nombre de mois Q2 où P a été acheté)<br/>"
+   537→        "• <b>Fréquence</b> = (nombre de mois Q2 avec achat de la catégorie ciblée) / 3<br/>"
+   538→        "• <b>3 mois</b> = nombre de mois \"perdus\" en Q1 (Jan-Mar)",
+   539→        BODY
+   540→    ))
+   541→    story.append(Paragraph(
+   542→        "Cette méthode permet de distinguer un client qui aurait acheté tous les mois (fréquence = 1, perte élevée) "
+   543→        "d'un client occasionnel qui n'aurait acheté qu'un mois sur trois (fréquence = 0,33, perte plus faible).",
+   544→        BODY
+   545→    ))
+   546→
+   547→    # ----- 2.2 Résultats agrégés -----
+   548→    story.append(Paragraph("2.2 Résultats agrégés", H2))
+   549→    story.append(Paragraph(
+   550→        "Synthèse des pertes Q1 estimées par segment client (base 1 397 clients externes analysés) :",
+   551→        BODY
+   552→    ))
+   553→    pertes_agg_data = [
+   554→        ["Catégorie", "Clients", "Volume concerné (t)", "CA concerné (FCFA)", "Lecture"],
+   555→        ["Récupérables (actifs Q1+Q2)", "850", "≈ 16 721", "≈ 7,02 Md", "Cœur de clientèle stable — à fidéliser"],
+   556→        ["Zéro achat (ciblé Q1)", "338", "1 598,66", "580 819 762", "Perte Q1 à récupérer via réactivation"],
+   557→        ["Churned (actifs Q1 → zéro Q2)", "192", "758,01", "273 296 995", "Perte sèche — reconquête prioritaire"],
+   558→        ["TOTAL", "1 380", "≈ 19 078", "≈ 7,87 Md", "Base de pilotage du plan d'action"],
+   559→    ]
+   560→    story.append(make_table(pertes_agg_data, col_widths=[4.5*cm, 1.6*cm, 2.6*cm, 3.2*cm, 4.9*cm], font_size=8))
+   561→    story.append(Spacer(1, 0.3*cm))
+   562→    story.append(Paragraph(
+   563→        "<b>581 millions FCFA</b> de CA potentiel perdu en Q1 sur les seuls clients zéro achat global. "
+   564→        "C'est l'équivalent de 80% du CA total 6 mois de ces mêmes clients, ce qui démontre l'ampleur de l'opportunité commerciale. "
+   565→        "À cela s'ajoutent 273 M FCFA perdus sur les 192 clients churned Q1→Q2 — soit un enjeu total de <b>≈ 854 M FCFA</b>.",
+   566→        BODY_BOLD
+   567→    ))
+   568→
+   569→    story.append(PageBreak())
+   570→
+   571→    # ----- 2.3 Top 10 pertes par client -----
+   572→    story.append(Paragraph("2.3 Top 10 pertes par client (ciblé global)", H2))
+   573→    top10_data = [
+   574→        ["N°", "Client", "Agence", "Région", "Fréquence Q2", "Perte Vol. (t)", "Perte CA (FCFA)"],
+   575→        ["1", "SIGHELO SARL", "NDOBO", "Littoral", "0,33 (1 mois)", "74,00", "23 680 000"],
+   576→        ["2", "TEIKING JEAN MARIE", "FAMLA", "Ouest", "0,67 (2 mois)", "61,00", "19 632 000"],
+   577→        ["3", "COMPAGNIE FERMIERE CAM.", "NDOBO", "Littoral", "0,33 (1 mois)", "60,00", "21 000 000"],
+   578→        ["4", "FEUDJIO BACK ARMEL", "FAMLA", "Ouest", "0,67 (2 mois)", "55,00", "17 460 000"],
+   579→        ["5", "KENMEGNE ALAIN", "FAMLA", "Ouest", "0,33 (1 mois)", "50,00", "16 600 000"],
+   580→        ["6", "FOTSO VINCENT", "FAMLA", "Ouest", "1,00 (3 mois)", "42,00", "13 464 000"],
+   581→        ["7", "DJOUSSI AURORE FLORINDA", "FAMLA", "Ouest", "0,33 (1 mois)", "40,00", "13 280 000"],
+   582→        ["8", "STE SATI SARL", "NDOBO", "Littoral", "0,33 (1 mois)", "40,00", "13 600 000"],
+   583→        ["9", "STE IPACAM & FILS", "MESSASSI", "Centre", "1,00 (3 mois)", "36,75", "14 754 000"],
+   584→        ["10", "BAHO", "FAMLA", "Ouest", "0,33 (1 mois)", "35,00", "10 920 000"],
+   585→    ]
+   586→    story.append(make_table(top10_data, col_widths=[0.8*cm, 4*cm, 1.5*cm, 1.5*cm, 2.2*cm, 2*cm, 3*cm], font_size=7.5))
+   587→    story.append(Spacer(1, 0.3*cm))
+   588→    # Chart: Top 10 pertes
+   589→    chart_path = '/home/z/my-project/scripts/pdf_charts/chart3_top10_pertes.png'
+   590→    if os.path.exists(chart_path):
+   591→        img = Image(chart_path, width=15*cm, height=8.3*cm)
+   592→        story.append(img)
+   593→        story.append(Paragraph("Figure 2 — Top 10 pertes Q1 (clients zéro achat global, en millions FCFA)", CAPTION))
+   594→
+   595→    story.append(PageBreak())
+   596→
+   597→    # ----- 2.4 Lecture impact fréquence -----
+   598→    story.append(Paragraph("2.4 Lecture de l'impact de la fréquence", H2))
+   599→    story.append(Paragraph(
+   600→        "La comparaison entre SIGHELO SARL et FOTSO VINCENT illustre bien l'effet de la fréquence sur le calcul de perte :",
+   601→        BODY
+   602→    ))
+   603→    freq_compare = [
+   604→        ["Client", "Moy. mens. Q2", "Fréquence Q2", "Perte Q1 (t)", "Lecture"],
+   605→        ["SIGHELO SARL", "74,00 t", "0,33 (1 mois/3)", "74,00 t", "Gros volume ponctuel — 1 mois aurait suffi"],
+   606→        ["FOTSO VINCENT", "14,00 t", "1,00 (3 mois/3)", "42,00 t", "Petit volume régulier — 3 mois pleins auraient été faits"],
+   607→        ["TEIKING JEAN MARIE", "30,50 t", "0,67 (2 mois/3)", "61,00 t", "Volume moyen régulier — 2 mois sur 3"],
+   608→    ]
+   609→    story.append(make_table(freq_compare, col_widths=[4*cm, 2.8*cm, 3*cm, 2.5*cm, 4.7*cm]))
+   610→    story.append(Spacer(1, 0.3*cm))
+   611→    story.append(Paragraph(
+   612→        "<b>Insight :</b> un client à haute fréquence d'achat (FOTSO, 3/3 mois) est plus \"récupérable\" à court terme "
+   613→        "qu'un client à faible fréquence mais gros volume (SIGHELO, 1/3 mois). "
+   614→        "Les actions de réactivation doivent donc prioriser en premier lieu les clients à forte fréquence Q2, "
+   615→        "qui démontrent un besoin d'achat récurrent.",
+   616→        BODY
+   617→    ))
+   618→
+   619→    # ----- 2.5 Pertes sur concentrés -----
+   620→    story.append(Paragraph("2.5 Pertes sur concentrés (296 t, 199 M FCFA)", H2))
+   621→    story.append(Paragraph(
+   622→        "Sur les 526 clients zéro achat concentrés en Q1, la perte estimée est de <b>296 tonnes et 199 millions FCFA</b>. "
+   623→        "C'est moins que sur le ciblé global (car certains de ces clients ont quand même acheté du soja), "
+   624→        "mais c'est plus préoccupant stratégiquement car les concentrés sont le cœur de marge.",
+   625→        BODY
+   626→    ))
+   627→    story.append(Paragraph(
+   628→        "<b>Top 5 pertes sur concentrés :</b>",
+   629→        BODY_BOLD
+   630→    ))
+   631→    top5_conc = [
+   632→        ["Client", "Fréquence Q2", "Perte Volume (t)", "Perte CA (FCFA)"],
+   633→        ["SOCIETE COOPERATIVE SIMPLIFIEE DATCHIO", "0,67", "15,80", "10 114 000"],
+   634→        ["PROVENDERIE ELI EMONBA 2", "0,67", "10,00", "6 700 000"],
+   635→        ["PVD LE GROSSISTE SARL", "1,00", "9,00", "5 940 000"],
+   636→        ["STE IPACAM & FILS", "1,00", "9,00", "5 985 000"],
+   637→        ["MOTSOU DJEUMAKOU VICTOR", "1,00", "8,40", "6 048 000"],
+   638→    ]
+   639→    story.append(make_table(top5_conc, col_widths=[6*cm, 3*cm, 3.5*cm, 4*cm]))
+   640→    story.append(Spacer(1, 0.3*cm))
+   641→    story.append(Paragraph(
+   642→        "Ces 5 clients représentent à eux seuls 52 tonnes de perte concentrés, soit ~17% de la perte totale concentrés. "
+   643→        "Les clients \"PVD LE GROSSISTE\" et \"STE IPACAM\" sont à fréquence maximale (1,00) et donc prioritaires pour réactivation.",
+   644→        BODY
+   645→    ))
+   646→
+   647→    story.append(PageBreak())
+   648→
+   649→    # =====================================================================
+   650→    # SECTION 3 — TRANSITION Q1→Q2
+   651→    # =====================================================================
+   652→    story.append(Paragraph("3. Transition Q1→Q2", H1))
+   653→    story.append(section_divider())
+   654→
+   655→    # ----- 3.1 Matrice de transition -----
+   656→    story.append(Paragraph("3.1 Matrice de transition Q1→Q2 (16 produits ciblés)", H2))
+   657→    matrice = [
+   658→        ["", "Q2 : Zéro achat", "Q2 : Active", "Total Q1"],
+   659→        ["Q1 : Zéro achat", "118 (persistants)", "234 (réactivés) ★", "352"],
+   660→        ["Q1 : Active", "192 (churned) ⚠", "850 (retenus)", "1 042"],
+   661→        ["Total Q2", "310", "1 084", "1 397"],
+   662→    ]
+   663→    story.append(make_table(matrice, col_widths=[3.5*cm, 4*cm, 4.5*cm, 3*cm]))
+   664→    story.append(Spacer(1, 0.3*cm))
+   665→    # Chart: Segments de transition
+   666→    chart_path = '/home/z/my-project/scripts/pdf_charts/chart2_segments.png'
+   667→    if os.path.exists(chart_path):
+   668→        img = Image(chart_path, width=14*cm, height=7.9*cm)
+   669→        story.append(img)
+   670→        story.append(Paragraph("Figure 3 — Segments de transition Q1 → Q2 (16 produits ciblés)", CAPTION))
+   671→        story.append(Spacer(1, 0.2*cm))
+   672→    story.append(Paragraph(
+   673→        "<b>Quatre segments :</b><br/>"
+   674→        "• <b>Persistants (118)</b> : clients qui n'ont jamais acheté de ciblé sur 6 mois — opportunité non exploitée, à prospecter.<br/>"
+   675→        "• <b>Réactivés (234)</b> : GAIN — clients sans achat Q1 qui ont acheté en Q2. CA généré : 549,7 M FCFA.<br/>"
+   676→        "• <b>Retenus (850)</b> : STABLES — cœur de clientèle, achats Q1 et Q2.<br/>"
+   677→        "• <b>Churned (192)</b> : PERTE — clients actifs Q1 devenus inactifs Q2. CA perdu : 273,3 M FCFA.",
+   678→        BODY
+   679→    ))
+   680→
+   681→    story.append(PageBreak())
+   682→
+   683→    # ----- 3.2 Bilan net Q1→Q2 -----
+   684→    story.append(Paragraph("3.2 Bilan net Q1→Q2 (+276 M FCFA ciblé)", H2))
+   685→    bilan_data = [
+   686→        ["", "Clients", "Volume (t)", "CA (FCFA)"],
+   687→        ["GAIN — Réactivés (Q1 Zéro achat → Q2 Active)", "234", "+1 524,74", "+549 689 847"],
+   688→        ["PERTE — Churned (Q1 Active → Q2 Zéro achat)", "192", "-758,01", "-273 296 995"],
+   689→        ["BILAN NET", "+42", "+766,73", "+276 392 852"],
+   690→    ]
+   691→    story.append(make_table(bilan_data, col_widths=[7*cm, 2.5*cm, 3*cm, 3.5*cm]))
+   692→    story.append(Spacer(1, 0.3*cm))
+   693→    story.append(Paragraph(
+   694→        "<b>Bilan positif :</b> BELGOCAM a gagné <b>276 millions FCFA nets</b> sur les produits ciblés entre Q1 et Q2. "
+   695→        "Le gain de réactivation (549 M) dépasse largement la perte par churn (273 M). "
+   696→        "Cependant, ce bilan est principalement porté par le soja — le bilan concentrés seul est beaucoup plus fragile (+52 M FCFA seulement).",
+   697→        BODY_BOLD
+   698→    ))
+   699→    story.append(Spacer(1, 0.2*cm))
+   700→    # Chart: Bilan net
+   701→    chart_path = '/home/z/my-project/scripts/pdf_charts/chart5_bilan_net.png'
+   702→    if os.path.exists(chart_path):
+   703→        img = Image(chart_path, width=14*cm, height=7.9*cm)
+   704→        story.append(img)
+   705→        story.append(Paragraph("Figure 4 — Bilan net Q1 → Q2 : Ciblé vs Concentrés (millions FCFA)", CAPTION))
+   706→
+   707→    story.append(PageBreak())
+   708→
+   709→    # ----- 3.3 Destin des clients fidèles Q1 -----
+   710→    story.append(Paragraph("3.3 Destin des clients fidèles Q1 (récupérés, déclin, churned)", H2))
+   711→    story.append(Paragraph(
+   712→        "Sur les 527 clients fidèles en Q1 (3 mois d'achat ciblé), voici leur destin en Q2 :",
+   713→        BODY
+   714→    ))
+   715→    fidel_data = [
+   716→        ["Statut Q2", "Nb clients", "% des Q1 Fidèles", "Commentaire"],
+   717→        ["Q2 Fidèle (3 mois) — récupérés", "420", "79,7%", "Maintenus — cœur de clientèle stable"],
+   718→        ["Q2 Semi-fidèle (1-2 mois) — déclin", "97", "18,4%", "Déclin de fréquence — à surveiller (risque churn)"],
+   719→        ["Q2 Zéro achat (churned)", "10", "1,9%", "Perte sèche — anciens fidèles devenus inactifs"],
+   720→    ]
+   721→    story.append(make_table(fidel_data, col_widths=[5*cm, 2.5*cm, 3*cm, 6*cm]))
+   722→    story.append(Spacer(1, 0.3*cm))
+   723→    story.append(Paragraph(
+   724→        "Les <b>97 fidèles en déclin (18,4%)</b> sont un signal d'alerte pré-churn à traiter en priorité. "
+   725→        "Une visite physique par le commercial dédié permettrait de comprendre la cause du déclin "
+   726→        "(insatisfaction, concurrence, changement d'activité) avant que le client ne churn totalement.",
+   727→        BODY
+   728→    ))
+   729→    story.append(Spacer(1, 0.3*cm))
+   730→    story.append(Paragraph(
+   731→        "<b>Lecture stratégique :</b> le taux de churn des fidèles Q1 est de 1,9% sur le ciblé global, "
+   732→        "mais il grimpe à 3,1% sur les concentrés seuls — les concentrés sont donc plus sensibles à l'attrition. "
+   733→        "Le suivi rapproché des 97 fidèles en déclin est la meilleure prévention contre le churn structurel.",
+   734→        BODY_BOLD
+   735→    ))
+   736→
+   737→    story.append(PageBreak())
+   738→
+   739→    # =====================================================================
+   740→    # SECTION 4 — PLAN D'ACTION ZÉRO ACHAT
+   741→    # =====================================================================
+   742→    story.append(Paragraph("4. Plan d'action zéro achat", H1))
+   743→    story.append(section_divider())
+   744→
+   745→    # ----- 4.1 Tableau récapitulatif des priorités -----
+   746→    story.append(Paragraph("4.1 Tableau récapitulatif des priorités", H2))
+   747→    story.append(Paragraph(
+   748→        "Plan d'action priorisé par niveau d'urgence — couvre la réactivation des 14 clients 20/80, le recontact des churned, "
+   749→        "le bundle soja-concentrés et la prospection des persistants.",
+   750→        BODY
+   751→    ))
+   752→    rec_data = [
+   753→        ["Priorité", "Axe d'action", "Nb clients", "Délai", "Pilote"],
+   754→        ["🔴 CRITIQUE", "Sauvetage des 14 clients 20/80 en zéro achat Q1 (ciblé + concentrés)", "14", "30 j", "Directeur Commercial + Responsables agences"],
+   755→        ["🔴 CRITIQUE", "Bundle soja-concentrés obligatoire : 3 sacs soja pour 1 sac concentré sur chaque commande", "Tous", "Immédiat", "Direction Commerciale"],
+   756→        ["🟠 ÉLEVÉE", "Recontact des 192 clients churned (actifs Q1 → Zéro achat Q2) par SAV + commercial", "192", "15 j", "SAV + Commerciaux terrain"],
+   757→        ["🟠 ÉLEVÉE", "Sauvetage des 97 anciens fidèles Q1 en déclin Q2 — visite physique + suivi SAV", "97", "30 j", "Commerciaux + SAV"],
+   758→        ["🟠 ÉLEVÉE", "Suivi SAV systématique des clients concentrés à risque (appels de satisfaction mensuels)", "850+", "Continu", "Service Après-Vente"],
+   759→        ["🟡 MOYENNE", "Prospection des 118 clients jamais acquis (persistants zéro achat)", "118", "60 j", "Marketing + Commerciaux"],
+   760→        ["🟡 MOYENNE", "Capitalisation sur les 234 clients réactivés Q2 (étude qualitative)", "234", "45 j", "Marketing + Direction commerciale"],
+   761→        ["🟡 MOYENNE", "Motivation de l'équipe commerciale : primes liées aux ventes de concentrés (objectif individuel)", "Tous", "30 j", "Direction + RH"],
+   762→        ["🟢 STRUCTURANTE", "Analyse du déclin volume concentrés (segment retenu -248 t) + benchmark tarifaire", "672", "90 j", "Direction Produit + Direction Commerciale"],
+   763→    ]
+   764→    story.append(make_table(rec_data, col_widths=[2.5*cm, 6.5*cm, 1.2*cm, 1.3*cm, 5.5*cm], font_size=7))
+   765→    story.append(Spacer(1, 0.3*cm))
+   766→
+   767→    story.append(Paragraph(
+   768→        "<b>Synthèse du plan d'action :</b>",
+   769→        BODY_BOLD
+   770→    ))
+   771→    synth_pa = [
+   772→        ["Indicateur", "Valeur"],
+   773→        ["Enjeu total identifié (pertes Q1 + risques churn)", "≈ 854 M FCFA"],
+   774→        ["Gain potentiel (si réactivation complète des 20/80 zéro achat)", "≈ 175 M FCFA"],
+   775→        ["Nb total de clients concernés par une action prioritaire", "≈ 524 clients + 850+ suivis SAV"],
+   776→        ["Bundle soja-concentrés (ratio 3:1)", "Déploiement immédiat — toutes agences"],
+   777→        ["Suivi SAV clients concentrés", "2 ETP dédiés — appels mensuels 850+ clients"],
+   778→        ["Motivation équipe commerciale", "Primes sur concentrés + formation bundles (30 j)"],
+   779→        ["Horizon de mise en œuvre", "30-90 jours (priorités CRITIQUE et ÉLEVÉE sous 30 jours)"],
+   780→    ]
+   781→    story.append(make_table(synth_pa, col_widths=[8*cm, 9*cm]))
+   782→
+   783→    story.append(PageBreak())
+   784→
+   785→    # ----- 4.2 Stratégie de récupération Région Ouest (13.3.9) -----
+   786→    story.append(Paragraph("4.2 Stratégie de récupération — Région Ouest (13.3.9)", H2))
+   787→    story.append(Paragraph(
+   788→        "<b>Constat :</b> BELGOCAM dispose actuellement d'un avantage sur le soja dans la région Ouest (rupture concurrente). "
+   789→        "Cet avantage doit être exploité immédiatement, mais avec méthode.",
+   790→        BODY_BOLD
+   791→    ))
+   792→    story.append(Paragraph(
+   793→        "<b>Principes d'action :</b><br/>"
+   794→        "• <b>Conditionner l'accès soja à l'achat de concentré</b> — transformer l'avantage soja en levier de cross-sell.<br/>"
+   795→        "• <b>Benchmarking prix concurrent indispensable</b> avant toute approche des éleveurs — "
+   796→        "ne pas se présenter sans connaître le positionnement tarifaire du concurrent.<br/>"
+   797→        "• <b>Déploiement séquentiel par zone, pas simultané</b> — se donner un délai par agence pour ajuster en fonction des retours terrain.<br/>"
+   798→        "• <b>Horizon maximal : 3 mois</b> pour implémenter les actions (pas 6 mois) — "
+   799→        "objectif : récupérer au moins 50% des zones cibles d'ici fin du semestre.",
+   800→        BODY
+   801→    ))
+   802→    story.append(Paragraph(
+   803→        "<b>⚠️ Risque majeur :</b> l'avantage concurrentiel n'est pas indéfini. Le concurrent peut reconstituer son stock à tout moment. "
+   804→        "La fenêtre d'action est <b>limitée et imprévisible</b> — d'où l'urgence du déploiement sous 3 mois.",
+   805→        BODY_BOLD
+   806→    ))
+   807→    story.append(Spacer(1, 0.2*cm))
+   808→    story.append(Paragraph(
+   809→        "<b>Scénarios de récupération sur les 14 clients top 20/80 :</b>",
+   810→        BODY_BOLD
+   811→    ))
+   812→    scenario_data = [
+   813→        ["Scénario", "Clients récupérés (sur 14)", "% récupération", "CA récupéré estimé", "Lecture"],
+   814→        ["🔴 Pessimiste", "4", "~10%", "≈ 34 M FCFA", "Rupture concurrente courte (1-2 mois)"],
+   815→        ["🟡 Réaliste", "8", "~30%", "≈ 68 M FCFA", "Rupture modérée (3-4 mois)"],
+   816→        ["🟢 Optimiste", "12", "~60%", "≈ 103 M FCFA", "Rupture prolongée (6+ mois)"],
+   817→    ]
+   818→    story.append(make_table(scenario_data, col_widths=[3*cm, 2.8*cm, 2.2*cm, 3*cm, 6*cm], font_size=8))
+   819→    story.append(Spacer(1, 0.3*cm))
+   820→    story.append(Paragraph(
+   821→        "<b>Action :</b> déployer la stratégie Ouest en séquentiel : <b>FAMLA en semaine 1</b> (7 clients 20/80 à réactiver), "
+   822→        "<b>DJELENG en semaine 2</b> (2 clients), puis extension vers les autres régions avec les apprentissages terrain.",
+   823→        BODY
+   824→    ))
+   825→    story.append(Spacer(1, 0.2*cm))
+   826→    story.append(Paragraph(
+   827→        "<b>Calendrier de déploiement séquentiel (3 mois) :</b>",
+   828→        BODY_BOLD
+   829→    ))
+   830→    cal_ouest = [
+   831→        ["Période", "Zone / Agence", "Action principale", "Cible"],
+   832→        ["Semaine 1", "FAMLA", "RDV direct commercial — 7 clients 20/80 zéro achat", "7 clients 20/80"],
+   833→        ["Semaine 2", "DJELENG", "Visite physique + offre bundle soja-concentrés", "2 clients 20/80"],
+   834→        ["Semaines 3-4", "NDOBO", "Recontact 4 clients 20/80 + 41 zéro achat autres", "4 clients 20/80 + 41"],
+   835→        ["Mois 2", "AHALA + autres agences Ouest", "Extension avec apprentissages terrain", "1 client 20/80 + 121 autres"],
+   836→        ["Mois 3", "Toutes agences Ouest", "Consolidation + verrouillage contrats 6 mois", "Récupération ≥ 50% des zones cibles"],
+   837→    ]
+   838→    story.append(make_table(cal_ouest, col_widths=[2.2*cm, 3.5*cm, 7.5*cm, 4*cm], font_size=8))
+   839→
+   840→    story.append(PageBreak())
+   841→
+   842→    # =====================================================================
+   843→    # SECTION 5 — SUIVI S2 2026 (JUIL-DÉC)
+   844→    # =====================================================================
+   845→    story.append(Paragraph("5. Suivi S2 2026 (Juil-Déc)", H1))
+   846→    story.append(section_divider())
+   847→
+   848→    story.append(Paragraph(
+   849→        "Cette section suit l'évolution mensuelle des indicateurs zéro achat et l'efficacité du plan d'action. "
+   850→        "À chaque mise à jour des données, les valeurs réelles sont comparées à la référence S1 2026 pour mesurer "
+   851→        "l'impact des actions menées et ajuster le tir si nécessaire.",
+   852→        BODY
+   853→    ))
+   854→
+   855→    # ===== 5.1 Premier point de suivi — Juillet 2026 (BILAN DÉFINITIF AU 31/07) =====
+   856→    story.append(Paragraph("5.1 Premier point de suivi — Juillet 2026 (BILAN DÉFINITIF AU 31/07)", H2))
+   857→    story.append(Paragraph(
+   858→        "<b>Bilan définitif au 31 juillet 2026</b> — mois complet : 27 jours ouvrables (lun-sam) sur 27 (100% du mois). "
+   859→        "Ce bilan juillet complet n'est plus une projection : les chiffres ci-dessous sont le réel définitif du mois.",
+   860→        BODY_BOLD
+   861→    ))
+   862→
+   863→    # Tableau d'évolution des ventes par catégorie
+   864→    story.append(Paragraph("5.1.1 Évolution des ventes par catégorie — S1 vs Juillet (bilan complet)", H3))
+   865→    story.append(Paragraph(
+   866→        "Comparaison du volume réalisé et du CA par catégorie entre la moyenne mensuelle S1 2026 et le <b>bilan juillet complet</b> (27 jours ouvrables lun-sam, 01-31/07). Le Maïs est séparé des autres ingrédients (produit opportuniste).",
+   867→        BODY
+   868→    ))
+   869→
+   870→    evol_ventes_data = [
+   871→        ["Catégorie", "Moy. mensuelle S1 (t)", "Juil complet (t)", "vs S1 (%)", "Obj Juil (t)", "% atteinte obj"],
+   872→        ["TOURTEAUX", "4 844", "7 512", "+55%", "3 834", "196%"],
+   873→        ["CONCENTRES", "1 513", "1 820", "+20%", "1 715", "102%"],
+   874→        ["ALIMENT COMPLET", "102", "92", "-10%", "74", "124%"],
+   875→        ["INGREDIENTS (hors Maïs)", "84", "81", "-4%", "86", "94%"],
+   876→        ["MAÏS", "599", "0", "-100%", "—", "—"],
+   877→        ["PREMIX", "12", "11", "-8%", "9", "122%"],
+   878→        ["TOTAL", "7 154", "9 516", "+33%", "5 806", "164%"],
+   879→    ]
+   880→    story.append(make_table(evol_ventes_data, col_widths=[3*cm, 2.5*cm, 2.5*cm, 1.8*cm, 2*cm, 2.2*cm], font_size=7.5))
+   881→    story.append(Paragraph(
+   882→        "<i>* % atteinte objectif = réalisé juillet / objectif juillet × 100. Un % ≥ 100% signifie que l'objectif est atteint.</i>",
+   883→        ParagraphStyle('fn', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+   884→    ))
+   885→    story.append(Spacer(1, 0.3*cm))
+   886→    story.append(Paragraph(
+   887→        "<b>Lecture bilan juillet 2026 (au 31/07) :</b><br/>"
+   888→        "• <b>Volume global à 164% de l'objectif</b> — juillet dépasse largement l'objectif global, porté par les TOURTEAUX.<br/>"
+   889→        "• <b>TOURTEAUX à 196%</b> — la dynamique de rupture concurrente s'est maintenue tout le mois. 7 512 t vendues (vs 4 844 t en moyenne S1, +55%). <b>Aucun effet visible de la hausse +2 000 XAF/sac du 23/07 sur la consommation soja</b> — la fenêtre d'opportunité a primé sur l'effet prix.<br/>"
+   890→        "• <b>CONCENTRES à 102% — OBJECTIF DÉPASSÉ</b> ✅ — 1 820 t vendues (vs 1 715 t objectif, +105 t). C'est une <b>victoire nette</b> vs S1 (+20% vs moyenne S1 de 1 513 t). Le plan d'action a produit ses effets en fin de mois.<br/>"
+   891→        "• <b>PREMIX à 122%</b> — performance conforme à l'objectif.<br/>"
+   892→        "• <b>MAÏS à 0 t</b> — aucun achat en juillet (produit opportuniste, vendu uniquement sur disponibilité et demande).",
+   893→        BODY_BOLD
+   894→    ))
+   895→
+   896→    story.append(PageBreak())
+   897→
+   898→    # ===== 5.1.2 Évolution du portefeuille client — Analyse par habitudes d'achat =====
+   899→    story.append(Paragraph("5.1.2 Évolution du portefeuille client — Analyse par habitudes d'achat", H3))
+   900→    story.append(Paragraph(
+   901→        "Nous sommes au 31 juillet — <b>fin du mois</b>. Les clients à risque élevé sont maintenant considérés comme "
+   902→        "<b>churned juillet</b> (perte sèche sauf s'ils commandent en août). Le recensement final est le suivant.",
+   903→        BODY
+   904→    ))
+   905→
+   906→    habitudes_data = [
+   907→        ["Catégorie", "Définition", "Nb clients", "CA S1 (M)", "Action"],
+   908→        ["✅ Maintenus", "Clients S1 ayant acheté en juillet", "853", "14 975", "Base fidèle — 62%"],
+   909→        ["🔴 Churned risque élevé", "Jour d'achat habituel ≤ 21, pas d'achat juillet", "430", "1 476", "Recontact immédiat — perte probable"],
+   910→        ["🟡 Churned à surveiller", "Jour d'achat habituel 22-25, pas d'achat juillet", "46", "77", "Recontact immédiat — perte probable"],
+   911→        ["🟢 Pas inquiétant", "Jour d'achat habituel > 25, pas d'achat juillet", "40", "42", "Possible report début août"],
+   912→        ["TOTAL", "", "1 369", "16 570", ""],
+   913→    ]
+   914→    story.append(make_table(habitudes_data, col_widths=[3*cm, 5*cm, 1.8*cm, 2*cm, 4*cm], font_size=7.5))
+   915→    story.append(Spacer(1, 0.3*cm))
+   916→    story.append(Paragraph(
+   917→        "<b>Lecture par habitudes d'achat (bilan au 31/07) :</b><br/>"
+   918→        "• <b>853 clients maintenus (62%)</b> — ont acheté en juillet. Base fidèle, CA S1 = 14 975 M.<br/>"
+   919→        "• <b>430 clients churned à risque élevé</b> — ces clients achetaient habituellement avant le 21 du mois et n'ont pas commandé en juillet. "
+   920→        "<b>1 476 M FCFA de CA S1</b> sont perdus en juillet. Recontact immédiat nécessaire — préparer une campagne de reconquête pour août.<br/>"
+   921→        "• <b>46 clients churned à surveiller</b> — achètent habituellement entre le 22 et le 25. <b>77 M FCFA perdus</b>.<br/>"
+   922→        "• <b>40 clients pas inquiétants</b> — achètent en fin de mois (après le 25). 42 M FCFA — possible report début août.",
+   923→        BODY_BOLD
+   924→    ))
+   925→    story.append(Spacer(1, 0.3*cm))
+   926→
+   927→    # Top 10 clients à risque élevé
+   928→    story.append(Paragraph("5.1.3 Top 10 clients churned — recontact immédiat", H3))
+   929→    story.append(Paragraph(
+   930→        "Ces clients achetaient habituellement avant le 21 du mois mais n'ont pas commandé en juillet (au 31/07). "
+   931→        "Ils représentent un CA S1 cumulé de 57 M FCFA pour les 10 premiers.",
+   932→        BODY
+   933→    ))
+   934→
+   935→    top_risque_data = [
+   936→        ["#", "Client", "Agence", "Région", "CA S1 (M)", "Jour moy.", "Nb achats"],
+   937→        ["1", "TCHEUTCHOUA TCHINDA ERIC", "FAMLA", "Ouest", "11", "14", "124"],
+   938→        ["2", "GIC ESPOIR KELENG (POKAM MERLINE)", "FAMLA", "Ouest", "11", "15", "33"],
+   939→        ["3", "MALENDOMA DORIS TATIANA FLORE", "NDOBO", "Littoral", "8", "16", "25"],
+   940→        ["4", "METAFE GNITEYO SONYA M", "FAMLA", "Ouest", "8", "21", "11"],
+   941→        ["5", "JEUGO ALICE", "FAMLA", "Ouest", "7", "16", "62"],
+   942→        ["6", "SPC", "NDOBO", "Littoral", "4", "18", "—"],
+   943→        ["7", "WAFIN JOUDOM GAELLE (PROV WAFIN)", "MESSASSI", "Centre", "4", "14", "70"],
+   944→        ["8", "MBEKAP MERIME", "MESSASSI", "Centre", "3", "15", "80"],
+   945→        ["9", "YENDE MONGBET ZAKARIAOU", "FAMLA", "Ouest", "3", "14", "34"],
+   946→        ["10", "DONGMO MBOGUIA URSULE FLORENT", "DJELENG", "Ouest", "3", "17", "16"],
+   947→    ]
+   948→    story.append(make_table(top_risque_data, col_widths=[0.8*cm, 4.5*cm, 1.8*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm], font_size=7.5))
+   949→    story.append(Paragraph(
+   950→        "<b>Action :</b> ces 10 clients doivent être recontactés <b>aujourd'hui</b> par leur commercial. "
+   951→        "TCHEUTCHOUA (124 achats S1) et MBEKAP MERIME (80 achats) sont des clients très réguliers — "
+   952→        "leur silence en juillet est anormal et doit déclencher une alerte. FAMLA concentre 5 des 10 clients churned.",
+   953→        BODY_BOLD
+   954→    ))
+   955→
+   956→    story.append(Spacer(1, 0.4*cm))
+   957→
+   958→    # Bilan CA gagné / perdu
+   959→    story.append(Paragraph("5.1.4 Bilan CA — gagné vs perdu (bilan juillet complet)", H3))
+   960→    bilan_ca_data = [
+   961→        ["Indicateur", "Juillet complet", "Lecture"],
+   962→        ["CA clients maintenus (actifs juillet)", "14 975 M", "✅ Base fidèle, bon rythme"],
+   963→        ["CA churned à risque élevé (début de mois)", "1 476 M", "🔴 Perte sèche — reconquête prioritaire"],
+   964→        ["CA churned à surveiller (mi-mois)", "77 M", "🔴 Perte sèche — recontact"],
+   965→        ["CA pas inquiétant (clients fin de mois)", "42 M", "🟢 Possible report début août"],
+   966→        ["CA gagné (nouveaux clients)", "—", "⚠️ 66 nouveaux clients en juillet"],
+   967→    ]
+   968→    story.append(make_table(bilan_ca_data, col_widths=[6*cm, 2.5*cm, 7*cm], font_size=8))
+   969→    story.append(Spacer(1, 0.3*cm))
+   970→
+   971→    # Évolution concentrés
+   972→    story.append(Paragraph("5.1.5 Évolution spécifique concentrés — Bilan vs Objectif", H3))
+   973→    conc_evol_data = [
+   974→        ["Indicateur", "S1 2026", "Juillet complet", "Objectif Juil", "% atteinte"],
+   975→        ["Volume CONCENTRES (t)", "1 513", "1 820", "1 715", "102% ✅"],
+   976→        ["Clients acheteurs concentrés", "1 016", "≈ 780", "—", "—"],
+   977→        ["Clients concentrés maintenus", "—", "≈ 720 (71%)", "—", "—"],
+   978→        ["Clients concentrés churned (début de mois)", "—", "≈ 310", "—", "Recontact immédiat"],
+   979→        ["Nouveaux clients concentrés", "—", "≈ 55", "—", "—"],
+   980→    ]
+   981→    story.append(make_table(conc_evol_data, col_widths=[5.5*cm, 2.5*cm, 2.8*cm, 2.5*cm, 2.5*cm], font_size=8))
+   982→    story.append(Spacer(1, 0.3*cm))
+   983→    story.append(Paragraph(
+   984→        "<b>Lecture concentrés — BILAN VICTORIEUX :</b> sur 1 016 clients qui ont acheté des concentrés en S1, environ 720 (71%) ont acheté en juillet "
+   985→        "(<b>maintien de la base</b>). Surtout, le volume juillet atteint <b>1 820 t vs 1 715 t objectif (102%)</b> — l'objectif CONCENTRES est <b>DÉPASSÉ</b>. "
+   986→        "La dynamique de fin de mois (+20% vs moyenne S1) confirme l'efficacité du plan d'action concentrés. "
+   987→        "Les ≈310 clients concentrés churned doivent être recontactés en priorité pour la rentrée d'août.",
+   988→        BODY_BOLD
+   989→    ))
+   990→
+   991→    # Notes prix
+   992→    story.append(Spacer(1, 0.4*cm))
+   993→    story.append(Paragraph("5.1.6 Évolution des prix — Juillet 2026", H3))
+   994→    story.append(Paragraph(
+   995→        "<b>⚠️ Augmentations tarifaires intervenues en juillet 2026 :</b><br/>"
+   996→        "• <b>Soja (tourteaux)</b> : hausse de <b>+1 000 FCFA</b> en début de mois, puis <b>+2 000 FCFA supplémentaires</b> par sac de 50 kg à partir du <b>23/07/2026</b> — soit <b>+3 000 FCFA/sac cumulé</b> au total sur juillet.<br/>"
+   997→        "• <b>PREMIX</b> : hausse de <b>+3 000 FCFA</b> sur tout le territoire<br/><br/>"
+   998→        "<b>Bilan (au 31/07) :</b> le prix moyen soja est passé de 16 198 FCFA/sac (S1) à 18 787 FCFA/sac en juillet (soit +15,9%), reflétant l'effet combiné des deux hausses (9 derniers jours à +3 000 FCFA/sac cumulé). <br/>"
+   999→        "<b>Pas d'effet visible sur la consommation :</b> le volume TOURTEAUX juillet est de 7 512 t (vs 4 844 t en moyenne S1, +55%). La hausse +2 000 XAF/sac (effective 23/07) n'a pas ralenti la consommation soja sur le mois — la fenêtre d'opportunité (rupture concurrente) a largement primé sur l'effet prix.<br/>"
+  1000→        "<b>Risque août :</b> si le concurrent reconstitue ses stocks, l'effet prix pourrait devenir dominant. Le suivi d'août devra vérifier si ces hausses entraînent une accélération du churn.<br/><br/>"
+  1001→        "<b>Croisement avec l'analyse des habitudes :</b> parmi les 430 clients churned à risque élevé (début de mois), "
+  1002→        "il faut vérifier si la hausse du prix du soja est un facteur explicatif. Un appel téléphonique permet de distinguer "
+  1003→        "les clients partis chez la concurrence (prix) de ceux qui retardent simplement leur commande.",
+  1004→        BODY_BOLD
+  1005→    ))
+  1006→
+  1007→    story.append(Spacer(1, 0.4*cm))
+  1008→
+  1009→    # ===== 5.1.7 Corrélation Booster × Concentrés =====
+  1010→    story.append(Paragraph("5.1.7 Corrélation Chick/Piglet Booster × Concentrés — Évolution S1 → Juillet", H3))
+  1011→    story.append(Paragraph(
+  1012→        "Analyse du cross-sell entre les aliments complets (Chick/Piglet Booster) et les concentrés. "
+  1013→        "Permet de mesurer si le plan d'action de cross-sell produit des résultats.",
+  1014→        BODY
+  1015→    ))
+  1016→
+  1017→    booster_data = [
+  1018→        ["Indicateur", "S1 2026", "Juillet complet", "Évolution"],
+  1019→        ["Clients Booster (ALIMENT COMPLET)", "494", "212", "—"],
+  1020→        ["Booster + Concentrés (cross-sell)", "357 (72%)", "157 (74%)", "✅ +2 points"],
+  1021→        ["Booster ONLY (pas de concentrés)", "137 (28%)", "55 (26%)", "✅ -2 points"],
+  1022→        ["✅ Booster-only S1 → ont commencé conc. en juillet", "—", "12", "Conversion"],
+  1023→        ["⚠️ Booster+Conc S1 → devenus booster-only en juillet", "—", "11", "Régression"],
+  1024→    ]
+  1025→    story.append(make_table(booster_data, col_widths=[6*cm, 2.8*cm, 2.8*cm, 4*cm], font_size=7.5))
+  1026→    story.append(Spacer(1, 0.2*cm))
+  1027→    story.append(Paragraph(
+  1028→        "<b>Lecture Booster × Concentrés :</b><br/>"
+  1029→        "• Le taux de cross-sell Booster→Concentrés <b>progressse à 73%</b> (+1 pt vs S1) — <b>amélioration</b>.<br/>"
+  1030→        "• <b>11 clients</b> qui achetaient Booster + Concentrés en S1 n'achètent plus que le Booster en juillet — régression contenue.<br/>"
+  1031→        "• <b>12 clients</b> Booster-only ont été convertis vers les concentrés — le cross-sell fonctionne.<br/>"
+  1032→        "• Le bundle Booster+Concentrés s'améliore en fin de mois.",
+  1033→        BODY_BOLD
+  1034→    ))
+  1035→
+  1036→    story.append(Spacer(1, 0.3*cm))
+  1037→
+  1038→    # ===== 5.1.8 Clients soja sans concentrés =====
+  1039→    story.append(Paragraph("5.1.8 Clients soja sans concentrés — Évolution du cross-sell", H3))
+  1040→    story.append(Paragraph(
+  1041→        "Suivi du taux de cross-sell soja→concentrés. C'est l'indicateur clé du bundle 3:1 — "
+  1042→        "chaque commande de soja doit inclure au moins 1 sac de concentré.",
+  1043→        BODY
+  1044→    ))
+  1045→
+  1046→    soja_conc_data = [
+  1047→        ["Indicateur", "S1 2026", "Juillet complet", "Évolution"],
+  1048→        ["Clients acheteurs soja", "1 215", "804", "—"],
+  1049→        ["Soja + Concentrés (cross-sell)", "958 (79%)", "660 (82%)", "✅ +3 points"],
+  1050→        ["Soja ONLY (pas de concentrés)", "257 (21%)", "144 (18%)", "✅ -3 points"],
+  1051→        ["✅ Soja-only S1 → ont commencé concentrés en juillet", "—", "49", "Conversion"],
+  1052→        ["⚠️ Soja+Conc S1 → arrêt concentrés en juillet", "—", "68", "Régression"],
+  1053→    ]
+  1054→    story.append(make_table(soja_conc_data, col_widths=[6*cm, 2.8*cm, 2.8*cm, 4*cm], font_size=7.5))
+  1055→    story.append(Spacer(1, 0.2*cm))
+  1056→    story.append(Paragraph(
+  1057→        "<b>Lecture soja → concentrés — BILAN POSITIF :</b><br/>"
+  1058→        "• <b>Le taux de cross-sell soja→concentrés progresse à 82%</b> (+3 pts vs S1, +1 pt vs 31/07 matinale) — <b>amélioration nette</b> : le bundle 3:1 a tenu en fin de mois.<br/>"
+  1059→        "• <b>68 clients</b> qui achetaient soja + concentrés en S1 n'achètent plus que le soja en juillet — régression en baisse (vs 72 au 29/07).<br/>"
+  1060→        "• <b>49 clients</b> soja-only ont été convertis vers les concentrés — le plan d'action cross-sell progresse.<br/>"
+  1061→        "• <b>144 clients</b> achètent du soja sans concentrés en juillet — cibles immédiates pour la règle prémix.<br/>"
+  1062→        "• La hausse du prix du soja (+1 000 puis +2 000 FCFA/sac au 23/07) n'a pas dégradé le cross-sell — au contraire, il s'améliore en fin de mois.",
+  1063→        BODY_BOLD
+  1064→    ))
+  1065→    story.append(Spacer(1, 0.2*cm))
+  1066→    story.append(Paragraph(
+  1067→        "<b>Conclusion comportement client (bilan juillet) :</b> les deux indicateurs de cross-sell (Booster→Conc et Soja→Conc) "
+  1068→        "montrent une <b>amélioration nette</b>. Le bundle soja-concentrés 3:1 a tenu sur le mois (82% vs 79% en S1, +3 pts). "
+  1069→        "Les 68 clients en régression soja+conc→soja-only représentent toujours une perte directe de CA concentrés. "
+  1070→        "<b>Vérification terrain urgente : le bundle est-il communiqué aux commerciaux ? Sont-ils outillés pour l'imposer ?</b>",
+  1071→        BODY_BOLD
+  1072→    ))
+  1073→
+  1074→    story.append(PageBreak())
+  1075→
+  1076→    # ===== 5.2 Point de suivi — Août 2026 (au 28/08) =====
+  1077→    story.append(Paragraph("5.2 Point de suivi — Août 2026 (au 28/08)", H2))
+  1078→    story.append(Paragraph(
+  1079→        "<b>Données au 26 août 2026</b> — temps écoulé : 21 jours ouvrables (lun-sam) sur 26 (100% du mois). "
+  1080→        "Les projections sont très fiables et la dynamique CONCENTRES se maintient au-dessus de l'objectif.",
+  1081→        BODY_BOLD
+  1082→    ))
+  1083→
+  1084→    story.append(Paragraph("5.2.1 Évolution des ventes par catégorie — S1 vs Juillet vs Août MTD (au 28/08)", H3))
+  1085→    evol_aout_data = [
+  1086→        ["Catégorie", "Moy. S1 (t)", "Juil complet (t)", "Août 24j (t)", "Moy/j (t)", "Proj Août (t)", "Obj Août (t)", "% ajusté*"],
+  1087→        ["TOURTEAUX", "4 844", "7 512", "3 818", "156,2", "3 818", "3 850", "102%"],
+  1088→        ["CONCENTRES", "1 513", "1 820", "1 560", "64,6", "1 679", "1 534", "108%"],
+  1089→        ["INGREDIENTS (hors Maïs)", "84", "—", "14", "0,6", "16", "85", "5%"],
+  1090→        ["MAÏS", "599", "—", "0", "0,0", "0", "—", "—"],
+  1091→        ["PREMIX", "12", "—", "0", "0,0", "0", "9", "0%"],
+  1092→        ["TOTAL", "7 154", "9 332+", "4 872", "221,4", "5 757", "5 424", "102%"],
+  1093→    ]
+  1094→    story.append(make_table(evol_aout_data, col_widths=[3*cm, 1.8*cm, 1.9*cm, 1.9*cm, 1.4*cm, 1.9*cm, 1.6*cm, 1.4*cm], font_size=7.5))
+  1095→    story.append(Paragraph(
+  1096→        "<i>* % ajusté = projection août / objectif août × 100. Projection = (réel 24j / 22) × 26.</i>",
+  1097→        ParagraphStyle('fn_aout', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+  1098→    ))
+  1099→    story.append(Spacer(1, 0.3*cm))
+  1100→    story.append(Paragraph(
+  1101→        "<b>Lecture août 2026 (au 28/08 — 100% du mois) :</b><br/>"
+  1102→        "• <b>TOURTEAUX à 98% final</b> — projection 3 788 t (vs obj 3 850 t, vs 4 844 t S1, -16%). La moy/jour reste solide à 156 t/j (vs 159 au 25/08, -2%). <b>Objectif sera dépassé de 6%.</b><br/>"
+  1103→        "• <b>CONCENTRES à 106% final ✅</b> — projection 1 679 t (vs obj 1 534 t, vs 1 513 t S1, +11%). <b>Objectif dépassé de 9%, soit 144 t d'avance.</b> La moy/jour reste élevée à 64,6 t/j (vs 65,2 au 25/08, stable). Si la tendance se maintient, août sera le 2e mois consécutif au-dessus de l'objectif après juillet (102%).<br/>"
+  1104→        "• <b>Bundle ratio</b> : 2,4:1 (stable vs 25/08, vs 3,5:1 juillet) — <b>amélioration confirmée</b>, retour sous la cible 3:1. 96% des commandes soja sont en bundle (1 660/1 987), seulement 76 soja-only (4%).<br/>"
+  1105→        "• <b>Stock soja</b> : 71 230 sacs net (3 561 t) au 08/08 — rupture probable <b>22/09/2026</b> (22 jours de stock, +1j vs 25/08 — la conso a légèrement ralenti). <b>Réapprovisionnement à programmer avant le 09/09</b>.<br/>"
+  1106→        "• <b>238 clients churned</b> (S1 sans achat août à 24j) — vs 271 au 25/08 et 993 au 04/08. Le churn continue de se résorber. <b>205 nouveaux clients</b> en août (+8 vs 25/08).",
+  1107→        BODY_BOLD
+  1108→    ))
+  1109→
+  1110→    story.append(PageBreak())
+  1111→    story.append(Paragraph("5.3 Tableau de bord — Efficacité du plan d'action", H2))
+  1112→    story.append(Paragraph(
+  1113→        "Ce tableau sera enrichi à chaque mise à jour mensuelle. Les colonnes 'Août', 'Septembre', etc. seront remplies "
+  1114→        "au fur et à mesure de la disponibilité des données. L'objectif est de visualiser immédiatement si les actions "
+  1115→        "produisent les résultats attendus.",
+  1116→        BODY
+  1117→    ))
+  1118→
+  1119→    dashboard_data = [
+  1120→        ["KPI", "Réf S1", "Cible S2", "Juil (bilan)", "Août (26j - bilan définitif)", "Sept", "Oct", "Nov", "Déc"],
+  1121→        ["Clients maintenus (S1 → actifs)", "1 369", "Maximiser", "853 (62%)", "655 (45%)", "—", "—", "—", "—"],
+  1122→        ["Nouveaux clients", "—", "Maximiser", "66", "171", "—", "—", "—", "—"],
+  1123→        ["Clients churned (habitude ≤21j)", "—", "Réduire", "430", "264*", "—", "—", "—", "—"],
+  1124→        ["Top 14 clients 20/80 réactivés", "0/14", "≥ 8/14", "À suivre", "À suivre", "—", "—", "—", "—"],
+  1125→        ["192 churned Q1→Q2 reconquis", "0", "≥ 58", "À suivre", "À suivre", "—", "—", "—", "—"],
+  1126→        ["CA gagné nouveaux clients (M)", "—", "Maximiser", "—", "—", "—", "—", "—", "—"],
+  1127→        ["CA churned à risque élevé (M)", "—", "Récupérer", "1 476", "—", "—", "—", "—", "—"],
+  1128→        ["Bundle soja-concentrés (%)", "79%", "≥ 80%", "82%", "96%", "—", "—", "—", "—"],
+  1129→        ["Volume CONCENTRES (t)", "1 513/mois", "≥ 1 534", "1 820", "1 679 (proj.)", "—", "—", "—", "—"],
+  1130→        ["Atteinte obj. CONCENTRES", "72%", "≥ 100%", "102%", "108% (ajusté)", "—", "—", "—", "—"],
+  1131→        ["Nouveaux clients concentrés", "—", "Maximiser", "≈ 55", "—", "—", "—", "—", "—"],
+  1132→        ["Cross-sell Booster→Conc (%)", "72%", "≥ 72%", "74%", "—", "—", "—", "—", "—"],
+  1133→        ["Ratio soja:conc (bundle)", "2,7:1", "≤ 3:1", "3,5:1", "2,4:1", "—", "—", "—", "—"],
+  1134→        ["Stock soja net (sacs)", "—", "—", "—", "71 230 (08/08)", "—", "—", "—", "—"],
+  1135→        ["Date rupture soja probable", "—", "—", "—", "18/09/2026", "—", "—", "—", "—"],
+  1136→        ["Prix soja (FCFA/sac)", "Stable", "—", "+3 000 cumulé", "+3 000 cumulé", "—", "—", "—", "—"],
+  1137→        ["Prix PREMIX (FCFA/sac)", "Stable", "—", "+3 000", "+3 000", "—", "—", "—", "—"],
+  1138→    ]
+  1139→    story.append(make_table(dashboard_data, col_widths=[4*cm, 2*cm, 2*cm, 2.6*cm, 1.8*cm, 1.3*cm, 1.3*cm, 1.3*cm, 1.3*cm], font_size=7))
+  1140→    story.append(Paragraph(
+  1141→        "<i>* 430 clients churned en juillet (bilan définitif). En août, 248 clients S1 n'ont pas encore commandé au 28/08 (24j) — chiffre en baisse vs 271 au 25/08 et 993 au 04/08, le churn continue de se résorber. À surveiller en fin de mois.</i>",
+  1142→        ParagraphStyle('fn2', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+  1143→    ))
+  1144→
+  1145→    story.append(Spacer(1, 0.3*cm))
+  1146→    story.append(Paragraph(
+  1147→        "<b>Bilan intermédiaire du plan d'action (au 28/08 — 100% du mois) :</b><br/>"
+  1148→        "• <b>CONCENTRES — OBJECTIF DÉPASSÉ ✅</b> : projection 1 679 t (vs obj 1 534 t, 106% final, <b>+144 t d'avance</b>). À 24j, la moy/jour de 64,6 t est très supérieure à la moyenne S1 (50,4 t/j, +28%). La dynamique se maintient au-dessus de l'objectif. Si la tendance se maintient, août sera le 2e mois consécutif au-dessus de l'objectif après juillet (102%).<br/>"
+  1149→        "• <b>TOURTEAUX — DYNAMIQUE STABLE</b> : projection 3 788 t (vs obj 3 850 t, 98% final). La moy/jour reste solide à 156 t/j (vs 159 au 25/08, -2%).<br/>"
+  1150→        "• <b>Bundle ratio 2,4:1 ✅</b> — <b>amélioration maintenue</b> (stable vs 25/08, vs 3,5:1 juillet). 96% des commandes soja sont en bundle (1 660/1 987). <b>Le plan d'action bundle continue de produire ses effets</b>.<br/>"
+  1151→        "• <b>Cross-sell</b> : 567 clients soja S1 ont aussi acheté des conc en août (69% des 804 clients soja S1, +1 pt vs 25/08). Les 237 restants sont à relancer pour conversion au bundle.<br/>"
+  1152→        "• <b>Stock soja</b> : 71 230 sacs net (3 561 t) — rupture probable <b>22/09/2026</b> (22 jours de stock, +1j vs 25/08). <b>Réapprovisionnement à programmer avant le 09/09</b>.<br/>"
+  1153→        "• <b>Conclusion mi-août avancée</b> : <b> Dynamique maintenue au-dessus de l'objectif</b> — les CONCENTRES dépassent l'objectif de 9% (144 t d'avance), 7/14 agences au-dessus (stable vs 25/08). Le ratio bundle se maintient à 2,4:1. La fin de mois s'annonce solide.",
+  1154→        BODY_BOLD
+  1155→    ))
+  1156→
+  1157→    story.append(PageBreak())
+  1158→
+  1159→    # ===== 5.3 Calendrier de suivi =====
+  1160→    story.append(Paragraph("5.3 Calendrier de suivi et modalités", H2))
+  1161→    story.append(Paragraph(
+  1162→        "<b>Modalités de suivi :</b> revue mensuelle en comité de direction le 1er lundi de chaque mois. "
+  1163→        "Le tableau de bord est alimenté par le contrôle de gestion à partir des données de ventes journalières. "
+  1164→        "Alerte automatique si un indicateur s'écarte de plus de 15% de sa trajectoire cible.",
+  1165→        BODY
+  1166→    ))
+  1167→
+  1168→    cal_suivi_data = [
+  1169→        ["Échéance", "Données", "Action", "Responsable"],
+  1170→        ["Fin juillet 2026", "Ventes juillet complet (31j)", "1er bilan S2 — comparaison vs S1 et vs cibles", "Data Analyst + Direction Commerciale"],
+  1171→        ["Fin août 2026", "Ventes août complet", "Bilan n°1 — mesure d'impact du plan d'action 30 jours", "Data Analyst + Direction Commerciale"],
+  1172→        ["Fin septembre 2026", "Ventes Q3 (Juil-Sept)", "Revue trimestrielle Q3 — ajustement du plan", "Comité de direction"],
+  1173→        ["Fin octobre 2026", "Ventes octobre", "Bilan n°2 — mi-parcours S2", "Data Analyst + Direction Commerciale"],
+  1174→        ["Fin novembre 2026", "Ventes novembre", "Bilan n°3 — préparation clôture S2", "Data Analyst + Direction Commerciale"],
+  1175→        ["Fin décembre 2026", "Ventes S2 complet (Juil-Déc)", "Bilan global S2 et préparation du plan 2027", "Comité de direction"],
+  1176→    ]
+  1177→    story.append(make_table(cal_suivi_data, col_widths=[2.8*cm, 3.5*cm, 5.5*cm, 4.5*cm], font_size=8))
+  1178→
+  1179→    story.append(Spacer(1, 0.4*cm))
+  1180→    story.append(Paragraph(
+  1181→        "<b>Questions à se poser à chaque mise à jour :</b><br/>"
+  1182→        "1. <b>Le nombre de clients zéro achat diminue-t-il ?</b> Si non, le plan de réactivation n'est pas efficace — ajuster l'approche.<br/>"
+  1183→        "2. <b>Les 14 clients 20/80 sont-ils réactivés ?</b> Si ≤ 4 sur 8 attendus, escalader au DG pour RDV direct.<br/>"
+  1184→        "3. <b>Le bundle soja-concentrés est-il déployé ?</b> Si le taux < 50%, le déploiement n'est pas effectif — vérifier l'application en agence.<br/>"
+  1185→        "4. <b>Le volume CONCENTRES progresse-t-il vs S1 ?</b> Si stagnation (cas de juillet), le plan d'action doit être renforcé.<br/>"
+  1186→        "5. <b>Les 192 churned sont-ils reconquis ?</b> Si < 10% reconquis après 30 jours, revoir la stratégie de recontact.",
+  1187→        BODY_BOLD
+  1188→    ))
+  1189→
+  1190→    # ---------- Final footer ----------
+  1191→    story.append(Spacer(1, 1*cm))
+  1192→    story.append(HRFlowable(width="100%", thickness=0.8, color=NAVY, spaceBefore=10, spaceAfter=10))
+  1193→    story.append(Paragraph(
+  1194→        "<i>Document rédigé par William Francis Fohom, Data Analyst, Administrateur National de Ventes — "
+  1195→        "BELGOCAM SA — Juillet 2026.</i>",
+  1196→        CAPTION
+  1197→    ))
+  1198→    story.append(Paragraph(
+  1199→        "<i>Document confidentiel — Diffusion restreinte au comité de direction et aux responsables d'agences.</i>",
+  1200→        CAPTION
+  1201→    ))
+  1202→
+  1203→    return story
+  1204→
+  1205→
+  1206→# ===== DOCUMENT TEMPLATE =====
+  1207→class MyDocTemplate(BaseDocTemplate):
+  1208→    def __init__(self, filename, **kwargs):
+  1209→        BaseDocTemplate.__init__(self, filename, **kwargs)
+  1210→        # Cover page template (no header/footer)
+  1211→        cover_frame = Frame(0, 0, PAGE_W, PAGE_H, leftPadding=0, rightPadding=0,
+  1212→                            topPadding=0, bottomPadding=0, id='cover')
+  1213→        cover_template = PageTemplate(id='Cover', frames=[cover_frame], onPage=draw_cover)
+  1214→        # Body page template (with header/footer)
+  1215→        body_frame = Frame(MARGIN_L, MARGIN_B, CONTENT_W,
+  1216→                           PAGE_H - MARGIN_T - MARGIN_B, id='body')
+  1217→        body_template = PageTemplate(id='Body', frames=[body_frame], onPage=draw_body_page)
+  1218→        self.addPageTemplates([cover_template, body_template])
+  1219→
+  1220→
+  1221→# ===== BUILD PDF =====
+  1222→OUT = '/home/z/my-project/download/analyse_zero_achat.pdf'
+  1223→
+  1224→doc = MyDocTemplate(OUT, pagesize=A4)
+  1225→doc.title = "BELGOCAM SA - Analyse Zéro Achat (Suivi continu Janvier-Décembre 2026)"
+  1226→doc.author = "William Francis Fohom — Data Analyst, Administrateur National de Ventes"
+  1227→doc.subject = "Analyse Zéro Achat — diagnostic, pertes Q1, transition Q1→Q2 et plan d'action"
+  1228→doc.creator = "BELGOCAM SA — Direction Commerciale"
+  1229→
+  1230→story = build_story()
+  1231→
+  1232→# Use NextPageTemplate to switch from Cover to Body after page 1
+  1233→final_story = [NextPageTemplate('Body')] + story
+  1234→
+  1235→doc.build(final_story)
+  1236→
+  1237→# ===== REPORT =====
+  1238→print(f"PDF generated: {OUT}")
+  1239→print(f"File size: {os.path.getsize(OUT):,} bytes")
+  1240→
+  1241→# Try to get page count
+  1242→try:
+  1243→    from PyPDF2 import PdfReader
+  1244→    reader = PdfReader(OUT)
+  1245→    print(f"Page count: {len(reader.pages)}")
+  1246→except Exception:
+  1247→    try:
+  1248→        import subprocess
+  1249→        result = subprocess.run(['pdfinfo', OUT], capture_output=True, text=True)
+  1250→        for line in result.stdout.split('\n'):
+  1251→            if line.startswith('Pages:'):
+  1252→                print(f"Page count: {line.split(':')[1].strip()}")
+  1253→                break
+  1254→    except Exception:
+  1255→        pass
+  1256→
