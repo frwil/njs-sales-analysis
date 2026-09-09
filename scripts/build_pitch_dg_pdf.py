@@ -43,8 +43,8 @@ CELL = ParagraphStyle('Cell', parent=BODY, fontName='DejaVuSans', fontSize=9, le
 SMALL = ParagraphStyle('Small', parent=BODY, fontSize=7.5, textColor=GRAY, leading=10)
 
 # === Load data ===
-PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data.json'))
-MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_01.json'))
+PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data_02.json'))
+MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_02.json'))
 print(f"Loaded sept data (update {MTD['update_date']})")
 
 # Helpers
@@ -119,11 +119,11 @@ story.append(Spacer(1, 0.15*cm))
 
 # Key insight for nationwide
 nationwide_insight = f"""
-<b>Synthèse nationwide</b> : Sur 5 jours ouvrés (19% du mois), les ventes représentent <b>{fmt(n['soja_t_mtd']+n['conc_t_mtd'])} t</b> 
+<b>Synthèse nationwide</b> : Sur {MTD['days_elapsed']} jours ouvrés ({MTD['pct_elapsed']}% du mois), les ventes représentent <b>{fmt(n['soja_t_mtd']+n['conc_t_mtd'])} t</b> 
 (soja + concentrés). La projection fin septembre s'établit à <b>{fmt(n['soja_proj_t']+n['conc_proj_t'])} t</b> 
 ({(n['soja_proj_t']+n['conc_proj_t'])/(n['soja_obj_t']+n['conc_obj_t'])*100:.0f}% de l'objectif combiné). 
-Le <b>CONCENTRES suit bien à 81%</b> de l'objectif ✅, mais le <b>SOJA est en retrait à 59%</b> ❌ — reflet de la hausse tarifaire du 04/09 (27 000 FCFA/sac, +8% vs 25 000) 
-qui ralentit temporairement la demande. Le <b>ratio bundle 1,8:1</b> reste excellent (objectif ≤ 2,5:1) — 
+Le <b>CONCENTRES est à {n['conc_pct_obj']:.0f}%</b> de l'objectif {'✅ sur trajectoire' if n['conc_pct_obj'] >= 80 else '⚠ sous objectif'}, mais le <b>SOJA est en retrait à {n['soja_pct_obj']:.0f}%</b> ❌ — reflet de la hausse tarifaire du 04/09 (27 000 FCFA/sac, +8% vs 25 000) 
+qui ralentit temporairement la demande. Le <b>ratio bundle {n['ratio_global']:.1f}:1</b> reste excellent (objectif ≤ 2,5:1) — 
 signe que le cross-sell se maintient malgré le choc prix.
 """
 story.append(Paragraph(nationwide_insight, BODY))
@@ -311,7 +311,8 @@ story.append(Spacer(1, 0.1*cm))
 story.append(Paragraph(
     f"<b>Source</b> : {MTD['extraction_file']} (extraction au {MTD['update_date']}) — analyse au {MTD['update_date']} ({MTD['days_elapsed']}j/{MTD['total_days_sep']}j = {MTD['pct_elapsed']}% du mois). "
     f"<b>Méthodologie</b> : Volumes Livrées uniquement, clients internes (SPC/PDC/Comptoir) exclus. Projection fin septembre = moyenne quotidienne × 26 jours ouvrés (lun-sam). "
-    f"<b>Hausse prix soja</b> : à partir du 04/09/2026, le prix du soja T102 (50kg) passe de 25 000 à 27 000 FCFA/sac (+8%).",
+    f"<b>Hausse prix soja</b> : à partir du 04/09/2026, le prix du soja T102 (50kg) passe de 25 000 à 27 000 FCFA/sac (+8%). "
+    f"<b>Stock central BEKOKO</b> : 2 716 sacs (135 t) + 296 sacs en production au 07/09/2026 (post-chargement agences weekend 05-06/09).",
     SMALL))
 
 # === Save PDF ===

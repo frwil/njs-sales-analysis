@@ -10,8 +10,8 @@ from datetime import datetime, date, timedelta
 import json
 import re
 
-# Source (latest extraction: (33).xlsx as of 01/09/2026)
-SEPT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (33).xlsx"
+# Source (latest extraction: (34).xlsx as of 09/09/2026)
+SEPT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (34).xlsx"
 
 # Product refs
 SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}
@@ -475,7 +475,19 @@ summary = {
     'conc_by_agence': sorted(conc_by_ag, key=lambda x: -x['conc_t']),
 }
 
-OUT = '/home/z/my-project/scripts/sept_mtd_01.json'
+OUT = '/home/z/my-project/scripts/sept_mtd_02.json'
+
+# Preserve stock info from previous sept_mtd_01.json (manually updated 07/09 with new stock central)
+import os
+prev_stock = None
+prev_path = '/home/z/my-project/scripts/sept_mtd_01.json'
+if os.path.exists(prev_path):
+    prev_data = json.load(open(prev_path))
+    if 'stock' in prev_data and prev_data['stock'].get('brut_sacs', 0) < 10000:
+        # Use previous stock info (manually updated with real stock central BEKOKO)
+        summary['stock'] = prev_data['stock']
+        print(f"\n[INFO] Preserved stock info from {prev_path} (BEKOKO central: {prev_data['stock'].get('brut_sacs')} sacs)")
+
 with open(OUT, 'w', encoding='utf-8') as f:
     json.dump(summary, f, indent=2, ensure_ascii=False, default=str)
 print(f"\n=== SAVED: {OUT} ===")
