@@ -412,18 +412,177 @@ for i, ins in enumerate(insights, 1):
     story.append(Paragraph(f"<b>{i}.</b> {ins}", BULLET))
 story.append(Spacer(1, 0.3*cm))
 
-# === 5. Conclusion & Recommandations ===
-story.append(Paragraph("5. Conclusion & Recommandations", H2))
+# === 5. Analyse étendue — Clients, Commandes, Panier moyen ===
+story.append(PageBreak())
+story.append(Paragraph("5. Analyse étendue — Clients, Commandes, Panier moyen", H2))
+story.append(Paragraph(
+    "<b>Question :</b> Les nouvelles métriques (clients, commandes, panier moyen) confirment-elles que le SOJA est stable ? "
+    "<b>Réponse :</b> NON. Avec clients comptoir inclus, le SOJA est aussi en baisse sur les 5 métriques. "
+    "Le CONC reste en baisse continue (volume), mais le SOJA baisse aussi fortement (-43,6% volume cumulé W-3 → P1).",
+    ParagraphStyle('Alert', parent=BODY, fontSize=10, backColor=colors.HexColor('#FCE4EC'), 
+                   borderColor=RED, borderWidth=0.5, borderPadding=6, alignment=TA_JUSTIFY, spaceAfter=8)))
+story.append(Spacer(1, 0.2*cm))
+
+# Table: 5 metrics comparison
+try:
+    EXT = json.load(open('/home/z/my-project/scripts/sept_trend_extended.json'))
+except:
+    EXT = None
+
+if EXT:
+    # Load extended data into PERIODS_ORDER
+    PERIODS_CHR = ['W-3', 'W-2', 'W-1', 'P1']
+    
+    # Build table with 5 metrics for SOJA and CONC
+    story.append(Paragraph("<b>Synthese — 5 métriques × 4 périodes</b>", H3))
+    
+    # SOJA table
+    story.append(Paragraph("<b>SOJA (TOURTEAUX) — clients comptoir inclus</b>", H3))
+    soja_data = [["Période", "Volume (t)", "Clients", "Commandes", "Panier/cli (kg)", "Panier/cmd (kg)"]]
+    for p_name in PERIODS_CHR:
+        m = EXT['soja'][p_name]
+        soja_data.append([p_name, fmt(m['volume_t']), str(m['n_clients']), str(m['n_orders']),
+                         fmt(m['panier_client_kg']), fmt(m['panier_order_kg'])])
+    
+    wrapped_soja = []
+    for ri, row in enumerate(soja_data):
+        prow = []
+        for ci, cell in enumerate(row):
+            if ri == 0:
+                prow.append(wrap_cell(cell, CELL_HEADER))
+            elif ci == 0:
+                prow.append(wrap_cell(cell, CELL_LEFT))
+            else:
+                prow.append(wrap_cell(cell, CELL_CENTER))
+        wrapped_soja.append(prow)
+    
+    t_soja_ext = Table(wrapped_soja, colWidths=[2*cm, 2.2*cm, 2*cm, 2.2*cm, 3*cm, 3*cm], repeatRows=1)
+    t_soja_ext.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), NAVY),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
+        ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('LEFTPADDING', (0,0), (-1,-1), 4), ('RIGHTPADDING', (0,0), (-1,-1), 4),
+        # Highlight P1 row
+        ('BACKGROUND', (0,4), (-1,4), colors.HexColor('#FFF2CC')),
+        ('FONT', (0,4), (-1,4), 'DejaVuSans-Bold', 8),
+    ]))
+    story.append(t_soja_ext)
+    story.append(Spacer(1, 0.3*cm))
+    
+    # CONC table
+    story.append(Paragraph("<b>CONCENTRÉS — clients comptoir inclus</b>", H3))
+    conc_data = [["Période", "Volume (t)", "Clients", "Commandes", "Panier/cli (kg)", "Panier/cmd (kg)"]]
+    for p_name in PERIODS_CHR:
+        m = EXT['conc'][p_name]
+        conc_data.append([p_name, fmt(m['volume_t']), str(m['n_clients']), str(m['n_orders']),
+                         fmt(m['panier_client_kg']), fmt(m['panier_order_kg'])])
+    
+    wrapped_conc = []
+    for ri, row in enumerate(conc_data):
+        prow = []
+        for ci, cell in enumerate(row):
+            if ri == 0:
+                prow.append(wrap_cell(cell, CELL_HEADER))
+            elif ci == 0:
+                prow.append(wrap_cell(cell, CELL_LEFT))
+            else:
+                prow.append(wrap_cell(cell, CELL_CENTER))
+        wrapped_conc.append(prow)
+    
+    t_conc_ext = Table(wrapped_conc, colWidths=[2*cm, 2.2*cm, 2*cm, 2.2*cm, 3*cm, 3*cm], repeatRows=1)
+    t_conc_ext.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), NAVY),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
+        ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('LEFTPADDING', (0,0), (-1,-1), 4), ('RIGHTPADDING', (0,0), (-1,-1), 4),
+        ('BACKGROUND', (0,4), (-1,4), colors.HexColor('#FFF2CC')),
+        ('FONT', (0,4), (-1,4), 'DejaVuSans-Bold', 8),
+    ]))
+    story.append(t_conc_ext)
+    story.append(Spacer(1, 0.3*cm))
+    
+    # Cumul variations table
+    story.append(Paragraph("<b>Variations cumulées W-3 → P1 — comparaison SOJA vs CONC</b>", H3))
+    cumul_data = [["Métrique", "SOJA", "CONC", "Écart", "Lecture"]]
+    metric_labels = {'volume': 'Volume', 'clients': 'Nb clients', 'orders': 'Nb commandes', 
+                     'panier_client': 'Panier/client', 'panier_order': 'Panier/cmd'}
+    for m_key, m_label in metric_labels.items():
+        s_val = EXT['cumul_w3_to_p1']['soja'][m_key]
+        c_val = EXT['cumul_w3_to_p1']['conc'][m_key]
+        ecart = s_val - c_val
+        lecture = "SOJA baisse plus" if s_val < c_val else "CONC baisse plus"
+        cumul_data.append([m_label, fmt_signed(s_val), fmt_signed(c_val), fmt_signed(ecart), lecture])
+    
+    wrapped_cumul = []
+    for ri, row in enumerate(cumul_data):
+        prow = []
+        for ci, cell in enumerate(row):
+            if ri == 0:
+                prow.append(wrap_cell(cell, CELL_HEADER))
+            elif ci == 0:
+                prow.append(wrap_cell(cell, CELL_LEFT))
+            else:
+                prow.append(wrap_cell(cell, CELL_CENTER))
+        wrapped_cumul.append(prow)
+    
+    t_cumul = Table(wrapped_cumul, colWidths=[3.5*cm, 2.5*cm, 2.5*cm, 2.5*cm, 4.5*cm], repeatRows=1)
+    style_cumul = [
+        ('BACKGROUND', (0,0), (-1,0), NAVY),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
+        ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('LEFTPADDING', (0,0), (-1,-1), 4), ('RIGHTPADDING', (0,0), (-1,-1), 4),
+    ]
+    # Color SOJA and CONC cells based on values
+    for i in range(1, 6):
+        m_key = list(metric_labels.keys())[i-1]
+        style_cumul.append(('BACKGROUND', (1, i), (1, i), color_for_var(EXT['cumul_w3_to_p1']['soja'][m_key])))
+        style_cumul.append(('BACKGROUND', (2, i), (2, i), color_for_var(EXT['cumul_w3_to_p1']['conc'][m_key])))
+    t_cumul.setStyle(TableStyle(style_cumul))
+    story.append(t_cumul)
+    story.append(Spacer(1, 0.3*cm))
+    
+    # Chart E: 4 metrics comparison
+    story.append(Paragraph("<b>Graphique E — 4 métriques comparées (SOJA vs CONC) sur 4 semaines</b>", H3))
+    story.append(Image('/home/z/my-project/scripts/charts/chartE_4metrics.png', width=17*cm, height=11*cm))
+    story.append(Spacer(1, 0.3*cm))
+    
+    # Chart F: Cumul variations
+    story.append(PageBreak())
+    story.append(Paragraph("<b>Graphique F — Variations cumulées W-3 → P1 par métrique</b>", H3))
+    story.append(Image('/home/z/my-project/scripts/charts/chartF_cumul_variations.png', width=17*cm, height=9.4*cm))
+    story.append(Spacer(1, 0.3*cm))
+    
+    # Extended insights
+    story.append(Paragraph("<b>Insights étendus — Réponse à la question</b>", H3))
+    extended_insights = [
+        f"<b>Réponse NON</b> : Les nouvelles métriques NE CONFIRMENT PAS que le SOJA est stable. Au contraire, le SOJA est AUSSI en baisse sur les 5 métriques.",
+        f"<b>SOJA Volume</b> : {fmt(EXT['soja']['W-3']['volume_t'])} → {fmt(EXT['soja']['P1']['volume_t'])} t = <b>{fmt_signed(EXT['cumul_w3_to_p1']['soja']['volume'])}</b> cumulé (W-3 → P1). Pattern : <b>down, down, up</b> (rebond en P1).",
+        f"<b>SOJA Clients</b> : {EXT['soja']['W-3']['n_clients']} → {EXT['soja']['P1']['n_clients']} clients = <b>{fmt_signed(EXT['cumul_w3_to_p1']['soja']['clients'])}</b>. Baisse continue du nombre de clients actifs.",
+        f"<b>SOJA Commandes</b> : {EXT['soja']['W-3']['n_orders']} → {EXT['soja']['P1']['n_orders']} = <b>{fmt_signed(EXT['cumul_w3_to_p1']['soja']['orders'])}</b>. Pattern oscillant (down, up, down).",
+        f"<b>SOJA Panier moyen</b> : baisse de {fmt(EXT['soja']['W-3']['panier_client_kg'])} → {fmt(EXT['soja']['P1']['panier_client_kg'])} kg/client = <b>{fmt_signed(EXT['cumul_w3_to_p1']['soja']['panier_client'])}</b>. Mais rebond en P1 (+58%).",
+        f"<b>CONC Volume</b> : {fmt(EXT['conc']['W-3']['volume_t'])} → {fmt(EXT['conc']['P1']['volume_t'])} t = <b>{fmt_signed(EXT['cumul_w3_to_p1']['conc']['volume'])}</b> cumulé. Pattern : <b>down, down, down</b> (baisse continue).",
+        f"<b>Constat global</b> : Les deux familles sont en baisse. SOJA baisse même plus fortement que CONC en cumulé ({fmt_signed(EXT['cumul_w3_to_p1']['soja']['volume'])} vs {fmt_signed(EXT['cumul_w3_to_p1']['conc']['volume'])}). La différence : CONC baisse de manière continue alors que SOJA montre un rebond en P1 (+17% vs W-1).",
+        f"<b>Interprétation du rebond SOJA P1</b> : Le rebond +17% du volume SOJA en P1 (post-hausse prix 04/09) ne traduit pas une stabilité — c'est plutôt un retour partiel après les chutes W-2/W-1. La hausse prix n'a pas provoqué de chute supplémentaire, mais le volume P1 reste -43,6% sous W-3.",
+    ]
+    for ins in extended_insights:
+        story.append(Paragraph(f"• {ins}", BULLET))
+    story.append(Spacer(1, 0.3*cm))
+
+# === 6. Conclusion & Recommandations ===
+story.append(Paragraph("6. Conclusion & Recommandations", H2))
 
 conclusion = f"""
-<b>Conclusion</b> : L'analyse révèle une <b>situation préoccupante pour les CONCENTRÉS</b> — baisse continue sur 3 semaines consécutives 
-(76,3 → 51,6 → 48,0 → 44,9 t/j), soit <b>-41,1% cumulé</b>. À l'inverse, le SOJA ne montre pas de tendance claire (oscillations liées aux pics de rupture) 
-et la hausse prix du 04/09 n'a pas entraîné de chute soja. <b>Le problème à résoudre est donc du côté des CONCENTRÉS, pas du SOJA.</b>
+<b>Conclusion révisée</b> : Avec clients comptoir inclus, l'analyse révèle que <b>les deux familles SOJA et CONC sont en difficulté</b>. 
+SOJA : Volume -43,6%, Clients -38,0%, Commandes -33,6% (W-3 → P1). 
+CONC : Volume -36,1%, Clients -31,1%, Commandes -30,0%. 
+La conclusion initiale "SOJA stable" est <b>REMISE EN CAUSE</b> — le SOJA n'est pas stable, il est en baisse comme le CONC.
 
-La baisse CONC est <b>généralisée</b> (toutes régions et agences en recul), ce qui suggère une cause systémique :
-<br/>• <b>Effet d'entraînement</b> du recul soja (cross-sell lié — moins de soja vendu = moins de conc en cross-sell)
-<br/>• <b>Aucune action commerciale spécifique CONC</b> mise en place récemment
-<br/>• <b>Saisonnalité</b> éventuelle (à confirmer sur les prochaines semaines)
+<b>Différence clé</b> : CONC baisse de manière continue (3 semaines down), tandis que SOJA montre un pattern down-down-up avec un rebond P1 (+17%) 
+qui pourrait s'expliquer par : (a) effet de la hausse prix sur les paniers (les clients restants achètent en plus grosse quantité), 
+(b) reprise post-rupture concurrente, (c) stratégies commerciales spécifiques.
 """
 story.append(Paragraph(conclusion, BODY))
 story.append(Spacer(1, 0.2*cm))

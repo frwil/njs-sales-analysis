@@ -34,19 +34,19 @@ AGENCE_MAP = {
     'SPC BUEA': ('Buea-SPC', 'Littoral'), 'SPC-YASSA': ('Yassa', 'Littoral'),
 }
 
-INTERNAL = ['SPC', 'PDC', 'COMPTOIR', 'EMANA']
+INTERNAL = ['SPC', 'PDC', 'EMANA']  # COMPTOIR inclus (clients comptoir à compter)
 
 def is_internal(c):
     if not c: return False
     s = str(c).upper()
     return any(p in s for p in INTERNAL)
 
-# === Periods (each = 6 calendar days, 5 working days lun-sam) ===
+# === Periods (each = 6 calendar days, 5 working days lun-sam) — Chronological order W-3 → P1 ===
 PERIODS = [
-    {'name': 'P1', 'start': date(2026, 9, 5), 'end': date(2026, 9, 10), 'label': '05-10/09 (post-hausse)'},
-    {'name': 'W-1', 'start': date(2026, 8, 29), 'end': date(2026, 9, 3), 'label': '29/08-03/09 (pré-hausse)'},
-    {'name': 'W-2', 'start': date(2026, 8, 22), 'end': date(2026, 8, 27), 'label': '22-27/08'},
     {'name': 'W-3', 'start': date(2026, 8, 15), 'end': date(2026, 8, 20), 'label': '15-20/08'},
+    {'name': 'W-2', 'start': date(2026, 8, 22), 'end': date(2026, 8, 27), 'label': '22-27/08'},
+    {'name': 'W-1', 'start': date(2026, 8, 29), 'end': date(2026, 9, 3), 'label': '29/08-03/09 (pré-hausse)'},
+    {'name': 'P1', 'start': date(2026, 9, 5), 'end': date(2026, 9, 10), 'label': '05-10/09 (post-hausse)'},
 ]
 
 def count_working_days(d_start, d_end):
