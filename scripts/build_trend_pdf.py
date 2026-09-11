@@ -12,7 +12,7 @@ from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, PageBreak
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, PageBreak, Image
 )
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
@@ -179,6 +179,16 @@ t1b.setStyle(TableStyle(style_list_trend))
 story.append(t1b)
 story.append(Spacer(1, 0.3*cm))
 
+# === CHART 1: Global volumes (bar chart) ===
+story.append(Paragraph("<b>Graphique 1 — Évolution des volumes (Soja vs Concentrés)</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chart1_global_volumes.png', width=17*cm, height=9.4*cm))
+story.append(Spacer(1, 0.3*cm))
+
+# === CHART 2: Daily trend (line chart) ===
+story.append(Paragraph("<b>Graphique 2 — Tendance cadence quotidienne</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chart2_daily_trend.png', width=17*cm, height=9.4*cm))
+story.append(Spacer(1, 0.3*cm))
+
 # Global analysis
 g_p1 = DATA['global']['P1']
 g_w1 = DATA['global']['W-1']
@@ -246,6 +256,17 @@ reg_analysis = f"""
 story.append(Paragraph(reg_analysis, BODY))
 story.append(Spacer(1, 0.3*cm))
 
+# === CHART 3: Regional stacked bar ===
+story.append(Paragraph("<b>Graphique 3 — Volume total par région sur 4 semaines</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chart3_regional_stacked.png', width=17*cm, height=9.4*cm))
+story.append(Spacer(1, 0.3*cm))
+
+# === CHART 4: Regional multiples (small multiples) ===
+story.append(PageBreak())
+story.append(Paragraph("<b>Graphique 4 — Évolution par région (Soja vs Conc)</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chart4_region_multiples.png', width=17*cm, height=6*cm))
+story.append(Spacer(1, 0.3*cm))
+
 # === 3. PAR AGENCE ===
 story.append(PageBreak())
 story.append(Paragraph("3. Vue par Agence — Top 15 (par volume P1)", H2))
@@ -281,6 +302,17 @@ t3.setStyle(TableStyle([
     ('LEFTPADDING', (0,0), (-1,-1), 3), ('RIGHTPADDING', (0,0), (-1,-1), 3),
 ]))
 story.append(t3)
+story.append(Spacer(1, 0.3*cm))
+
+# === CHART 5: Top agences evolution ===
+story.append(Paragraph("<b>Graphique 5 — Top 10 agences : Évolution du volume SOJA</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chart5_top_agences.png', width=17*cm, height=8.5*cm))
+story.append(Spacer(1, 0.3*cm))
+
+# === CHART 6: Ratio evolution ===
+story.append(PageBreak())
+story.append(Paragraph("<b>Graphique 6 — Évolution du ratio bundle soja/concentrés</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chart6_ratio_evolution.png', width=17*cm, height=9.4*cm))
 story.append(Spacer(1, 0.3*cm))
 
 # === 4. Insights ===
