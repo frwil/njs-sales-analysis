@@ -39,12 +39,18 @@ AGENCE_MAP = {
     'SPC BUEA': ('Buea-SPC', 'Littoral'), 'SPC-YASSA': ('Yassa', 'Littoral'),
 }
 
-INTERNAL = ['SPC', 'PDC', 'COMPTOIR', 'EMANA']
+INTERNAL_ALL = ['SPC', 'PDC', 'COMPTOIR', 'EMANA']
+INTERNAL_NO_COMPTOIR = ['SPC', 'PDC', 'EMANA']  # Pour SOJA : inclure clients comptoir
 
-def is_internal(c):
+def is_internal(c, exclude_comptoir=True):
+    """Check if client is internal.
+    For SOJA: exclude_comptoir=False → include clients comptoir (walk-in sales).
+    For CONC: exclude_comptoir=True → exclude all internal clients.
+    """
     if not c: return False
     s = str(c).upper()
-    return any(p in s for p in INTERNAL)
+    patterns = INTERNAL_ALL if exclude_comptoir else INTERNAL_NO_COMPTOIR
+    return any(p in s for p in patterns)
 
 # === Periods (each = 6 calendar days, 5 working days lun-sam) ===
 PERIODS = [
