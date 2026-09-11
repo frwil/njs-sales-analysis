@@ -43,8 +43,8 @@ CELL = ParagraphStyle('Cell', parent=BODY, fontName='DejaVuSans', fontSize=9, le
 SMALL = ParagraphStyle('Small', parent=BODY, fontSize=7.5, textColor=GRAY, leading=10)
 
 # === Load data ===
-PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data_02.json'))
-MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_02.json'))
+PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data_03.json'))
+MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_03.json'))
 print(f"Loaded sept data (update {MTD['update_date']})")
 
 # Helpers

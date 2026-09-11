@@ -10,8 +10,8 @@ from datetime import datetime, date, timedelta
 import json
 import re
 
-# Source (latest extraction: (34).xlsx as of 09/09/2026)
-SEPT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (34).xlsx"
+# Source (latest extraction: (36).xlsx as of 11/09/2026)
+SEPT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (36).xlsx"
 
 # Product refs
 SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}
@@ -475,7 +475,7 @@ summary = {
     'conc_by_agence': sorted(conc_by_ag, key=lambda x: -x['conc_t']),
 }
 
-OUT = '/home/z/my-project/scripts/sept_mtd_02.json'
+OUT = '/home/z/my-project/scripts/sept_mtd_03.json'
 
 # Preserve stock info from previous sept_mtd_01.json (manually updated 07/09 with new stock central)
 import os
