@@ -36,6 +36,33 @@ BULLET = ParagraphStyle('Bullet', parent=BODY, leftIndent=20, bulletIndent=10, s
 CELL = ParagraphStyle('Cell', parent=BODY, fontName='DejaVuSans', fontSize=9, leading=11, alignment=TA_LEFT, spaceAfter=0)
 SMALL = ParagraphStyle('Small', parent=BODY, fontSize=8, textColor=GRAY, leading=10)
 
+# === Cell paragraph styles (for wrapping) ===
+CELL_HEADER = ParagraphStyle('CellHeader', fontName='DejaVuSans-Bold', fontSize=8, leading=10, alignment=TA_CENTER, textColor=colors.white)
+CELL_CENTER = ParagraphStyle('CellCenter', fontName='DejaVuSans', fontSize=8, leading=10, alignment=TA_CENTER)
+CELL_LEFT = ParagraphStyle('CellLeft', fontName='DejaVuSans', fontSize=8, leading=10, alignment=TA_LEFT)
+CELL_LEFT_SMALL = ParagraphStyle('CellLeftSmall', fontName='DejaVuSans', fontSize=7, leading=9, alignment=TA_LEFT)
+
+def wrap_cell(content, style=CELL_CENTER):
+    """Wrap content in a Paragraph to enable proper text wrapping in tables."""
+    s = str(content) if content is not None else ''
+    return Paragraph(s, style)
+
+def make_table_data(raw_data, header_style=CELL_HEADER, body_style=CELL_CENTER, first_col_style=None):
+    """Convert raw 2D list to Paragraphs for proper wrapping.
+    First row = header, first column (optional) uses first_col_style."""
+    wrapped = []
+    for ri, row in enumerate(raw_data):
+        prow = []
+        for ci, cell in enumerate(row):
+            if ri == 0:
+                prow.append(wrap_cell(cell, header_style))
+            elif ci == 0 and first_col_style is not None:
+                prow.append(wrap_cell(cell, first_col_style))
+            else:
+                prow.append(wrap_cell(cell, body_style))
+        wrapped.append(prow)
+    return wrapped
+
 # === Load data ===
 DATA = json.load(open('/home/z/my-project/scripts/sept_p1_vs_p2_analysis.json'))
 
@@ -93,28 +120,26 @@ ratio1 = p1s/p1c if p1c > 0 else 0
 ratio2 = p2s/p2c if p2c > 0 else 0
 
 glob_data = [
-    ["Indicateur", "P1 (05-10/09)", "P2 (15/08-04/09)", "Variation brute", "Variation moy/j", "Lecture"],
-    [f"TOURTEAUX (t)", fmt(p1s), fmt(p2s), fmt_signed(var_s), fmt_signed(var_s_moy),
+    ["Indicateur", "P1 (05-10/09)", "P2 (15/08-04/09)", "Var brute", "Var moy/j", "Lecture"],
+    ["TOURTEAUX (t)", fmt(p1s), fmt(p2s), fmt_signed(var_s), fmt_signed(var_s_moy),
      "Chute majeure" if var_s_moy <= -30 else ("Baisse" if var_s_moy < 0 else "Hausse")],
-    [f"TOURTEAUX moy/j (t)", fmt(p1s_moy), fmt(p2s_moy), "—", fmt_signed(var_s_moy), "—"],
-    [f"CONCENTRÉS (t)", fmt(p1c), fmt(p2c), fmt_signed(var_c), fmt_signed(var_c_moy),
+    ["TOURTEAUX moy/j (t)", fmt(p1s_moy), fmt(p2s_moy), "—", fmt_signed(var_s_moy), "—"],
+    ["CONCENTRÉS (t)", fmt(p1c), fmt(p2c), fmt_signed(var_c), fmt_signed(var_c_moy),
      "Baisse modérée" if var_c_moy > -30 else "Chute majeure"],
-    [f"CONCENTRÉS moy/j (t)", fmt(p1c_moy), fmt(p2c_moy), "—", fmt_signed(var_c_moy), "—"],
+    ["CONCENTRÉS moy/j (t)", fmt(p1c_moy), fmt(p2c_moy), "—", fmt_signed(var_c_moy), "—"],
     ["Total Soja+Conc (t)", fmt(p1s+p1c), fmt(p2s+p2c), fmt_signed((p1s+p1c)/(p2s+p2c)*100-100), "—", "—"],
     ["Ratio soja/conc", f"{ratio1:.2f}:1", f"{ratio2:.2f}:1", "—", "—",
      "Recul du ratio (cross-sell perturbé)" if ratio1 < ratio2 else "Amélioration cross-sell"],
 ]
 
-t1 = Table(glob_data, colWidths=[3.5*cm, 2.5*cm, 2.8*cm, 2.5*cm, 2.5*cm, 3.5*cm], repeatRows=1)
+wrapped_glob = make_table_data(glob_data, first_col_style=CELL_LEFT)
+t1 = Table(wrapped_glob, colWidths=[3.8*cm, 2.5*cm, 2.5*cm, 1.8*cm, 1.8*cm, 3.6*cm], repeatRows=1)
 style_list = [
-    ('FONT', (0,0), (-1,0), 'DejaVuSans-Bold', 9),
-    ('FONT', (0,1), (-1,-1), 'DejaVuSans', 9),
     ('BACKGROUND', (0,0), (-1,0), NAVY),
-    ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-    ('ALIGN', (1,0), (-1,-1), 'CENTER'),
     ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
     ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
     ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+    ('LEFTPADDING', (0,0), (-1,-1), 4), ('RIGHTPADDING', (0,0), (-1,-1), 4),
 ]
 style_list.append(('BACKGROUND', (0,1), (-1,1), color_for_var(var_s_moy)))
 style_list.append(('BACKGROUND', (0,3), (-1,3), color_for_var(var_c_moy)))
@@ -152,16 +177,14 @@ for region in ['Ouest', 'Centre', 'Littoral']:
                     fmt_signed(r['var_conc_pct']),
                     f"{ratio1:.2f}:1", f"{ratio2:.2f}:1"])
 
-t2 = Table(reg_data, colWidths=[1.8*cm, 2*cm, 2*cm, 1.8*cm, 2*cm, 2*cm, 1.8*cm, 1.5*cm, 1.5*cm], repeatRows=1)
+wrapped_reg = make_table_data(reg_data, first_col_style=CELL_LEFT)
+t2 = Table(wrapped_reg, colWidths=[1.8*cm, 1.9*cm, 1.9*cm, 1.7*cm, 1.9*cm, 1.9*cm, 1.7*cm, 1.4*cm, 1.4*cm], repeatRows=1)
 style_list2 = [
-    ('FONT', (0,0), (-1,0), 'DejaVuSans-Bold', 8),
-    ('FONT', (0,1), (-1,-1), 'DejaVuSans', 8),
     ('BACKGROUND', (0,0), (-1,0), NAVY),
-    ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-    ('ALIGN', (1,0), (-1,-1), 'CENTER'),
     ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
     ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
     ('TOPPADDING', (0,0), (-1,-1), 3), ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+    ('LEFTPADDING', (0,0), (-1,-1), 3), ('RIGHTPADDING', (0,0), (-1,-1), 3),
 ]
 # Color Δ cells
 for i, region in enumerate(['Ouest', 'Centre', 'Littoral'], 1):
@@ -198,16 +221,26 @@ for i, (ag, info) in enumerate(list(DATA['agences'].items())[:15], 1):
                    fmt(info['p1']['conc_t']), fmt(info['p2']['conc_t']),
                    fmt_signed(info['var_conc_pct'])])
 
-t3 = Table(ag_data, colWidths=[1*cm, 2.5*cm, 1.5*cm, 1.8*cm, 1.8*cm, 1.5*cm, 1.8*cm, 1.8*cm, 1.5*cm], repeatRows=1)
+# Build with mixed styles: column 1 = center, column 2 = left, rest = center
+wrapped_ag = []
+for ri, row in enumerate(ag_data):
+    prow = []
+    for ci, cell in enumerate(row):
+        if ri == 0:
+            prow.append(wrap_cell(cell, CELL_HEADER))
+        elif ci == 1:  # Agence column
+            prow.append(wrap_cell(cell, CELL_LEFT_SMALL))
+        else:
+            prow.append(wrap_cell(cell, CELL_CENTER))
+    wrapped_ag.append(prow)
+
+t3 = Table(wrapped_ag, colWidths=[1.2*cm, 2.4*cm, 1.5*cm, 1.6*cm, 1.6*cm, 1.5*cm, 1.6*cm, 1.6*cm, 1.5*cm], repeatRows=1)
 style_list3 = [
-    ('FONT', (0,0), (-1,0), 'DejaVuSans-Bold', 8),
-    ('FONT', (0,1), (-1,-1), 'DejaVuSans', 8),
     ('BACKGROUND', (0,0), (-1,0), NAVY),
-    ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-    ('ALIGN', (1,0), (-1,-1), 'CENTER'),
     ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
     ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
     ('TOPPADDING', (0,0), (-1,-1), 3), ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+    ('LEFTPADDING', (0,0), (-1,-1), 3), ('RIGHTPADDING', (0,0), (-1,-1), 3),
 ]
 # Color Δ cells for each agence
 for i, (ag, info) in enumerate(list(DATA['agences'].items())[:15], 1):
