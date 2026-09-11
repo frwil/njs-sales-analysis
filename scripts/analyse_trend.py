@@ -126,8 +126,9 @@ def aggregate_period(rows_data, source, p_start, p_end):
             continue
         # Filter etat
         if etat != 'Livrée': continue
-        # Filter internal clients
-        if is_internal(client): continue
+        # NOTE: Internal client filtering is now done per-family (below):
+        # - SOJA: include clients comptoir (walk-in sales)
+        # - CONC: exclude all internal clients (SPC, PDC, COMPTOIR, EMANA)
         # Agence mapping
         if agence_raw in AGENCE_MAP:
             agence_short, region = AGENCE_MAP[agence_raw]
@@ -137,6 +138,8 @@ def aggregate_period(rows_data, source, p_start, p_end):
         
         # Convert to kg
         if ref in SOJA_REFS:
+            # SOJA: include clients comptoir (exclude_comptoir=False)
+            if is_internal(client, exclude_comptoir=False): continue
             kg = qte * SOJA_REFS[ref]
             t = kg / 1000
             nationwide['soja_t'] += t
@@ -144,6 +147,8 @@ def aggregate_period(rows_data, source, p_start, p_end):
             by_agence[agence_short]['soja_t'] += t
             by_agence[agence_short]['region'] = region
         elif ref in CONC_REFS:
+            # CONC: exclude all internal clients (default exclude_comptoir=True)
+            if is_internal(client, exclude_comptoir=True): continue
             kg = qte * CONC_REFS[ref]
             t = kg / 1000
             nationwide['conc_t'] += t
