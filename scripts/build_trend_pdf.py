@@ -189,6 +189,71 @@ story.append(Paragraph("<b>Graphique 2 — Tendance cadence quotidienne</b>", H3
 story.append(Image('/home/z/my-project/scripts/charts/chart2_daily_trend.png', width=17*cm, height=9.4*cm))
 story.append(Spacer(1, 0.3*cm))
 
+# === ⚠ SECTION SPÉCIALE : IMPACT SUR LES CONCENTRÉS ===
+story.append(PageBreak())
+story.append(Paragraph("⚠ Impact sur les CONCENTRÉS — Baisse continue", H2))
+story.append(Paragraph(
+    "<b>Constat clé</b> : Contrairement au SOJA qui oscille (pas de tendance claire), les CONCENTRÉS suivent une "
+    "<b>baisse continue semaine après semaine</b> : 76,3 → 51,6 → 48,0 → 44,9 t/j (moyenne quotidienne). "
+    "Cette dégradation de -41,1% cumulé (W-3 → P1) reflète un véritable recul de la demande en concentrés, "
+    "qui nécessite une action commerciale ciblée.",
+    ParagraphStyle('Alert', parent=BODY, fontSize=10, backColor=colors.HexColor('#FCE4EC'), 
+                   borderColor=RED, borderWidth=0.5, borderPadding=6, alignment=TA_JUSTIFY, spaceAfter=8)))
+story.append(Spacer(1, 0.2*cm))
+
+# Chart A: CONC decline focus
+story.append(Paragraph("<b>Graphique A — CONCENTRÉS : Tendance baissière continue</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chartA_conc_decline.png', width=17*cm, height=9.4*cm))
+story.append(Spacer(1, 0.3*cm))
+
+# Table CONC decline
+conc_decline_data = [
+    ["Transition", "Conc moy/j (t)", "Δ vs sem. préc.", "Cumul vs W-3", "Lecture"],
+    ["W-3 (réf.)", "76,3", "—", "—", "Point de référence"],
+    ["W-3 → W-2", "51,6", "-32,4%", "-32,4%", "Chute brutale (effet pic W-2 soja, conc en retrait)"],
+    ["W-2 → W-1", "48,0", "-6,9%", "-37,1%", "Baisse continue (post-pic, pré-hausse prix)"],
+    ["W-1 → P1", "44,9", "-6,4%", "-41,1%", "Baisse persistante (post-hausse prix 04/09)"],
+]
+wrapped_conc_decline = []
+for ri, row in enumerate(conc_decline_data):
+    prow = []
+    for ci, cell in enumerate(row):
+        if ri == 0:
+            prow.append(wrap_cell(cell, CELL_HEADER))
+        elif ci == 0:
+            prow.append(wrap_cell(cell, CELL_LEFT))
+        else:
+            prow.append(wrap_cell(cell, CELL_CENTER))
+    wrapped_conc_decline.append(prow)
+
+t_conc_decline = Table(wrapped_conc_decline, colWidths=[2.8*cm, 2.5*cm, 2.3*cm, 2.3*cm, 6.6*cm], repeatRows=1)
+# Color the Δ columns
+style_conc_decline = [
+    ('BACKGROUND', (0,0), (-1,0), NAVY),
+    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+    ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
+    ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+    ('LEFTPADDING', (0,0), (-1,-1), 4), ('RIGHTPADDING', (0,0), (-1,-1), 4),
+    # Color all variation cells in red (all negative)
+    ('BACKGROUND', (2,2), (2,2), LIGHT_RED),
+    ('BACKGROUND', (2,3), (2,3), LIGHT_RED),
+    ('BACKGROUND', (2,4), (2,4), LIGHT_RED),
+    ('BACKGROUND', (3,2), (3,2), LIGHT_RED),
+    ('BACKGROUND', (3,3), (3,3), LIGHT_RED),
+    ('BACKGROUND', (3,4), (3,4), LIGHT_RED),
+    # Highlight final cumulative
+    ('BACKGROUND', (3,4), (3,4), colors.HexColor('#F4CCCC')),
+    ('FONT', (3,4), (3,4), 'DejaVuSans-Bold', 9),
+]
+t_conc_decline.setStyle(TableStyle(style_conc_decline))
+story.append(t_conc_decline)
+story.append(Spacer(1, 0.3*cm))
+
+# Chart B: Divergence SOJA vs CONC
+story.append(Paragraph("<b>Graphique B — Dynamiques divergentes : SOJA (oscillations) vs CONCENTRÉS (baisse continue)</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chartB_divergence.png', width=17*cm, height=9.4*cm))
+story.append(Spacer(1, 0.3*cm))
+
 # Global analysis
 g_p1 = DATA['global']['P1']
 g_w1 = DATA['global']['W-1']
@@ -267,6 +332,17 @@ story.append(Paragraph("<b>Graphique 4 — Évolution par région (Soja vs Conc)
 story.append(Image('/home/z/my-project/scripts/charts/chart4_region_multiples.png', width=17*cm, height=6*cm))
 story.append(Spacer(1, 0.3*cm))
 
+# === CHART C: CONC by region (focus decline) ===
+story.append(Paragraph("<b>Graphique C — CONCENTRÉS par région : Baisse généralisée</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chartC_conc_regional.png', width=17*cm, height=9.4*cm))
+story.append(Spacer(1, 0.3*cm))
+
+# === CHART D: CONC top agences ===
+story.append(PageBreak())
+story.append(Paragraph("<b>Graphique D — Top 10 agences : Évolution du volume CONCENTRÉS</b>", H3))
+story.append(Image('/home/z/my-project/scripts/charts/chartD_conc_top_agences.png', width=17*cm, height=8.5*cm))
+story.append(Spacer(1, 0.3*cm))
+
 # === 3. PAR AGENCE ===
 story.append(PageBreak())
 story.append(Paragraph("3. Vue par Agence — Top 15 (par volume P1)", H2))
@@ -324,13 +400,13 @@ soja_trend = [DATA['global'][p]['soja_t'] for p in PERIODS_ORDER]
 conc_trend = [DATA['global'][p]['conc_t'] for p in PERIODS_ORDER]
 
 insights = [
-    f"<b>Tendance SOJA en dents de scie</b> : {fmt(soja_trend[0])} t (W-3) → {fmt(soja_trend[1])} t (W-2, <b>+12,8%</b>) → {fmt(soja_trend[2])} t (W-1, <b>-58,2%</b>) → <b>{fmt(soja_trend[3])} t (P1, +12,9%)</b>. Pas de chute linéaire mais oscillations liées aux pics de rupture (W-2 boosté par rupture concurrente) et normalisation (W-1).",
-    f"<b>P1 vs W-1 (post-hausse vs pré-hausse)</b> : <b>+12,9% soja</b> et <b>-6,4% conc</b>. La hausse prix du 04/09 n'a PAS entraîné de chute soja — au contraire, la cadence remonte légèrement. Le conc ralentit légèrement (effet d'entraînement).",
-    f"<b>Tendance CONCENTRÉS plus stable</b> : {fmt(conc_trend[0])} → {fmt(conc_trend[1])} → {fmt(conc_trend[2])} → <b>{fmt(conc_trend[3])} t</b>. Variations contenues entre -32% et +48%, avec un point bas en P1 (224,7 t). Le conc subit un effet de.report lié au soja mais sans effondrement.",
-    f"<b>Anomalie W-2 (22-27/08)</b> ⚠ : Volume soja anormalement élevé ({fmt(soja_trend[1])} t vs ~400 t pour W-1 et P1). Explication : rupture concurrente pendant cette période, clients se reportant massivement vers BELGOCAM. NDOBO à lui seul a fait {fmt(DATA['agences']['Ndobo']['W-2']['soja_t'])} t (vs 21,2 t en P1).",
-    f"<b>Cross-sell bundle préservé</b> : Ratio soja/conc passe de {DATA['global']['W-2']['ratio']:.2f}:1 (anormal, pic W-2) → {DATA['global']['W-1']['ratio']:.2f}:1 → <b>{DATA['global']['P1']['ratio']:.2f}:1</b>. La normalisation du ratio en P1 (2,01:1, sous l'objectif 2,5:1) confirme que la discipline commerciale se maintient malgré le choc prix.",
-    f"<b>OUEST = région la plus résiliente</b> : Variations les plus modérées (P1 vs W-1 : +13,5% soja, -10,7% conc). FAMLA reste le pilier national avec {fmt(DATA['agences']['Famla']['P1']['soja_t'])} t soja + {fmt(DATA['agences']['Famla']['P1']['conc_t'])} t conc en P1.",
-    f"<b>LITTORAL = région volatile</b> ⚠ : Fortes variations portées par NDOBO (agence qui a fait un pic exceptionnel en W-2). Hors NDOBO, le Littoral est relativement stable mais sous-performant en P1 ({fmt(DATA['regions']['Littoral']['P1']['soja_t'])} t soja, ratio 2,0:1).",
+    f"<b>🔴 CONSTAT PRINCIPAL — CONCENTRÉS en baisse continue</b> : 76,3 → 51,6 → 48,0 → <b>44,9 t/j</b> (moyenne quotidienne). <b>3 semaines consécutives de baisse</b> (-32,4%, -6,9%, -6,4%). Cumul W-3 → P1 : <b>-41,1%</b>. À l'inverse du SOJA qui oscille, le CONC montre un véritable recul de la demande.",
+    f"<b>SOJA — Pas de tendance claire (oscillations)</b> : 169,3 → 191,0 → 79,9 → 90,2 t/j. Variations hebdo : +12,8% (pic rupture W-2), -58,2% (normalisation), +12,9% (reprise post-hausse prix). La hausse prix du 04/09 n'a pas entraîné de chute soja — les clients ont absorbé le nouveau prix.",
+    f"<b>Dynamiques divergentes</b> : Le SOJA bénéficie de la fin de la rupture concurrente (normalisation après pic W-2) qui masque la hausse prix. Le CONCENTRÉS ne bénéficie pas de cet effet — au contraire, il subit l'effet d'entraînement du recul soja (cross-sell lié) et montre une véritable désaffection.",
+    f"<b>Baisse CONC généralisée par région</b> : Ouest (33,5 → 19,2 t/j, -42,7%), Centre (24,0 → 15,5 t/j, -35,4%), Littoral (18,9 → 10,2 t/j, -46,0%). <b>Aucune région n'épargnée</b> — la baisse est systémique.",
+    f"<b>FAMLA en perte de vitesse</b> ⚠ : Leader historique du CONC, FAMLA passe de 90,9 t (W-3) à 47,0 t (P1), soit <b>-48,3% en 3 semaines</b>. Si FAMLA continue à ce rythme, la performance nationale CONC ne pourra pas se redresser.",
+    f"<b>Cross-sell bundle préservé malgré tout</b> ✅ : Ratio soja/conc passe de 3,70:1 (W-2, anormal) → 1,66:1 (W-1) → <b>2,01:1 (P1)</b>. La discipline commerciale reste bonne — mais ce n'est pas suffisant pour compenser la baisse du volume global CONC.",
+    f"<b>LITTORAL = région la plus touchée</b> ⚠ : Baisse CONC de 18,9 → 10,2 t/j (-46%). NDOBO, VILLAGE et NKONGSAMBA particulièrement en retrait. Action commerciale urgente requise sur cette région.",
 ]
 for i, ins in enumerate(insights, 1):
     story.append(Paragraph(f"<b>{i}.</b> {ins}", BULLET))
@@ -340,22 +416,27 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("5. Conclusion & Recommandations", H2))
 
 conclusion = f"""
-<b>Conclusion</b> : L'analyse de tendance sur 4 semaines montre que <b>la hausse prix du 04/09 n'a pas provoqué l'effondrement anticipé</b>. 
-La cadence SOJA en P1 ({fmt(g_p1['soja_moy_j'])} t/j) est <b>supérieure de +12,9%</b> à W-1 ({fmt(g_w1['soja_moy_j'])} t/j, pré-hausse), 
-ce qui suggère que les clients ont déjà intégré le nouveau prix et continuent à acheter. 
-La chute observée vs W-3/W-2 ({fmt(g_w3['soja_moy_j'])}/{fmt(g_w2['soja_moy_j'])} t/j) s'explique par la <b>fin de la rupture concurrente</b> 
-qui boostait artificiellement les ventes d'août.
+<b>Conclusion</b> : L'analyse révèle une <b>situation préoccupante pour les CONCENTRÉS</b> — baisse continue sur 3 semaines consécutives 
+(76,3 → 51,6 → 48,0 → 44,9 t/j), soit <b>-41,1% cumulé</b>. À l'inverse, le SOJA ne montre pas de tendance claire (oscillations liées aux pics de rupture) 
+et la hausse prix du 04/09 n'a pas entraîné de chute soja. <b>Le problème à résoudre est donc du côté des CONCENTRÉS, pas du SOJA.</b>
+
+La baisse CONC est <b>généralisée</b> (toutes régions et agences en recul), ce qui suggère une cause systémique :
+<br/>• <b>Effet d'entraînement</b> du recul soja (cross-sell lié — moins de soja vendu = moins de conc en cross-sell)
+<br/>• <b>Aucune action commerciale spécifique CONC</b> mise en place récemment
+<br/>• <b>Saisonnalité</b> éventuelle (à confirmer sur les prochaines semaines)
 """
 story.append(Paragraph(conclusion, BODY))
 story.append(Spacer(1, 0.2*cm))
 
 recos = [
-    "<b>Maintenir la cadence actuelle</b> — la tendance P1 vs W-1 est positive (+12,9% soja). Si elle se confirme sur 2 semaines supplémentaires, l'objectif septembre (3 850 t soja) reste atteignable.",
-    "<b>Surveiller NDOBO</b> — cette agence a fait un volume anormal en W-2 (pic rupture). En P1, retour à la normale mais sous-objectif. Action commerciale ciblée requise.",
-    "<b>Cross-sell bundle préservé</b> (ratio 2,01:1 en P1) — poursuivre la discipline, ne pas relâcher l'effort bundle malgré le choc prix.",
-    "<b>LITTORAL à surveiller</b> — région volatile, sous-performe en P1. Renforcer le support commercial sur NDOBO, VILLAGE, NKONGSAMBA.",
-    "<b>Communication client</b> — l'absence de chute post-hausse prix suggère que la hausse a été bien absorbée. Préparer un argumentaire pour les clients attentistes potentiels.",
-    "<b>Actualiser forecast Q4 2026</b> — si la cadence P1 (90 t/j soja, 45 t/j conc) se maintient, projection Q4 = ~6 700 t soja + ~3 350 t conc, à comparer au forecast actuel de 20 051 t soja + 8 730 t conc (le forecast reste dans la fourchette attendue si la cadence remonte en octobre).",
+    "🔴 <b>URGENCE — Action commerciale CONCENTRÉS</b> : La baisse continue nécessite un plan d'action immédiat. Objectif : inverser la tendance sur les 2 prochaines semaines (retour à 50+ t/j).",
+    "🎯 <b>Push CONC sur FAMLA</b> — Leader historique passé de 90,9 → 47,0 t (-48% en 3 semaines). Cible : +30% sur 2 semaines. Déclencher visite DG/DA + plan promotionnel bundle.",
+    "🎯 <b>Focus LITTORAL</b> — Région la plus touchée (-46% CONC). Renforcer RA Littoral sur NDOBO, VILLAGE, NKONGSAMBA. Promotion bundle ciblée.",
+    "📊 <b>Suivi cadence CONC quotidienne</b> — Mise en place d'un tracking quotidien (vs hebdo) sur les 10 prochaines jours pour détecter tout point de retournement.",
+    "💡 <b>Promotions bundle</b> — Augmenter le ratio CONC par commande bundle (actuellement 2,01:1, sous l'objectif 2,5:1 → marge de progression). Offre bundle (soja+conc) avec remise sur le conc.",
+    "📞 <b>Réactivation clients CONC inactifs</b> — Identifier les clients S1 qui n'ont pas acheté de conc en Sept MTD (904 sur 1 230 S1 soja). Campagne téléphonique ciblée.",
+    "📈 <b>Actualiser forecast Q4 2026 CONC</b> — Si cadence P1 (45 t/j) se maintient, projection Q4 = ~3 350 t CONC vs forecast actuel 8 730 t. <b>Revoir le forecast CONC à la baisse</b> (potentiellement -50% vs prévision initiale).",
+    "💬 <b>Argumentaire commercial CONC</b> — Préparer un argumentaire value-proposition pour les CONCENTRÉS (qualité nutritionnelle, formulation, accompagnement technique) pour relancer l'intérêt clients.",
 ]
 for r in recos:
     story.append(Paragraph(f"• {r}", BULLET))
