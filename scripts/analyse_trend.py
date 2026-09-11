@@ -98,7 +98,7 @@ def aggregate_period(rows_data, source, p_start, p_end):
                     break
             if not agence_raw:
                 agence_raw = agence
-            client = r.get('tiers', '') or ''
+            client = r.get('client', '') or ''
             etat = 'Livrée'
             qte = float(qte) if qte else 0
             d = date_obj.date() if hasattr(date_obj, 'date') else date_obj
@@ -167,7 +167,7 @@ for p in PERIODS:
                 break
         if not agence_raw:
             agence_raw = agence
-        client = row.get('tiers', '') or ''
+        client = row.get('client', '') or ''
         etat = 'Livrée'  # dataset contains only Livrées
         d = date_obj.date() if hasattr(date_obj, 'date') else date_obj
         
