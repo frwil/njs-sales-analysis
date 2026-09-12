@@ -14,13 +14,13 @@ import os
 # === Config ===
 DATASET = '/home/z/my-project/scripts/dataset_2023_2026.csv'
 SEPT_EXTRACTION = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (36).xlsx'
-OUT_XLSX = '/home/z/my-project/download/clients_20_80_ouest_avril_septembre_2026.xlsx'
+OUT_XLSX = '/home/z/my-project/download/clients_20_80_ouest_vol_avril_septembre_2026.xlsx'
 
-# Agences Ouest (from AGENCE_MAP)
-OUEST_AGENCES_ERP = ['AGENCE FAMLA', 'AGENCE DJELENG', 'AGENCE DE BAMENDA - DEPOT MBOUDA', 'SPC BAF-CHEFFERIE', 'SPC-DSCHANG']
-OUEST_AGENCES_DS = ['Famla', 'Djeleng', 'Mbouda', 'Baf-Chefferie', 'Dschang']
+# Agences Ouest — SPC exclus (uniquement FAMLA, DJELENG, MBOUDA)
+OUEST_AGENCES_ERP = ['AGENCE FAMLA', 'AGENCE DJELENG', 'AGENCE DE BAMENDA - DEPOT MBOUDA']
+OUEST_AGENCES_DS = ['Famla', 'Djeleng', 'Mbouda']
 
-# Internal clients to exclude
+# Internal clients to exclude (inclut SPC car on a retiré les agences SPC, mais on garde la sécurité)
 INTERNAL = ['SPC', 'PDC', 'EMANA']  # COMPTOIR inclus (clients comptoir à compter)
 
 def is_internal(c):
@@ -37,9 +37,9 @@ print(f"  Total records: {len(df)}")
 df_apr = df[(df['date'].dt.year == 2026) & (df['date'].dt.month >= 4)].copy()
 print(f"  April-August 2026 records: {len(df_apr)}")
 
-# Filter Ouest region
-df_ouest = df_apr[df_apr['region'] == 'Ouest'].copy()
-print(f"  Ouest records: {len(df_ouest)}")
+# Filter Ouest region (SPC agences excluded — FAMLA, DJELENG, MBOUDA only)
+df_ouest = df_apr[df_apr['agence'].isin(OUEST_AGENCES_DS)].copy()
+print(f"  Ouest records (FAMLA, DJELENG, MBOUDA only — SPC excluded): {len(df_ouest)}")
 
 # Combined CA (TTC fallback to HT)
 df_ouest['ca_combined'] = df_ouest['montant_ttc'].where(df_ouest['montant_ttc'] > 0, df_ouest['montant_ht'])
@@ -47,6 +47,29 @@ df_ouest['ca_combined'] = df_ouest['montant_ttc'].where(df_ouest['montant_ttc'] 
 # Filter out internal clients
 df_ouest_ext = df_ouest[~df_ouest['client'].apply(is_internal)].copy()
 print(f"  Ouest records (external only): {len(df_ouest_ext)}")
+
+# Product refs for converting qte to kg/tonnes (September extraction)
+SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}
+CONC_REFS = {
+    'C101': 50, 'C102': 50, 'C103': 50, 'C104': 50, 'C1042': 1, 'C1043': 5, 'C1044': 25,
+    'C105': 50, 'C1053': 1, 'C1054': 5, 'C1055': 25, 'C108': 50
+}
+MAIS_REFS = {'M1051': 50, 'M1052': 50}
+INGREDIENT_REFS = {
+    'B100': 25, 'E101': 25, 'I105': 25, 'B1001': 1, 'B1003': 5, 'B1004': 25,
+    'E1011': 1, 'E1013': 5, 'E1014': 25,
+    'I1051': 1, 'I1053': 5, 'I1054': 25,
+}
+PREMIX_REFS = {'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25}
+
+def get_weight_kg(ref):
+    """Returns weight in kg for a product ref."""
+    if ref in SOJA_REFS: return SOJA_REFS[ref]
+    if ref in CONC_REFS: return CONC_REFS[ref]
+    if ref in MAIS_REFS: return MAIS_REFS[ref]
+    if ref in INGREDIENT_REFS: return INGREDIENT_REFS[ref]
+    if ref in PREMIX_REFS: return PREMIX_REFS[ref]
+    return 50  # default 50kg sacs
 
 # === 2. Load September extraction ===
 print("\nLoading September extraction...")
@@ -71,6 +94,10 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     ca_ttc = float(r[9]) if r[9] else 0
     ca_ht = float(r[8]) if r[8] else 0
     ca = ca_ttc if ca_ttc > 0 else ca_ht
+    # Compute kg and tonnes from qte × weight per unit
+    weight_kg = get_weight_kg(ref) if ref else 50
+    kg = qte * weight_kg
+    tonnes = kg / 1000
     
     sept_records.append({
         'client': client,
@@ -78,6 +105,7 @@ for r in ws.iter_rows(min_row=3, values_only=True):
         'ref': ref,
         'qte': qte,
         'ca_combined': ca,
+        'tonnes': tonnes,
         'date_str': date_str,
     })
 
@@ -113,31 +141,34 @@ hist_agg = df_ouest_ext.groupby('client').agg(
 # From September
 sept_agg = df_sept.groupby('client').agg(
     ca_combined=('ca_combined', 'sum'),
+    tonnes=('tonnes', 'sum'),
     n_orders=('ref', 'count'),
     agences=('agence', lambda x: ', '.join(sorted(set(x)))),
 ).reset_index()
-sept_agg = sept_agg.rename(columns={'ca_combined': 'ca_sept', 'n_orders': 'n_orders_sept', 'agences': 'agences_sept'})
+sept_agg = sept_agg.rename(columns={'ca_combined': 'ca_sept', 'tonnes': 'tonnes_sept', 'n_orders': 'n_orders_sept', 'agences': 'agences_sept'})
 
 # Merge
 merged = pd.merge(hist_agg, sept_agg, on='client', how='outer').fillna(0)
 merged['ca_total'] = merged['ca_combined'] + merged['ca_sept']
+merged['tonnes_total'] = merged['tonnes'] + merged['tonnes_sept']
 merged['n_orders_total'] = merged['n_orders'] + merged['n_orders_sept']
 
 # Use agences from hist if present, else from sept
 merged['agences_final'] = merged.apply(lambda r: r['agences'] if r['agences'] != '' else r['agences_sept'], axis=1)
 
-# Sort by CA descending
-merged = merged.sort_values('ca_total', ascending=False).reset_index(drop=True)
+# Sort by TONNES (volume) descending — Pareto based on VOLUME
+merged = merged.sort_values('tonnes_total', ascending=False).reset_index(drop=True)
 
-# === 4. Apply Pareto 20/80 ===
-print("\nApplying Pareto 20/80...")
+# === 4. Apply Pareto 20/80 (based on VOLUME/TONNES) ===
+print("\nApplying Pareto 20/80 (based on VOLUME)...")
+total_tonnes = merged['tonnes_total'].sum()
 total_ca = merged['ca_total'].sum()
-merged['ca_cumul'] = merged['ca_total'].cumsum()
-merged['pct_ca'] = merged['ca_total'] / total_ca * 100
-merged['pct_ca_cumul'] = merged['ca_cumul'] / total_ca * 100
+merged['tonnes_cumul'] = merged['tonnes_total'].cumsum()
+merged['pct_tonnes'] = merged['tonnes_total'] / total_tonnes * 100
+merged['pct_tonnes_cumul'] = merged['tonnes_cumul'] / total_tonnes * 100
 
-# Mark top clients contributing to 80% of CA
-merged['is_20_80'] = merged['pct_ca_cumul'] <= 80
+# Mark top clients contributing to 80% of VOLUME
+merged['is_20_80'] = merged['pct_tonnes_cumul'] <= 80
 # Always include the first client that crosses 80%
 first_cross_80 = merged[~merged['is_20_80']].index.min()
 if not pd.isna(first_cross_80):
@@ -146,13 +177,17 @@ if not pd.isna(first_cross_80):
 n_clients = len(merged)
 n_20_80 = merged['is_20_80'].sum()
 pct_clients_20_80 = n_20_80 / n_clients * 100
+tonnes_20_80 = merged[merged['is_20_80']]['tonnes_total'].sum()
+pct_tonnes_20_80 = tonnes_20_80 / total_tonnes * 100
 ca_20_80 = merged[merged['is_20_80']]['ca_total'].sum()
-pct_ca_20_80 = ca_20_80 / total_ca * 100
+pct_ca_of_20_80 = ca_20_80 / total_ca * 100
 
 print(f"  Total clients: {n_clients}")
+print(f"  Total tonnes: {total_tonnes:,.1f} t".replace(',', ' '))
 print(f"  Total CA: {total_ca:,.0f} FCFA ({total_ca/1e6:.1f} M)")
-print(f"  Top 20/80 clients: {n_20_80} ({pct_clients_20_80:.1f}% of clients)")
-print(f"  CA from 20/80 clients: {ca_20_80:,.0f} FCFA ({pct_ca_20_80:.1f}% of CA)")
+print(f"  Top 20/80 clients (by volume): {n_20_80} ({pct_clients_20_80:.1f}% of clients)")
+print(f"  Volume from 20/80 clients: {tonnes_20_80:,.1f} t ({pct_tonnes_20_80:.1f}% of volume)".replace(',', ' '))
+print(f"  CA from 20/80 clients: {ca_20_80:,.0f} FCFA ({pct_ca_of_20_80:.1f}% of CA)")
 
 # === 5. Build Excel ===
 print("\nBuilding Excel file...")
@@ -192,19 +227,22 @@ row += 1
 synth_data = [
     ('Période analysée', 'Avril 2026 → Septembre 2026'),
     ('Région', 'Ouest'),
-    ('Agences incluses', 'FAMLA, DJELENG, MBOUDA, SPC BAF-CHEFFERIE, SPC DSCHANG'),
+    ('Agences incluses', 'FAMLA, DJELENG, MBOUDA (SPC exclus)'),
     ('Clients internes exclus', 'SPC, PDC, EMANA (COMPTOIR inclus)'),
+    ('Méthode 20/80', 'Basé sur le VOLUME (tonnes), pas le CA'),
     ('Nombre total de clients', n_clients),
+    ('Volume total cumulé (t)', f'{total_tonnes:,.1f}'.replace(',', ' ')),
     ('CA total cumulé (FCFA)', f'{total_ca:,.0f}'.replace(',', ' ')),
     ('CA total cumulé (M FCFA)', f'{total_ca/1e6:.1f}'),
-    ('Volume total cumulé (t)', f'{merged["tonnes"].sum():,.0f}'.replace(',', ' ')),
     ('', ''),
     ('Clients 20/80 (top)', n_20_80),
     ('% clients (sur total)', f'{pct_clients_20_80:.1f}%'),
+    ('Volume des 20/80 (t)', f'{tonnes_20_80:,.1f}'.replace(',', ' ')),
+    ('% Volume total', f'{pct_tonnes_20_80:.1f}%'),
     ('CA des 20/80 (M FCFA)', f'{ca_20_80/1e6:.1f}'),
-    ('% CA total', f'{pct_ca_20_80:.1f}%'),
+    ('% CA (des 20/80)', f'{pct_ca_of_20_80:.1f}%'),
     ('', ''),
-    ('Règle Pareto', 'Top clients contribuant à ~80% du CA'),
+    ('Règle Pareto', 'Top clients contribuant à ~80% du VOLUME'),
     ('Marquage Excel', 'Colonne "20/80" = OUI pour les top clients'),
 ]
 for label, val in synth_data:
@@ -217,13 +255,13 @@ for label, val in synth_data:
 ws.column_dimensions['A'].width = 35
 ws.column_dimensions['B'].width = 55
 
-# Sheet 2: Liste complète (all clients)
+# Sheet 2: Liste complète (all clients) — triée par TONNES décroissant
 ws2 = wb_out.create_sheet("2. Liste complète")
-ws2['A1'] = 'BELGOCAM SA - Liste complète des clients Ouest (Avril-Septembre 2026)'
+ws2['A1'] = 'BELGOCAM SA - Liste complète des clients Ouest (Avril-Septembre 2026) — tri par VOLUME'
 ws2['A1'].font = Font(bold=True, size=14, color='1F4E78')
 
 row = 3
-headers = ['Rang', '20/80', 'Client', 'CA total (FCFA)', 'CA (M FCFA)', '% CA', '% CA cumul', 'Tonnes', 'Nb cmdes', 'Agences', 'Premier achat', 'Dernier achat']
+headers = ['Rang', '20/80', 'Client', 'Tonnes', '% Vol', '% Vol cumul', 'CA (FCFA)', 'CA (M)', 'Nb cmdes', 'Agences', 'Premier achat', 'Dernier achat']
 for i, h in enumerate(headers, 1): ws2.cell(row=row, column=i, value=h)
 for c in range(1, len(headers)+1):
     cell = ws2.cell(row=row, column=c)
@@ -237,11 +275,11 @@ for idx, r in merged.iterrows():
     ws2.cell(row=row, column=1, value=idx + 1)
     ws2.cell(row=row, column=2, value='★ OUI' if is_20 else '')
     ws2.cell(row=row, column=3, value=r['client'])
-    ws2.cell(row=row, column=4, value=round(r['ca_total']))
-    ws2.cell(row=row, column=5, value=round(r['ca_total']/1e6, 2))
-    ws2.cell(row=row, column=6, value=round(r['pct_ca'], 2))
-    ws2.cell(row=row, column=7, value=round(r['pct_ca_cumul'], 2))
-    ws2.cell(row=row, column=8, value=round(r['tonnes'], 1) if r['tonnes'] > 0 else 0)
+    ws2.cell(row=row, column=4, value=round(r['tonnes_total'], 1))
+    ws2.cell(row=row, column=5, value=round(r['pct_tonnes'], 2))
+    ws2.cell(row=row, column=6, value=round(r['pct_tonnes_cumul'], 2))
+    ws2.cell(row=row, column=7, value=round(r['ca_total']))
+    ws2.cell(row=row, column=8, value=round(r['ca_total']/1e6, 2))
     ws2.cell(row=row, column=9, value=int(r['n_orders_total']))
     ws2.cell(row=row, column=10, value=r['agences_final'])
     first_date = r['first_date']
@@ -264,28 +302,29 @@ for idx, r in merged.iterrows():
 # Total row
 ws2.cell(row=row, column=1, value='TOTAL')
 ws2.cell(row=row, column=2, value=f'{n_20_80} clients')
-ws2.cell(row=row, column=4, value=round(total_ca))
-ws2.cell(row=row, column=5, value=round(total_ca/1e6, 1))
+ws2.cell(row=row, column=4, value=round(total_tonnes, 1))
+ws2.cell(row=row, column=5, value=100.0)
 ws2.cell(row=row, column=6, value=100.0)
-ws2.cell(row=row, column=8, value=round(merged['tonnes'].sum(), 1))
+ws2.cell(row=row, column=7, value=round(total_ca))
+ws2.cell(row=row, column=8, value=round(total_ca/1e6, 1))
 ws2.cell(row=row, column=9, value=int(merged['n_orders_total'].sum()))
 for c in range(1, len(headers)+1):
     cell = ws2.cell(row=row, column=c)
     cell.fill = TOTAL_FILL; cell.font = TOTAL_FONT; cell.border = BORDER
 
 # Column widths
-widths = [6, 8, 38, 16, 12, 10, 12, 10, 10, 30, 14, 14]
+widths = [6, 8, 38, 10, 9, 12, 16, 12, 10, 30, 14, 14]
 for i, w in enumerate(widths, 1):
     ws2.column_dimensions[chr(64+i)].width = w
 ws2.freeze_panes = 'D4'
 
-# Sheet 3: Top 20/80 only
-ws3 = wb_out.create_sheet("3. Top 20-80")
-ws3['A1'] = f'Top {n_20_80} clients 20/80 Ouest — {pct_ca_20_80:.1f}% du CA'
+# Sheet 3: Top 20/80 only — based on VOLUME
+ws3 = wb_out.create_sheet("3. Top 20-80 (Volume)")
+ws3['A1'] = f'Top {n_20_80} clients 20/80 Ouest — {pct_tonnes_20_80:.1f}% du VOLUME (basé sur tonnes)'
 ws3['A1'].font = Font(bold=True, size=14, color='1F4E78')
 
 row = 3
-headers = ['Rang', 'Client', 'CA (M FCFA)', '% CA', '% CA cumul', 'Tonnes', 'Nb cmdes', 'Agences', 'Premier achat']
+headers = ['Rang', 'Client', 'Tonnes', '% Vol', '% Vol cumul', 'CA (M FCFA)', 'Nb cmdes', 'Agences', 'Premier achat']
 for i, h in enumerate(headers, 1): ws3.cell(row=row, column=i, value=h)
 for c in range(1, len(headers)+1):
     cell = ws3.cell(row=row, column=c)
@@ -299,10 +338,10 @@ for idx, r in merged[merged['is_20_80']].iterrows():
     rank += 1
     ws3.cell(row=row, column=1, value=rank)
     ws3.cell(row=row, column=2, value=r['client'])
-    ws3.cell(row=row, column=3, value=round(r['ca_total']/1e6, 2))
-    ws3.cell(row=row, column=4, value=round(r['pct_ca'], 2))
-    ws3.cell(row=row, column=5, value=round(r['pct_ca_cumul'], 2))
-    ws3.cell(row=row, column=6, value=round(r['tonnes'], 1) if r['tonnes'] > 0 else 0)
+    ws3.cell(row=row, column=3, value=round(r['tonnes_total'], 1))
+    ws3.cell(row=row, column=4, value=round(r['pct_tonnes'], 2))
+    ws3.cell(row=row, column=5, value=round(r['pct_tonnes_cumul'], 2))
+    ws3.cell(row=row, column=6, value=round(r['ca_total']/1e6, 2))
     ws3.cell(row=row, column=7, value=int(r['n_orders_total']))
     ws3.cell(row=row, column=8, value=r['agences_final'])
     first_date = r['first_date']
@@ -318,16 +357,16 @@ for idx, r in merged[merged['is_20_80']].iterrows():
 # Total
 ws3.cell(row=row, column=1, value='TOTAL')
 ws3.cell(row=row, column=2, value=f'{n_20_80} clients')
-ws3.cell(row=row, column=3, value=round(ca_20_80/1e6, 1))
-ws3.cell(row=row, column=4, value=round(pct_ca_20_80, 1))
+ws3.cell(row=row, column=3, value=round(tonnes_20_80, 1))
+ws3.cell(row=row, column=4, value=round(pct_tonnes_20_80, 1))
 ws3.cell(row=row, column=5, value=100.0)
-ws3.cell(row=row, column=6, value=round(merged[merged['is_20_80']]['tonnes'].sum(), 1))
+ws3.cell(row=row, column=6, value=round(ca_20_80/1e6, 1))
 ws3.cell(row=row, column=7, value=int(merged[merged['is_20_80']]['n_orders_total'].sum()))
 for c in range(1, len(headers)+1):
     cell = ws3.cell(row=row, column=c)
     cell.fill = TOTAL_FILL; cell.font = TOTAL_FONT; cell.border = BORDER
 
-widths3 = [6, 38, 14, 10, 12, 10, 10, 30, 14]
+widths3 = [6, 38, 12, 10, 12, 14, 10, 30, 14]
 for i, w in enumerate(widths3, 1):
     ws3.column_dimensions[chr(64+i)].width = w
 ws3.freeze_panes = 'C4'
