@@ -1175,10 +1175,10 @@ story.append(Paragraph(
     BODY))
 story.append(Spacer(1, 0.3*cm))
 
-story.append(Paragraph("<b>Historique 2023-2026 vs Forecast 2027</b>", H3))
+story.append(Paragraph("<b>Historique 2024-2026 vs Forecast 2027</b>", H3))
 story.append(Paragraph(
-    "Le forecast 2027 s'appuie sur 4 ans d'historique (Jan 2023 - Août 2026). Le tableau ci-dessous présente "
-    "l'évolution par famille et par année.",
+    "Le forecast 2027 s'appuie sur l'historique 2024-2026 (Jan 2024 - Août 2026 réel + Q4 2026 forecast). "
+    "Le tableau ci-dessous présente l'évolution par famille : Volume et CA pour 2024, 2025, 2026 LY (année complète) et 2027 forecast.",
     BODY))
 
 hist_data = build_2027_hist_table()
@@ -1186,7 +1186,7 @@ story.append(make_table(hist_data, col_widths=[2.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph(
-    f"<b>Lecture</b> : Le TOURTEAUX montre une trajectoire haussière ({fmt_t(HIST_BY_YEAR_FAM[2023].get('TOURTEAUX', 0))} t en 2023 → {fmt_t(F2027_FAM[F2027_FAM['family']=='TOURTEAUX']['t'].iloc[0])} t forecast 2027). "
+    f"<b>Lecture</b> : Le TOURTEAUX montre une trajectoire haussière ({fmt_t(HIST_BY_YEAR_FAM[2024].get('TOURTEAUX', 0))} t en 2024 → {fmt_t(HIST_BY_YEAR_FAM[2025].get('TOURTEAUX', 0))} t en 2025 → {fmt_t(LY_2026_BY_FAM_T.get('TOURTEAUX', 0))} t en 2026 LY → {fmt_t(F2027_FAM[F2027_FAM['family']=='TOURTEAUX']['t'].iloc[0])} t forecast 2027). "
     f"Les CONCENTRÉS progressent également ({fmt_pct_signed(_conc_var_ca)} CA vs 2026). ALIMENT_COMPLET bénéficie du filtrage du creux 2024 "
     f"et d'un facteur reprise +15% ({fmt_t(_ac_2027_t)} t, {fmt_pct_signed(_ac_var_t)} vs 2026). PREMIX restauré à {fmt_t(_pm_2027_t)} t "
     f"(mode Prophet avec volumes). Progression globale 2027 vs 2026 : <b>{fmt_pct_signed(_var_t_total)}</b> en volume, "
@@ -1516,7 +1516,7 @@ story.append(Paragraph("4.2 Par trimestre", H2))
 q_detail = build_2027_q_detail_table()
 story.append(make_table(q_detail, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 4.5*cm], font_size=9))
 
-story.append(Paragraph("5. Historique 2023-2026 vs Forecast 2027", H1))
+story.append(Paragraph("5. Historique 2024-2026 vs Forecast 2027", H1))
 hist_detail = build_2027_hist_table()
 story.append(make_table(hist_detail, col_widths=[2.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.7*cm, 1.7*cm, 1.5*cm, 1.5*cm], font_size=7, highlight_rows=[9, 10]))
 
