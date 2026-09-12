@@ -244,25 +244,47 @@ def build_2027_q_table():
     return rows
 
 def build_2027_hist_table():
-    """Historique 2023-2026 + Forecast 2027 par famille"""
-    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']
-    rows = [["Famille", "2023 (t)", "2024 (t)", "2025 (t)", "2026 YTD (t)", "2027 fcst (t)", "CA 2027 (M)"]]
+    """Historique 2024-2026 (Vol + CA) + Forecast 2027 par famille.
+    Inclut 2024, 2025 (vol + CA) et 2026 LY (année complète = YTD réel + Q4 forecast, vol + CA).
+    """
+    import json as _json
+    import os as _os
+    _hist_path = '/home/z/my-project/scripts/historical_2024_2026.json'
+    if _os.path.exists(_hist_path):
+        _hist = _json.load(open(_hist_path))
+    else:
+        _hist = {'by_year': {}, '2026_ly': {}}
+    
+    fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE', 'MAIS']
+    rows = [["Famille", "2024 Vol (t)", "2024 CA (M)", "2025 Vol (t)", "2025 CA (M)", "2026 LY Vol (t)", "2026 LY CA (M)", "2027 fcst (t)", "2027 CA (M)"]]
     for fam in fam_order:
-        t23 = HIST_BY_YEAR_FAM[2023].get(fam, 0)
-        t24 = HIST_BY_YEAR_FAM[2024].get(fam, 0)
-        t25 = HIST_BY_YEAR_FAM[2025].get(fam, 0)
-        t26_ytd = HIST_BY_YEAR_FAM[2026].get(fam, 0)
+        # 2024
+        h24 = _hist.get('by_year', {}).get('2024', {}).get(fam, {'vol': 0, 'ca': 0})
+        v24 = h24['vol'] if isinstance(h24, dict) else 0
+        c24 = h24['ca'] if isinstance(h24, dict) else 0
+        # 2025
+        h25 = _hist.get('by_year', {}).get('2025', {}).get(fam, {'vol': 0, 'ca': 0})
+        v25 = h25['vol'] if isinstance(h25, dict) else 0
+        c25 = h25['ca'] if isinstance(h25, dict) else 0
+        # 2026 LY (full year)
+        h26 = _hist.get('2026_ly', {}).get(fam, {'vol': 0, 'ca': 0})
+        v26 = h26['vol'] if isinstance(h26, dict) else 0
+        c26 = h26['ca'] if isinstance(h26, dict) else 0
+        # 2027 forecast
         t27 = F2027_FAM[F2027_FAM['family']==fam]['t'].iloc[0] if len(F2027_FAM[F2027_FAM['family']==fam])>0 else 0
         ca27 = F2027_FAM[F2027_FAM['family']==fam]['ca'].iloc[0] if len(F2027_FAM[F2027_FAM['family']==fam])>0 else 0
-        rows.append([fam, fmt_t(t23), fmt_t(t24), fmt_t(t25), fmt_t(t26_ytd), fmt_t(t27), fmt_ca(ca27)])
-    rows.append(["MAÏS (exclu)", "0", "0", "0", "0", "0", "0"])
-    rows.append(["TOTAL",
-                 fmt_t(HIST_BY_YEAR_FAM[2023].sum()),
-                 fmt_t(HIST_BY_YEAR_FAM[2024].sum()),
-                 fmt_t(HIST_BY_YEAR_FAM[2025].sum()),
-                 fmt_t(HIST_BY_YEAR_FAM[2026].sum()),
-                 fmt_t(F2027_TOTAL_T),
-                 fmt_ca(F2027_TOTAL_CA)])
+        
+        rows.append([fam, fmt_t(v24), fmt_ca(c24), fmt_t(v25), fmt_ca(c25), fmt_t(v26), fmt_ca(c26), fmt_t(t27), fmt_ca(ca27)])
+    
+    # Total row (hors MAIS for 2027)
+    tot_v24 = sum(_hist.get('by_year', {}).get('2024', {}).get(f, {'vol':0})['vol'] if isinstance(_hist.get('by_year', {}).get('2024', {}).get(f, {'vol':0}), dict) else 0 for f in fam_order if f != 'MAIS')
+    tot_c24 = sum(_hist.get('by_year', {}).get('2024', {}).get(f, {'ca':0})['ca'] if isinstance(_hist.get('by_year', {}).get('2024', {}).get(f, {'ca':0}), dict) else 0 for f in fam_order if f != 'MAIS')
+    tot_v25 = sum(_hist.get('by_year', {}).get('2025', {}).get(f, {'vol':0})['vol'] if isinstance(_hist.get('by_year', {}).get('2025', {}).get(f, {'vol':0}), dict) else 0 for f in fam_order if f != 'MAIS')
+    tot_c25 = sum(_hist.get('by_year', {}).get('2025', {}).get(f, {'ca':0})['ca'] if isinstance(_hist.get('by_year', {}).get('2025', {}).get(f, {'ca':0}), dict) else 0 for f in fam_order if f != 'MAIS')
+    tot_v26 = sum(_hist.get('2026_ly', {}).get(f, {'vol':0})['vol'] if isinstance(_hist.get('2026_ly', {}).get(f, {'vol':0}), dict) else 0 for f in fam_order if f != 'MAIS')
+    tot_c26 = sum(_hist.get('2026_ly', {}).get(f, {'ca':0})['ca'] if isinstance(_hist.get('2026_ly', {}).get(f, {'ca':0}), dict) else 0 for f in fam_order if f != 'MAIS')
+    
+    rows.append(["TOTAL (hors MAIS)", fmt_t(tot_v24), fmt_ca(tot_c24), fmt_t(tot_v25), fmt_ca(tot_c25), fmt_t(tot_v26), fmt_ca(tot_c26), fmt_t(F2027_TOTAL_T), fmt_ca(F2027_TOTAL_CA)])
     return rows
 
 def build_2027_fam_detail_table():
@@ -1160,7 +1182,7 @@ story.append(Paragraph(
     BODY))
 
 hist_data = build_2027_hist_table()
-story.append(make_table(hist_data, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.4*cm], font_size=8, highlight_rows=[6, 7]))
+story.append(make_table(hist_data, col_widths=[2.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.7*cm, 1.7*cm, 1.5*cm, 1.5*cm], font_size=7, highlight_rows=[9, 10]))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph(
@@ -1496,7 +1518,7 @@ story.append(make_table(q_detail, col_widths=[3.5*cm, 2.5*cm, 2.5*cm, 2*cm, 4.5*
 
 story.append(Paragraph("5. Historique 2023-2026 vs Forecast 2027", H1))
 hist_detail = build_2027_hist_table()
-story.append(make_table(hist_detail, col_widths=[2.8*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.4*cm], font_size=8, highlight_rows=[6, 7]))
+story.append(make_table(hist_detail, col_widths=[2.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.7*cm, 1.7*cm, 1.5*cm, 1.5*cm], font_size=7, highlight_rows=[9, 10]))
 
 story.append(Paragraph("6. Plan de déploiement", H1))
 deploy_data = [
