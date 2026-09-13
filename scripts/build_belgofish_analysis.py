@@ -252,6 +252,110 @@ t3.setStyle(TableStyle([
 story.append(t3)
 story.append(Spacer(1, 0.3*cm))
 
+# === 3b. Ventes 2026 mois par mois ===
+story.append(Paragraph("3b. Ventes 2026 — Mois par mois (detail par reference)", H2))
+story.append(Paragraph(
+    "Le tableau ci-dessous presente les ventes BELGO FISH en 2026, mois par mois. "
+    "L'activite est nulle de Janvier a Aout, puis reprend en Septembre avec 2,8 t.",
+    BODY))
+
+# 2026 monthly table (Jan-Sep)
+data_2026_monthly = [["Mois", "Volume (t)", "CA (M FCFA)", "Nb refs", "Nb clients"]]
+sept_ref_detail = {
+    'APCL2': {'t': 0.24, 'ca': 0.32, 'clients': 10, 'agences': 6},
+    'APCL3': {'t': 0.92, 'ca': 1.14, 'clients': 16, 'agences': 11},
+    'APCL4.5': {'t': 0.63, 'ca': 0.80, 'clients': 14, 'agences': 9},
+    'APCL6': {'t': 0.24, 'ca': 0.29, 'clients': 7, 'agences': 7},
+    'APCL8': {'t': 0.73, 'ca': 0.88, 'clients': 12, 'agences': 8},
+}
+
+for m in range(1, 10):
+    m_name = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre'][m-1]
+    if m <= 8:
+        v = 0
+        c = 0
+        n_refs = 0
+        n_cli = 0
+    else:  # September
+        v = sum(d['t'] for d in sept_ref_detail.values())
+        c = sum(d['ca'] for d in sept_ref_detail.values())
+        n_refs = len(sept_ref_detail)
+        n_cli = sum(d['clients'] for d in sept_ref_detail.values())
+    data_2026_monthly.append([m_name, fmt(v) if v > 0 else "0,0", fmt(c) if c > 0 else "0,0", str(n_refs) if n_refs > 0 else "—", str(n_cli) if n_cli > 0 else "—"])
+
+# Total row
+data_2026_monthly.append(["TOTAL 2026", fmt(v26), fmt(c26), "5", str(sum(d['clients'] for d in sept_ref_detail.values()))])
+
+wrapped_2026 = []
+for ri, row in enumerate(data_2026_monthly):
+    prow = []
+    for ci, cell in enumerate(row):
+        if ri == 0: prow.append(wrap_cell(cell, CELL_HEADER))
+        elif ci == 0: prow.append(wrap_cell(cell, CELL_LEFT))
+        else: prow.append(wrap_cell(cell, CELL_CENTER))
+    wrapped_2026.append(prow)
+
+t_2026 = Table(wrapped_2026, colWidths=[3*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm], repeatRows=1)
+style_2026 = [
+    ('BACKGROUND', (0,0), (-1,0), NAVY),
+    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+    ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
+    ('TOPPADDING', (0,0), (-1,-1), 3), ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+    ('FONTSIZE', (0,0), (-1,-1), 8),
+    # Highlight September row (row 9 = Septembre)
+    ('BACKGROUND', (0,9), (-1,9), LIGHT_GREEN),
+    ('FONT', (0,9), (-1,9), 'DejaVuSans-Bold', 8),
+    # Total row
+    ('BACKGROUND', (0,10), (-1,10), colors.HexColor('#FFF2CC')),
+    ('FONT', (0,10), (-1,10), 'DejaVuSans-Bold', 8),
+]
+t_2026.setStyle(TableStyle(style_2026))
+story.append(t_2026)
+story.append(Spacer(1, 0.3*cm))
+
+# September detail by reference
+story.append(Paragraph("<b>Detail Septembre 2026 par reference</b>", H3))
+
+sept_data = [["Reference", "Description", "Volume (t)", "CA (M FCFA)", "Nb clients", "Nb agences"]]
+ref_descs = {
+    'APCL2': 'BELGO FISH CLARIA 2mm 15kg',
+    'APCL3': 'BELGO FISH CLARIA 3mm 15kg',
+    'APCL4.5': 'BELGO FISH CLARIA 4.5mm 15kg',
+    'APCL6': 'BELGO FISH CLARIA 6mm 15kg',
+    'APCL8': 'BELGO FISH CLARIA 8mm 15kg',
+}
+for ref in sorted(sept_ref_detail.keys()):
+    d = sept_ref_detail[ref]
+    sept_data.append([ref, ref_descs.get(ref, ''), fmt(d['t']), fmt(d['ca']), str(d['clients']), str(d['agences'])])
+
+# Total
+sept_data.append(["TOTAL", "", fmt(sum(d['t'] for d in sept_ref_detail.values())), 
+                  fmt(sum(d['ca'] for d in sept_ref_detail.values())),
+                  str(sum(d['clients'] for d in sept_ref_detail.values())),
+                  "—"])
+
+wrapped_sept = []
+for ri, row in enumerate(sept_data):
+    prow = []
+    for ci, cell in enumerate(row):
+        if ri == 0: prow.append(wrap_cell(cell, CELL_HEADER))
+        elif ci <= 1: prow.append(wrap_cell(cell, CELL_LEFT))
+        else: prow.append(wrap_cell(cell, CELL_CENTER))
+    wrapped_sept.append(prow)
+
+t_sept = Table(wrapped_sept, colWidths=[2*cm, 5*cm, 2*cm, 2.5*cm, 2*cm, 2*cm], repeatRows=1)
+t_sept.setStyle(TableStyle([
+    ('BACKGROUND', (0,0), (-1,0), NAVY),
+    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+    ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
+    ('TOPPADDING', (0,0), (-1,-1), 3), ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+    ('FONTSIZE', (0,0), (-1,-1), 8),
+    ('BACKGROUND', (0,len(sept_data)-1), (-1,len(sept_data)-1), colors.HexColor('#FFF2CC')),
+    ('FONT', (0,len(sept_data)-1), (-1,len(sept_data)-1), 'DejaVuSans-Bold', 8),
+]))
+story.append(t_sept)
+story.append(Spacer(1, 0.3*cm))
+
 # === 4. Insights ===
 story.append(Paragraph("4. Insights et recommandations", H2))
 
@@ -434,6 +538,112 @@ for m in range(1, 13):
 
 ws3.column_dimensions['A'].width = 10
 for col in 'BCDEFG': ws3.column_dimensions[col].width = 14
+
+# Sheet 4: Ventes 2026 mois par mois
+ws4 = wb.create_sheet("4. Ventes 2026 mensuel")
+ws4['A1'] = 'BELGO FISH - Ventes 2026 mois par mois'
+ws4['A1'].font = Font(bold=True, size=14, color='1F4E78')
+
+row = 3
+headers4 = ['Mois', 'Volume (t)', 'CA (M FCFA)', 'Nb refs actifs', 'Nb clients']
+for i, h in enumerate(headers4, 1): ws4.cell(row=row, column=i, value=h)
+for c in range(1, len(headers4)+1):
+    cell = ws4.cell(row=row, column=c)
+    cell.fill = HEAD_FILL; cell.font = HEAD_FONT; cell.border = BORDER
+    cell.alignment = Alignment(horizontal='center', wrap_text=True)
+row += 1
+
+month_names_full = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre']
+sept_ref_detail_xl = {
+    'APCL2': {'t': 0.24, 'ca': 0.32, 'clients': 10, 'agences': 6},
+    'APCL3': {'t': 0.92, 'ca': 1.14, 'clients': 16, 'agences': 11},
+    'APCL4.5': {'t': 0.63, 'ca': 0.80, 'clients': 14, 'agences': 9},
+    'APCL6': {'t': 0.24, 'ca': 0.29, 'clients': 7, 'agences': 7},
+    'APCL8': {'t': 0.73, 'ca': 0.88, 'clients': 12, 'agences': 8},
+}
+
+for m in range(1, 10):
+    m_name = month_names_full[m-1]
+    if m <= 8:
+        v = 0
+        c = 0
+        n_refs = 0
+        n_cli = 0
+    else:
+        v = sum(d['t'] for d in sept_ref_detail_xl.values())
+        c = sum(d['ca'] for d in sept_ref_detail_xl.values())
+        n_refs = len(sept_ref_detail_xl)
+        n_cli = sum(d['clients'] for d in sept_ref_detail_xl.values())
+    
+    ws4.cell(row=row, column=1, value=m_name)
+    ws4.cell(row=row, column=2, value=round(v, 2))
+    ws4.cell(row=row, column=3, value=round(c, 2))
+    ws4.cell(row=row, column=4, value=n_refs if n_refs > 0 else '')
+    ws4.cell(row=row, column=5, value=n_cli if n_cli > 0 else '')
+    for c2 in range(1, len(headers4)+1):
+        ws4.cell(row=row, column=c2).border = BORDER
+        if m == 9:
+            ws4.cell(row=row, column=c2).fill = PatternFill('solid', fgColor='C6EFCE')
+            ws4.cell(row=row, column=c2).font = Font(bold=True)
+    row += 1
+
+# Total row
+ws4.cell(row=row, column=1, value='TOTAL 2026')
+ws4.cell(row=row, column=2, value=round(v26, 2))
+ws4.cell(row=row, column=3, value=round(c26, 2))
+ws4.cell(row=row, column=4, value=5)
+ws4.cell(row=row, column=5, value=sum(d['clients'] for d in sept_ref_detail_xl.values()))
+for c2 in range(1, len(headers4)+1):
+    ws4.cell(row=row, column=c2).fill = TOTAL_FILL
+    ws4.cell(row=row, column=c2).font = TOTAL_FONT
+    ws4.cell(row=row, column=c2).border = BORDER
+
+row += 3
+
+# Septembre detail by ref
+ws4.cell(row=row, column=1, value='DETAIL SEPTEMBRE 2026 PAR REFERENCE').font = Font(bold=True, color='1F4E78')
+row += 1
+headers_sept = ['Reference', 'Description', 'Volume (t)', 'CA (M FCFA)', 'Nb clients', 'Nb agences']
+for i, h in enumerate(headers_sept, 1): ws4.cell(row=row, column=i, value=h)
+for c in range(1, len(headers_sept)+1):
+    cell = ws4.cell(row=row, column=c)
+    cell.fill = HEAD_FILL; cell.font = HEAD_FONT; cell.border = BORDER
+    cell.alignment = Alignment(horizontal='center', wrap_text=True)
+row += 1
+
+ref_descs_xl = {
+    'APCL2': 'BELGO FISH CLARIA 2mm 15kg',
+    'APCL3': 'BELGO FISH CLARIA 3mm 15kg',
+    'APCL4.5': 'BELGO FISH CLARIA 4.5mm 15kg',
+    'APCL6': 'BELGO FISH CLARIA 6mm 15kg',
+    'APCL8': 'BELGO FISH CLARIA 8mm 15kg',
+}
+
+for ref in sorted(sept_ref_detail_xl.keys()):
+    d = sept_ref_detail_xl[ref]
+    ws4.cell(row=row, column=1, value=ref)
+    ws4.cell(row=row, column=2, value=ref_descs_xl.get(ref, ''))
+    ws4.cell(row=row, column=3, value=round(d['t'], 2))
+    ws4.cell(row=row, column=4, value=round(d['ca'], 2))
+    ws4.cell(row=row, column=5, value=d['clients'])
+    ws4.cell(row=row, column=6, value=d['agences'])
+    for c2 in range(1, len(headers_sept)+1):
+        ws4.cell(row=row, column=c2).border = BORDER
+    row += 1
+
+# Total
+ws4.cell(row=row, column=1, value='TOTAL')
+ws4.cell(row=row, column=3, value=round(sum(d['t'] for d in sept_ref_detail_xl.values()), 2))
+ws4.cell(row=row, column=4, value=round(sum(d['ca'] for d in sept_ref_detail_xl.values()), 2))
+ws4.cell(row=row, column=5, value=sum(d['clients'] for d in sept_ref_detail_xl.values()))
+for c2 in range(1, len(headers_sept)+1):
+    ws4.cell(row=row, column=c2).fill = TOTAL_FILL
+    ws4.cell(row=row, column=c2).font = TOTAL_FONT
+    ws4.cell(row=row, column=c2).border = BORDER
+
+ws4.column_dimensions['A'].width = 15
+ws4.column_dimensions['B'].width = 35
+for col in 'CDEFG': ws4.column_dimensions[col].width = 14
 
 wb.save(OUT_XLSX)
 print(f"=== EXCEL SAVED: {OUT_XLSX} ({os.path.getsize(OUT_XLSX)//1024} KB) ===")
