@@ -468,11 +468,11 @@ ws.column_dimensions[get_column_letter(16)].width = 11
 
 # === Sheet 5b: Par Produit × Mois (CA) ===
 ws = wb.create_sheet("5b. Par Produit × Mois (CA)")
-ws['A1'] = 'FORECAST 2027 - CA PAR PRODUIT × MOIS (FCFA et M FCFA)'
+ws['A1'] = 'FORECAST 2027 - CA PAR PRODUIT × MOIS (FCFA)'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 row = 3
-# CA monthly in M FCFA + totals in M and FCFA
-headers_ca = ['Réf', 'Description', 'Famille'] + [f'{m} (M)' for m in MONTH_NAMES] + ['CA Total (M FCFA)', 'CA Total (FCFA)']
+# CA monthly in FCFA (unités) + totals in M and FCFA
+headers_ca = ['Réf', 'Description', 'Famille'] + [f'{m} (FCFA)' for m in MONTH_NAMES] + ['CA Total (FCFA)', 'CA Total (M FCFA)']
 for i, h in enumerate(headers_ca, 1): ws.cell(row=row, column=i, value=h)
 style_header_row(ws, row, len(headers_ca))
 row += 1
@@ -484,23 +484,23 @@ for _, tr in by_prod_totals.iterrows():
     for i, m in enumerate(MONTHS, 4):
         sub = by_prod_monthly[(by_prod_monthly['ref']==ref) & (by_prod_monthly['month']==m)]
         ca_m_val = sub['ca_m_fcfa'].sum() if len(sub) > 0 else 0
-        ws.cell(row=row, column=i, value=round(ca_m_val, 2))
-    ws.cell(row=row, column=16, value=round(tr['total_ca_m'], 1))  # CA Total M FCFA
-    ws.cell(row=row, column=17, value=round(tr['total_ca_m'] * 1e6))  # CA Total FCFA
+        ws.cell(row=row, column=i, value=round(ca_m_val * 1e6))  # CA mensuel en FCFA (unités)
+    ws.cell(row=row, column=16, value=round(tr['total_ca_m'] * 1e6))  # CA Total FCFA (unités)
+    ws.cell(row=row, column=17, value=round(tr['total_ca_m'], 1))  # CA Total M FCFA
     color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
     style_data_row(ws, row, len(headers_ca), color=color)
     row += 1
 ws.cell(row=row, column=1, value='TOTAL')
 for i, m in enumerate(MONTHS, 4):
-    ws.cell(row=row, column=i, value=round(fcst[fcst['month']==m]['ca_m_fcfa'].sum(), 1))
-ws.cell(row=row, column=16, value=round(total_ca, 1))
-ws.cell(row=row, column=17, value=round(total_ca * 1e6))
+    ws.cell(row=row, column=i, value=round(fcst[fcst['month']==m]['ca_m_fcfa'].sum() * 1e6))  # Total mensuel en FCFA
+ws.cell(row=row, column=16, value=round(total_ca * 1e6))  # CA Total FCFA
+ws.cell(row=row, column=17, value=round(total_ca, 1))  # CA Total M FCFA
 style_total_row(ws, row, len(headers_ca))
 ws.column_dimensions['A'].width = 12; ws.column_dimensions['B'].width = 35; ws.column_dimensions['C'].width = 25
 for col_idx in range(4, 16):
-    ws.column_dimensions[get_column_letter(col_idx)].width = 10
-ws.column_dimensions[get_column_letter(16)].width = 14
-ws.column_dimensions[get_column_letter(17)].width = 16
+    ws.column_dimensions[get_column_letter(col_idx)].width = 14
+ws.column_dimensions[get_column_letter(16)].width = 16
+ws.column_dimensions[get_column_letter(17)].width = 14
 
 # === Sheet 6: Détail complet ===
 ws = wb.create_sheet("6. Détail complet")
