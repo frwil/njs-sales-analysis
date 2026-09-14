@@ -281,9 +281,9 @@ ws.cell(row=row, column=1, value='SYNTHÈSE PAR FAMILLE')
 ws.cell(row=row, column=1).font = SUBHEAD_FONT
 row += 1
 
-headers = ['Famille', 'Volume 2027 (t)', 'CA 2027 (M FCFA)', 'Part CA (%)']
+headers = ['Famille', 'Volume 2027 (t)', 'CA 2027 (M FCFA)', 'CA 2027 (FCFA)', 'Part CA (%)']
 for i, h in enumerate(headers, 1): ws.cell(row=row, column=i, value=h)
-style_header_row(ws, row, 4)
+style_header_row(ws, row, 5)
 row += 1
 
 fam_synth = fcst.groupby('family').agg(tonnes=('tonnes', 'sum'), ca_m_fcfa=('ca_m_fcfa', 'sum')).reindex(FAMILIES)
@@ -295,21 +295,23 @@ for fam in FAMILIES:
         ws.cell(row=row, column=1, value=fam)
         ws.cell(row=row, column=2, value=round(t, 0))
         ws.cell(row=row, column=3, value=round(ca, 1))
-        ws.cell(row=row, column=4, value=f"{pct:.1f}%")
+        ws.cell(row=row, column=4, value=round(ca * 1e6))
+        ws.cell(row=row, column=5, value=f"{pct:.1f}%")
         color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
-        style_data_row(ws, row, 4, color=color)
+        style_data_row(ws, row, 5, color=color)
         row += 1
 ws.cell(row=row, column=1, value='TOTAL')
 ws.cell(row=row, column=2, value=round(total_t, 0))
 ws.cell(row=row, column=3, value=round(total_ca, 1))
-ws.cell(row=row, column=4, value='100.0%')
-style_total_row(ws, row, 4)
+ws.cell(row=row, column=4, value=round(total_ca * 1e6))
+ws.cell(row=row, column=5, value='100.0%')
+style_total_row(ws, row, 5)
 
 row += 2
 ws.cell(row=row, column=1, value='SYNTHÈSE PAR TRIMESTRE')
 ws.cell(row=row, column=1).font = SUBHEAD_FONT
 row += 1
-headers = ['Trimestre', 'Volume (t)', 'CA (M FCFA)', 'Part CA (%)']
+headers = ['Trimestre', 'Volume (t)', 'CA (M FCFA)', 'CA (FCFA)', 'Part CA (%)']
 for i, h in enumerate(headers, 1): ws.cell(row=row, column=i, value=h)
 style_header_row(ws, row, 4)
 row += 1
@@ -407,9 +409,9 @@ ws = wb.create_sheet("4. Par Agence")
 ws['A1'] = 'FORECAST 2027 - DÉTAIL PAR AGENCE'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 row = 3
-headers = ['Agence', 'Région', 'Volume 2027 (t)', 'CA 2027 (M FCFA)', 'Part CA (%)']
+headers = ['Agence', 'Région', 'Volume 2027 (t)', 'CA 2027 (M FCFA)', 'CA 2027 (FCFA)', 'Part CA (%)']
 for i, h in enumerate(headers, 1): ws.cell(row=row, column=i, value=h)
-style_header_row(ws, row, 5)
+style_header_row(ws, row, 6)
 row += 1
 by_ag = fcst.groupby(['agence', 'region']).agg(tonnes=('tonnes', 'sum'), ca_m_fcfa=('ca_m_fcfa', 'sum')).reset_index().sort_values('ca_m_fcfa', ascending=False)
 for _, r in by_ag.iterrows():
@@ -418,54 +420,66 @@ for _, r in by_ag.iterrows():
     ws.cell(row=row, column=2, value=r['region'])
     ws.cell(row=row, column=3, value=round(r['tonnes'], 0))
     ws.cell(row=row, column=4, value=round(r['ca_m_fcfa'], 1))
-    ws.cell(row=row, column=5, value=f"{pct:.1f}%")
-    style_data_row(ws, row, 5, color=S3_COLOR)
+    ws.cell(row=row, column=5, value=round(r['ca_m_fcfa'] * 1e6))
+    ws.cell(row=row, column=6, value=f"{pct:.1f}%")
+    style_data_row(ws, row, 6, color=S3_COLOR)
     row += 1
 ws.cell(row=row, column=1, value='TOTAL')
 ws.cell(row=row, column=3, value=round(total_t, 0))
 ws.cell(row=row, column=4, value=round(total_ca, 1))
-ws.cell(row=row, column=5, value='100.0%')
-style_total_row(ws, row, 5)
+ws.cell(row=row, column=5, value=round(total_ca * 1e6))
+ws.cell(row=row, column=6, value='100.0%')
+style_total_row(ws, row, 6)
 ws.column_dimensions['A'].width = 18; ws.column_dimensions['B'].width = 12
 for col in 'CDE': ws.column_dimensions[col].width = 18
 
-# === Sheet 5: Par Produit ===
-ws = wb.create_sheet("5. Par Produit")
-ws['A1'] = 'FORECAST 2027 - DÉTAIL PAR PRODUIT'
+# === Sheet 5: Par Produit × Mois ===
+ws = wb.create_sheet("5. Par Produit × Mois")
+ws['A1'] = 'FORECAST 2027 - DÉTAIL PAR PRODUIT × MOIS'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 row = 3
-headers = ['Réf', 'Description', 'Famille', 'Volume 2027 (t)', 'CA 2027 (M FCFA)', 'Part CA (%)']
+headers = ['Réf', 'Description', 'Famille'] + MONTH_NAMES + ['Total (t)', 'CA Total (M FCFA)', 'CA Total (FCFA)']
 for i, h in enumerate(headers, 1): ws.cell(row=row, column=i, value=h)
-style_header_row(ws, row, 6)
+style_header_row(ws, row, len(headers))
 row += 1
-by_prod = fcst.groupby(['ref', 'family']).agg(tonnes=('tonnes', 'sum'), ca_m_fcfa=('ca_m_fcfa', 'sum')).reset_index().sort_values('ca_m_fcfa', ascending=False)
-for _, r in by_prod.iterrows():
-    pct = r['ca_m_fcfa'] / total_ca * 100 if total_ca > 0 else 0
-    ws.cell(row=row, column=1, value=r['ref'])
-    ws.cell(row=row, column=2, value=desc_map.get(r['ref'], ''))
-    ws.cell(row=row, column=3, value=r['family'])
-    ws.cell(row=row, column=4, value=round(r['tonnes'], 1))
-    ws.cell(row=row, column=5, value=round(r['ca_m_fcfa'], 1))
-    ws.cell(row=row, column=6, value=f"{pct:.1f}%")
-    color = NEW_FAMILY_COLOR if r['family'] in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
-    style_data_row(ws, row, 6, color=color)
+by_prod_monthly = fcst.groupby(['ref', 'family', 'month']).agg(tonnes=('tonnes', 'sum'), ca_m_fcfa=('ca_m_fcfa', 'sum')).reset_index()
+by_prod_totals = by_prod_monthly.groupby(['ref', 'family']).agg(total_t=('tonnes','sum'), total_ca_m=('ca_m_fcfa','sum')).reset_index().sort_values('total_ca_m', ascending=False)
+for _, tr in by_prod_totals.iterrows():
+    ref = tr['ref']; fam = tr['family']
+    ws.cell(row=row, column=1, value=ref)
+    ws.cell(row=row, column=2, value=desc_map.get(ref, ''))
+    ws.cell(row=row, column=3, value=fam)
+    for i, m in enumerate(MONTHS, 4):
+        sub = by_prod_monthly[(by_prod_monthly['ref']==ref) & (by_prod_monthly['month']==m)]
+        ws.cell(row=row, column=i, value=round(sub['tonnes'].sum(), 1) if len(sub) > 0 else 0)
+    ws.cell(row=row, column=16, value=round(tr['total_t'], 1))  # Total t
+    ws.cell(row=row, column=17, value=round(tr['total_ca_m'], 1))  # CA M FCFA
+    ws.cell(row=row, column=18, value=round(tr['total_ca_m'] * 1e6))  # CA FCFA (unité)
+    color = NEW_FAMILY_COLOR if fam in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
+    style_data_row(ws, row, len(headers), color=color)
     row += 1
 ws.cell(row=row, column=1, value='TOTAL')
-ws.cell(row=row, column=4, value=round(total_t, 0))
-ws.cell(row=row, column=5, value=round(total_ca, 1))
-ws.cell(row=row, column=6, value='100.0%')
-style_total_row(ws, row, 6)
+for i, m in enumerate(MONTHS, 4):
+    ws.cell(row=row, column=i, value=round(fcst.groupby('month')['tonnes'].sum().get(m, 0), 0))
+ws.cell(row=row, column=16, value=round(total_t, 0))
+ws.cell(row=row, column=17, value=round(total_ca, 1))
+ws.cell(row=row, column=18, value=round(total_ca * 1e6))
+style_total_row(ws, row, len(headers))
 ws.column_dimensions['A'].width = 12; ws.column_dimensions['B'].width = 35; ws.column_dimensions['C'].width = 25
-for col in 'DEF': ws.column_dimensions[col].width = 18
+for col_idx in range(4, 16):
+    ws.column_dimensions[get_column_letter(col_idx)].width = 9
+ws.column_dimensions[get_column_letter(16)].width = 11
+ws.column_dimensions[get_column_letter(17)].width = 14
+ws.column_dimensions[get_column_letter(18)].width = 16
 
 # === Sheet 6: Détail complet ===
 ws = wb.create_sheet("6. Détail complet")
 ws['A1'] = 'FORECAST 2027 - DÉTAIL COMPLET (Produit × Agence × Mois)'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 row = 3
-headers = ['Réf', 'Description', 'Famille', 'Agence', 'Région', 'Mois', 'Année', 'Tonnes', 'Sacs 50kg', 'Prix TTC/sac', 'CA (M FCFA)']
+headers = ['Réf', 'Description', 'Famille', 'Agence', 'Région', 'Mois', 'Année', 'Tonnes', 'Sacs 50kg', 'Prix TTC/sac', 'CA (M FCFA)', 'CA (FCFA)']
 for i, h in enumerate(headers, 1): ws.cell(row=row, column=i, value=h)
-style_header_row(ws, row, 11)
+style_header_row(ws, row, 12)
 row += 1
 for _, r in fcst.sort_values(['family', 'ref', 'agence', 'month']).iterrows():
     ws.cell(row=row, column=1, value=r['ref'])
@@ -479,11 +493,12 @@ for _, r in fcst.sort_values(['family', 'ref', 'agence', 'month']).iterrows():
     ws.cell(row=row, column=9, value=round(r['sacs_50'], 1))
     ws.cell(row=row, column=10, value=int(r['prix_ttc_sac']) if r['prix_ttc_sac'] else 0)
     ws.cell(row=row, column=11, value=round(r['ca_m_fcfa'], 2))
-    style_data_row(ws, row, 11)
+    ws.cell(row=row, column=12, value=round(r['ca_m_fcfa'] * 1e6))
+    style_data_row(ws, row, 12)
     row += 1
 ws.column_dimensions['A'].width = 12; ws.column_dimensions['B'].width = 32; ws.column_dimensions['C'].width = 25
 ws.column_dimensions['D'].width = 15; ws.column_dimensions['E'].width = 12
-for col in 'FGHIJK': ws.column_dimensions[col].width = 13
+for col in 'FGHIJKL': ws.column_dimensions[col].width = 13
 ws.freeze_panes = 'A4'
 
 # === Sheet 7: Hypothèses ===
