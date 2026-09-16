@@ -75,7 +75,7 @@ story = []
 story.append(Paragraph("BELGOCAM SA — Pitch Septembre 2026 MTD", H1))
 story.append(Paragraph(f"Performance Commerciale au {MTD['update_date']} ({MTD['days_elapsed']}j/{MTD['total_days_sep']}j = {MTD['pct_elapsed']}% du mois)", 
                        ParagraphStyle('SubH', parent=BODY, fontSize=10, textColor=GRAY, alignment=TA_CENTER, spaceAfter=4)))
-story.append(Paragraph(f"<b>⚠ Hausse prix soja le 04/09/2026 : 25 000 → 27 000 FCFA/sac (+8%)</b>",
+story.append(Paragraph(f"<b>⚠ Hausse prix soja le 04/09/2026 : 25 000 → 26 000 FCFA/sac (+4%)</b>",
                        ParagraphStyle('Alert', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=4)))
 story.append(Paragraph(f"<b>🔴 ALERTE STOCK CRITIQUE — Magasin central BEKOKO : 2 716 sacs (135 t) + 296 prod = 3 012 sacs. Rupture 08/09/2026 (1,6 jour de stock)</b>",
                        ParagraphStyle('Alert2', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=8, backColor=colors.HexColor('#FCE4EC'), borderPadding=4)))
@@ -122,7 +122,7 @@ nationwide_insight = f"""
 <b>Synthèse nationwide</b> : Sur {MTD['days_elapsed']} jours ouvrés ({MTD['pct_elapsed']}% du mois), les ventes représentent <b>{fmt(n['soja_t_mtd']+n['conc_t_mtd'])} t</b> 
 (soja + concentrés). La projection fin septembre s'établit à <b>{fmt(n['soja_proj_t']+n['conc_proj_t'])} t</b> 
 ({(n['soja_proj_t']+n['conc_proj_t'])/(n['soja_obj_t']+n['conc_obj_t'])*100:.0f}% de l'objectif combiné). 
-Le <b>CONCENTRES est à {n['conc_pct_obj']:.0f}%</b> de l'objectif {'✅ sur trajectoire' if n['conc_pct_obj'] >= 80 else '⚠ sous objectif'}, mais le <b>SOJA est en retrait à {n['soja_pct_obj']:.0f}%</b> ❌ — reflet de la hausse tarifaire du 04/09 (27 000 FCFA/sac, +8% vs 25 000) 
+Le <b>CONCENTRES est à {n['conc_pct_obj']:.0f}%</b> de l'objectif {'✅ sur trajectoire' if n['conc_pct_obj'] >= 80 else '⚠ sous objectif'}, mais le <b>SOJA est en retrait à {n['soja_pct_obj']:.0f}%</b> ❌ — reflet de la hausse tarifaire du 04/09 (26 000 FCFA/sac, +4% vs 25 000) 
 qui ralentit temporairement la demande. Le <b>ratio bundle {n['ratio_global']:.1f}:1</b> reste excellent (objectif ≤ 2,5:1) — 
 signe que le cross-sell se maintient malgré le choc prix.
 """
@@ -221,7 +221,7 @@ z = MTD['zero_achat']
 insights_data = [
     [Paragraph("<b>Insight</b>", CELL), Paragraph("<b>Donnée</b>", CELL), Paragraph("<b>Implication</b>", CELL)],
     [Paragraph("Hausse prix soja 04/09", CELL),
-     Paragraph(f"25 000 → 27 000 FCFA/sac (+8%)", CELL),
+     Paragraph(f"25 000 → 26 000 FCFA/sac (+4%)", CELL),
      Paragraph("Ralentissement temporaire de la demande soja — à surveiller sur les 2 prochaines semaines", CELL)],
     [Paragraph("Bundle ratio 1,8:1", CELL),
      Paragraph(f"357/370 cmds soja avec conc = {b['pct_bundle']}% cross-sell", CELL),
@@ -267,7 +267,7 @@ recos = [
      f"Soja à 59% objectif ❌ — surveiller la reprise sur 7-10 j. Si cadence < 80 t/j persistante, ajuster le forecast Q4 2026 (actuellement 20 051 t).",
      "Data Analyst + Direction Commerciale", "Point hebdo 12/09 + 19/09"),
     ("STRATÉGIQUE", "Ajuster prix forecast 2027",
-     f"Le prix 27 000 FCFA/sac (vs 17 170 prévu Q4 2026 et 16 800 prévu 2027) dépasse les hypothèses forecast. Réviser les hypothèses prix si la hausse se confirme durable.",
+     f"Le prix 26 000 FCFA/sac (vs 17 170 prévu Q4 2026 et 16 800 prévu 2027) dépasse les hypothèses forecast. Réviser les hypothèses prix si la hausse se confirme durable.",
      "Direction Financière + Data Analyst", "Décision d'ici 30/09"),
     ("OPPORTUNITÉ", "Réactivation 1 055 clients S1 sans achat Sept",
      f"76% des clients S1 n'ont pas encore acheté en Sept (mais mois entamé à 19%). Campagne téléphonique ciblée sur les top 200 clients S1 inactifs.",
@@ -311,7 +311,7 @@ story.append(Spacer(1, 0.1*cm))
 story.append(Paragraph(
     f"<b>Source</b> : {MTD['extraction_file']} (extraction au {MTD['update_date']}) — analyse au {MTD['update_date']} ({MTD['days_elapsed']}j/{MTD['total_days_sep']}j = {MTD['pct_elapsed']}% du mois). "
     f"<b>Méthodologie</b> : Volumes Livrées uniquement, clients internes (SPC/PDC/Comptoir) exclus. Projection fin septembre = moyenne quotidienne × 26 jours ouvrés (lun-sam). "
-    f"<b>Hausse prix soja</b> : à partir du 04/09/2026, le prix du soja T102 (50kg) passe de 25 000 à 27 000 FCFA/sac (+8%). "
+    f"<b>Hausse prix soja</b> : à partir du 04/09/2026, le prix du soja T102 (50kg) passe de 25 000 à 26 000 FCFA/sac (+4%). "
     f"<b>Stock central BEKOKO</b> : 2 716 sacs (135 t) + 296 sacs en production au 07/09/2026 (post-chargement agences weekend 05-06/09).",
     SMALL))
 

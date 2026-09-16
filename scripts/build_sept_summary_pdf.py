@@ -100,7 +100,7 @@ story.append(Paragraph("Performance CONCENTRES + Bundle Soja-Concentrés + Zero-
 story.append(Spacer(1, 2*cm))
 story.append(HRFlowable(width="40%", thickness=1, color=GRAY, spaceBefore=10, spaceAfter=10, hAlign='CENTER'))
 story.append(Paragraph(f"<b>Mise à jour</b> : {DATA['update_date']} ({DATA['days_elapsed']}/{DATA['total_days_sep']} jours, {DATA['pct_elapsed']}% du mois)", ParagraphStyle('CI', parent=BODY, fontSize=11, alignment=TA_CENTER, textColor=GRAY)))
-story.append(Paragraph(f"<b>⚠ Hausse prix soja le 04/09/2026</b> : 25 000 → <b>27 000 FCFA/sac</b> (+8%)", ParagraphStyle('CI4', parent=BODY, fontName='DejaVuSans-Bold', fontSize=11, alignment=TA_CENTER, textColor=RED)))
+story.append(Paragraph(f"<b>⚠ Hausse prix soja le 04/09/2026</b> : 25 000 → <b>26 000 FCFA/sac</b> (+4%)", ParagraphStyle('CI4', parent=BODY, fontName='DejaVuSans-Bold', fontSize=11, alignment=TA_CENTER, textColor=RED)))
 story.append(Paragraph(f"<b>Source</b> : {DATA['extraction_file']}", ParagraphStyle('CI2', parent=BODY, fontSize=10, alignment=TA_CENTER, textColor=GRAY)))
 story.append(Paragraph("William Francis Fohom — Data Analyst, Administrateur National de Ventes", ParagraphStyle('CI3', parent=BODY, fontSize=10, alignment=TA_CENTER, textColor=GRAY, spaceBefore=10)))
 
@@ -202,7 +202,7 @@ story.append(Spacer(1, 0.2*cm))
 
 # Encadré hausse prix soja
 story.append(Paragraph(
-    "<b>⚠ Contexte prix</b> : Le soja T102 (50kg) est passé de 25 000 FCFA/sac à <b>27 000 FCFA/sac</b> le 04/09/2026 (+8%). "
+    "<b>⚠ Contexte prix</b> : Le soja T102 (50kg) est passé de 25 000 FCFA/sac à <b>26 000 FCFA/sac</b> le 04/09/2026 (+4%). "
     "Cette hausse explique le ralentissement observé sur le SOJA (59% objectif vs 81% pour les CONCENTRES), "
     "les clients adoptant un comportement attentiste en début de mois. Le cross-sell CONCENTRES reste néanmoins "
     "préservé (96% des commandes soja incluent du concentré) — signe que la discipline bundle se maintient malgré le choc prix.",
