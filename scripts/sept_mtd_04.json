@@ -1,0 +1,198 @@
+{
+  "update_date": "16/09/2026",
+  "extraction_file": "NJS GROUP ERP - Lignes de commandes + multicompany (38).xlsx",
+  "days_elapsed": 14,
+  "total_days_sep": 26,
+  "pct_elapsed": 53.8,
+  "volumes": {
+    "CONCENTRES": {
+      "t": 729.6,
+      "moy_t_j": 52.12,
+      "proj_t": 1355.0,
+      "obj_t": 1534,
+      "pct_obj": 88.0
+    },
+    "TOURTEAUX": {
+      "t": 1470.5,
+      "moy_t_j": 105.04,
+      "proj_t": 2731.0,
+      "obj_t": 3850,
+      "pct_obj": 71.0
+    },
+    "INGREDIENTS": {
+      "t": 8.2,
+      "moy_t_j": 0.59,
+      "proj_t": 15.0,
+      "obj_t": 320,
+      "pct_obj": 5.0
+    },
+    "MAIS": {
+      "t": 0.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0,
+      "obj_t": 130,
+      "pct_obj": 0.0
+    },
+    "PREMIX": {
+      "t": 0.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0,
+      "obj_t": 0,
+      "pct_obj": 0.0
+    }
+  },
+  "bundle": {
+    "total_soja_sacs": 29410.0,
+    "total_conc_sacs": 14593.0,
+    "ratio": 2.0,
+    "cmds_soja": 1011,
+    "cmds_bundle": 984,
+    "cmds_soja_only": 27,
+    "cmds_conc_only": 88,
+    "pct_bundle": 97.0,
+    "dist": {
+      "<= 3:1": 837,
+      "3-5:1": 140,
+      "5-10:1": 5,
+      "10-20:1": 2
+    }
+  },
+  "stock": {
+    "date": "07/09/2026",
+    "brut_sacs": 2716,
+    "brut_t": 135.8,
+    "production_en_cours_sacs": 296,
+    "production_en_cours_t": 14.8,
+    "stock_avec_prod_sacs": 3012,
+    "stock_avec_prod_t": 150.6,
+    "vente_sacs_jour": 1737,
+    "vente_sacs_sem": 10422,
+    "jours_stock_brut": 1.6,
+    "jours_stock_avec_prod": 1.7,
+    "rupture_date_brut": "08/09/2026",
+    "rupture_date_avec_prod": "08/09/2026",
+    "besoin_septembre_sacs": 45162,
+    "manque_septembre_sacs": 42150,
+    "note": "Stock central BEKOKO post-chargement agences weekend. Agences ont leur propre stock (non inclus).",
+    "precedent_stock_brut_sacs": 80430,
+    "precedent_stock_date": "08/08/2026",
+    "variation_pct": -96.6
+  },
+  "zero_achat": {
+    "s1_clients": 1381,
+    "sept_clients": 633,
+    "churned": 816,
+    "new_sept": 68
+  },
+  "cross_sell": {
+    "s1_soja": 1230,
+    "s1_conc": 1034,
+    "sept_soja": 504,
+    "sept_conc": 531,
+    "s1_bundle": 988,
+    "sept_bundle": 499,
+    "soja_to_conc_sept": 467,
+    "soja_no_conc_sept": 763,
+    "pct_soja_with_conc_sept": 38.0
+  },
+  "conc_by_agence": [
+    {
+      "agence": "Famla",
+      "conc_t": 216.4,
+      "soja_t": 496.1,
+      "moy_t_j": 15.46,
+      "proj_t": 402.0
+    },
+    {
+      "agence": "Djeleng",
+      "conc_t": 63.5,
+      "soja_t": 122.7,
+      "moy_t_j": 4.54,
+      "proj_t": 118.0
+    },
+    {
+      "agence": "Ndobo",
+      "conc_t": 57.1,
+      "soja_t": 119.0,
+      "moy_t_j": 4.08,
+      "proj_t": 106.0
+    },
+    {
+      "agence": "Mbouda",
+      "conc_t": 56.9,
+      "soja_t": 85.4,
+      "moy_t_j": 4.06,
+      "proj_t": 106.0
+    },
+    {
+      "agence": "Messassi",
+      "conc_t": 55.6,
+      "soja_t": 98.5,
+      "moy_t_j": 3.97,
+      "proj_t": 103.0
+    },
+    {
+      "agence": "Ahala",
+      "conc_t": 45.8,
+      "soja_t": 87.2,
+      "moy_t_j": 3.27,
+      "proj_t": 85.0
+    },
+    {
+      "agence": "Bertoua",
+      "conc_t": 42.5,
+      "soja_t": 85.8,
+      "moy_t_j": 3.03,
+      "proj_t": 79.0
+    },
+    {
+      "agence": "Nkongsamba",
+      "conc_t": 34.0,
+      "soja_t": 71.8,
+      "moy_t_j": 2.43,
+      "proj_t": 63.0
+    },
+    {
+      "agence": "Village",
+      "conc_t": 33.9,
+      "soja_t": 77.0,
+      "moy_t_j": 2.42,
+      "proj_t": 63.0
+    },
+    {
+      "agence": "Ngaoundere",
+      "conc_t": 31.0,
+      "soja_t": 28.9,
+      "moy_t_j": 2.21,
+      "proj_t": 58.0
+    },
+    {
+      "agence": "Nkoabang",
+      "conc_t": 29.8,
+      "soja_t": 74.0,
+      "moy_t_j": 2.13,
+      "proj_t": 55.0
+    },
+    {
+      "agence": "Buea",
+      "conc_t": 26.4,
+      "soja_t": 57.8,
+      "moy_t_j": 1.89,
+      "proj_t": 49.0
+    },
+    {
+      "agence": "Pk11",
+      "conc_t": 18.5,
+      "soja_t": 36.3,
+      "moy_t_j": 1.32,
+      "proj_t": 34.0
+    },
+    {
+      "agence": "Nkolbisson",
+      "conc_t": 18.2,
+      "soja_t": 30.1,
+      "moy_t_j": 1.3,
+      "proj_t": 34.0
+    }
+  ]
+}
