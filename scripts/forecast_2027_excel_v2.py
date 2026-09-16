@@ -38,7 +38,7 @@ THIN = Side(border_style='thin', color='BFBFBF')
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 
 # 7 familles (ordre: ordre alphabétique, mais COMPLEMENT_ALIMENTAIRE mis en évidence à la fin)
-FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES']
+FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'BELGO_FISH', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES']
 MONTHS = list(range(1, 13))
 MONTH_NAMES = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
 QUARTERS = {'Q1 (Jan-Mar)': [1,2,3], 'Q2 (Avr-Juin)': [4,5,6], 'Q3 (Juil-Sept)': [7,8,9], 'Q4 (Oct-Déc)': [10,11,12]}
