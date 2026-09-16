@@ -269,34 +269,28 @@ story.append(Spacer(1, 0.3*cm))
 s = DATA['stock']
 stock_data = [
     ["Indicateur", "Valeur", "Détail"],
-    ["Date de référence stock", s['date'], "Après chargement agences weekend 05-06/09"],
-    ["Stock BRUT central (sacs 50kg éq.)", fmt(s['brut_sacs']), f"{s['brut_t']} t — T102: 2 670 + T1021: 2 245 (1kg) + T1023: 4 (5kg) + T1024: 1 (25kg)"],
-    ["Production en cours (T102 50kg)", fmt(s['production_en_cours_sacs']), f"{s['production_en_cours_t']} t"],
-    ["Stock total avec production", fmt(s['stock_avec_prod_sacs']), f"{s['stock_avec_prod_t']} t"],
-    ["Vente soja septembre (sacs/jour)", fmt(s['vente_sacs_jour']), f"≈ {s['vente_sacs_jour']*50/1000:.0f} t/jour (cadence MTD)"],
-    ["Jours de stock central (BRUT)", f"{s['jours_stock_brut']} jours", "⚠ CRITIQUE — rupture imminente"],
-    ["Jours de stock central (avec prod)", f"{s['jours_stock_avec_prod']} jours", "Inclut la production en cours"],
-    ["Date rupture CENTRALE (brut)", s['rupture_date_brut'], "⚠ Alerte logistique immédiate"],
-    ["Besoin total septembre (sacs)", fmt(s['besoin_septembre_sacs']), f"Vente moy/j × 26j = 1 737 × 26"],
-    ["Manque vs besoin septembre", f"{fmt(s['manque_septembre_sacs'])} sacs", "À combler par réappro + stock agences"],
-    ["Stock précédent (08/08)", fmt(s['precedent_stock_brut_sacs']), f"Delta {s['variation_pct']:+.1f}% (distribué aux agences)"],
+    ["Date de référence stock", s['date'], "Inventaire BEKOKO au 16/09/2026"],
+    ["Stock BRUT central (sacs 50kg éq.)", fmt(s['brut_sacs']), f"{s['brut_t']} t — T102: 14 233 + T1021: 2 245 (1kg) + T1023: 4 (5kg) + T1024: 1 (25kg)"],
+    ["Vente soja septembre (sacs/jour)", fmt(s['vente_sacs_jour']), f"≈ {s['vente_sacs_jour']*50/1000:.0f} t/jour (cadence MTD 14j)"],
+    ["Jours de stock central", f"{s['jours_stock']} jours", "⚠ Sous le seuil de sécurité (10j)"],
+    ["Date rupture CENTRALE estimée", s['rupture_date'], "À programmer réappro avant cette date"],
+    ["Besoin reste septembre (12j)", fmt(s['besoin_reste_sept_sacs']), f"Vente moy/j × 12j = {s['vente_sacs_jour']} × 12"],
+    ["Manque vs besoin fin septembre", f"{fmt(s['manque_fin_sept_sacs'])} sacs", "À combler par réappro + stock agences"],
+    ["Stock précédent (07/09)", fmt(s['precedent_stock_brut_sacs']), f"Delta +{s['variation_pct']}% (réappro reçu)"],
 ]
-story.append(make_table(stock_data, col_widths=[5.5*cm, 4*cm, 6.5*cm], font_size=8, highlight_rows=[6,7,8]))
+story.append(make_table(stock_data, col_widths=[5.5*cm, 4*cm, 6.5*cm], font_size=8, highlight_rows=[4,5]))
 story.append(Spacer(1, 0.3*cm))
 
 stock_analysis = f"""
-<b>⚠ ALERTE STOCK CRITIQUE</b> : Le magasin central BEKOKO ne contient plus que <b>{s['brut_sacs']} sacs</b> 
-(équivalent 50kg, soit {s['brut_t']} t) + {s['production_en_cours_sacs']} sacs en production ({s['production_en_cours_t']} t). 
-Au rythme de vente actuel ({s['vente_sacs_jour']} sacs/jour), ceci représente <b>seulement {s['jours_stock_brut']} jour(s) de stock</b> — 
-<b>rupture du magasin central estimée au {s['rupture_date_brut']}</b>. 
+<b>⚠ STOCK SOUS LE SEUIL DE SÉCURITÉ</b> : Le magasin central BEKOKO contient <b>{s['brut_sacs']} sacs</b> 
+(équivalent 50kg, soit {s['brut_t']} t) au {s['date']}. Au rythme de vente actuel ({s['vente_sacs_jour']} sacs/jour), 
+ceci représente <b>{s['jours_stock']} jours de stock</b> — rupture centrale estimée au <b>{s['rupture_date']}</b>.
 
-Les agences ont été chargées ce weekend (05-06/09) — elles disposent donc d'un stock opérationnel local, mais le magasin central 
-ne pourra plus les réapprovisionner. <b>Réapprovisionnement d'urgence à programmer immédiatement</b> : besoin total septembre 
-= {s['besoin_septembre_sacs']} sacs, manque = {s['manque_septembre_sacs']} sacs. 
+<b>Réapprovisionnement reçu</b> : le stock est passé de {s['precedent_stock_brut_sacs']} sacs (07/09) à {s['brut_sacs']} sacs (16/09), 
+soit +{s['variation_pct']}% (+{s['brut_sacs'] - s['precedent_stock_brut_sacs']:.0f} sacs). Le réappro a été partiellement consommé en 9 jours.
 
-Le stock précédent (au 08/08) était de {s['precedent_stock_brut_sacs']} sacs — la baisse de {s['variation_pct']}% 
-s'explique par la distribution aux agences ce weekend. Il faut réapprovisionner le central <b>avant le 08/09</b> pour maintenir 
-la capacité de resupply des agences jusqu'à fin septembre.
+<b>Besoin reste septembre</b> : {s['besoin_reste_sept_sacs']} sacs (12 jours restants × {s['vente_sacs_jour']} sacs/j). 
+Manque estimé : <b>{s['manque_fin_sept_sacs']} sacs</b> — un nouveau réappro est nécessaire avant le {s['rupture_date']} pour couvrir la fin du mois.
 """
 story.append(Paragraph(stock_analysis, BODY))
 story.append(Spacer(1, 0.3*cm))
@@ -356,10 +350,9 @@ status_bundle = "✅" if b['ratio'] <= 2.5 else "⚠"
 recos.append(f"{status_bundle} <b>Bundle ratio {b['ratio']}:1</b> — "
             + ("Excellent, sous l'objectif 2,5:1. Cross-sell à 96% — maintenir." if b['ratio'] <= 2.5 else "Au-dessus de l'objectif 2,5:1. Renforcer le push concentrés."))
 
-recos.append(f"🔴 <b>STOCK SOJA CRITIQUE</b> : Magasin central BEKOKO = {s['brut_sacs']} sacs ({s['brut_t']} t) + {s['production_en_cours_sacs']} sacs en production "
-            f"= {s['stock_avec_prod_sacs']} sacs ({s['stock_avec_prod_t']} t). Au rythme {s['vente_sacs_jour']} sacs/j, "
-            f"<b>seulement {s['jours_stock_brut']} jour(s) de stock</b>. Rupture centrale estimée <b>{s['rupture_date_brut']}</b>. "
-            f"<b>Réapprovisionnement d'urgence à programmer immédiatement</b> (besoin septembre: {s['besoin_septembre_sacs']} sacs, manque: {s['manque_septembre_sacs']} sacs).")
+recos.append(f"⚠ <b>STOCK SOJA</b> : Magasin central BEKOKO = {s['brut_sacs']} sacs ({s['brut_t']} t). Au rythme {s['vente_sacs_jour']} sacs/j, "
+            f"<b>{s['jours_stock']} jour(s) de stock</b>. Rupture centrale estimée <b>{s['rupture_date']}</b>. "
+            f"<b>Nouveau réappro nécessaire</b> (besoin reste sept: {s['besoin_reste_sept_sacs']} sacs, manque: {s['manque_fin_sept_sacs']} sacs).")
 
 recos.append(f"🎯 <b>Cross-sell S1 soja → conc</b> : {c['pct_soja_with_conc_sept']}% des S1 soja ont pris du conc en sept. "
             f"Action de réactivation sur les {c['s1_soja'] - c['soja_to_conc_sept']} clients S1 soja sans conc en sept.")

@@ -77,7 +77,7 @@ story.append(Paragraph(f"Performance Commerciale au {MTD['update_date']} ({MTD['
                        ParagraphStyle('SubH', parent=BODY, fontSize=10, textColor=GRAY, alignment=TA_CENTER, spaceAfter=4)))
 story.append(Paragraph(f"<b>⚠ Hausse prix soja le 04/09/2026 : 25 000 → 26 000 FCFA/sac (+4%)</b>",
                        ParagraphStyle('Alert', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=4)))
-story.append(Paragraph(f"<b>🔴 ALERTE STOCK CRITIQUE — Magasin central BEKOKO : 2 716 sacs (135 t) + 296 prod = 3 012 sacs. Rupture 08/09/2026 (1,6 jour de stock)</b>",
+story.append(Paragraph(f"<b>⚠ STOCK SOUS SEUIL — Magasin central BEKOKO : 14 279 sacs (714 t). Rupture 22/09/2026 (6,8 jours de stock)</b>",
                        ParagraphStyle('Alert2', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=8, backColor=colors.HexColor('#FCE4EC'), borderPadding=4)))
 story.append(HRFlowable(width="100%", thickness=1, color=NAVY))
 story.append(Spacer(1, 0.2*cm))
@@ -227,8 +227,8 @@ insights_data = [
      Paragraph(f"357/370 cmds soja avec conc = {b['pct_bundle']}% cross-sell", CELL),
      Paragraph("✅ Maintien du cross-sell malgré la hausse prix — discipline commerciale préservée", CELL)],
     [Paragraph("🔴 Stock soja BEKOKO", CELL),
-     Paragraph(f"<b>{fmt(s['brut_sacs'])} sacs</b> ({fmt(s['brut_t'])} t) + {fmt(s['production_en_cours_sacs'])} prod = {fmt(s['stock_avec_prod_sacs'])} sacs", CELL),
-     Paragraph(f"<b>{s['jours_stock_brut']} jour(s) de stock central</b> — rupture <b>{s['rupture_date_brut']}</b>. Manque sept: {fmt(s['manque_septembre_sacs'])} sacs. RÉAPPRO URGENT", CELL)],
+     Paragraph(f"<b>{fmt(s["brut_sacs"])} sacs</b> ({fmt(s["brut_t"])} t)", CELL),
+     Paragraph(f"<b>{s["jours_stock"]} jour(s) de stock central</b> — rupture <b>{s["rupture_date"]}</b>. Manque fin sept: {fmt(s["manque_fin_sept_sacs"])} sacs", CELL)],
     [Paragraph("Top agence CONCENTRES", CELL),
      Paragraph("FAMLA (Ouest) — 66 t MTD, proj 341 t", CELL),
      Paragraph("22% du volume CONCENTRES national — pilier de la performance", CELL)],
@@ -255,7 +255,7 @@ story.append(Paragraph("4. Recommandations & Actions", H2))
 
 recos = [
     ("ACTION IMMÉDIATE", "🔴 RÉAPPRO URGENT soja central",
-     f"Stock BEKOKO = {fmt(s['brut_sacs'])} sacs ({fmt(s['brut_t'])} t) + {fmt(s['production_en_cours_sacs'])} prod = {fmt(s['stock_avec_prod_sacs'])} sacs. <b>{s['jours_stock_brut']} jour(s) de stock</b> — rupture {s['rupture_date_brut']}. Besoin sept = {fmt(s['besoin_septembre_sacs'])} sacs, <b>manque {fmt(s['manque_septembre_sacs'])} sacs</b>.",
+     f"Stock BEKOKO = {fmt(s['brut_sacs'])} sacs ({fmt(s['brut_t'])} t). <b>{s['jours_stock']} jour(s) de stock</b> — rupture {s['rupture_date']}. Besoin reste sept = {fmt(s['besoin_reste_sept_sacs'])} sacs, <b>manque {fmt(s['manque_fin_sept_sacs'])} sacs</b>.",
      "Logistique / Direction Achats / DG", "AVANT 08/09/2026"),
     ("ACTION COMMERCIALE", "Push CONCENTRES sur Littoral",
      f"NDOBO + VILLAGE + NKONGSAMBA = {PITCH['regions']['Littoral']['conc_t_mtd']:.0f} t MTD vs projection {PITCH['regions']['Littoral']['conc_proj_t']:.0f} t (66% obj). Activer promotions bundle.",
@@ -312,7 +312,7 @@ story.append(Paragraph(
     f"<b>Source</b> : {MTD['extraction_file']} (extraction au {MTD['update_date']}) — analyse au {MTD['update_date']} ({MTD['days_elapsed']}j/{MTD['total_days_sep']}j = {MTD['pct_elapsed']}% du mois). "
     f"<b>Méthodologie</b> : Volumes Livrées uniquement, clients internes (SPC/PDC/Comptoir) exclus. Projection fin septembre = moyenne quotidienne × 26 jours ouvrés (lun-sam). "
     f"<b>Hausse prix soja</b> : à partir du 04/09/2026, le prix du soja T102 (50kg) passe de 25 000 à 26 000 FCFA/sac (+4%). "
-    f"<b>Stock central BEKOKO</b> : 2 716 sacs (135 t) + 296 sacs en production au 07/09/2026 (post-chargement agences weekend 05-06/09).",
+    f"<b>Stock central BEKOKO</b> : 14 279 sacs (714 t) au 16/09/2026. Réappro reçu (+11 563 sacs vs 07/09).",
     SMALL))
 
 # === Save PDF ===
