@@ -160,13 +160,13 @@ if os.path.exists(aout_path):
 # CONCENTRES par agence
 story.append(Paragraph("<b>CONCENTRES par agence — Septembre MTD + projection</b>", H3))
 ag_data = [["Rang", "Agence", "Conc MTD (t)", "Soja MTD (t)", "Moy/j (t)", "Proj fin Sept (t)"]]
-for i, ag in enumerate(DATA['conc_by_agence'][:10], 1):
+for i, ag in enumerate(DATA['conc_by_agence'], 1):
     ag_data.append([str(i), ag['agence'], fmt(ag['conc_t']), fmt(ag['soja_t']), fmt1(ag['moy_t_j']), fmt(ag['proj_t'])])
 # Total row
 total_conc_mtd = sum(a['conc_t'] for a in DATA['conc_by_agence'])
 total_soja_mtd = sum(a['soja_t'] for a in DATA['conc_by_agence'])
 total_proj = sum(a['proj_t'] for a in DATA['conc_by_agence'])
-ag_data.append(["", "TOTAL (10 agences)", fmt(total_conc_mtd), fmt(total_soja_mtd),
+ag_data.append(["", f"TOTAL ({len(DATA['conc_by_agence'])} agences)", fmt(total_conc_mtd), fmt(total_soja_mtd),
                fmt1(total_conc_mtd/DATA['days_elapsed']), fmt(total_proj)])
 story.append(make_table(ag_data, col_widths=[1.2*cm, 3.5*cm, 2.8*cm, 2.8*cm, 2.2*cm, 3.2*cm], font_size=9, highlight_rows=[len(ag_data)-1]))
 story.append(Spacer(1, 0.3*cm))
