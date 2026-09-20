@@ -53,8 +53,8 @@ def wrap_cell_p(content, style=CELL_BODY_P):
     return Paragraph(s, style)
 
 # === Load data ===
-PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data_06.json'))
-MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_06.json'))
+PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data_07.json'))
+MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_07.json'))
 print(f"Loaded sept data (update {MTD['update_date']})")
 
 # Helpers

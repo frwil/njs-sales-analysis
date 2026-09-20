@@ -1,0 +1,196 @@
+{
+  "update_date": "19/09/2026",
+  "extraction_file": "NJS GROUP ERP - Lignes de commandes + multicompany (6) (1).xlsx",
+  "days_elapsed": 17,
+  "total_days_sep": 26,
+  "pct_elapsed": 65.4,
+  "volumes": {
+    "CONCENTRES": {
+      "t": 1029.8,
+      "moy_t_j": 60.58,
+      "proj_t": 1575.0,
+      "obj_t": 1534,
+      "pct_obj": 103.0
+    },
+    "TOURTEAUX": {
+      "t": 2144.1,
+      "moy_t_j": 126.12,
+      "proj_t": 3279.0,
+      "obj_t": 3850,
+      "pct_obj": 85.0
+    },
+    "INGREDIENTS": {
+      "t": 11.7,
+      "moy_t_j": 0.69,
+      "proj_t": 18.0,
+      "obj_t": 320,
+      "pct_obj": 6.0
+    },
+    "MAIS": {
+      "t": 0.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0,
+      "obj_t": 130,
+      "pct_obj": 0.0
+    },
+    "PREMIX": {
+      "t": 0.0,
+      "moy_t_j": 0.0,
+      "proj_t": 0.0,
+      "obj_t": 0,
+      "pct_obj": 0.0
+    }
+  },
+  "bundle": {
+    "total_soja_sacs": 42882.0,
+    "total_conc_sacs": 20597.0,
+    "ratio": 2.1,
+    "cmds_soja": 2036,
+    "cmds_bundle": 1820,
+    "cmds_soja_only": 216,
+    "cmds_conc_only": 481,
+    "pct_bundle": 89.0,
+    "dist": {
+      "<= 3:1": 1524,
+      "3-5:1": 262,
+      "5-10:1": 29,
+      "10-20:1": 4,
+      "> 20:1": 1
+    }
+  },
+  "stock": {
+    "date": "16/09/2026",
+    "brut_sacs": 14279,
+    "brut_t": 713.9,
+    "t102_sacs": 14233,
+    "t1021_kg": 2245,
+    "t1023_kg": 20,
+    "t1024_kg": 25,
+    "vente_sacs_jour": 2100,
+    "jours_stock": 6.8,
+    "rupture_date": "22/09/2026",
+    "besoin_reste_sept_sacs": 25200,
+    "manque_fin_sept_sacs": 10921,
+    "precedent_stock_brut_sacs": 2716,
+    "precedent_stock_date": "07/09/2026",
+    "variation_pct": 426,
+    "note": "Stock central BEKOKO au 16/09/2026. Reapprovisionnement recu (+11 563 sacs vs 07/09)."
+  },
+  "zero_achat": {
+    "s1_clients": 1381,
+    "sept_clients": 736,
+    "churned": 725,
+    "new_sept": 80
+  },
+  "cross_sell": {
+    "s1_soja": 1230,
+    "s1_conc": 1034,
+    "sept_soja": 590,
+    "sept_conc": 615,
+    "s1_bundle": 988,
+    "sept_bundle": 579,
+    "soja_to_conc_sept": 540,
+    "soja_no_conc_sept": 690,
+    "pct_soja_with_conc_sept": 44.0
+  },
+  "conc_by_agence": [
+    {
+      "agence": "Famla",
+      "conc_t": 296.4,
+      "soja_t": 726.5,
+      "moy_t_j": 17.43,
+      "proj_t": 453.0
+    },
+    {
+      "agence": "Ndobo",
+      "conc_t": 91.2,
+      "soja_t": 193.4,
+      "moy_t_j": 5.37,
+      "proj_t": 140.0
+    },
+    {
+      "agence": "Messassi",
+      "conc_t": 88.0,
+      "soja_t": 159.9,
+      "moy_t_j": 5.17,
+      "proj_t": 135.0
+    },
+    {
+      "agence": "Djeleng",
+      "conc_t": 84.0,
+      "soja_t": 167.0,
+      "moy_t_j": 4.94,
+      "proj_t": 128.0
+    },
+    {
+      "agence": "Ahala",
+      "conc_t": 71.5,
+      "soja_t": 135.3,
+      "moy_t_j": 4.21,
+      "proj_t": 109.0
+    },
+    {
+      "agence": "Mbouda",
+      "conc_t": 67.8,
+      "soja_t": 106.7,
+      "moy_t_j": 3.99,
+      "proj_t": 104.0
+    },
+    {
+      "agence": "Bertoua",
+      "conc_t": 62.2,
+      "soja_t": 117.6,
+      "moy_t_j": 3.66,
+      "proj_t": 95.0
+    },
+    {
+      "agence": "Village",
+      "conc_t": 45.3,
+      "soja_t": 99.5,
+      "moy_t_j": 2.66,
+      "proj_t": 69.0
+    },
+    {
+      "agence": "Nkoabang",
+      "conc_t": 42.8,
+      "soja_t": 115.2,
+      "moy_t_j": 2.52,
+      "proj_t": 65.0
+    },
+    {
+      "agence": "Nkongsamba",
+      "conc_t": 42.7,
+      "soja_t": 91.7,
+      "moy_t_j": 2.51,
+      "proj_t": 65.0
+    },
+    {
+      "agence": "Buea",
+      "conc_t": 37.7,
+      "soja_t": 81.7,
+      "moy_t_j": 2.22,
+      "proj_t": 58.0
+    },
+    {
+      "agence": "Ngaoundere",
+      "conc_t": 36.9,
+      "soja_t": 36.6,
+      "moy_t_j": 2.17,
+      "proj_t": 56.0
+    },
+    {
+      "agence": "Pk11",
+      "conc_t": 32.0,
+      "soja_t": 74.3,
+      "moy_t_j": 1.88,
+      "proj_t": 49.0
+    },
+    {
+      "agence": "Nkolbisson",
+      "conc_t": 31.5,
+      "soja_t": 38.7,
+      "moy_t_j": 1.85,
+      "proj_t": 48.0
+    }
+  ]
+}
