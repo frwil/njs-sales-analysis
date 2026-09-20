@@ -42,6 +42,16 @@ BULLET = ParagraphStyle('Bullet', parent=BODY, leftIndent=15, bulletIndent=5, sp
 CELL = ParagraphStyle('Cell', parent=BODY, fontName='DejaVuSans', fontSize=9, leading=11, alignment=TA_LEFT, spaceAfter=0)
 SMALL = ParagraphStyle('Small', parent=BODY, fontSize=7.5, textColor=GRAY, leading=10)
 
+# Cell styles for tables (wrapping)
+CELL_HEADER_P = ParagraphStyle('CellHeaderP', fontName='DejaVuSans-Bold', fontSize=8, leading=10, alignment=TA_CENTER, textColor=colors.white)
+CELL_BODY_P = ParagraphStyle('CellBodyP', fontName='DejaVuSans', fontSize=8, leading=10, alignment=TA_LEFT)
+CELL_BODY_CENTER_P = ParagraphStyle('CellBodyCenterP', fontName='DejaVuSans', fontSize=8, leading=10, alignment=TA_CENTER)
+
+def wrap_cell_p(content, style=CELL_BODY_P):
+    """Wrap content in a Paragraph for proper text wrapping in tables."""
+    s = str(content) if content is not None else ''
+    return Paragraph(s, style)
+
 # === Load data ===
 PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data_06.json'))
 MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_06.json'))
@@ -274,20 +284,23 @@ recos = [
      "Administrateurs de Vente", "Semaine 38-39"),
 ]
 
-recos_data = [["Priorité", "Action", "Détail", "Responsable", "Échéance"]]
+recos_data = [[wrap_cell_p(h, CELL_HEADER_P) for h in ["Priorité", "Action", "Détail", "Responsable", "Échéance"]]]
 for r in recos:
-    recos_data.append([r[0], r[1], r[2], r[3], r[4]])
+    recos_data.append([
+        wrap_cell_p(r[0], CELL_BODY_CENTER_P),
+        wrap_cell_p(r[1], CELL_BODY_P),
+        wrap_cell_p(r[2], CELL_BODY_P),
+        wrap_cell_p(r[3], CELL_BODY_P),
+        wrap_cell_p(r[4], CELL_BODY_CENTER_P),
+    ])
 
 t4 = Table(recos_data, colWidths=[2.5*cm, 3.2*cm, 6.3*cm, 3*cm, 2.5*cm], repeatRows=1)
 style_list4 = [
-    ('FONT', (0,0), (-1,0), 'DejaVuSans-Bold', 8),
-    ('FONT', (0,1), (-1,-1), 'DejaVuSans', 8),
     ('BACKGROUND', (0,0), (-1,0), NAVY),
-    ('TEXTCOLOR', (0,0), (-1,0), colors.white),
     ('VALIGN', (0,0), (-1,-1), 'TOP'),
     ('GRID', (0,0), (-1,-1), 0.5, colors.gray),
-    ('TOPPADDING', (0,0), (-1,-1), 3), ('BOTTOMPADDING', (0,0), (-1,-1), 3),
-    ('LEFTPADDING', (0,0), (-1,-1), 3), ('RIGHTPADDING', (0,0), (-1,-1), 3),
+    ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+    ('LEFTPADDING', (0,0), (-1,-1), 4), ('RIGHTPADDING', (0,0), (-1,-1), 4),
 ]
 # Color priority column
 priority_colors = {
