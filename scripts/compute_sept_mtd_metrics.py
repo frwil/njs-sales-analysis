@@ -52,7 +52,7 @@ AGENCE_MAP = {
 }
 
 # Internal clients to exclude (SPC/PDC/Comptoir)
-INTERNAL_CLIENT_PATTERNS = ['SPC', 'PDC', 'EMANA']  # COMPTOIR inclus (ventes au comptoir à compter)
+INTERNAL_CLIENT_PATTERNS = []  # Tous les clients inclus (COMPTOIR, SPC, PDC) — seules les agences SPC/PDC sont exclues via AGENCE_MAP
 
 # Objectives September (monthly targets) — same as Aug for first estimate
 OBJ = {
@@ -475,7 +475,7 @@ summary = {
     'conc_by_agence': sorted(conc_by_ag, key=lambda x: -x['conc_t']),
 }
 
-OUT = '/home/z/my-project/scripts/sept_mtd_07.json'
+OUT = '/home/z/my-project/scripts/sept_mtd_08.json'
 
 # Preserve stock info from previous sept_mtd_01.json (manually updated 07/09 with new stock central)
 import os

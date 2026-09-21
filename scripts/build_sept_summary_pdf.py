@@ -43,8 +43,8 @@ SMALL = ParagraphStyle('Small', parent=BODY, fontSize=8, textColor=GRAY)
 CELL = ParagraphStyle('Cell', parent=BODY, fontName='DejaVuSans', fontSize=9, leading=11, alignment=TA_LEFT, spaceAfter=0)
 
 # === Load data ===
-DATA = json.load(open('/home/z/my-project/scripts/sept_mtd_07.json'))
-print(f"Loaded sept_mtd_07.json (update {DATA['update_date']})")
+DATA = json.load(open('/home/z/my-project/scripts/sept_mtd_08.json'))
+print(f"Loaded sept_mtd_08.json (update {DATA['update_date']})")
 
 # Helpers
 def fmt(x):
