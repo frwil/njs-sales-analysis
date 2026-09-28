@@ -1,2 +1,8 @@
 skills/
 node_modules/
+__pycache__/
+*.pyc
+*.pyo
+tool-results/
+.DS_Store
+.env.local
