@@ -1,0 +1,2223 @@
+{
+  "meta": {
+    "month_num": 3,
+    "label": "Mars 2026",
+    "update_date": "31/03/2026",
+    "jours_ouvres": null,
+    "source_erp": "ventes janv a juin 2026.xlsx"
+  },
+  "global_sept": {
+    "TOURTEAUX": {
+      "t": 3892.7,
+      "obj": 4852.0,
+      "pct": 80.2,
+      "ecart": -959.3,
+      "ca": 1250.2
+    },
+    "CONCENTRES": {
+      "t": 1547.8,
+      "obj": 2280.0,
+      "pct": 67.9,
+      "ecart": -732.2,
+      "ca": 1034.4
+    },
+    "ALIMENT_COMPLET": {
+      "t": 76.0,
+      "obj": 93.0,
+      "pct": 81.7,
+      "ecart": -17.0,
+      "ca": 61.9
+    },
+    "INGREDIENTS": {
+      "t": 80.4,
+      "obj": 109.0,
+      "pct": 73.7,
+      "ecart": -28.6,
+      "ca": 110.4
+    },
+    "PREMIX": {
+      "t": 10.2,
+      "obj": 11.0,
+      "pct": 92.7,
+      "ecart": -0.8,
+      "ca": 18.7
+    },
+    "COMPLEMENT_ALIMENTAIRE": {
+      "t": 0.2,
+      "obj": 1.0,
+      "pct": 24.7,
+      "ecart": -0.8,
+      "ca": 1.9
+    },
+    "ALVEOLES": {
+      "t": 0.0,
+      "obj": 0.0,
+      "pct": null,
+      "ecart": 0.0,
+      "ca": 0.0
+    },
+    "MATERIEL_ELEVAGE": {
+      "t": 0.0,
+      "obj": 0.0,
+      "pct": null,
+      "ecart": 0.0,
+      "ca": 18.1
+    }
+  },
+  "agence_sept": {
+    "Famla": {
+      "TOURTEAUX": {
+        "t": 950.8,
+        "obj": 1311.6,
+        "pct": 72.5
+      },
+      "CONCENTRES": {
+        "t": 385.4,
+        "obj": 613.2,
+        "pct": 62.8
+      },
+      "ALIMENT_COMPLET": {
+        "t": 6.0,
+        "obj": 7.8,
+        "pct": 76.2
+      },
+      "INGREDIENTS": {
+        "t": 13.9,
+        "obj": 26.5,
+        "pct": 52.3
+      },
+      "PREMIX": {
+        "t": 2.3,
+        "obj": 4.5,
+        "pct": 50.9
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.2,
+        "pct": 16.3
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Messassi": {
+      "TOURTEAUX": {
+        "t": 328.6,
+        "obj": 421.5,
+        "pct": 78.0
+      },
+      "CONCENTRES": {
+        "t": 141.1,
+        "obj": 299.8,
+        "pct": 47.1
+      },
+      "ALIMENT_COMPLET": {
+        "t": 21.6,
+        "obj": 12.6,
+        "pct": 171.8
+      },
+      "INGREDIENTS": {
+        "t": 9.6,
+        "obj": 9.5,
+        "pct": 101.1
+      },
+      "PREMIX": {
+        "t": 0.9,
+        "obj": 0.8,
+        "pct": 108.8
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.1,
+        "obj": 0.2,
+        "pct": 61.6
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Bertoua": {
+      "TOURTEAUX": {
+        "t": 137.7,
+        "obj": 191.9,
+        "pct": 71.8
+      },
+      "CONCENTRES": {
+        "t": 86.6,
+        "obj": 115.1,
+        "pct": 75.2
+      },
+      "ALIMENT_COMPLET": {
+        "t": 4.1,
+        "obj": 3.7,
+        "pct": 111.4
+      },
+      "INGREDIENTS": {
+        "t": 4.8,
+        "obj": 4.6,
+        "pct": 104.8
+      },
+      "PREMIX": {
+        "t": 0.3,
+        "obj": 0.8,
+        "pct": 38.0
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.1,
+        "pct": 40.0
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Ndobo": {
+      "TOURTEAUX": {
+        "t": 737.4,
+        "obj": 931.5,
+        "pct": 79.2
+      },
+      "CONCENTRES": {
+        "t": 162.4,
+        "obj": 226.2,
+        "pct": 71.8
+      },
+      "ALIMENT_COMPLET": {
+        "t": 11.5,
+        "obj": 14.3,
+        "pct": 80.3
+      },
+      "INGREDIENTS": {
+        "t": 13.3,
+        "obj": 28.7,
+        "pct": 46.4
+      },
+      "PREMIX": {
+        "t": 2.2,
+        "obj": 2.5,
+        "pct": 89.8
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": 47.5
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Djeleng": {
+      "TOURTEAUX": {
+        "t": 279.8,
+        "obj": 385.2,
+        "pct": 72.6
+      },
+      "CONCENTRES": {
+        "t": 146.4,
+        "obj": 157.1,
+        "pct": 93.2
+      },
+      "ALIMENT_COMPLET": {
+        "t": 1.5,
+        "obj": 3.1,
+        "pct": 48.5
+      },
+      "INGREDIENTS": {
+        "t": 4.8,
+        "obj": 4.3,
+        "pct": 111.2
+      },
+      "PREMIX": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": 0.0
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.1,
+        "pct": 0.0
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Village": {
+      "TOURTEAUX": {
+        "t": 179.5,
+        "obj": 203.7,
+        "pct": 88.1
+      },
+      "CONCENTRES": {
+        "t": 97.8,
+        "obj": 87.4,
+        "pct": 111.9
+      },
+      "ALIMENT_COMPLET": {
+        "t": 7.6,
+        "obj": 13.1,
+        "pct": 57.9
+      },
+      "INGREDIENTS": {
+        "t": 5.2,
+        "obj": 4.2,
+        "pct": 125.4
+      },
+      "PREMIX": {
+        "t": 3.0,
+        "obj": 0.5,
+        "pct": 661.1
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.1,
+        "pct": 1.7
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Pk11": {
+      "TOURTEAUX": {
+        "t": 177.0,
+        "obj": 163.4,
+        "pct": 108.4
+      },
+      "CONCENTRES": {
+        "t": 57.1,
+        "obj": 62.5,
+        "pct": 91.3
+      },
+      "ALIMENT_COMPLET": {
+        "t": 3.2,
+        "obj": 5.0,
+        "pct": 63.1
+      },
+      "INGREDIENTS": {
+        "t": 3.4,
+        "obj": 3.2,
+        "pct": 107.6
+      },
+      "PREMIX": {
+        "t": 0.3,
+        "obj": 0.2,
+        "pct": 180.6
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": 70.0
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Ngaoundere": {
+      "TOURTEAUX": {
+        "t": 95.0,
+        "obj": 105.3,
+        "pct": 90.3
+      },
+      "CONCENTRES": {
+        "t": 49.0,
+        "obj": 67.0,
+        "pct": 73.2
+      },
+      "ALIMENT_COMPLET": {
+        "t": 0.9,
+        "obj": 4.0,
+        "pct": 21.9
+      },
+      "INGREDIENTS": {
+        "t": 3.4,
+        "obj": 5.6,
+        "pct": 61.5
+      },
+      "PREMIX": {
+        "t": 0.1,
+        "obj": 0.4,
+        "pct": 21.4
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": 0.0
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Ahala": {
+      "TOURTEAUX": {
+        "t": 240.2,
+        "obj": 281.6,
+        "pct": 85.3
+      },
+      "CONCENTRES": {
+        "t": 113.6,
+        "obj": 175.3,
+        "pct": 64.8
+      },
+      "ALIMENT_COMPLET": {
+        "t": 2.5,
+        "obj": 7.1,
+        "pct": 35.5
+      },
+      "INGREDIENTS": {
+        "t": 5.3,
+        "obj": 4.0,
+        "pct": 132.5
+      },
+      "PREMIX": {
+        "t": 0.2,
+        "obj": 0.4,
+        "pct": 47.0
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.1,
+        "pct": 9.2
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Nkongsamba": {
+      "TOURTEAUX": {
+        "t": 223.3,
+        "obj": 215.0,
+        "pct": 103.8
+      },
+      "CONCENTRES": {
+        "t": 70.8,
+        "obj": 118.5,
+        "pct": 59.8
+      },
+      "ALIMENT_COMPLET": {
+        "t": 2.7,
+        "obj": 5.0,
+        "pct": 53.9
+      },
+      "INGREDIENTS": {
+        "t": 4.4,
+        "obj": 5.9,
+        "pct": 74.2
+      },
+      "PREMIX": {
+        "t": 0.5,
+        "obj": 0.2,
+        "pct": 238.1
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.1,
+        "pct": 18.0
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Nkolbisson": {
+      "TOURTEAUX": {
+        "t": 82.4,
+        "obj": 59.0,
+        "pct": 139.6
+      },
+      "CONCENTRES": {
+        "t": 55.7,
+        "obj": 46.5,
+        "pct": 119.8
+      },
+      "ALIMENT_COMPLET": {
+        "t": 1.7,
+        "obj": 4.3,
+        "pct": 39.7
+      },
+      "INGREDIENTS": {
+        "t": 2.9,
+        "obj": 2.2,
+        "pct": 129.4
+      },
+      "PREMIX": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": 0.0
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": 3.5
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Nkoabang": {
+      "TOURTEAUX": {
+        "t": 108.8,
+        "obj": 145.2,
+        "pct": 74.9
+      },
+      "CONCENTRES": {
+        "t": 53.0,
+        "obj": 81.2,
+        "pct": 65.4
+      },
+      "ALIMENT_COMPLET": {
+        "t": 4.8,
+        "obj": 3.7,
+        "pct": 129.3
+      },
+      "INGREDIENTS": {
+        "t": 3.1,
+        "obj": 3.4,
+        "pct": 91.4
+      },
+      "PREMIX": {
+        "t": 0.3,
+        "obj": 0.7,
+        "pct": 49.4
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.1,
+        "pct": 13.2
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Mbouda": {
+      "TOURTEAUX": {
+        "t": 189.8,
+        "obj": 221.1,
+        "pct": 85.8
+      },
+      "CONCENTRES": {
+        "t": 86.2,
+        "obj": 115.0,
+        "pct": 75.0
+      },
+      "ALIMENT_COMPLET": {
+        "t": 3.9,
+        "obj": 3.9,
+        "pct": 100.1
+      },
+      "INGREDIENTS": {
+        "t": 4.1,
+        "obj": 4.6,
+        "pct": 89.1
+      },
+      "PREMIX": {
+        "t": 0.1,
+        "obj": 0.2,
+        "pct": 66.7
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.1,
+        "pct": 0.0
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Buea": {
+      "TOURTEAUX": {
+        "t": 162.2,
+        "obj": 203.2,
+        "pct": 79.8
+      },
+      "CONCENTRES": {
+        "t": 42.7,
+        "obj": 109.2,
+        "pct": 39.1
+      },
+      "ALIMENT_COMPLET": {
+        "t": 4.2,
+        "obj": 6.1,
+        "pct": 68.9
+      },
+      "INGREDIENTS": {
+        "t": 2.2,
+        "obj": 3.2,
+        "pct": 67.6
+      },
+      "PREMIX": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.1,
+        "pct": 2.0
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    }
+  },
+  "region_sept": {
+    "Ouest": {
+      "TOURTEAUX": {
+        "t": 1420.4,
+        "obj": 1918.0,
+        "pct": 74.1
+      },
+      "CONCENTRES": {
+        "t": 618.0,
+        "obj": 885.3,
+        "pct": 69.8
+      },
+      "ALIMENT_COMPLET": {
+        "t": 11.3,
+        "obj": 14.8,
+        "pct": 76.7
+      },
+      "INGREDIENTS": {
+        "t": 22.7,
+        "obj": 35.4,
+        "pct": 64.2
+      },
+      "PREMIX": {
+        "t": 2.4,
+        "obj": 4.6,
+        "pct": 51.3
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.0,
+        "obj": 0.3,
+        "pct": 9.0
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Centre": {
+      "TOURTEAUX": {
+        "t": 992.8,
+        "obj": 1204.5,
+        "pct": 82.4
+      },
+      "CONCENTRES": {
+        "t": 499.0,
+        "obj": 784.9,
+        "pct": 63.6
+      },
+      "ALIMENT_COMPLET": {
+        "t": 35.6,
+        "obj": 35.3,
+        "pct": 100.6
+      },
+      "INGREDIENTS": {
+        "t": 29.1,
+        "obj": 29.3,
+        "pct": 99.4
+      },
+      "PREMIX": {
+        "t": 1.8,
+        "obj": 3.1,
+        "pct": 58.8
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.2,
+        "obj": 0.4,
+        "pct": 35.1
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    },
+    "Littoral": {
+      "TOURTEAUX": {
+        "t": 1479.5,
+        "obj": 1716.8,
+        "pct": 86.2
+      },
+      "CONCENTRES": {
+        "t": 430.8,
+        "obj": 603.8,
+        "pct": 71.3
+      },
+      "ALIMENT_COMPLET": {
+        "t": 29.1,
+        "obj": 43.5,
+        "pct": 66.9
+      },
+      "INGREDIENTS": {
+        "t": 28.5,
+        "obj": 45.2,
+        "pct": 63.2
+      },
+      "PREMIX": {
+        "t": 6.0,
+        "obj": 3.3,
+        "pct": 182.4
+      },
+      "COMPLEMENT_ALIMENTAIRE": {
+        "t": 0.1,
+        "obj": 0.3,
+        "pct": 23.1
+      },
+      "ALVEOLES": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      },
+      "MATERIEL_ELEVAGE": {
+        "t": 0.0,
+        "obj": 0.0,
+        "pct": null
+      }
+    }
+  },
+  "fam_monthly": {
+    "TOURTEAUX": {
+      "1": {
+        "t": 5342.1,
+        "obj": 4880.0
+      },
+      "2": {
+        "t": 3621.1,
+        "obj": 4336.0
+      },
+      "3": {
+        "t": 3892.7,
+        "obj": 4852.0
+      }
+    },
+    "CONCENTRES": {
+      "1": {
+        "t": 1627.3,
+        "obj": 2294.0
+      },
+      "2": {
+        "t": 1449.2,
+        "obj": 2038.0
+      },
+      "3": {
+        "t": 1547.8,
+        "obj": 2280.0
+      }
+    },
+    "ALIMENT_COMPLET": {
+      "1": {
+        "t": 81.7,
+        "obj": 94.0
+      },
+      "2": {
+        "t": 79.2,
+        "obj": 84.0
+      },
+      "3": {
+        "t": 76.0,
+        "obj": 93.0
+      }
+    },
+    "INGREDIENTS": {
+      "1": {
+        "t": 81.5,
+        "obj": 109.0
+      },
+      "2": {
+        "t": 81.4,
+        "obj": 97.0
+      },
+      "3": {
+        "t": 80.4,
+        "obj": 109.0
+      }
+    },
+    "PREMIX": {
+      "1": {
+        "t": 16.2,
+        "obj": 11.0
+      },
+      "2": {
+        "t": 20.6,
+        "obj": 10.0
+      },
+      "3": {
+        "t": 10.2,
+        "obj": 11.0
+      }
+    },
+    "COMPLEMENT_ALIMENTAIRE": {
+      "1": {
+        "t": 0.4,
+        "obj": 1.0
+      },
+      "2": {
+        "t": 0.3,
+        "obj": 1.0
+      },
+      "3": {
+        "t": 0.2,
+        "obj": 1.0
+      }
+    },
+    "ALVEOLES": {
+      "1": {
+        "t": 0.0,
+        "obj": 0.0
+      },
+      "2": {
+        "t": 0.0,
+        "obj": 0.0
+      },
+      "3": {
+        "t": 0.0,
+        "obj": 0.0
+      }
+    },
+    "MATERIEL_ELEVAGE": {
+      "1": {
+        "t": 0.0,
+        "obj": 0.0
+      },
+      "2": {
+        "t": 0.0,
+        "obj": 0.0
+      },
+      "3": {
+        "t": 0.0,
+        "obj": 0.0
+      }
+    }
+  },
+  "fam_ytd": {
+    "TOURTEAUX": {
+      "t": 12855.9,
+      "obj": 14068.0,
+      "pct": 91.4,
+      "ca": 4204.6
+    },
+    "CONCENTRES": {
+      "t": 4624.3,
+      "obj": 6612.0,
+      "pct": 69.9,
+      "ca": 3088.3
+    },
+    "ALIMENT_COMPLET": {
+      "t": 236.9,
+      "obj": 271.0,
+      "pct": 87.4,
+      "ca": 194.6
+    },
+    "INGREDIENTS": {
+      "t": 243.3,
+      "obj": 315.0,
+      "pct": 77.2,
+      "ca": 323.2
+    },
+    "PREMIX": {
+      "t": 47.0,
+      "obj": 32.0,
+      "pct": 146.8,
+      "ca": 85.9
+    },
+    "COMPLEMENT_ALIMENTAIRE": {
+      "t": 0.9,
+      "obj": 3.0,
+      "pct": 29.8,
+      "ca": 6.2
+    },
+    "ALVEOLES": {
+      "t": 0.0,
+      "obj": 0.0,
+      "pct": null,
+      "ca": 0.0
+    },
+    "MATERIEL_ELEVAGE": {
+      "t": 0.0,
+      "obj": 0.0,
+      "pct": null,
+      "ca": 72.7
+    }
+  },
+  "agence_sc_monthly": {
+    "Famla": {
+      "soja": {
+        "1": 1802.0,
+        "2": 1132.5,
+        "3": 950.8
+      },
+      "soja_obj": {
+        "1": 1319.8,
+        "2": 1171.8,
+        "3": 1311.6
+      },
+      "conc": {
+        "1": 393.9,
+        "2": 351.6,
+        "3": 385.4
+      },
+      "conc_obj": {
+        "1": 617.0,
+        "2": 548.1,
+        "3": 613.2
+      }
+    },
+    "Messassi": {
+      "soja": {
+        "1": 477.5,
+        "2": 326.2,
+        "3": 328.6
+      },
+      "soja_obj": {
+        "1": 423.9,
+        "2": 376.7,
+        "3": 421.5
+      },
+      "conc": {
+        "1": 168.1,
+        "2": 154.4,
+        "3": 141.1
+      },
+      "conc_obj": {
+        "1": 301.6,
+        "2": 267.9,
+        "3": 299.8
+      }
+    },
+    "Bertoua": {
+      "soja": {
+        "1": 209.3,
+        "2": 140.4,
+        "3": 137.7
+      },
+      "soja_obj": {
+        "1": 193.0,
+        "2": 171.5,
+        "3": 191.9
+      },
+      "conc": {
+        "1": 90.4,
+        "2": 90.8,
+        "3": 86.6
+      },
+      "conc_obj": {
+        "1": 115.8,
+        "2": 102.9,
+        "3": 115.1
+      }
+    },
+    "Ndobo": {
+      "soja": {
+        "1": 588.5,
+        "2": 330.8,
+        "3": 737.4
+      },
+      "soja_obj": {
+        "1": 936.9,
+        "2": 832.8,
+        "3": 931.5
+      },
+      "conc": {
+        "1": 140.6,
+        "2": 135.5,
+        "3": 162.4
+      },
+      "conc_obj": {
+        "1": 228.0,
+        "2": 201.8,
+        "3": 226.2
+      }
+    },
+    "Djeleng": {
+      "soja": {
+        "1": 453.0,
+        "2": 291.1,
+        "3": 279.8
+      },
+      "soja_obj": {
+        "1": 387.5,
+        "2": 344.3,
+        "3": 385.2
+      },
+      "conc": {
+        "1": 136.7,
+        "2": 122.0,
+        "3": 146.4
+      },
+      "conc_obj": {
+        "1": 157.8,
+        "2": 140.9,
+        "3": 157.1
+      }
+    },
+    "Village": {
+      "soja": {
+        "1": 224.2,
+        "2": 201.2,
+        "3": 179.5
+      },
+      "soja_obj": {
+        "1": 204.9,
+        "2": 182.0,
+        "3": 203.7
+      },
+      "conc": {
+        "1": 108.2,
+        "2": 96.2,
+        "3": 97.8
+      },
+      "conc_obj": {
+        "1": 87.9,
+        "2": 78.1,
+        "3": 87.4
+      }
+    },
+    "Pk11": {
+      "soja": {
+        "1": 192.6,
+        "2": 154.6,
+        "3": 177.0
+      },
+      "soja_obj": {
+        "1": 164.8,
+        "2": 145.5,
+        "3": 163.4
+      },
+      "conc": {
+        "1": 64.7,
+        "2": 44.8,
+        "3": 57.1
+      },
+      "conc_obj": {
+        "1": 62.9,
+        "2": 55.9,
+        "3": 62.5
+      }
+    },
+    "Ngaoundere": {
+      "soja": {
+        "1": 131.4,
+        "2": 132.4,
+        "3": 95.0
+      },
+      "soja_obj": {
+        "1": 105.9,
+        "2": 94.1,
+        "3": 105.3
+      },
+      "conc": {
+        "1": 58.9,
+        "2": 53.8,
+        "3": 49.0
+      },
+      "conc_obj": {
+        "1": 67.4,
+        "2": 59.8,
+        "3": 67.0
+      }
+    },
+    "Ahala": {
+      "soja": {
+        "1": 213.2,
+        "2": 177.6,
+        "3": 240.2
+      },
+      "soja_obj": {
+        "1": 283.3,
+        "2": 251.7,
+        "3": 281.6
+      },
+      "conc": {
+        "1": 98.1,
+        "2": 82.9,
+        "3": 113.6
+      },
+      "conc_obj": {
+        "1": 176.4,
+        "2": 156.7,
+        "3": 175.3
+      }
+    },
+    "Nkongsamba": {
+      "soja": {
+        "1": 230.1,
+        "2": 188.4,
+        "3": 223.3
+      },
+      "soja_obj": {
+        "1": 216.2,
+        "2": 191.8,
+        "3": 215.0
+      },
+      "conc": {
+        "1": 86.3,
+        "2": 77.6,
+        "3": 70.8
+      },
+      "conc_obj": {
+        "1": 119.2,
+        "2": 105.9,
+        "3": 118.5
+      }
+    },
+    "Nkolbisson": {
+      "soja": {
+        "1": 73.7,
+        "2": 49.3,
+        "3": 82.4
+      },
+      "soja_obj": {
+        "1": 59.3,
+        "2": 52.7,
+        "3": 59.0
+      },
+      "conc": {
+        "1": 49.1,
+        "2": 44.7,
+        "3": 55.7
+      },
+      "conc_obj": {
+        "1": 46.8,
+        "2": 41.5,
+        "3": 46.5
+      }
+    },
+    "Nkoabang": {
+      "soja": {
+        "1": 178.1,
+        "2": 86.8,
+        "3": 108.8
+      },
+      "soja_obj": {
+        "1": 146.0,
+        "2": 129.8,
+        "3": 145.2
+      },
+      "conc": {
+        "1": 57.7,
+        "2": 47.7,
+        "3": 53.0
+      },
+      "conc_obj": {
+        "1": 81.6,
+        "2": 72.5,
+        "3": 81.2
+      }
+    },
+    "Mbouda": {
+      "soja": {
+        "1": 349.9,
+        "2": 271.5,
+        "3": 189.8
+      },
+      "soja_obj": {
+        "1": 222.3,
+        "2": 197.2,
+        "3": 221.1
+      },
+      "conc": {
+        "1": 113.3,
+        "2": 103.2,
+        "3": 86.2
+      },
+      "conc_obj": {
+        "1": 115.7,
+        "2": 102.8,
+        "3": 115.0
+      }
+    },
+    "Buea": {
+      "soja": {
+        "1": 218.6,
+        "2": 138.5,
+        "3": 162.2
+      },
+      "soja_obj": {
+        "1": 204.4,
+        "2": 181.6,
+        "3": 203.2
+      },
+      "conc": {
+        "1": 61.3,
+        "2": 43.9,
+        "3": 42.7
+      },
+      "conc_obj": {
+        "1": 110.0,
+        "2": 97.8,
+        "3": 109.2
+      }
+    }
+  },
+  "region_sc_monthly": {
+    "Ouest": {
+      "soja": {
+        "1": 2604.8,
+        "2": 1695.0,
+        "3": 1420.4
+      },
+      "soja_obj": {
+        "1": 1929.6,
+        "2": 1713.3,
+        "3": 1918.0
+      },
+      "conc": {
+        "1": 643.9,
+        "2": 576.8,
+        "3": 618.0
+      },
+      "conc_obj": {
+        "1": 890.5,
+        "2": 791.8,
+        "3": 885.3
+      }
+    },
+    "Centre": {
+      "soja": {
+        "1": 1283.2,
+        "2": 912.7,
+        "3": 992.8
+      },
+      "soja_obj": {
+        "1": 1211.5,
+        "2": 1076.4,
+        "3": 1204.5
+      },
+      "conc": {
+        "1": 522.2,
+        "2": 474.3,
+        "3": 499.0
+      },
+      "conc_obj": {
+        "1": 789.5,
+        "2": 701.4,
+        "3": 784.9
+      }
+    },
+    "Littoral": {
+      "soja": {
+        "1": 1454.0,
+        "2": 1013.4,
+        "3": 1479.5
+      },
+      "soja_obj": {
+        "1": 1727.2,
+        "2": 1533.8,
+        "3": 1716.8
+      },
+      "conc": {
+        "1": 461.1,
+        "2": 398.1,
+        "3": 430.8
+      },
+      "conc_obj": {
+        "1": 608.0,
+        "2": 539.5,
+        "3": 603.8
+      }
+    }
+  },
+  "sc_ytd": {
+    "soja": {
+      "t": 12855.9,
+      "obj": 14068.0,
+      "pct": 91.4
+    },
+    "conc": {
+      "t": 4624.3,
+      "obj": 6612.0,
+      "pct": 69.9
+    }
+  },
+  "agence_sc_ytd": {
+    "Famla": {
+      "soja": {
+        "t": 3885.3,
+        "obj": 3803.2,
+        "pct": 102.2
+      },
+      "conc": {
+        "t": 1130.8,
+        "obj": 1778.4,
+        "pct": 63.6
+      }
+    },
+    "Messassi": {
+      "soja": {
+        "t": 1132.3,
+        "obj": 1222.1,
+        "pct": 92.7
+      },
+      "conc": {
+        "t": 463.6,
+        "obj": 869.3,
+        "pct": 53.3
+      }
+    },
+    "Bertoua": {
+      "soja": {
+        "t": 487.4,
+        "obj": 556.3,
+        "pct": 87.6
+      },
+      "conc": {
+        "t": 267.8,
+        "obj": 333.8,
+        "pct": 80.2
+      }
+    },
+    "Ndobo": {
+      "soja": {
+        "t": 1656.7,
+        "obj": 2701.2,
+        "pct": 61.3
+      },
+      "conc": {
+        "t": 438.6,
+        "obj": 655.9,
+        "pct": 66.9
+      }
+    },
+    "Djeleng": {
+      "soja": {
+        "t": 1023.9,
+        "obj": 1117.0,
+        "pct": 91.7
+      },
+      "conc": {
+        "t": 405.1,
+        "obj": 455.8,
+        "pct": 88.9
+      }
+    },
+    "Village": {
+      "soja": {
+        "t": 604.9,
+        "obj": 590.6,
+        "pct": 102.4
+      },
+      "conc": {
+        "t": 302.2,
+        "obj": 253.4,
+        "pct": 119.3
+      }
+    },
+    "Pk11": {
+      "soja": {
+        "t": 524.3,
+        "obj": 473.8,
+        "pct": 110.7
+      },
+      "conc": {
+        "t": 166.6,
+        "obj": 181.3,
+        "pct": 91.9
+      }
+    },
+    "Ngaoundere": {
+      "soja": {
+        "t": 358.9,
+        "obj": 305.3,
+        "pct": 117.6
+      },
+      "conc": {
+        "t": 161.7,
+        "obj": 194.2,
+        "pct": 83.3
+      }
+    },
+    "Ahala": {
+      "soja": {
+        "t": 631.1,
+        "obj": 816.6,
+        "pct": 77.3
+      },
+      "conc": {
+        "t": 294.6,
+        "obj": 508.4,
+        "pct": 57.9
+      }
+    },
+    "Nkongsamba": {
+      "soja": {
+        "t": 641.8,
+        "obj": 623.0,
+        "pct": 103.0
+      },
+      "conc": {
+        "t": 234.7,
+        "obj": 343.7,
+        "pct": 68.3
+      }
+    },
+    "Nkolbisson": {
+      "soja": {
+        "t": 205.3,
+        "obj": 171.1,
+        "pct": 120.1
+      },
+      "conc": {
+        "t": 149.5,
+        "obj": 134.8,
+        "pct": 110.9
+      }
+    },
+    "Nkoabang": {
+      "soja": {
+        "t": 373.6,
+        "obj": 421.0,
+        "pct": 88.8
+      },
+      "conc": {
+        "t": 158.4,
+        "obj": 235.3,
+        "pct": 67.3
+      }
+    },
+    "Mbouda": {
+      "soja": {
+        "t": 811.1,
+        "obj": 640.7,
+        "pct": 126.6
+      },
+      "conc": {
+        "t": 302.8,
+        "obj": 333.4,
+        "pct": 90.8
+      }
+    },
+    "Buea": {
+      "soja": {
+        "t": 519.2,
+        "obj": 589.2,
+        "pct": 88.1
+      },
+      "conc": {
+        "t": 148.0,
+        "obj": 317.0,
+        "pct": 46.7
+      }
+    }
+  },
+  "region_sc_ytd": {
+    "Ouest": {
+      "soja": {
+        "t": 5720.3,
+        "obj": 5560.9,
+        "pct": 102.9
+      },
+      "conc": {
+        "t": 1838.7,
+        "obj": 2567.6,
+        "pct": 71.6
+      }
+    },
+    "Centre": {
+      "soja": {
+        "t": 3188.7,
+        "obj": 3492.4,
+        "pct": 91.3
+      },
+      "conc": {
+        "t": 1495.5,
+        "obj": 2275.8,
+        "pct": 65.7
+      }
+    },
+    "Littoral": {
+      "soja": {
+        "t": 3946.8,
+        "obj": 4977.8,
+        "pct": 79.3
+      },
+      "conc": {
+        "t": 1290.1,
+        "obj": 1751.3,
+        "pct": 73.7
+      }
+    }
+  },
+  "ratio_soja_conc_ytd": 2.78,
+  "ca_sept": {
+    "TOURTEAUX": {
+      "ca": 1250.2,
+      "attendu": 1586.3,
+      "pct_ca": 78.8,
+      "prix_moy": 321155.0,
+      "prix_obj": 326942.0,
+      "prix_ref": 327060.0,
+      "pct_vol": 80.2
+    },
+    "CONCENTRES": {
+      "ca": 1034.4,
+      "attendu": 1504.7,
+      "pct_ca": 68.7,
+      "prix_moy": 668305.0,
+      "prix_obj": 659956.0,
+      "prix_ref": 667845.0,
+      "pct_vol": 67.9
+    },
+    "ALIMENT_COMPLET": {
+      "ca": 61.9,
+      "attendu": 78.6,
+      "pct_ca": 78.8,
+      "prix_moy": 815092.0,
+      "prix_obj": 845283.0,
+      "prix_ref": 821191.0,
+      "pct_vol": 81.7
+    },
+    "INGREDIENTS": {
+      "ca": 110.4,
+      "attendu": 147.6,
+      "pct_ca": 74.8,
+      "prix_moy": 1373240.0,
+      "prix_obj": 1354476.0,
+      "prix_ref": 1328416.0,
+      "pct_vol": 73.7
+    },
+    "PREMIX": {
+      "ca": 18.7,
+      "attendu": 20.4,
+      "pct_ca": 91.9,
+      "prix_moy": 1835392.0,
+      "prix_obj": 1851535.0,
+      "prix_ref": 1828079.0,
+      "pct_vol": 92.7
+    },
+    "COMPLEMENT_ALIMENTAIRE": {
+      "ca": 1.9,
+      "attendu": 2.6,
+      "pct_ca": 71.0,
+      "prix_moy": 7544534.0,
+      "prix_obj": 2625488.0,
+      "prix_ref": 6935123.0,
+      "pct_vol": 24.7
+    },
+    "ALVEOLES": {
+      "ca": 0.0,
+      "attendu": 16.6,
+      "pct_ca": 0.0,
+      "prix_moy": null,
+      "prix_obj": null,
+      "prix_ref": null,
+      "pct_vol": null
+    },
+    "MATERIEL_ELEVAGE": {
+      "ca": 18.1,
+      "attendu": 29.5,
+      "pct_ca": 61.4,
+      "prix_moy": null,
+      "prix_obj": null,
+      "prix_ref": null,
+      "pct_vol": null
+    }
+  },
+  "ca_ytd": {
+    "TOURTEAUX": {
+      "ca": 4204.6,
+      "attendu": 4599.4,
+      "pct_ca": 91.4,
+      "pct_vol": 91.4
+    },
+    "CONCENTRES": {
+      "ca": 3088.3,
+      "attendu": 4363.6,
+      "pct_ca": 70.8,
+      "pct_vol": 69.9
+    },
+    "ALIMENT_COMPLET": {
+      "ca": 194.6,
+      "attendu": 229.1,
+      "pct_ca": 84.9,
+      "pct_vol": 87.4
+    },
+    "INGREDIENTS": {
+      "ca": 323.2,
+      "attendu": 426.7,
+      "pct_ca": 75.7,
+      "pct_vol": 77.2
+    },
+    "PREMIX": {
+      "ca": 85.9,
+      "attendu": 59.2,
+      "pct_ca": 144.9,
+      "pct_vol": 146.8
+    },
+    "COMPLEMENT_ALIMENTAIRE": {
+      "ca": 6.2,
+      "attendu": 7.9,
+      "pct_ca": 78.7,
+      "pct_vol": 29.8
+    },
+    "ALVEOLES": {
+      "ca": 0.0,
+      "attendu": 48.0,
+      "pct_ca": 0.0,
+      "pct_vol": null
+    },
+    "MATERIEL_ELEVAGE": {
+      "ca": 72.7,
+      "attendu": 87.1,
+      "pct_ca": 83.4,
+      "pct_vol": null
+    }
+  },
+  "ca_agence_sept": {
+    "Famla": {
+      "t": 1336.2,
+      "obj": 1924.9,
+      "ca": 570.2,
+      "attendu": 833.5,
+      "pct_vol": 69.4,
+      "pct_ca": 68.4,
+      "ecart_ca_vol": -1.0
+    },
+    "Messassi": {
+      "t": 469.7,
+      "obj": 721.3,
+      "ca": 200.3,
+      "attendu": 335.7,
+      "pct_vol": 65.1,
+      "pct_ca": 59.7,
+      "ecart_ca_vol": -5.4
+    },
+    "Bertoua": {
+      "t": 224.3,
+      "obj": 307.0,
+      "ca": 106.1,
+      "attendu": 138.7,
+      "pct_vol": 73.1,
+      "pct_ca": 76.5,
+      "ecart_ca_vol": 3.4
+    },
+    "Ndobo": {
+      "t": 899.8,
+      "obj": 1157.7,
+      "ca": 339.3,
+      "attendu": 453.8,
+      "pct_vol": 77.7,
+      "pct_ca": 74.8,
+      "ecart_ca_vol": -2.9
+    },
+    "Djeleng": {
+      "t": 426.2,
+      "obj": 542.3,
+      "ca": 187.2,
+      "attendu": 229.6,
+      "pct_vol": 78.6,
+      "pct_ca": 81.5,
+      "ecart_ca_vol": 2.9
+    },
+    "Village": {
+      "t": 277.3,
+      "obj": 291.1,
+      "ca": 117.8,
+      "attendu": 124.3,
+      "pct_vol": 95.3,
+      "pct_ca": 94.8,
+      "ecart_ca_vol": -0.5
+    },
+    "Pk11": {
+      "t": 234.1,
+      "obj": 225.9,
+      "ca": 91.3,
+      "attendu": 94.7,
+      "pct_vol": 103.6,
+      "pct_ca": 96.5,
+      "ecart_ca_vol": -7.1
+    },
+    "Ngaoundere": {
+      "t": 144.1,
+      "obj": 172.2,
+      "ca": 69.1,
+      "attendu": 78.6,
+      "pct_vol": 83.6,
+      "pct_ca": 87.9,
+      "ecart_ca_vol": 4.3
+    },
+    "Ahala": {
+      "t": 353.9,
+      "obj": 457.0,
+      "ca": 155.1,
+      "attendu": 207.8,
+      "pct_vol": 77.4,
+      "pct_ca": 74.7,
+      "ecart_ca_vol": -2.7
+    },
+    "Nkongsamba": {
+      "t": 294.1,
+      "obj": 333.6,
+      "ca": 115.0,
+      "attendu": 148.5,
+      "pct_vol": 88.2,
+      "pct_ca": 77.5,
+      "ecart_ca_vol": -10.7
+    },
+    "Nkolbisson": {
+      "t": 138.0,
+      "obj": 105.5,
+      "ca": 64.9,
+      "attendu": 50.0,
+      "pct_vol": 130.9,
+      "pct_ca": 129.9,
+      "ecart_ca_vol": -1.0
+    },
+    "Nkoabang": {
+      "t": 161.8,
+      "obj": 226.3,
+      "ca": 72.2,
+      "attendu": 101.0,
+      "pct_vol": 71.5,
+      "pct_ca": 71.5,
+      "ecart_ca_vol": 0.0
+    },
+    "Mbouda": {
+      "t": 276.0,
+      "obj": 336.1,
+      "ca": 117.1,
+      "attendu": 148.2,
+      "pct_vol": 82.1,
+      "pct_ca": 79.0,
+      "ecart_ca_vol": -3.1
+    },
+    "Buea": {
+      "t": 204.9,
+      "obj": 312.4,
+      "ca": 78.9,
+      "attendu": 138.5,
+      "pct_vol": 65.6,
+      "pct_ca": 57.0,
+      "ecart_ca_vol": -8.6
+    }
+  },
+  "encaissements": {
+    "payee": 2483.5,
+    "creance": 0.5,
+    "impayee": 11.6,
+    "vide": 0.0,
+    "total": 2495.6,
+    "taux_encaissement": 99.5,
+    "par_agence": {
+      "Famla": {
+        "ca": 596.0,
+        "payee": 595.9,
+        "creance": 0.1,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Messassi": {
+        "ca": 236.5,
+        "payee": 236.2,
+        "creance": 0.3,
+        "impayee": 0.0,
+        "taux": 99.9
+      },
+      "Bertoua": {
+        "ca": 118.7,
+        "payee": 118.7,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Ndobo": {
+        "ca": 375.6,
+        "payee": 363.9,
+        "creance": 0.0,
+        "impayee": 11.6,
+        "taux": 96.9
+      },
+      "Djeleng": {
+        "ca": 194.8,
+        "payee": 194.7,
+        "creance": 0.1,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Village": {
+        "ca": 137.7,
+        "payee": 137.7,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Pk11": {
+        "ca": 99.8,
+        "payee": 99.8,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Ngaoundere": {
+        "ca": 75.8,
+        "payee": 75.8,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Ahala": {
+        "ca": 167.7,
+        "payee": 167.7,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Nkongsamba": {
+        "ca": 125.5,
+        "payee": 125.5,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Nkolbisson": {
+        "ca": 70.6,
+        "payee": 70.6,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Nkoabang": {
+        "ca": 82.7,
+        "payee": 82.7,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Mbouda": {
+        "ca": 126.0,
+        "payee": 125.9,
+        "creance": 0.1,
+        "impayee": 0.0,
+        "taux": 100.0
+      },
+      "Buea": {
+        "ca": 88.3,
+        "payee": 88.3,
+        "creance": 0.0,
+        "impayee": 0.0,
+        "taux": 100.0
+      }
+    }
+  },
+  "prix_obj_s1": {
+    "TOURTEAUX": 326942.0,
+    "CONCENTRES": 659956.0,
+    "ALIMENT_COMPLET": 845283.0,
+    "INGREDIENTS": 1354476.0,
+    "PREMIX": 1851535.0,
+    "COMPLEMENT_ALIMENTAIRE": 2625488.0,
+    "ALVEOLES": null,
+    "MATERIEL_ELEVAGE": null
+  },
+  "mix_famille": {
+    "TOURTEAUX": {
+      "ca": 1250.2,
+      "part_ca": 50.1,
+      "payee": 1238.2,
+      "non_encaisse": 12.0,
+      "taux": 99.0
+    },
+    "CONCENTRES": {
+      "ca": 1034.4,
+      "part_ca": 41.4,
+      "payee": 1034.3,
+      "non_encaisse": 0.1,
+      "taux": 100.0
+    },
+    "ALIMENT_COMPLET": {
+      "ca": 61.9,
+      "part_ca": 2.5,
+      "payee": 61.9,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    "INGREDIENTS": {
+      "ca": 110.4,
+      "part_ca": 4.4,
+      "payee": 110.3,
+      "non_encaisse": 0.1,
+      "taux": 99.9
+    },
+    "PREMIX": {
+      "ca": 18.7,
+      "part_ca": 0.8,
+      "payee": 18.7,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    "COMPLEMENT_ALIMENTAIRE": {
+      "ca": 1.9,
+      "part_ca": 0.1,
+      "payee": 1.9,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    "MATERIEL_ELEVAGE": {
+      "ca": 18.1,
+      "part_ca": 0.7,
+      "payee": 18.1,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    }
+  },
+  "combos": [
+    {
+      "agence": "Famla",
+      "famille": "TOURTEAUX",
+      "ca": 302.5,
+      "part_ca": 12.1,
+      "payee": 302.5,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Famla",
+      "famille": "CONCENTRES",
+      "ca": 267.7,
+      "part_ca": 10.7,
+      "payee": 267.6,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Ndobo",
+      "famille": "TOURTEAUX",
+      "ca": 235.8,
+      "part_ca": 9.4,
+      "payee": 224.1,
+      "non_encaisse": 11.6,
+      "taux": 95.1
+    },
+    {
+      "agence": "Messassi",
+      "famille": "TOURTEAUX",
+      "ca": 107.0,
+      "part_ca": 4.3,
+      "payee": 106.8,
+      "non_encaisse": 0.3,
+      "taux": 99.7
+    },
+    {
+      "agence": "Ndobo",
+      "famille": "CONCENTRES",
+      "ca": 103.5,
+      "part_ca": 4.1,
+      "payee": 103.5,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Djeleng",
+      "famille": "CONCENTRES",
+      "ca": 98.2,
+      "part_ca": 3.9,
+      "payee": 98.2,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Messassi",
+      "famille": "CONCENTRES",
+      "ca": 93.2,
+      "part_ca": 3.7,
+      "payee": 93.2,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Djeleng",
+      "famille": "TOURTEAUX",
+      "ca": 89.0,
+      "part_ca": 3.6,
+      "payee": 89.0,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Ahala",
+      "famille": "TOURTEAUX",
+      "ca": 78.4,
+      "part_ca": 3.1,
+      "payee": 78.4,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Ahala",
+      "famille": "CONCENTRES",
+      "ca": 76.7,
+      "part_ca": 3.1,
+      "payee": 76.7,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Nkongsamba",
+      "famille": "TOURTEAUX",
+      "ca": 70.9,
+      "part_ca": 2.8,
+      "payee": 70.9,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Village",
+      "famille": "CONCENTRES",
+      "ca": 62.0,
+      "part_ca": 2.5,
+      "payee": 62.0,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Mbouda",
+      "famille": "TOURTEAUX",
+      "ca": 60.4,
+      "part_ca": 2.4,
+      "payee": 60.4,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Bertoua",
+      "famille": "CONCENTRES",
+      "ca": 58.8,
+      "part_ca": 2.4,
+      "payee": 58.8,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Mbouda",
+      "famille": "CONCENTRES",
+      "ca": 56.7,
+      "part_ca": 2.3,
+      "payee": 56.7,
+      "non_encaisse": 0.1,
+      "taux": 99.9
+    },
+    {
+      "agence": "Village",
+      "famille": "TOURTEAUX",
+      "ca": 55.9,
+      "part_ca": 2.2,
+      "payee": 55.9,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Pk11",
+      "famille": "TOURTEAUX",
+      "ca": 55.0,
+      "part_ca": 2.2,
+      "payee": 55.0,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Buea",
+      "famille": "TOURTEAUX",
+      "ca": 51.2,
+      "part_ca": 2.1,
+      "payee": 51.2,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Bertoua",
+      "famille": "TOURTEAUX",
+      "ca": 47.3,
+      "part_ca": 1.9,
+      "payee": 47.3,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Nkongsamba",
+      "famille": "CONCENTRES",
+      "ca": 44.2,
+      "part_ca": 1.8,
+      "payee": 44.2,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Nkolbisson",
+      "famille": "CONCENTRES",
+      "ca": 38.0,
+      "part_ca": 1.5,
+      "payee": 38.0,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Nkoabang",
+      "famille": "CONCENTRES",
+      "ca": 36.7,
+      "part_ca": 1.5,
+      "payee": 36.7,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Pk11",
+      "famille": "CONCENTRES",
+      "ca": 36.3,
+      "part_ca": 1.5,
+      "payee": 36.3,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Nkoabang",
+      "famille": "TOURTEAUX",
+      "ca": 35.5,
+      "part_ca": 1.4,
+      "payee": 35.5,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Ngaoundere",
+      "famille": "CONCENTRES",
+      "ca": 34.8,
+      "part_ca": 1.4,
+      "payee": 34.8,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Ngaoundere",
+      "famille": "TOURTEAUX",
+      "ca": 34.3,
+      "part_ca": 1.4,
+      "payee": 34.3,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Buea",
+      "famille": "CONCENTRES",
+      "ca": 27.7,
+      "part_ca": 1.1,
+      "payee": 27.7,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    },
+    {
+      "agence": "Nkolbisson",
+      "famille": "TOURTEAUX",
+      "ca": 26.9,
+      "part_ca": 1.1,
+      "payee": 26.9,
+      "non_encaisse": 0.0,
+      "taux": 100.0
+    }
+  ]
+}

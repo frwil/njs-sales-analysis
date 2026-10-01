@@ -1,32 +1,35 @@
 """
 Calcul de la performance mensuelle — LIVRABLE MENSUEL (réutilisable chaque mois)
-Mois courant : Septembre 2026 (01-30/09/2026, mois complet)
+Mois paramétrable en argument : python compute_monthly_performance.py <n° du mois>
+(défaut : mois 9 = Septembre 2026, mois complet)
 
 Calcule :
  1. Performance globale par famille vs objectifs du mois
  2. Performance par agence × famille vs objectifs du mois
  3. Performance par région × famille vs objectifs du mois
- 4. Tendance mensuelle par famille vs objectifs (Jan → mois courant, YTD)
+ 4. Tendance mensuelle par famille vs objectifs (Jan → mois courant, YTD arrêté au mois du fichier)
  5. Tendance mensuelle par agence × (Soja, Concentrés) YTD vs objectifs
  6. Tendance mensuelle par région × (Soja, Concentrés) YTD vs objectifs
-
-Objectifs :
- - Mois 1-6  : objectifs Takou (objectives_comparison.json)
- - Mois 7-12 : objectifs S2 recalibrés (s2_recaled_objectives.json)
-
-Actuals :
- - Jan-Août : scripts/dataset_2023_2026.csv (Livrée, 14 agences)
- - Mois courant : extraction ERP upload/ (Livrée + Validée + En cours —
-   ces commandes restent rattachées au mois dans la configuration ERP)
-
-Nouveautés septembre 2026 :
  7. Analyse comparée volumes vs CA : le CA suit-il les volumes ?
  8. Encaissements (StatutFacture) : Payée / Créance / Impayée par agence
  9. Mix-produit × encaissements : combos agence × produit gagnants
 
-Usage mensuel : mettre à jour MONTH_NUM, MONTH_LABEL, ERP_FILE puis relancer.
+Objectifs :
+ - Mois 1-6  : objectifs S1 (objectives_comparison.json)
+ - Mois 7-12 : objectifs S2 recalibrés (s2_recaled_objectives.json)
+
+Actuals :
+ - Mois antérieurs : scripts/dataset_2023_2026.csv (Livrée, 14 agences)
+ - Mois courant : extraction ERP du mois (Livrée + Validée + En cours —
+   ces commandes restent rattachées au mois dans la configuration ERP) :
+   Jan-Juin = fichier S1 (6 feuilles), Juil = (9), Août = (27), Sept = (51)
+
+Usage mensuel : passer le n° du mois en argument ; ajouter le mois suivant
+dans ERP_SOURCES quand une nouvelle extraction est disponible.
 """
 import os
+import sys
+import calendar
 import json
 import warnings
 import pandas as pd
@@ -42,11 +45,31 @@ from collections import defaultdict
 warnings.filterwarnings('ignore')
 
 # ============================================================
-# PARAMÈTRES DU MOIS (à mettre à jour chaque mois)
+# PARAMÈTRES DU MOIS (usage : python compute_monthly_performance.py <n° du mois>)
 # ============================================================
-MONTH_NUM = 9
-MONTH_LABEL = "Septembre 2026"
-ERP_FILE = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx"
+MONTH_NUM = int(sys.argv[1]) if len(sys.argv) > 1 else 9
+MOIS_FR = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+           'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+MOIS_FR_COURT = ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin',
+                 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc']
+MONTH_LABEL = f"{MOIS_FR[MONTH_NUM - 1]} 2026"
+
+# Source ERP du mois : (fichier, feuille, (col État, col StatutFacture, col agence))
+# Jan-Juin : extraction S1 (fichier à 6 feuilles mensuelles, 2 colonnes de plus) ;
+# Juillet/Août/Septembre : extractions du mois (même gabarit 16 colonnes).
+ERP_SOURCES = {
+    1: ("ventes janv a juin 2026.xlsx", "Sheet 1", (15, 16, 17)),
+    2: ("ventes janv a juin 2026.xlsx", "Feuil1", (15, 16, 17)),
+    3: ("ventes janv a juin 2026.xlsx", "Feuil2", (15, 16, 17)),
+    4: ("ventes janv a juin 2026.xlsx", "Feuil3", (15, 16, 17)),
+    5: ("ventes janv a juin 2026.xlsx", "Feuil4", (15, 16, 17)),
+    6: ("ventes janv a juin 2026.xlsx", "Feuil5", (15, 16, 17)),
+    7: ("NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx", "Sheet 1", (13, 14, 15)),
+    8: ("NJS GROUP ERP - Lignes de commandes + multicompany (27).xlsx", "Sheet 1", (13, 14, 15)),
+    9: ("NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx", "Sheet 1", (13, 14, 15)),
+}
+ERP_FILE, ERP_SHEET, (IDX_ETAT, IDX_STATUT, IDX_AGENCE) = ERP_SOURCES.get(MONTH_NUM, ERP_SOURCES[9])
+ERP_FILE = f"/home/z/my-project/upload/{ERP_FILE}"
 OUT_JSON = f"/home/z/my-project/scripts/perf_mensuelle_2026_{MONTH_NUM:02d}.json"
 CHARTS_DIR = "/home/z/my-project/work/charts"
 
@@ -93,7 +116,7 @@ AGENCE_MAP = {
     'AGENCE DE BAMENDA - DEPOT MBOUDA': ('Mbouda', 'Ouest'), 'AGENCE BUEA': ('Buea', 'Littoral'),
 }
 
-# Familles objectifs (Takou/S2) → familles actuals
+# Familles objectifs (S1/S2) → familles actuals
 FAM_OBJ_TO_ACT = {
     'ALIMENT COMPLET': 'ALIMENT_COMPLET',
     'COMPLEMENT ALIMENTAIRE': 'COMPLEMENT_ALIMENTAIRE',
@@ -111,15 +134,18 @@ print("=" * 70)
 print(f"PERFORMANCE MENSUELLE — {MONTH_LABEL} (mois {MONTH_NUM})")
 print("=" * 70)
 
-print("\n1. Chargement actuals Jan-Août 2026 (dataset)...")
+if MONTH_NUM > 1:
+    print(f"\n1. Chargement actuals Jan-{MOIS_FR_COURT[MONTH_NUM - 2]} 2026 (dataset)...")
+else:
+    print("\n1. Premier mois de l'année — aucun mois antérieur (YTD limité au mois du fichier).")
 hist = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv",
                    parse_dates=['date'], low_memory=False)
 hist = hist[(hist['date'].dt.year == 2026) & (hist['date'].dt.month < MONTH_NUM)].copy()
-print(f"   {len(hist):,} records Jan-{MONTH_NUM - 1} 2026")
+print(f"   {len(hist):,} records Jan-{MONTH_NUM - 1} 2026" if MONTH_NUM > 1 else "   (YTD = mois courant uniquement)")
 
 print(f"\n2. Chargement {MONTH_LABEL} Livrée + Validée + En cours (ERP)...")
 wb = openpyxl.load_workbook(ERP_FILE, read_only=True, data_only=True)
-ws = wb['Sheet 1']
+ws = wb[ERP_SHEET]
 sep_records = []
 etat_counts = {'Livrée': 0, 'Validée': 0, 'En cours': 0}
 for r in ws.iter_rows(min_row=3, values_only=True):
@@ -129,7 +155,7 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     family = get_family(ref)
     if family is None:
         continue
-    etat = str(r[13]).strip() if r[13] else ''
+    etat = str(r[IDX_ETAT]).strip() if len(r) > IDX_ETAT and r[IDX_ETAT] else ''
     # Actuals du mois = Livrée + Validée + En cours (restent rattachées au mois dans l'ERP)
     if etat not in ('Livrée', 'Validée', 'En cours'):
         continue
@@ -137,7 +163,7 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     date_str = str(r[6])[:10] if r[6] else ''
     if f'/{MONTH_NUM:02d}/2026' not in date_str:
         continue
-    agence_raw = r[15] if r[15] else ''
+    agence_raw = r[IDX_AGENCE] if len(r) > IDX_AGENCE and r[IDX_AGENCE] else ''
     if agence_raw not in AGENCE_MAP:
         continue
     agence, region = AGENCE_MAP[agence_raw]
@@ -151,7 +177,7 @@ for r in ws.iter_rows(min_row=3, values_only=True):
         'sacs_50': kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else 0,
         'montant_ttc': r[9] or 0,
         'etat': etat,
-        'statut_facture': str(r[14]).strip() if r[14] else '(vide)',
+        'statut_facture': str(r[IDX_STATUT]).strip() if len(r) > IDX_STATUT and r[IDX_STATUT] else '(vide)',
     })
 sep_df = pd.DataFrame(sep_records)
 print(f"   {len(sep_df):,} lignes {MONTH_LABEL} (Livrée {etat_counts['Livrée']}, Validée {etat_counts['Validée']}, "
@@ -164,9 +190,9 @@ act_df = pd.concat([hist, sep_df[cols]], ignore_index=True)
 sep_full = sep_df.copy()
 
 # ============================================================
-# 3. Objectifs : Takou (mois 1-6) + S2 recalibrés (mois 7-12)
+# 3. Objectifs : S1 (mois 1-6) + S2 recalibrés (mois 7-12)
 # ============================================================
-print("\n3. Chargement objectifs (Takou mois 1-6 + S2 recalibrés mois 7-12)...")
+print("\n3. Chargement objectifs (S1 mois 1-6 + S2 recalibrés mois 7-12)...")
 obj_takou = json.load(open('/home/z/my-project/scripts/objectives_comparison.json', encoding='utf-8'))
 obj_s2 = json.load(open('/home/z/my-project/scripts/s2_recaled_objectives.json', encoding='utf-8'))
 TAK_G = obj_takou['global_objectives']
@@ -219,7 +245,7 @@ for cat, p in prix_s1.items():
     if p:
         print(f"   Prix moyen S1 {cat}: {p:,.0f} F/t")
 
-# CA objectifs Takou mensuels fournis (12 mois)
+# CA objectifs S1 mensuels fournis (12 mois)
 ca_takou = json.load(open('/home/z/my-project/scripts/ca_obj_real.json', encoding='utf-8'))['ca_obj_monthly']
 
 def obj_name(fam):
@@ -227,7 +253,7 @@ def obj_name(fam):
     return inv.get(fam, fam)
 
 def ca_obj(fam, m):
-    """Objectif CA du mois m (FCFA) : fourni Takou (m ≤ 6), dérivé prix S1 × volume S2 (m ≥ 7)."""
+    """Objectif CA du mois m (FCFA) : fourni S1 (m ≤ 6), dérivé prix S1 × volume S2 (m ≥ 7)."""
     on = obj_name(fam)
     if m <= 6 or not prix_s1.get(on):
         return float(ca_takou.get(on, [0] * 12)[m - 1])
@@ -365,7 +391,7 @@ for fam in MAIN_FAMILIES:
     ca_ytd_f = float(act_df[act_df['family'] == fam]['montant_ttc'].sum())
     prix_ref[fam] = round(ca_ytd_f / t_ytd_f, 0) if t_ytd_f > 0 else None  # FCFA/t
 
-# CA réalisé vs CA attendu — attendu = objectif CA (Takou fourni m ≤ 6, dérivé prix S1 × volume S2 m ≥ 7)
+# CA réalisé vs CA attendu — attendu = objectif CA (S1 fourni m ≤ 6, dérivé prix S1 × volume S2 m ≥ 7)
 ca_sept = {}
 for fam in MAIN_FAMILIES:
     sub = sep_full[sep_full['family'] == fam]
@@ -486,7 +512,7 @@ combos = sorted(combo_rows, key=lambda r: r['ca'], reverse=True)
 out = {
     'meta': {
         'month_num': MONTH_NUM, 'label': MONTH_LABEL,
-        'update_date': '30/09/2026',
+        'update_date': f"{calendar.monthrange(2026, MONTH_NUM)[1]:02d}/{MONTH_NUM:02d}/2026",
         'jours_ouvres': 26 if MONTH_NUM == 9 else None,
         'source_erp': os.path.basename(ERP_FILE),
     },
@@ -765,7 +791,7 @@ for fam, col, lab in [('TOURTEAUX', NAVY, 'Soja'), ('CONCENTRES', GOLD, 'Concent
                     xytext=(4, 4), textcoords='offset points', color=col)
 ax.axhline(100, color=GREEN, linestyle='--', linewidth=0.8, alpha=0.7)
 ax.text(ax.get_xlim()[1] * 0.05, 100.15, 'Encaissement total (100%)', color=GREEN, fontsize=8)
-ax.set_xlabel('CA Septembre (M FCFA)')
+ax.set_xlabel(f'CA {MOIS_FR[MONTH_NUM - 1]} (M FCFA)')
 ax.set_ylabel("Taux d'encaissement (%)")
 ax.set_title(f'Combos agence × produit : CA et encaissement — {MONTH_LABEL}', fontsize=11, color=NAVY, fontweight='bold')
 ax.legend(fontsize=8, loc='lower right')
