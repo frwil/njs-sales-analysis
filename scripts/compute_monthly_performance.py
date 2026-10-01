@@ -169,10 +169,9 @@ def global_obj(fam, m):
     return float(src[f].get(str(m), 0))
 
 def agency_obj(agence, fam, m):
-    if m <= 6:
-        src, ag = TAK_A, agence
-    else:
-        src, ag = S2_A, {'PK11': 'Pk11'}.get(agence, agence)
+    # Les JSON d'objectifs utilisent la casse 'PK11' (majuscules)
+    ag = {'Pk11': 'PK11'}.get(agence, agence)
+    src = TAK_A if m <= 6 else S2_A
     if ag not in src:
         return 0.0
     f = next((k for k in src[ag] if fam_obj_name(k) == fam), None)
