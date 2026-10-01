@@ -59,6 +59,9 @@ def style_data_row(ws, row, n_cols, color=None):
 
 # === Create workbook ===
 wb = openpyxl.Workbook()
+wb.properties.creator = 'William Francis Fohom, Data analyst'
+wb.properties.lastModifiedBy = 'William Francis Fohom, Data analyst'
+wb.properties.title = 'BELGOCAM SA - Forecast Q4 2026 (S3)'
 wb.remove(wb.active)
 
 # === Sheet 1: Synthèse ===
@@ -68,6 +71,8 @@ ws['A1'] = 'BELGOCAM SA - Forecast Q4 2026 (Septembre - Décembre)'
 ws['A1'].font = Font(bold=True, size=16, color='1F4E78')
 ws['A2'] = 'S3 | Données 2023-2026 (44 mois) | 8 familles | 25 agences | Prix soja 17 678 FCFA/sac (moy. pondérée YTD Jan-Sep)'
 ws['A2'].font = Font(italic=True, size=10, color='595959')
+ws['A3'] = 'Auteur : William Francis Fohom, Data analyst'
+ws['A3'].font = Font(italic=True, size=10, color='595959')
 
 ws['A4'] = 'SYNTHÈSE GLOBALE Q4 2026'
 ws['A4'].font = SUBHEAD_FONT

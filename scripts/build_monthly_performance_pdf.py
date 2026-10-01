@@ -104,6 +104,7 @@ class NumberedCanvas(canvas.Canvas):
         self.setFont('DejaVuSans', 8)
         self.setFillColor(GRAY)
         self.drawString(2*cm, 1.0*cm, "BELGOCAM SA — Performance mensuelle — Confidentiel")
+        self.drawCentredString(A4[0]/2, 1.0*cm, "William Francis Fohom, Data analyst")
         self.drawRightString(A4[0]-2*cm, 1.0*cm, f"Page {self._pageNumber} / {num_pages}")
         self.restoreState()
 
@@ -184,7 +185,8 @@ story = []
 # --- COVER ---
 story.append(Spacer(1, 3.5*cm))
 story.append(Paragraph("BELGOCAM SA", TITLE))
-story.append(Paragraph("NJS GROUP — Direction Générale", ParagraphStyle('Sub', parent=BODY, fontSize=12, textColor=GRAY, spaceAfter=30)))
+story.append(Paragraph("NJS GROUP — Direction Générale", ParagraphStyle('Sub', parent=BODY, fontSize=12, textColor=GRAY, spaceAfter=6)))
+story.append(Paragraph("Auteur : William Francis Fohom, Data analyst", ParagraphStyle('Auth', parent=BODY, fontSize=11, textColor=NAVY, spaceAfter=24)))
 story.append(HRFlowable(width='100%', thickness=2, color=GOLD, spaceAfter=20))
 story.append(Paragraph("Rapport de Performance Mensuelle", H1))
 story.append(Paragraph(f"{MONTH_LABEL} — données complètes du mois (ERP — Livrée + Validée + En cours)", ParagraphStyle('S2', parent=BODY, fontSize=13, textColor=NAVY, spaceAfter=24)))
@@ -611,6 +613,7 @@ for m in methodo:
 doc = SimpleDocTemplate(OUT_PDF, pagesize=A4,
                         leftMargin=2*cm, rightMargin=2*cm, topMargin=2.2*cm, bottomMargin=2*cm,
                         title=f"Performance mensuelle — {MONTH_LABEL}",
-                        author="BELGOCAM SA — NJS GROUP")
+                        author="William Francis Fohom, Data analyst",
+                        subject=f"BELGOCAM SA — NJS GROUP — Performance mensuelle {MONTH_LABEL}")
 doc.build(story, canvasmaker=NumberedCanvas)
 print(f"PDF généré: {OUT_PDF} ({os.path.getsize(OUT_PDF)//1024} KB)")

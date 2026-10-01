@@ -500,6 +500,8 @@ def make_table(data, col_widths=None, font_size=9, header_color=NAVY, highlight_
     t.setStyle(TableStyle(style_list))
     return t
 
+AUTHOR = "William Francis Fohom, Data analyst"
+
 def cover_page(title, subtitle, doc_type, date_str="3 septembre 2026"):
     elements = []
     elements.append(Spacer(1, 4*cm))
@@ -512,8 +514,7 @@ def cover_page(title, subtitle, doc_type, date_str="3 septembre 2026"):
     elements.append(Spacer(1, 2*cm))
     elements.append(HRFlowable(width="40%", thickness=1, color=GRAY, spaceBefore=10, spaceAfter=10, hAlign='CENTER'))
     elements.append(Paragraph(f"<b>{doc_type}</b>", ParagraphStyle('CI', parent=BODY, fontSize=11, alignment=TA_CENTER, textColor=GRAY)))
-    elements.append(Paragraph("William Francis Fohom", ParagraphStyle('CI2', parent=BODY, fontSize=11, alignment=TA_CENTER, textColor=GRAY)))
-    elements.append(Paragraph("Data Analyst | Administrateur National de Ventes", ParagraphStyle('CI3', parent=BODY, fontSize=11, alignment=TA_CENTER, textColor=GRAY)))
+    elements.append(Paragraph(AUTHOR, ParagraphStyle('CI2', parent=BODY, fontSize=11, alignment=TA_CENTER, textColor=GRAY)))
     elements.append(Spacer(1, 0.5*cm))
     elements.append(Paragraph(date_str, ParagraphStyle('CI4', parent=BODY, fontSize=11, alignment=TA_CENTER, textColor=GRAY)))
     elements.append(PageBreak())
@@ -529,11 +530,12 @@ os.makedirs(Q4_DIR, exist_ok=True)
 # === Q4 2026: 1. RÉSUMÉ EXÉCUTIF ===
 print("Generating Q4 2026: 1. Résumé exécutif ...")
 exec_path = f"{Q4_DIR}/01_resume_executif.pdf"
-doc = SimpleDocTemplate(exec_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
+doc = SimpleDocTemplate(exec_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm, author=AUTHOR)
 story = []
 
 story.append(Paragraph("RÉSUMÉ EXÉCUTIF", H1))
 story.append(Paragraph("Forecast Q4 2026 - Volumes et Valeurs", H2))
+story.append(Paragraph(f"Auteur : {AUTHOR}", ParagraphStyle('AU', parent=BODY, fontSize=10, textColor=GRAY, spaceAfter=6)))
 story.append(HRFlowable(width="100%", thickness=1, color=NAVY))
 story.append(Spacer(1, 0.3*cm))
 
@@ -654,7 +656,7 @@ print(f"✓ Q4 2026 Résumé exécutif: {os.path.getsize(exec_path)/1024:.0f} KB
 # === Q4 2026: 2. PROPOSITION DE PROJET ===
 print("Generating Q4 2026: 2. Proposition ...")
 prop_path = f"{Q4_DIR}/02_proposition_projet.pdf"
-doc = SimpleDocTemplate(prop_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
+doc = SimpleDocTemplate(prop_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm, author=AUTHOR)
 story = []
 story.extend(cover_page("Proposition de Projet", "Forecast Q4 2026", "PROPOSITION DE PROJET"))
 
@@ -762,7 +764,7 @@ print(f"✓ Q4 2026 Proposition: {os.path.getsize(prop_path)/1024:.0f} KB")
 # === Q4 2026: 3. MATRICE RACI ===
 print("Generating Q4 2026: 3. Matrice RACI ...")
 raci_path = f"{Q4_DIR}/03_matrice_raci.pdf"
-doc = SimpleDocTemplate(raci_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=1.5*cm, rightMargin=1.5*cm)
+doc = SimpleDocTemplate(raci_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=1.5*cm, rightMargin=1.5*cm, author=AUTHOR)
 story = []
 story.extend(cover_page("Matrice RACI", "Forecast Q4 2026", "MATRICE RACI"))
 
@@ -831,7 +833,7 @@ print(f"✓ Q4 2026 Matrice RACI: {os.path.getsize(raci_path)/1024:.0f} KB")
 # === Q4 2026: 4. DOCUMENT STRATÉGIQUE PACE ===
 print("Generating Q4 2026: 4. Document stratégique PACE ...")
 strat_path = f"{Q4_DIR}/04_document_strategique_pace.pdf"
-doc = SimpleDocTemplate(strat_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
+doc = SimpleDocTemplate(strat_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm, author=AUTHOR)
 story = []
 story.extend(cover_page("Document Stratégique PACE", "Forecast Q4 2026 (8 familles, données 2023-2026)", "STRATÉGIE PACE"))
 
@@ -931,7 +933,7 @@ print(f"✓ Q4 2026 Document stratégique: {os.path.getsize(strat_path)/1024:.0f
 # === Q4 2026: 5. GUIDE MÉTHODOLOGIQUE ===
 print("Generating Q4 2026: 5. Guide méthodologique ...")
 guide_path = f"{Q4_DIR}/05_guide_methodologique.pdf"
-doc = SimpleDocTemplate(guide_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
+doc = SimpleDocTemplate(guide_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm, author=AUTHOR)
 story = []
 story.extend(cover_page("Guide Méthodologique", "Forecast Q4 2026 (Prophet + COMPLEMENT_ALIMENTAIRE V300 1L)", "GUIDE MÉTHODOLOGIQUE"))
 
@@ -1127,11 +1129,12 @@ os.makedirs(F2027_DIR, exist_ok=True)
 # === 2027: 1. RÉSUMÉ EXÉCUTIF ===
 print("\nGenerating 2027: 1. Résumé exécutif ...")
 exec_path = f"{F2027_DIR}/01_resume_executif.pdf"
-doc = SimpleDocTemplate(exec_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
+doc = SimpleDocTemplate(exec_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm, author=AUTHOR)
 story = []
 
 story.append(Paragraph("RÉSUMÉ EXÉCUTIF", H1))
 story.append(Paragraph("Forecast 2027 - Volumes et Valeurs (12 mois)", H2))
+story.append(Paragraph(f"Auteur : {AUTHOR}", ParagraphStyle('AU', parent=BODY, fontSize=10, textColor=GRAY, spaceAfter=6)))
 story.append(HRFlowable(width="100%", thickness=1, color=NAVY))
 story.append(Spacer(1, 0.3*cm))
 
@@ -1321,7 +1324,7 @@ print(f"✓ 2027 Résumé exécutif: {os.path.getsize(exec_path)/1024:.0f} KB")
 # 2. PROPOSITION
 print("Generating 2027: 2. Proposition ...")
 prop_path = f"{F2027_DIR}/02_proposition_projet.pdf"
-doc = SimpleDocTemplate(prop_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
+doc = SimpleDocTemplate(prop_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm, author=AUTHOR)
 story = []
 story.extend(cover_page("Proposition de Projet", "Forecast 2027", "PROPOSITION DE PROJET"))
 
@@ -1423,7 +1426,7 @@ print(f"✓ 2027 Proposition: {os.path.getsize(prop_path)/1024:.0f} KB")
 # 3. MATRICE RACI 2027
 print("Generating 2027: 3. Matrice RACI ...")
 raci_path = f"{F2027_DIR}/03_matrice_raci.pdf"
-doc = SimpleDocTemplate(raci_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=1.5*cm, rightMargin=1.5*cm)
+doc = SimpleDocTemplate(raci_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=1.5*cm, rightMargin=1.5*cm, author=AUTHOR)
 story = []
 story.extend(cover_page("Matrice RACI", "Forecast 2027", "MATRICE RACI"))
 
@@ -1492,7 +1495,7 @@ print(f"✓ 2027 Matrice RACI: {os.path.getsize(raci_path)/1024:.0f} KB")
 # 4. DOCUMENT STRATÉGIQUE PACE 2027
 print("Generating 2027: 4. Document stratégique PACE ...")
 strat_path = f"{F2027_DIR}/04_document_strategique_pace.pdf"
-doc = SimpleDocTemplate(strat_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
+doc = SimpleDocTemplate(strat_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm, author=AUTHOR)
 story = []
 story.extend(cover_page("Document Stratégique PACE", "Forecast 2027 (8 familles, données 2023-2026)", "STRATÉGIE PACE"))
 
@@ -1598,7 +1601,7 @@ print(f"✓ 2027 Document stratégique: {os.path.getsize(strat_path)/1024:.0f} K
 # 5. GUIDE MÉTHODOLOGIQUE 2027
 print("Generating 2027: 5. Guide méthodologique ...")
 guide_path = f"{F2027_DIR}/05_guide_methodologique.pdf"
-doc = SimpleDocTemplate(guide_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
+doc = SimpleDocTemplate(guide_path, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm, author=AUTHOR)
 story = []
 story.extend(cover_page("Guide Méthodologique", "Forecast 2027 (Prophet + COMPLEMENT_ALIMENTAIRE V300 1L)", "GUIDE MÉTHODOLOGIQUE"))
 

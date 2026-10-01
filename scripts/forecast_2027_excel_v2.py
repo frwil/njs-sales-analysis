@@ -62,6 +62,9 @@ def style_data_row(ws, row, n_cols, color=None):
         if color: cell.fill = PatternFill('solid', fgColor=color)
 
 wb = openpyxl.Workbook()
+wb.properties.creator = 'William Francis Fohom, Data analyst'
+wb.properties.lastModifiedBy = 'William Francis Fohom, Data analyst'
+wb.properties.title = 'BELGOCAM SA - Forecast 2027'
 wb.remove(wb.active)
 
 # === Sheet 0: Réalisation 2026 (Jan-Août réel + Q4 forecast) ===
@@ -70,6 +73,8 @@ ws['A1'] = 'BELGOCAM SA - Réalisation 2026 complète (Jan-Août réel + Q4 fore
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 ws['A2'] = 'YTD réel (Jan-Août 2026 ERP) + Forecast Q4 2026 (Sept-Déc, scénario S3)'
 ws['A2'].font = Font(italic=True, size=10, color='595959')
+ws['A3'] = 'Auteur : William Francis Fohom, Data analyst'
+ws['A3'].font = Font(italic=True, size=10, color='595959')
 
 # Préparation des données
 hist_2026_ytd = hist_df[(hist_df['date'].dt.year == 2026) & (hist_df['date'].dt.month <= 8)]
@@ -240,6 +245,8 @@ ws['A1'] = 'BELGOCAM SA - Forecast 2027 (Janvier - Décembre)'
 ws['A1'].font = Font(bold=True, size=16, color='1F4E78')
 ws['A2'] = 'Scénario S3 | Désaisonnalisation effet soja | En cours+Validées inclus | Prix soja 16 550 FCFA/sac (médiane mensuelle YTD Jan-Sep) | Données 2023-2026'
 ws['A2'].font = Font(italic=True, size=10, color='595959')
+ws['A3'] = 'Auteur : William Francis Fohom, Data analyst'
+ws['A3'].font = Font(italic=True, size=10, color='595959')
 
 total_t = fcst['tonnes'].sum()
 total_ca = fcst['ca_m_fcfa'].sum()
