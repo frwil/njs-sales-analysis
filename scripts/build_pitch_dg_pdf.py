@@ -1,8 +1,7 @@
 """Generate DG pitch PDF — 1-page executive summary for the Director General.
 Includes nationwide volumes vs objectives, regional breakdown, key insights, recommendations and actions.
 
-Based on sept_pitch_data.json and sept_mtd_01.json (computed September 5, 2026).
-Highlights: Soja price increased to 27,000 FCFA on 04/09/2026.
+Based on sept_pitch_data_10.json and sept_mtd_10.json (mois complet 01-30/09/2026).
 """
 import os
 import json
@@ -13,8 +12,9 @@ from reportlab.lib.units import cm
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, KeepTogether
 )
 
 # === Fonts ===
@@ -42,6 +42,49 @@ BULLET = ParagraphStyle('Bullet', parent=BODY, leftIndent=15, bulletIndent=5, sp
 CELL = ParagraphStyle('Cell', parent=BODY, fontName='DejaVuSans', fontSize=9, leading=11, alignment=TA_LEFT, spaceAfter=0)
 SMALL = ParagraphStyle('Small', parent=BODY, fontSize=7.5, textColor=GRAY, leading=10)
 
+# Footer with page numbers ("Page X / Y") on every page
+class NumberedCanvas(canvas.Canvas):
+    def __init__(self, *args, **kwargs):
+        canvas.Canvas.__init__(self, *args, **kwargs)
+        self._saved_page_states = []
+
+    def showPage(self):
+        self._saved_page_states.append(dict(self.__dict__))
+        self._startPage()
+
+    def save(self):
+        num_pages = len(self._saved_page_states)
+        for state in self._saved_page_states:
+            self.__dict__.update(state)
+            self.draw_page_header()
+            self.draw_page_footer(num_pages)
+            canvas.Canvas.showPage(self)
+        canvas.Canvas.save(self)
+
+    def draw_page_header(self):
+        self.saveState()
+        self.setFont('DejaVuSans-Bold', 7.5)
+        self.setFillColor(NAVY)
+        self.drawString(1.5*cm, A4[1]-0.75*cm, "BELGOCAM SA — NJS GROUP")
+        self.setFont('DejaVuSans', 7.5)
+        self.setFillColor(GRAY)
+        self.drawRightString(A4[0]-1.5*cm, A4[1]-0.75*cm, f"Pitch DG — Données au {MTD['update_date']}")
+        self.setStrokeColor(GOLD)
+        self.setLineWidth(0.8)
+        self.line(1.5*cm, A4[1]-1.0*cm, A4[0]-1.5*cm, A4[1]-1.0*cm)
+        self.restoreState()
+
+    def draw_page_footer(self, num_pages):
+        self.saveState()
+        self.setStrokeColor(colors.HexColor('#BFBFBF'))
+        self.setLineWidth(0.5)
+        self.line(1.5*cm, 1.15*cm, A4[0]-1.5*cm, 1.15*cm)
+        self.setFont('DejaVuSans', 7.5)
+        self.setFillColor(GRAY)
+        self.drawString(1.5*cm, 0.75*cm, "BELGOCAM SA — Pitch Septembre 2026 — Confidentiel")
+        self.drawRightString(A4[0]-1.5*cm, 0.75*cm, f"Page {self._pageNumber} / {num_pages}")
+        self.restoreState()
+
 # Cell styles for tables (wrapping)
 CELL_HEADER_P = ParagraphStyle('CellHeaderP', fontName='DejaVuSans-Bold', fontSize=8, leading=10, alignment=TA_CENTER, textColor=colors.white)
 CELL_BODY_P = ParagraphStyle('CellBodyP', fontName='DejaVuSans', fontSize=8, leading=10, alignment=TA_LEFT)
@@ -53,8 +96,8 @@ def wrap_cell_p(content, style=CELL_BODY_P):
     return Paragraph(s, style)
 
 # === Load data ===
-PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data_08.json'))
-MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_08.json'))
+PITCH = json.load(open('/home/z/my-project/scripts/sept_pitch_data_10.json'))
+MTD = json.load(open('/home/z/my-project/scripts/sept_mtd_10.json'))
 print(f"Loaded sept data (update {MTD['update_date']})")
 
 # Helpers
@@ -82,31 +125,29 @@ doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=1.2*cm, bottomMargin=1.2*cm,
 story = []
 
 # === HEADER ===
-story.append(Paragraph("BELGOCAM SA — Pitch Septembre 2026 MTD", H1))
-story.append(Paragraph(f"Performance Commerciale au {MTD['update_date']} ({MTD['days_elapsed']}j/{MTD['total_days_sep']}j = {MTD['pct_elapsed']}% du mois)", 
+story.append(Paragraph("BELGOCAM SA — Pitch Septembre 2026 (mois complet)", H1))
+story.append(Paragraph(f"Performance Commerciale définitive au {MTD['update_date']} ({MTD['days_elapsed']} jours ouvrés — mois complet)",
                        ParagraphStyle('SubH', parent=BODY, fontSize=10, textColor=GRAY, alignment=TA_CENTER, spaceAfter=4)))
-story.append(Paragraph(f"<b>⚠ Hausse prix soja le 04/09/2026 : 25 000 → 26 000 FCFA/sac (+4%)</b>",
+story.append(Paragraph(f"<b>⚠ Baisse prix soja le 22/09/2026 (mi-journée) : 26 000 → 20 000 FCFA/sac (-23%) → cadence doublée (139 → 278 t/j)</b>",
                        ParagraphStyle('Alert', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=4)))
-story.append(Paragraph(f"<b>⚠ STOCK SOUS SEUIL — Magasin central BEKOKO : 14 279 sacs (714 t). Rupture 22/09/2026 (6,8 jours de stock)</b>",
+story.append(Paragraph(f"<b>🚨 STOCK SOUS SEUIL — Magasin central BEKOKO : {fmt(MTD['stock']['brut_sacs'])} sacs ({fmt(MTD['stock']['brut_t'])} t, inventaire {MTD['stock']['date']}). Rupture estimée {MTD['stock']['rupture_date']} ({MTD['stock']['jours_stock']} jours de stock) — réappro urgent</b>",
                        ParagraphStyle('Alert2', parent=BODY, fontName='DejaVuSans-Bold', fontSize=10, textColor=RED, alignment=TA_CENTER, spaceAfter=8, backColor=colors.HexColor('#FCE4EC'), borderPadding=4)))
 story.append(HRFlowable(width="100%", thickness=1, color=NAVY))
 story.append(Spacer(1, 0.2*cm))
 
 # === 1. NATIONWIDE ===
-story.append(Paragraph("1. VUES NATIONALES — Ventes vs Objectifs", H2))
-
 n = PITCH['nationwide']
 nat_data = [
-    ["Indicateur", "Volume MTD", "Moy/j", "Projection fin Sept", "Objectif", "% Obj", "Statut"],
-    ["TOURTEAUX (Soja)", f"{fmt(n['soja_t_mtd'])} t", f"{fmt1(n['soja_moy_t_j'])} t/j", f"{fmt(n['soja_proj_t'])} t", f"{fmt(n['soja_obj_t'])} t", f"{n['soja_pct_obj']:.0f}%", status_text(n['soja_pct_obj'])],
-    ["CONCENTRÉS", f"{fmt(n['conc_t_mtd'])} t", f"{fmt1(n['conc_moy_t_j'])} t/j", f"{fmt(n['conc_proj_t'])} t", f"{fmt(n['conc_obj_t'])} t", f"{n['conc_pct_obj']:.0f}%", status_text(n['conc_pct_obj'])],
-    ["Total Soja+Conc", f"{fmt(n['soja_t_mtd']+n['conc_t_mtd'])} t", f"{fmt1(n['soja_moy_t_j']+n['conc_moy_t_j'])} t/j", f"{fmt(n['soja_proj_t']+n['conc_proj_t'])} t", f"{fmt(n['soja_obj_t']+n['conc_obj_t'])} t", f"{(n['soja_proj_t']+n['conc_proj_t'])/(n['soja_obj_t']+n['conc_obj_t'])*100:.0f}%", "—"],
-    ["Ratio bundle", f"{n['ratio_global']:.1f}:1", "—", "—", "≤ 2,5:1", "—", "✅" if n['ratio_global'] <= 2.5 else "⚠"],
-    ["Mix ventes", f"Soja {n['pct_soja_volume']:.0f}% / Conc {n['pct_conc_volume']:.0f}%", "—", "—", "—", "—", "—"],
+    ["Indicateur", "Réel Sept", "Moy/j", "Objectif", "% Obj", "Statut"],
+    ["TOURTEAUX (Soja)", f"{fmt(n['soja_t_mtd'])} t", f"{fmt1(n['soja_moy_t_j'])} t/j", f"{fmt(n['soja_obj_t'])} t", f"{n['soja_pct_obj']:.0f}%", status_text(n['soja_pct_obj'])],
+    ["CONCENTRÉS", f"{fmt(n['conc_t_mtd'])} t", f"{fmt1(n['conc_moy_t_j'])} t/j", f"{fmt(n['conc_obj_t'])} t", f"{n['conc_pct_obj']:.0f}%", status_text(n['conc_pct_obj'])],
+    ["Total Soja+Conc", f"{fmt(n['soja_t_mtd']+n['conc_t_mtd'])} t", f"{fmt1(n['soja_moy_t_j']+n['conc_moy_t_j'])} t/j", f"{fmt(n['soja_obj_t']+n['conc_obj_t'])} t", f"{(n['soja_t_mtd']+n['conc_t_mtd'])/(n['soja_obj_t']+n['conc_obj_t'])*100:.0f}%", "—"],
+    ["Ratio bundle", f"{n['ratio_global']:.1f}:1", "—", "≤ 2,5:1", "—", "✅" if n['ratio_global'] <= 2.5 else "⚠"],
+    ["Mix ventes", f"Soja {n['pct_soja_volume']:.0f}% / Conc {n['pct_conc_volume']:.0f}%", "—", "—", "—", "—"],
 ]
 
 # Build table with conditional coloring
-t = Table(nat_data, colWidths=[3.5*cm, 2.2*cm, 1.6*cm, 2.7*cm, 1.8*cm, 1.4*cm, 1.2*cm], repeatRows=1)
+t = Table(nat_data, colWidths=[3.6*cm, 2.3*cm, 1.7*cm, 2.1*cm, 1.4*cm, 1.3*cm], repeatRows=1)
 style_list = [
     ('FONT', (0,0), (-1,0), 'DejaVuSans-Bold', 9),
     ('FONT', (0,1), (-1,-1), 'DejaVuSans', 9),
@@ -124,47 +165,38 @@ style_list.append(('BACKGROUND', (0,3), (-1,3), colors.HexColor('#FFF2CC')))  # 
 style_list.append(('BACKGROUND', (0,4), (-1,4), colors.HexColor('#E2EFDA')))  # ratio in green
 style_list.append(('BACKGROUND', (0,5), (-1,5), LIGHT_GRAY))  # mix
 t.setStyle(TableStyle(style_list))
-story.append(t)
+story.append(KeepTogether([Paragraph("1. VUES NATIONALES — Ventes vs Objectifs", H2), t]))
 story.append(Spacer(1, 0.15*cm))
 
 # Key insight for nationwide
 nationwide_insight = f"""
-<b>Synthèse nationwide</b> : Sur {MTD['days_elapsed']} jours ouvrés ({MTD['pct_elapsed']}% du mois), les ventes représentent <b>{fmt(n['soja_t_mtd']+n['conc_t_mtd'])} t</b> 
-(soja + concentrés). La projection fin septembre s'établit à <b>{fmt(n['soja_proj_t']+n['conc_proj_t'])} t</b> 
-({(n['soja_proj_t']+n['conc_proj_t'])/(n['soja_obj_t']+n['conc_obj_t'])*100:.0f}% de l'objectif combiné). 
-Le <b>CONCENTRES est à {n['conc_pct_obj']:.0f}%</b> de l'objectif {'✅ sur trajectoire' if n['conc_pct_obj'] >= 80 else '⚠ sous objectif'}, mais le <b>SOJA est en retrait à {n['soja_pct_obj']:.0f}%</b> ❌ — reflet de la hausse tarifaire du 04/09 (26 000 FCFA/sac, +4% vs 25 000) 
-qui ralentit temporairement la demande. Le <b>ratio bundle {n['ratio_global']:.1f}:1</b> reste excellent (objectif ≤ 2,5:1) — 
-signe que le cross-sell se maintient malgré le choc prix.
+<b>Synthèse nationwide</b> : Septembre se clôture à <b>{fmt(n['soja_t_mtd']+n['conc_t_mtd'])} t</b>
+(soja + concentrés), soit <b>{(n['soja_t_mtd']+n['conc_t_mtd'])/(n['soja_obj_t']+n['conc_obj_t'])*100:.0f}% de l'objectif combiné</b>.
+Le <b>SOJA atteint {n['soja_pct_obj']:.0f}%</b> de l'objectif {status_text(n['soja_pct_obj'])} — la <b>baisse de prix du 22/09 (26 000 → 20 000 FCFA/sac)</b> a doublé la cadence :
+139,1 t/j (01-22/09) → <b>278,1 t/j (23-30/09, +100%)</b>, avec un pic à 471 t le 23/09. Le <b>CONCENTRES atteint {n['conc_pct_obj']:.0f}%</b> {status_text(n['conc_pct_obj'])}.
+Le <b>ratio bundle {n['ratio_global']:.1f}:1</b> est conforme à l'objectif (≤ 2,5:1) — le cross-sell s'est maintenu malgré la volatilité prix.
 """
 story.append(Paragraph(nationwide_insight, BODY))
 story.append(Spacer(1, 0.2*cm))
 
 # === 2. RÉGIONS ===
-story.append(Paragraph("2. VUES RÉGIONALES — Performances par région", H2))
-
-reg_data = [["Région", "Soja MTD (t)", "Soja proj (t)", "Soja obj (t)", "% Soja", "Conc MTD (t)", "Conc proj (t)", "Conc obj (t)", "% Conc", "Ratio"]]
+reg_data = [["Région", "Soja Sept (t)", "Soja obj (t)", "% Soja", "Conc Sept (t)", "Conc obj (t)", "% Conc", "Ratio"]]
 total_soja_mtd = 0
 total_conc_mtd = 0
-total_soja_proj = 0
-total_conc_proj = 0
 total_soja_obj = 0
 total_conc_obj = 0
 for region in ['Ouest', 'Centre', 'Littoral']:
     r = PITCH['regions'][region]
     total_soja_mtd += r['soja_t_mtd']
     total_conc_mtd += r['conc_t_mtd']
-    total_soja_proj += r['soja_proj_t']
-    total_conc_proj += r['conc_proj_t']
     total_soja_obj += r['soja_obj_t']
     total_conc_obj += r['conc_obj_t']
     reg_data.append([
         region,
         fmt(r['soja_t_mtd']),
-        fmt(r['soja_proj_t']),
         fmt(r['soja_obj_t']),
         f"{r['soja_pct_obj']:.0f}%",
         fmt(r['conc_t_mtd']),
-        fmt(r['conc_proj_t']),
         fmt(r['conc_obj_t']),
         f"{r['conc_pct_obj']:.0f}%",
         f"{r['ratio']:.1f}:1",
@@ -172,17 +204,15 @@ for region in ['Ouest', 'Centre', 'Littoral']:
 reg_data.append([
     "TOTAL",
     fmt(total_soja_mtd),
-    fmt(total_soja_proj),
     fmt(total_soja_obj),
-    f"{total_soja_proj/total_soja_obj*100:.0f}%",
+    f"{total_soja_mtd/total_soja_obj*100:.0f}%",
     fmt(total_conc_mtd),
-    fmt(total_conc_proj),
     fmt(total_conc_obj),
-    f"{total_conc_proj/total_conc_obj*100:.0f}%",
+    f"{total_conc_mtd/total_conc_obj*100:.0f}%",
     f"{total_soja_mtd/total_conc_mtd:.1f}:1" if total_conc_mtd > 0 else "—",
 ])
 
-t2 = Table(reg_data, colWidths=[1.8*cm, 1.7*cm, 1.7*cm, 1.5*cm, 1.2*cm, 1.7*cm, 1.7*cm, 1.5*cm, 1.2*cm, 1.2*cm], repeatRows=1)
+t2 = Table(reg_data, colWidths=[2.0*cm, 1.9*cm, 1.7*cm, 1.2*cm, 1.9*cm, 1.7*cm, 1.2*cm, 1.4*cm], repeatRows=1)
 style_list2 = [
     ('FONT', (0,0), (-1,0), 'DejaVuSans-Bold', 8),
     ('FONT', (0,1), (-1,-1), 'DejaVuSans', 8),
@@ -197,13 +227,13 @@ style_list2 = [
 for i, region in enumerate(['Ouest', 'Centre', 'Littoral'], 1):
     r = PITCH['regions'][region]
     # Color % cells based on performance
-    style_list2.append(('BACKGROUND', (4, i), (4, i), status_color(r['soja_pct_obj'])))
-    style_list2.append(('BACKGROUND', (8, i), (8, i), status_color(r['conc_pct_obj'])))
+    style_list2.append(('BACKGROUND', (3, i), (3, i), status_color(r['soja_pct_obj'])))
+    style_list2.append(('BACKGROUND', (6, i), (6, i), status_color(r['conc_pct_obj'])))
 # Total row
 style_list2.append(('BACKGROUND', (0, 4), (-1, 4), colors.HexColor('#FFF2CC')))
 style_list2.append(('FONT', (0, 4), (-1, 4), 'DejaVuSans-Bold', 8))
 t2.setStyle(TableStyle(style_list2))
-story.append(t2)
+story.append(KeepTogether([Paragraph("2. VUES RÉGIONALES — Performances par région", H2), t2]))
 story.append(Spacer(1, 0.15*cm))
 
 # Regional insight
@@ -211,40 +241,42 @@ ouest = PITCH['regions']['Ouest']
 centre = PITCH['regions']['Centre']
 littoral = PITCH['regions']['Littoral']
 reg_insight = f"""
-<b>Lecture régionale</b> : 
-<b>OUEST</b> est la région leader ({fmt(ouest['soja_proj_t']+ouest['conc_proj_t'])} t projetés, {ouest['conc_pct_obj']:.0f}% obj conc ✅). 
-<b>CENTRE</b> suit avec une performance CONCENTRES à {centre['conc_pct_obj']:.0f}% mais un SOJA en retrait à {centre['soja_pct_obj']:.0f}% ❌. 
-<b>LITTORAL</b> présente le plus grand écart ({littoral['conc_pct_obj']:.0f}% conc, {littoral['soja_pct_obj']:.0f}% soja ❌) — 
-NDOBO et VILLAGE particulièrement en retrait, à cibler en priorité pour les actions commerciales.
+<b>Lecture régionale</b> :
+<b>OUEST</b> est la région leader ({fmt(ouest['soja_t_mtd']+ouest['conc_t_mtd'])} t, soja {ouest['soja_pct_obj']:.0f}% {status_text(ouest['soja_pct_obj'])}, conc {ouest['conc_pct_obj']:.0f}% {status_text(ouest['conc_pct_obj'])}).
+<b>CENTRE</b> enregistre la plus forte surperformance (soja {centre['soja_pct_obj']:.0f}% {status_text(centre['soja_pct_obj'])}, conc {centre['conc_pct_obj']:.0f}% {status_text(centre['conc_pct_obj'])}).
+<b>LITTORAL</b> est la seule région sous l'objectif : soja {littoral['soja_pct_obj']:.0f}% {status_text(littoral['soja_pct_obj'])}, conc {littoral['conc_pct_obj']:.0f}% {status_text(littoral['conc_pct_obj'])}, ratio dégradé {littoral['ratio']:.1f}:1 —
+la baisse de prix du 22/09 et le maintien à 20 000 FCFA/sac sont une fenêtre pour y relancer les volumes soja (NDOBO, VILLAGE) et renforcer le cross-sell concentrés.
 """
 story.append(Paragraph(reg_insight, BODY))
 story.append(Spacer(1, 0.2*cm))
 
 # === 3. INSIGHTS CLÉS ===
-story.append(Paragraph("3. Insights clés", H2))
 
 # Get bundle stats from MTD
 b = MTD['bundle']
 s = MTD['stock']
 z = MTD['zero_achat']
+top_ag = MTD['conc_by_agence'][0]
+total_conc_mtd = sum(a['conc_t'] for a in MTD['conc_by_agence'])
+bottom_ags = [a['agence'] for a in MTD['conc_by_agence'][-2:]]
 
 insights_data = [
     [Paragraph("<b>Insight</b>", CELL), Paragraph("<b>Donnée</b>", CELL), Paragraph("<b>Implication</b>", CELL)],
-    [Paragraph("Hausse prix soja 04/09", CELL),
-     Paragraph(f"25 000 → 26 000 FCFA/sac (+4%)", CELL),
-     Paragraph("Ralentissement temporaire de la demande soja — à surveiller sur les 2 prochaines semaines", CELL)],
-    [Paragraph("Bundle ratio 1,8:1", CELL),
-     Paragraph(f"357/370 cmds soja avec conc = {b['pct_bundle']}% cross-sell", CELL),
-     Paragraph("✅ Maintien du cross-sell malgré la hausse prix — discipline commerciale préservée", CELL)],
+    [Paragraph("Baisse prix soja 22/09 (mi-journée)", CELL),
+     Paragraph("26 000 → 20 000 FCFA/sac (-23%)", CELL),
+     Paragraph("Doublement de la cadence : 139,1 t/j (01-22/09) → <b>278,1 t/j (23-30/09, +100%)</b>, pic 471 t le 23/09. Mois clôturé à 121% de l'objectif soja — arbitrage prix/volume à trancher pour octobre", CELL)],
+    [Paragraph(f"Bundle ratio {b['ratio']}:1", CELL),
+     Paragraph(f"{b['cmds_bundle']}/{b['cmds_soja']} cmds soja avec conc = {b['pct_bundle']}% cross-sell", CELL),
+     Paragraph("✅ Conforme à l'objectif 2,5:1 — le cross-sell s'est maintenu malgré la volatilité prix (hausse 04/09 puis baisse 22/09)", CELL)],
     [Paragraph("🔴 Stock soja BEKOKO", CELL),
-     Paragraph(f"<b>{fmt(s["brut_sacs"])} sacs</b> ({fmt(s["brut_t"])} t)", CELL),
-     Paragraph(f"<b>{s["jours_stock"]} jour(s) de stock central</b> — rupture <b>{s["rupture_date"]}</b>. Manque fin sept: {fmt(s["manque_fin_sept_sacs"])} sacs", CELL)],
+     Paragraph(f"<b>{fmt(s['brut_sacs'])} sacs</b> ({fmt(s['brut_t'])} t, inventaire {s['date']})", CELL),
+     Paragraph(f"<b>{s['jours_stock']} jour(s) de stock central</b> — rupture estimée <b>{s['rupture_date']}</b>. Septembre clôturé sans rupture mais couverture quasi nulle : <b>réappro urgent</b> pour début octobre", CELL)],
     [Paragraph("Top agence CONCENTRES", CELL),
-     Paragraph("FAMLA (Ouest) — 66 t MTD, proj 341 t", CELL),
-     Paragraph("22% du volume CONCENTRES national — pilier de la performance", CELL)],
+     Paragraph(f"{top_ag['agence'].upper()} — {fmt(top_ag['conc_t'])} t en septembre", CELL),
+     Paragraph(f"{top_ag['conc_t']/total_conc_mtd*100:.0f}% du volume CONCENTRES national — pilier de la performance", CELL)],
     [Paragraph("Agences en retrait", CELL),
-     Paragraph("NDOBO, VILLAGE, NKONGSAMBA (Littoral)", CELL),
-     Paragraph("Littoral sous-performe — action commerciale ciblée requise", CELL)],
+     Paragraph(", ".join(bottom_ags), CELL),
+     Paragraph("Dernières du classement CONCENTRES — activer le relais de la baisse prix soja pour doper le bundle", CELL)],
 ]
 t3 = Table(insights_data, colWidths=[4*cm, 6*cm, 7.5*cm], repeatRows=1)
 t3.setStyle(TableStyle([
@@ -257,31 +289,29 @@ t3.setStyle(TableStyle([
     ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4),
     ('LEFTPADDING', (0,0), (-1,-1), 4), ('RIGHTPADDING', (0,0), (-1,-1), 4),
 ]))
-story.append(t3)
+story.append(KeepTogether([Paragraph("3. Insights clés", H2), t3]))
 story.append(Spacer(1, 0.2*cm))
 
 # === 4. RECOMMANDATIONS ===
-story.append(Paragraph("4. Recommandations & Actions", H2))
-
 recos = [
-    ("ACTION IMMÉDIATE", "🔴 RÉAPPRO URGENT soja central",
-     f"Stock BEKOKO = {fmt(s['brut_sacs'])} sacs ({fmt(s['brut_t'])} t). <b>{s['jours_stock']} jour(s) de stock</b> — rupture {s['rupture_date']}. Besoin reste sept = {fmt(s['besoin_reste_sept_sacs'])} sacs, <b>manque {fmt(s['manque_fin_sept_sacs'])} sacs</b>.",
-     "Logistique / Direction Achats / DG", "AVANT 08/09/2026"),
-    ("ACTION COMMERCIALE", "Push CONCENTRES sur Littoral",
-     f"NDOBO + VILLAGE + NKONGSAMBA = {PITCH['regions']['Littoral']['conc_t_mtd']:.0f} t MTD vs projection {PITCH['regions']['Littoral']['conc_proj_t']:.0f} t (66% obj). Activer promotions bundle.",
-     "RA Littoral + Direction Commerciale", "Semaine 38 (08-14/09)"),
+    ("ACTION IMMÉDIATE", "🚨 RÉAPPRO URGENT soja central",
+     f"Stock BEKOKO = {fmt(s['brut_sacs'])} sacs ({fmt(s['brut_t'])} t, inventaire {s['date']}). <b>{s['jours_stock']} jour(s) de stock</b> — rupture estimée {s['rupture_date']}. À la cadence post-baisse de prix (≈ 5 560 sacs/j), le stock est consommé en {s['jours_stock']} j. <b>Réappro à positionner avant le {s['rupture_date']}</b>.",
+     "Logistique / Direction Achats / DG", "AVANT 04/10/2026"),
+    ("ACTION COMMERCIALE", "Relancer le SOJA sur Littoral",
+     f"Littoral = {PITCH['regions']['Littoral']['soja_t_mtd']:.0f} t vs objectif {PITCH['regions']['Littoral']['soja_obj_t']:.0f} t ({PITCH['regions']['Littoral']['soja_pct_obj']:.0f}% obj), conc {PITCH['regions']['Littoral']['conc_pct_obj']:.0f}% obj — seule région sous l'objectif. Capitaliser sur le prix bas (20 000 FCFA/sac) pour relancer soja (NDOBO, VILLAGE) et renforcer le cross-sell.",
+     "RA Littoral + Direction Commerciale", "Semaine 40 (28/09-04/10)"),
     ("ACTION COMMERCIALE", "Maintenir le cross-sell bundle",
-     f"Ratio 1,8:1 actuellement ✅ — poursuivre la discipline bundle (objectif ≤ 2,5:1) malgré la hausse prix. Push CONCENTRES en cross-sell sur les 13 cmds soja-only.",
+     f"Ratio {b['ratio']}:1 en septembre ✅ — poursuivre la discipline bundle (objectif ≤ 2,5:1). Push CONCENTRES en cross-sell sur les {b['cmds_soja_only']} cmds soja-only et les {b['cmds_conc_only']} cmds conc-only.",
      "Toutes agences", "Continu"),
-    ("SURVEILLANCE", "Suivi cadence SOJA post-hausse 04/09",
-     f"Soja à 59% objectif ❌ — surveiller la reprise sur 7-10 j. Si cadence < 80 t/j persistante, ajuster le forecast Q4 2026 (actuellement 20 051 t).",
-     "Data Analyst + Direction Commerciale", "Point hebdo 12/09 + 19/09"),
-    ("STRATÉGIQUE", "Ajuster prix forecast 2027",
-     f"Le prix 26 000 FCFA/sac (vs 17 170 prévu Q4 2026 et 16 800 prévu 2027) dépasse les hypothèses forecast. Réviser les hypothèses prix si la hausse se confirme durable.",
-     "Direction Financière + Data Analyst", "Décision d'ici 30/09"),
-    ("OPPORTUNITÉ", "Réactivation 1 055 clients S1 sans achat Sept",
-     f"76% des clients S1 n'ont pas encore acheté en Sept (mais mois entamé à 19%). Campagne téléphonique ciblée sur les top 200 clients S1 inactifs.",
-     "Administrateurs de Vente", "Semaine 38-39"),
+    ("SURVEILLANCE", "Suivi stock central vs cadence post-baisse",
+     f"Cadence soja doublée depuis le 22/09 (278 t/j ≈ 5 560 sacs/j) — surveiller quotidiennement le stock central (4 j de couverture) et les livraisons agences face à l'accélération des ventes.",
+     "Data Analyst + Direction Commerciale", "Point quotidien 01-10/10"),
+    ("STRATÉGIQUE", "Trancher la politique prix octobre",
+     f"Élasticité observée : -23% de prix → +100% de cadence (139 → 278 t/j), mois à 121% de l'objectif soja. Maintien à 20 000 FCFA/sac = volumes soutenus mais marge réduite ; retour à 26 000 = attentisme (cadence 139 t/j). <b>Décision DG requise</b> avant la semaine 41.",
+     "DG + Direction Financière", "Semaine 40"),
+    ("OPPORTUNITÉ", "Réactivation des clients S1 sans achat Sept",
+     f"{z['churned']} clients S1 sur {z['s1_clients']} ({z['churned']/z['s1_clients']*100:.0f}%) sans achat en septembre (mois complet). Le prix bas actuel est une fenêtre de réactivation — campagne ciblée sur les top 200 clients S1 inactifs.",
+     "Administrateurs de Vente", "Semaines 40-41"),
 ]
 
 recos_data = [[wrap_cell_p(h, CELL_HEADER_P) for h in ["Priorité", "Action", "Détail", "Responsable", "Échéance"]]]
@@ -315,21 +345,22 @@ for i, r in enumerate(recos, 1):
     style_list4.append(('BACKGROUND', (0, i), (0, i), pc))
     style_list4.append(('FONT', (0, i), (0, i), 'DejaVuSans-Bold', 7.5))
 t4.setStyle(TableStyle(style_list4))
-story.append(t4)
-story.append(Spacer(1, 0.15*cm))
 
 # === FOOTER ===
-story.append(HRFlowable(width="100%", thickness=0.5, color=GRAY))
-story.append(Spacer(1, 0.1*cm))
-story.append(Paragraph(
-    f"<b>Source</b> : {MTD['extraction_file']} (extraction au {MTD['update_date']}) — analyse au {MTD['update_date']} ({MTD['days_elapsed']}j/{MTD['total_days_sep']}j = {MTD['pct_elapsed']}% du mois). "
-    f"<b>Méthodologie</b> : Volumes Livrées uniquement, clients internes (SPC/PDC/Comptoir) exclus. Projection fin septembre = moyenne quotidienne × 26 jours ouvrés (lun-sam). "
-    f"<b>Hausse prix soja</b> : à partir du 04/09/2026, le prix du soja T102 (50kg) passe de 25 000 à 26 000 FCFA/sac (+4%). "
-    f"<b>Stock central BEKOKO</b> : 14 279 sacs (714 t) au 16/09/2026. Réappro reçu (+11 563 sacs vs 07/09).",
-    SMALL))
+# Section 4 + méthodo soudés : ni tableau coupé, ni fin de paragraphe orpheline en bas de page
+methodo_note = Paragraph(
+    f"<b>Source</b> : {MTD['extraction_file']} (mois complet au {MTD['update_date']} — {MTD['days_elapsed']} jours ouvrés). "
+    f"<b>Méthodologie</b> : Volumes Livrées uniquement, tous clients inclus. Les objectifs sont les <b>objectifs S2 recalibrés</b> de septembre "
+    f"(TOURTEAUX {fmt(n['soja_obj_t'])} t, CONCENTRES {fmt(n['conc_obj_t'])} t ; objectifs régionaux = somme des objectifs agences S2 recalibrés). "
+    f"<b>Événements prix soja</b> : hausse le 04/09/2026 (25 000 → 26 000 FCFA/sac), puis baisse mi-journée du 22/09/2026 (26 000 → 20 000 FCFA/sac, -23%) avec doublement de la cadence (139,1 → 278,1 t/j). "
+    f"<b>Stock central BEKOKO</b> : {MTD['stock']['brut_sacs']} sacs ({MTD['stock']['brut_t']} t) au {MTD['stock']['date']} — hyp. stock inchangé depuis l'inventaire.",
+    SMALL)
+story.append(KeepTogether([Paragraph("4. Recommandations & Actions", H2), t4,
+                           HRFlowable(width="100%", thickness=0.5, color=GRAY),
+                           Spacer(1, 0.1*cm), methodo_note]))
 
 # === Save PDF ===
-doc.build(story)
+doc.build(story, canvasmaker=NumberedCanvas)
 print(f"\n=== PITCH PDF GENERATED ===")
 print(f"Path: {OUT}")
 print(f"Size: {os.path.getsize(OUT)/1024:.0f} KB")

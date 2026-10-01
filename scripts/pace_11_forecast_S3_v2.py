@@ -1,20 +1,26 @@
 """
-Forecast Q4 2026 (Sept-Dec) - Scenario S3 - VERSION 2
+Forecast Q4 2026 (Sept-Dec) - Scenario S3 - VERSION 2 (mis à jour avec septembre réel)
 Utilise les données 2023-2026 (44 mois) + COMPLEMENT_ALIMENTAIRE (V300 1L only)
 
 Changements vs version 1:
-1. Utilise dataset_2023_2026.csv (176 576 records, 44 mois) au lieu de dataset_consolide_v2.csv (115 086 records, 20 mois)
+1. Utilise dataset_2023_2026.csv (264 759 records, 44 mois) au lieu de dataset_consolide_v2.csv (115 086 records, 20 mois)
 2. AJOUT de la famille COMPLEMENT_ALIMENTAIRE (V300 1L + CA001-CA008, 1L=1kg)
    - V305 (BELGOKILL 200L) EXCLU
 3. MATERIEL_ELEVAGE toujours à 0 en tonnes
 4. Désaisonnalisation de l'effet soja Jul-Août 2026 (cap moyenne S1 2026)
-5. En cours + Validées août inclus
-6. Prix soja actualisé 25 000 FCFA/sac
+5. En cours + Validées septembre inclus (commandes ouvertes fin sept)
+6. Prix soja actualisé 17 678 FCFA/sac (moyenne pondérée YTD Jan-Sep 2026)
+
+Mise à jour septembre réel (fichier _upd):
+  - Septembre Livrée (01-30/09) ajouté à l'historique Prophet
+  - Les lignes septembre du forecast sont remplacées par les VENTES RÉELLES de septembre
+    (plus de facteur 0,7 TOURTEAUX sur septembre) — Oct/Nov/Déc restent prévisionnels
+  - Événement prix : hausse 04/09 (25 000 → 26 000), baisse 22/09 (26 000 → 20 000 FCFA/sac)
 
 Méthode:
   - Prophet pour 5 familles (TOURTEAUX, CONCENTRES, INGRÉDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE)
   - Extrapolation pour MATERIEL_ELEVAGE et PREMIX (CA only)
-  - Forecast: Sep, Oct, Nov, Dec 2026 (4 mois)
+  - Forecast: Sep, Oct, Nov, Dec 2026 (4 mois) — Sept = réel
 """
 import pandas as pd
 import numpy as np
@@ -36,10 +42,10 @@ print(f"\nBy family:")
 print(df['family'].value_counts())
 
 # === Load En cours + Validées from latest extraction ===
-print("\n=== Loading En cours + Validées from latest extraction ===")
+print("\n=== Loading En cours + Validées from latest extraction (septembre) ===")
 import openpyxl
 
-FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (27).xlsx"
+FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx"
 wb = openpyxl.load_workbook(FILE_AOUT, read_only=True, data_only=True)
 ws = wb['Sheet 1']
 
@@ -99,7 +105,7 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     etat = str(r[13]).strip() if r[13] else ''
     if etat not in ('En cours', 'Validée'): continue
     date_str = str(r[6])[:10] if r[6] else ''
-    if '/08/2026' not in date_str: continue
+    if '/09/2026' not in date_str: continue
     agence_raw = r[15] if r[15] else ''
     if agence_raw not in AGENCE_MAP: continue
     agence, region = AGENCE_MAP[agence_raw]
@@ -133,8 +139,54 @@ for r in ws.iter_rows(min_row=3, values_only=True):
 print(f"  En cours + Validées: {len(extra_records)} records")
 df_extra = pd.DataFrame(extra_records)
 
+# === Charger septembre LIVRÉE (ventes réelles 01-30/09) ===
+print("\n=== Loading Septembre Livrée (ventes réelles) ===")
+sep_records = []
+for r in ws.iter_rows(min_row=3, values_only=True):
+    if not r or not r[0] or r[0] == 'Total': continue
+    ref = str(r[0])
+    family = get_family_q4(ref)
+    if family is None: continue
+    etat = str(r[13]).strip() if r[13] else ''
+    if etat != 'Livrée': continue
+    date_str = str(r[6])[:10] if r[6] else ''
+    if '/09/2026' not in date_str: continue
+    agence_raw = r[15] if r[15] else ''
+    if agence_raw not in AGENCE_MAP: continue
+    agence, region = AGENCE_MAP[agence_raw]
+    qte = r[2] or 0
+    weight = ALL_REFS.get(ref, 1)
+    kg = qte * weight
+    montant_ttc = r[9] or 0
+    montant_ht = r[8] or 0
+    try:
+        date = pd.to_datetime(date_str, format='%d/%m/%Y')
+    except:
+        continue
+    if family in ('MATERIEL_ELEVAGE', 'ALVEOLES'):
+        tonnes_val = 0
+    elif family == 'COMPLEMENT_ALIMENTAIRE':
+        tonnes_val = kg / 1000
+    else:
+        tonnes_val = kg / 1000
+    sep_records.append({
+        'date': date, 'year': date.year, 'month': date.month,
+        'ref': ref, 'family': family, 'description': r[1],
+        'agence': agence, 'region': region,
+        'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': tonnes_val,
+        'sacs_50': kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else 0,
+        'montant_ttc': montant_ttc, 'montant_ht': montant_ht,
+        'source': 'Livree_Septembre'
+    })
+
+print(f"  Septembre Livrée: {len(sep_records)} records")
+df_sep = pd.DataFrame(sep_records)
+sep_vol_t = df_sep['tonnes'].sum()
+sep_ca_m = df_sep['montant_ttc'].sum() / 1e6
+print(f"  Septembre réel: {sep_vol_t:.0f} t, CA {sep_ca_m:.0f} M FCFA (14 agences)")
+
 # Merge
-df_all = pd.concat([df, df_extra], ignore_index=True)
+df_all = pd.concat([df, df_extra, df_sep], ignore_index=True)
 print(f"\nDataset total: {len(df_all)} records")
 print(f"Date range: {df_all['date'].min().date()} → {df_all['date'].max().date()}")
 
@@ -172,8 +224,8 @@ prix_forecast = json.load(open("/home/z/my-project/scripts/prix_forecast.json"))
 prix_q4 = prix_forecast['stable_Q4'].copy()
 # Override with real 2026 prices (per unit) for non-50kg products
 prix_q4.update(prix_reels)
-# Update soja T102 price to 25 000 FCFA/sac
-prix_q4['T102'] = 17170  # Moyenne ponderee YTD 2026 (Jan-Aout)
+# Update soja T102 price to 17 678 FCFA/sac (moyenne pondérée YTD Jan-Sep, incl. baisse 22/09)
+prix_q4['T102'] = 17678  # Moyenne ponderee YTD 2026 (Jan-Sept, reel ERP)
 # === Weight per unit (kg per sac/piece/bidon) — for converting tonnes to units ===
 WEIGHT_MAP = {
     'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25,
@@ -399,9 +451,7 @@ for _, fcst_row in forecasts_fr_df.iterrows():
         tonnes_total = 0
     else:
         tonnes_total = fcst_row['yhat']
-        # For TOURTEAUX S3: apply 0.7 factor in September (partial rupture assumption already neutralized)
-        if family == 'TOURTEAUX' and month == 9:
-            tonnes_total *= 0.7
+        # Septembre sera remplacé par les ventes réelles après désagrégation (plus de facteur 0,7)
         # === Facteur croissance maîtrisé pour ALIMENT_COMPLET (reprise post-2024) ===
         if family == 'ALIMENT_COMPLET':
             tonnes_total *= ALIMENT_COMPLET_GROWTH_BOOST
@@ -459,13 +509,52 @@ fcst_df = pd.DataFrame(all_forecasts)
 fcst_df = fcst_df[(fcst_df['year'] == 2026) & (fcst_df['month'].isin([9, 10, 11, 12]))]
 print(f"\n{len(fcst_df)} forecasts détaillés générés (Q4 2026 S3)")
 
+# === REMPLACER SEPTEMBRE PAR LES VENTES RÉELLES ===
+print("\n=== SEPTEMBRE = VENTES RÉELLES (remplacement du forecast) ===")
+fcst_df = fcst_df[fcst_df['month'] != 9].copy()
+
+sep_act = df_sep.groupby(['ref', 'family', 'agence', 'region']).agg(
+    tonnes=('tonnes', 'sum'),
+    montant_ttc=('montant_ttc', 'sum'),
+    qte=('qte', 'sum'),
+).reset_index()
+
+sep_act_rows = []
+for _, row in sep_act.iterrows():
+    ref = row['ref']
+    weight = ALL_REFS.get(ref, 1)
+    units = row['tonnes'] * 1000 / weight if weight > 0 else 0
+    prix_act = row['montant_ttc'] / units if units > 0 else 0
+    sep_act_rows.append({
+        'scenario': 'S3_reappro_100',
+        'ref': ref,
+        'family': row['family'],
+        'agence': row['agence'],
+        'region': row['region'],
+        'date': pd.Timestamp('2026-09-01'),
+        'month': 9,
+        'year': 2026,
+        'tonnes': round(row['tonnes'], 2),
+        'sacs_50': round(units, 1),
+        'prix_ttc_sac': round(prix_act, 0),
+        'ca_m_fcfa': round(row['montant_ttc'] / 1e6, 2),
+    })
+
+sep_act_df = pd.DataFrame(sep_act_rows)
+print(f"  Septembre réel intégré: {len(sep_act_df)} lignes, "
+      f"{sep_act_df['tonnes'].sum():.0f} t, CA {sep_act_df['ca_m_fcfa'].sum():.1f} M FCFA")
+fcst_df = pd.concat([fcst_df, sep_act_df], ignore_index=True)
+
 # === BUNDLE 2.5:1 (soja:concentré) constraint ===
 # For each region × month: ensure ratio soja/concentré <= 2.5
 # If ratio > 2.5, increase CONCENTRÉS to match (upward adjustment)
+# Septembre (mois 9) est exclu : ventes réelles, déjà à 2,5:1
 print("\n=== APPLICATION BUNDLE 2.5:1 (soja:concentré) ===")
 BUNDLE_RATIO = 2.5
 adjustments_made = 0
 for (region, month), group in fcst_df.groupby(['region', 'month']):
+    if month == 9:
+        continue  # Septembre = réel, ne pas ajuster
     soja_t = group[group['family'] == 'TOURTEAUX']['tonnes'].sum()
     conc_t = group[group['family'] == 'CONCENTRES']['tonnes'].sum()
     if soja_t > 0 and conc_t > 0:
@@ -499,6 +588,8 @@ from spc_forfait import generate_spc_forfait_q4_2026
 
 spc_forfait_records = generate_spc_forfait_q4_2026()
 spc_df = pd.DataFrame(spc_forfait_records)
+# Septembre = ventes réelles : retirer le forfait SPC de septembre (éviter le double comptage)
+spc_df = spc_df[spc_df['month'] != 9].copy()
 print(f"  Forfait SPC: {len(spc_df)} records, CA total = {spc_df['ca_m_fcfa'].sum():.1f} M FCFA")
 print(f"    - ALVEOLES: {spc_df[spc_df['family']=='ALVEOLES']['ca_m_fcfa'].sum():.1f} M (basé sur 2025)")
 print(f"    - MAT_ELEVAGE: {spc_df[spc_df['family']=='MATERIEL_ELEVAGE']['ca_m_fcfa'].sum():.1f} M (basé sur 2025)")

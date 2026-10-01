@@ -2,15 +2,15 @@
 Forecast 2027 complet (12 mois) - Volume + Valeur
 Scénario S3 (réappro soja 100%)
 
-VERSION 3 (mise à jour):
-1. Utilise données 2023-2026 (44 mois, 176 576 records)
+VERSION 3 (mise à jour avec septembre réel):
+1. Utilise données 2023-2026 (44 mois, 264 759 records) + septembre 2026 Livrée
 2. Inclut la famille COMPLEMENT_ALIMENTAIRE (BELGOKILL V300 1L only + autres CA001-CA008)
    - V305 (BELGOKILL 200L) EXCLU selon demande utilisateur
    - Conversion 1L = 1kg
 3. MATERIEL_ELEVAGE toujours à 0 en tonnes (CA only)
 4. Désaisonnalisation effet soja (cap moyenne S1 2026) maintenue
-5. En cours + Validées inclus
-6. Prix soja actualisé 25 000 FCFA/sac
+5. En cours + Validées septembre inclus
+6. Prix soja actualisé 16 550 FCFA/sac (médiane mensuelle YTD Jan-Sep 2026)
 
 Méthode:
   - Prophet pour 5 familles (TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, COMPLEMENT_ALIMENTAIRE)
@@ -39,7 +39,7 @@ print(df['family'].value_counts())
 print("\n=== Loading En cours + Validées from latest extraction ===")
 import openpyxl
 
-FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (27).xlsx"
+FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx"
 wb = openpyxl.load_workbook(FILE_AOUT, read_only=True, data_only=True)
 ws = wb['Sheet 1']
 
@@ -106,7 +106,7 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     etat = str(r[13]).strip() if r[13] else ''
     if etat not in ('En cours', 'Validée'): continue  # Only non-Livrée
     date_str = str(r[6])[:10] if r[6] else ''
-    if '/08/2026' not in date_str: continue
+    if '/09/2026' not in date_str: continue
     agence_raw = r[15] if r[15] else ''
     if agence_raw not in AGENCE_MAP: continue
     agence, region = AGENCE_MAP[agence_raw]
@@ -139,9 +139,51 @@ for r in ws.iter_rows(min_row=3, values_only=True):
 print(f"  En cours + Validées: {len(extra_records)} records")
 df_extra = pd.DataFrame(extra_records)
 
-# === Merge Livrée + En cours/Validées ===
-df_all = pd.concat([df, df_extra], ignore_index=True)
-print(f"\nDataset total (Livrée + En cours + Validées): {len(df_all)} records")
+# === Charger septembre LIVRÉE (ventes réelles 01-30/09) dans l'historique ===
+print("\n=== Loading Septembre Livrée (ventes réelles) ===")
+sep_records = []
+for r in ws.iter_rows(min_row=3, values_only=True):
+    if not r or not r[0] or r[0] == 'Total': continue
+    ref = str(r[0])
+    family = get_family_2027(ref)
+    if family is None: continue
+    etat = str(r[13]).strip() if r[13] else ''
+    if etat != 'Livrée': continue
+    date_str = str(r[6])[:10] if r[6] else ''
+    if '/09/2026' not in date_str: continue
+    agence_raw = r[15] if r[15] else ''
+    if agence_raw not in AGENCE_MAP: continue
+    agence, region = AGENCE_MAP[agence_raw]
+    qte = r[2] or 0
+    weight = ALL_REFS.get(ref, 1)
+    kg = qte * weight
+    montant_ttc = r[9] or 0
+    montant_ht = r[8] or 0
+    try:
+        date = pd.to_datetime(date_str, format='%d/%m/%Y')
+    except:
+        continue
+    if family in ('MATERIEL_ELEVAGE', 'ALVEOLES'):
+        tonnes_val = 0
+    else:
+        tonnes_val = kg / 1000
+    sep_records.append({
+        'date': date, 'year': date.year, 'month': date.month,
+        'ref': ref, 'family': family, 'description': r[1],
+        'agence': agence, 'region': region,
+        'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': tonnes_val,
+        'sacs_50': kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else 0,
+        'montant_ttc': montant_ttc, 'montant_ht': montant_ht,
+        'source': 'Livree_Septembre'
+    })
+
+print(f"  Septembre Livrée: {len(sep_records)} records")
+df_sep = pd.DataFrame(sep_records)
+print(f"  Septembre réel: {df_sep['tonnes'].sum():.0f} t, CA {df_sep['montant_ttc'].sum()/1e6:.0f} M FCFA (14 agences)")
+
+# === Merge Livrée + En cours/Validées + Septembre réel ===
+df_all = pd.concat([df, df_extra, df_sep], ignore_index=True)
+print(f"\nDataset total (Livrée + En cours + Validées + Sept réel): {len(df_all)} records")
 print(f"Date range: {df_all['date'].min().date()} → {df_all['date'].max().date()}")
 
 # === Désaisonnalisation de l'effet soja exceptionnel ===
@@ -205,7 +247,7 @@ COMPLEMENT_PRICES = {
 # Override with real 2026 prices (CORRIGE)
 prix_reels_2026 = json.load(open("/home/z/my-project/scripts/prix_reels_2026.json"))
 prix_2027.update(prix_reels_2026)
-prix_2027['T102'] = 16800  # Mediane YTD 2026 (Jan-Aout)
+prix_2027['T102'] = 16550  # Mediane mensuelle YTD 2026 (Jan-Sep)
 
 # Weight per unit (kg per sac/piece/bidon) — for converting tonnes to units
 WEIGHT_MAP = {

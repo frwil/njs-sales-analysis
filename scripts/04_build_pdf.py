@@ -23,7 +23,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase.pdfmetrics import registerFontFamily
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle,
+    BaseDocTemplate, Paragraph, Spacer, Image, Table, TableStyle,
     PageBreak, KeepTogether, HRFlowable, Frame, PageTemplate, NextPageTemplate
 )
 from reportlab.platypus.flowables import Flowable
@@ -35,9 +35,13 @@ warnings.filterwarnings('ignore')
 # Font registration
 # ============================================================
 FONT_DIR = '/usr/share/fonts'
-pdfmetrics.registerFont(TTFont('NotoSerifSC', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Regular.ttf'))
-pdfmetrics.registerFont(TTFont('NotoSerifSC-Bold', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Bold.ttf'))
-registerFontFamily('NotoSerifSC', normal='NotoSerifSC', bold='NotoSerifSC-Bold')
+try:
+    pdfmetrics.registerFont(TTFont('NotoSerifSC', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Regular.ttf'))
+    pdfmetrics.registerFont(TTFont('NotoSerifSC-Bold', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Bold.ttf'))
+    registerFontFamily('NotoSerifSC', normal='NotoSerifSC', bold='NotoSerifSC-Bold')
+except Exception:
+    # Noto Serif SC not installed on this machine — unused elsewhere, DejaVuSans covers the document
+    pass
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', f'{FONT_DIR}/truetype/dejavu/DejaVuSans.ttf'))
 pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', f'{FONT_DIR}/truetype/dejavu/DejaVuSans-Bold.ttf'))
@@ -834,6 +838,7 @@ story.append(Spacer(1, 0.6 * cm))
 # ============================================================
 # SECTION: HEATMAP
 # ============================================================
+story.append(PageBreak())
 story.append(KeepTogether([
     Paragraph("MATRICE D'ACTIVITÉ", style_kicker),
     Paragraph("Heatmap Agence × Mois", style_h1),
@@ -907,7 +912,7 @@ story.append(Paragraph(findings, style_body))
 
 story.append(Paragraph("Limites et précautions de lecture", style_h2))
 limits = """
-Cette analyse porte exclusivement sur les volumes écoulés (en tonnes) et ne prend pas en compte le chiffre d'affaires, les marges, ni la rentabilité par produit. Les données du mois de septembre 2026 couvrent la période du 1er au 19 septembre (mois partiel), ce qui peut sous-estimer légèrement le volume total du dernier mois. Par ailleurs, certaines lignes de commande ne renseignent pas l'agence d'origine (4,9 t sur la période, soit moins de 1% du volume), ce qui n'affecte pas significativement les conclusions mais mérite d'être noté pour la qualité des données en amont.
+Cette analyse porte exclusivement sur les volumes écoulés (en tonnes) et ne prend pas en compte le chiffre d'affaires, les marges, ni la rentabilité par produit. Les données du mois de septembre 2026 couvrent la période du 1er au 26 septembre (mois partiel), ce qui peut sous-estimer légèrement le volume total du dernier mois. Par ailleurs, certaines lignes de commande ne renseignent pas l'agence d'origine (4,9 t sur la période, soit moins de 1% du volume), ce qui n'affecte pas significativement les conclusions mais mérite d'être noté pour la qualité des données en amont.
 """
 story.append(Paragraph(limits, style_body))
 
@@ -925,7 +930,10 @@ story.append(Paragraph(note_text, ParagraphStyle('note', parent=style_body, font
 output_path = os.path.join(DOWNLOAD, "Analyse_Booster_Oct2025-Sep2026.pdf")
 
 # Build with two page templates: cover + body
-doc = SimpleDocTemplate(
+# NB: BaseDocTemplate (pas SimpleDocTemplate) — en reportlab 5, SimpleDocTemplate
+# hijack chaque page vers son template interne 'Later' (onPage vide), ce qui
+# efface entete/pied des pages 3+ malgre les PageTemplates custom.
+doc = BaseDocTemplate(
     output_path,
     pagesize=A4,
     leftMargin=MARGIN_L,

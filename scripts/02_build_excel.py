@@ -250,7 +250,7 @@ ws.cell(row=r, column=4).number_format = '0.0%'
 apply_total_row(ws, r, 1, 4)
 
 # Note
-ws.cell(row=r + 2, column=1, value="Note : Les volumes sont exprimés en tonnes (1 sac 25Kg = 0,025 t ; 1 sac 5Kg = 0,005 t). Les données Sep 2026 couvrent la période 01-19/09/2026 (mois partiel).").font = font_small
+ws.cell(row=r + 2, column=1, value="Note : Les volumes sont exprimés en tonnes (1 sac 25Kg = 0,025 t ; 1 sac 5Kg = 0,005 t). Les données Sep 2026 couvrent la période 01-26/09/2026 (mois partiel).").font = font_small
 ws.merge_cells(start_row=r + 2, start_column=1, end_row=r + 2, end_column=end_col)
 ws.row_dimensions[r + 2].height = 28
 

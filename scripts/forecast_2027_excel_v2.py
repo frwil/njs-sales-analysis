@@ -37,8 +37,8 @@ NEW_FAMILY_COLOR = 'FFE699'  # Yellow for COMPLEMENT_ALIMENTAIRE
 THIN = Side(border_style='thin', color='BFBFBF')
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 
-# 7 familles (ordre: ordre alphabétique, mais COMPLEMENT_ALIMENTAIRE mis en évidence à la fin)
-FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'BELGO_FISH', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES']
+# 8 familles (ordre: ordre alphabétique, mais COMPLEMENT_ALIMENTAIRE mis en évidence à la fin)
+FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'INGREDIENTS', 'ALIMENT_COMPLET', 'MATERIEL_ELEVAGE', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES']
 MONTHS = list(range(1, 13))
 MONTH_NAMES = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
 QUARTERS = {'Q1 (Jan-Mar)': [1,2,3], 'Q2 (Avr-Juin)': [4,5,6], 'Q3 (Juil-Sept)': [7,8,9], 'Q4 (Oct-Déc)': [10,11,12]}
@@ -238,7 +238,7 @@ ws.freeze_panes = 'C7'
 ws = wb.create_sheet("1. Synthèse")
 ws['A1'] = 'BELGOCAM SA - Forecast 2027 (Janvier - Décembre)'
 ws['A1'].font = Font(bold=True, size=16, color='1F4E78')
-ws['A2'] = 'Scénario S3 | Désaisonnalisation effet soja | En cours+Validées inclus | Prix soja médian 18 590 FCFA/sac | Données 2023-2026'
+ws['A2'] = 'Scénario S3 | Désaisonnalisation effet soja | En cours+Validées inclus | Prix soja 16 550 FCFA/sac (médiane mensuelle YTD Jan-Sep) | Données 2023-2026'
 ws['A2'].font = Font(italic=True, size=10, color='595959')
 
 total_t = fcst['tonnes'].sum()
@@ -265,7 +265,7 @@ global_data = [
     ('Méthode', 'Prophet (5 familles) + Extrapolation (MAT+PREMIX)', '—'),
     ('Désaisonnalisation', 'Effet soja Jul-Août 2026 neutralisé (cap S1 avg)', '—'),
     ('En cours + Validées', 'Incluses comme potentielles Livrées', '—'),
-    ('Données historiques', '176 576 enregistrements (Jan 2023 - Août 2026)', '44 mois'),
+    ('Données historiques', '264 759 + septembre réel (Jan 2023 - Sep 2026)', '45 mois'),
     ('COMPLEMENT_ALIMENTAIRE', 'Ajouté au forecast (1L=1kg, proxy BELGOKILL)', '10 produits'),
 ]
 for label, val, unit in global_data:
@@ -291,6 +291,8 @@ for fam in FAMILIES:
     if fam in fam_synth.index:
         t = fam_synth.loc[fam, 'tonnes']
         ca = fam_synth.loc[fam, 'ca_m_fcfa']
+        if pd.isna(t) or pd.isna(ca):
+            continue  # famille absente du forecast
         pct = ca / total_ca * 100 if total_ca > 0 else 0
         ws.cell(row=row, column=1, value=fam)
         ws.cell(row=row, column=2, value=round(t, 0))
@@ -507,7 +509,7 @@ ws = wb.create_sheet("6. Détail complet")
 ws['A1'] = 'FORECAST 2027 - DÉTAIL COMPLET (Produit × Agence × Mois)'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 row = 3
-headers = ['Réf', 'Description', 'Famille', 'Agence', 'Région', 'Mois', 'Année', 'Tonnes', 'Sacs 50kg', 'Prix TTC/sac', 'CA (M FCFA)', 'CA (FCFA)']
+headers = ['Réf', 'Description', 'Famille', 'Agence', 'Région', 'Mois', 'Année', 'Tonnes', 'Sacs/unités', 'Prix TTC/unité', 'CA (M FCFA)', 'CA (FCFA)']
 for i, h in enumerate(headers, 1): ws.cell(row=row, column=i, value=h)
 style_header_row(ws, row, 12)
 row += 1
@@ -549,14 +551,14 @@ hyp = [
     ('PARAMÈTRES', ''),
     ('En cours + Validées', 'Commandes En cours et Validées d\'août 2026 incluses comme potentielles Livrées'),
     ('Désaisonnalisation soja', 'Volumes soja Jul-Août 2026 neutralisés (cap à moyenne S1 2026) pour éviter le biais de la rupture concurrente'),
-    ('Prix soja actualisé', '18 590 FCFA/sac (médian 2023-2026, non circonstanciel)'),
+    ('Prix soja actualisé', '16 550 FCFA/sac (médiane mensuelle YTD Jan-Sep 2026)'),
     ('Forecast 12 mois', 'Période complète Jan-Déc 2027 (vs 4 mois pour Q4 2026)'),
     ('', ''),
     ('FAMILLES INCLUSES (8)', 'TOURTEAUX, CONCENTRÉS, INGRÉDIENTS, ALIMENT_COMPLET, MATERIEL_ELEVAGE, PREMIX, COMPLEMENT_ALIMENTAIRE, ALVEOLES'),
     ('FAMILLES EXCLUES', 'MAIS (produit opportuniste), DIVERS'),
     ('PRODUITS OPPORTUNISTES', 'MAÏs (M1051, M1052) — exclus du périmètre'),
     ('', ''),
-    ('DONNÉES HISTORIQUES', '176 576 enregistrements (Jan 2023 - Août 2026) + En cours/Validées août'),
+    ('DONNÉES HISTORIQUES', '264 759 enregistrements (Jan 2023 - Août 2026) + En cours/Validées août'),
     ('LIMITES', '44 mois d\'historique (Prophet recommande 2+ ans pour yearly seasonality — OK)'),
     ('PRODUITS COMPLEMENT_ALIMENTAIRE', 'V300 (BELGOKILL 1L), CA001-CA008 (BELGO xxx 1L) — V305 exclu'),
     ('MISE À JOUR', 'Pipeline: scripts/forecast_2027.py + scripts/forecast_2027_excel.py'),

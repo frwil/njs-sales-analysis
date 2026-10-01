@@ -1143,3 +1143,73 @@ Stage Summary:
 - La progression 2027 vs 2026 est maintenant de +14% volume, +17% CA (vs +30% avant)
 - Cette version est plus conservative et plus representative d'un retour a la normale du marche soja
 - Le prix de 25 000 FCFA/sac etait circonstanciel (rupture concurrente + hausse aout 2026), le prix median 18 590 (4 ans d'historique) est plus realiste pour 2027
+---
+Task ID: sept-update-28
+Agent: main
+Task: Mettre a jour les 4 analyses septembre (zero achat, bundle soja-concentres, soja_septembre, analyse booster) avec la nouvelle extraction upload/njs_erp_45.csv (01-26/09/2026). Evenement majeur: baisse du prix soja de 26 000 a 20 000 FCFA/sac en milieu de journee du 22/09/2026.
+
+Work Log:
+- Extraction la plus recente identifiee: `upload/njs_erp_45.csv` (CSV, 11 414 lignes, dates 01/09-26/09, max Livree 25/09).
+- `compute_sept_mtd_metrics.py` pointe sur njs_erp_45.csv (branche CSV: latin-1, sep=';', header=1) -> `sept_mtd_09.json`.
+- Nouveau script `compute_sept_pitch_data.py` -> `sept_pitch_data_09.json` (national + regions Ouest/Centre/Littoral, objectifs regionaux repris de sept_pitch_data_08.json).
+- `build_sept_summary_pdf.py`: alertes prix mises a jour (hausse 04/09 puis BAISSE 22/09 -23%), tableau stock pilote par les donnees, analyses stock/zero-achat/recos recrites.
+- `build_pitch_dg_pdf.py`: alertes header, insights, recos et footer recrits (top agence FAMLA dynamique, agences en retrait = Nkolbisson/Ngaoundere).
+- `01_consolidate_booster.py`: source septembre = njs_erp_45.csv (branche CSV, colonnes standardisees par position, nombres FR -> float).
+- `02_build_excel.py` / `04_build_pdf.py`: note "01-19/09" -> "01-26/09".
+- `04_build_pdf.py`: enregistrement NotoSerifSC rendu optionnel (police inutilisee, absente sur Windows).
+- pypdf installe pour la verification finale du PDF booster.
+
+Stage Summary:
+- Chiffres cles au 25/09 (22j/26j, 84,6% du mois):
+  - TOURTEAUX 3 359 t MTD, proj 3 970 t = 103% objectif ; CONCENTRES 1 465 t MTD, proj 1 731 t = 113%.
+  - Bundle: ratio 2,3:1 (obj <= 2,5:1), 2 568/2 941 cmds soja avec conc (87%), 373 soja-only.
+  - Stock BEKOKO: 14 279 sacs (inventaire 16/09), 3 054 sacs/j, 4 j de stock -> rupture estimee 29/09 ; besoin reste 12 216 sacs, manque 0 (marge faible).
+  - Zero achat: 638 churned S1 (46,2%) / 856 actifs sept / 113 nouveaux.
+  - Effet baisse prix 22/09: cadence soja 126 -> 153 t/j (+21%) ; manque a gagner ~88 M FCFA sur 14 597 sacs (23-26/09) vs 26 000 FCFA/sac.
+  - Booster septembre: 96,92 t (01-26/09), meilleur mois de l'annee (vs 74,92 t en aout) — effet baisse prix visible.
+- Outputs regeneres:
+  - download/analyse_septembre_upd.pdf (zero achat + bundle + concentres + stock)
+  - download/pitch_dg_septembre_upd.pdf
+  - download/Analyse_Booster_Oct2025-Sep2026.xlsx (389,5 Ko)
+  - download/Analyse_Booster_Oct2025-Sep2026.pdf (687,2 Ko, 10 pages)
+  - work/booster_consolidated.csv + work/charts/*.png
+
+---
+Task ID: sept-mise-en-page-28
+Agent: main
+Task: Ajouter entetes de page, pieds de page "Page X / Y" et empecher les coupures disgracieuses (titres orphelins, tableaux coupes) dans les PDF septembre.
+
+Work Log:
+- Police NotoSerifSC installee (Regular = TTF variable depuis google/fonts, Bold = instance wght=700 via fonttools instancer) dans D:\usr\share\fonts\truetype\noto-serif-sc\ ; reportlab enregistre les deux correctement. L'enregistrement reste dans un try/except (police non utilisee dans les rendus actuels).
+- Pieds de page "Page X / Y": recette NumberedCanvas a deux passes (showPage memorise l'etat, save rejoue chaque page puis dessine entete/pied). Piege reportlab 5.0.1: canvasmaker est un parametre de build(), PAS du constructeur SimpleDocTemplate — silencieusement ignore sinon.
+- build_sept_summary_pdf.py + build_pitch_dg_pdf.py: entete "BELGOCAM SA — NJS GROUP" + date des donnees + filet dore ; pied gauche confidentiel, droite Page X / Y. Analyse: pages 2+ (couverture sans entete) ; Pitch: toutes les pages (marges 1,5cm).
+- Anti-coupures: heading_block() retourne desormais une LISTE de flowables soudee au 1er bloc de chaque section dans un meme KeepTogether (les 5 sections de l'analyse, les 4 du pitch). keepWithNext sur H1/H3, repeatRows=1 sur les tableaux.
+- Verifie avec pypdf: analyse 7 pages — chaque section demarre en haut de page avec son titre + tableau (section 4 n'est plus orpheline en bas de p5). Pitch revenu a 2 pages — la page 3 a une seule ligne orpheline a ete eliminee (methodo soudee a la section 4).
+
+Stage Summary:
+- analyse_septembre_upd.pdf: 7 pages propres — p2 S1 KPIs, p3 agences, p4 S2 bundle, p5 S3 stock, p6 S4 zero-achat, p7 S5 recos + methode. Entete/pied sur toutes les pages de contenu.
+- pitch_dg_septembre_upd.pdf: 2 pages propres (p1 vues nationales + regionales, p2 insights + recos + methode), entete/pied sur les 2 pages.
+- Analyse_Booster_Oct2025-Sep2026.pdf: entete/pied absents des pages 3+ (bug reportlab 5.0.1: SimpleDocTemplate hijack chaque page vers son template interne 'Later' a onPage vide via handle_pageBegin -> seul le premier basculement NextPageTemplate fonctionne). Corrige en passant de SimpleDocTemplate a BaseDocTemplate (04_build_pdf.py) — entete "ANALYSE VENTES BOOSTER / Oct 2025 - Sep 2026" + pied "BELGOCAM / NJS GROUP - ERP / Page N" verifies sur les 10 pages (couverture sans entete/pied par design).
+
+---
+Task ID: sept-update-full-month
+Agent: main
+Task: Mise a jour complete avec septembre reel (01-30/09/2026, extraction (51).xlsx, 14 071 lignes) : analyses septembre, forecasts Q4 + 2027 (fichiers _upd), et creation du nouveau livrable mensuel de performance.
+
+Work Log:
+- Objectifs verifies: mois 1-6 Takou, mois 7-9 S2 recalibres. Septembre = S2: TOURTEAUX 3781,31 t / CONCENTRES 1601,32 t (sommes 14 agences == national, pas de scaling). Les 3850/1534 des scripts etaient les objectifs d'aout.
+- Analyses septembre (mois complet): analyse_septembre_upd.pdf + pitch_dg_septembre_upd.pdf regeneres sur sept_mtd_10.json / sept_pitch_data_10.json (soja 4590 t=121%, conc 1809 t=113%, rupture 04/10/2026, 573 clients churned, cadence 139->278 t/j apres baisse tarifaire 22/09).
+- Booster: (51).xlsx ajoute dans 01_consolidate_booster.py -> septembre 118,32 t (record; aout 74,92) ; Excel + 7 charts + PDF 10 pages regeneres.
+- pace_11_forecast_S3_v2.py: bloc "Septembre Livree" ajoute (source Livree_Septembre), prix T102 = 17 678 (moyenne ponderee YTD Jan-Sep), facteur 0.7 supprime, mois 9 remplace par le reel dans le CSV final (bundle + forfait SPC skippent le mois 9). Q4 2026: 31 734 t / 15 451,5 M FCFA (sept reel 6601 t / 3704,2 M). Excel + _upd copies regeneres.
+- forecast_2027_v3.py: bloc "Septembre Livree" ajoute a l'historique, prix T102 = 16 550 (mediane mensuelle YTD Jan-Sep). 2027: 98 201 t / 44 339,1 M FCFA. Excel + _upd copies regeneres.
+- forecast_pdfs_v3.py: septembre reel ajoute a hist_df depuis le CSV Q4 (source Livree_Septembre) ; YTD Jan-Sep ; Q4 fcst recale sur Oct-Dec (pas de double comptage) ; prix dynamiques (PRIX_MOY_POND_YTD / PRIX_MEDIAN_YTD calcules) ; tableau des prix avec ligne Septembre reelle ; textes 17 170/16 800 -> 17 678/16 550 partout ; 45 mois d'historique. 10 PDFs regeneres + dossiers _upd recopies.
+- NOUVEAU LIVRABLE MENSUEL: scripts/compute_monthly_performance.py (parametrable MONTH_NUM/MONTH_LABEL/ERP_FILE) + build_monthly_performance_pdf.py -> download/performance_mensuelle_septembre_2026.pdf (10 pages, 619 Ko).
+  - S1 global par famille (soja 121,2%, conc 113,0%) ; S2 agence x famille ; S3 region x famille (Littoral en decrochage) ; S4 tendance mensuelle famille YTD ; S5 heatmap agence x mois + YTD agence (soja 120,7% YTD / conc 83,4% YTD) ; S6 tendance region mensuelle + YTD.
+  - 6 charts work/charts/perf_*.png. JSON intermediaire scripts/perf_mensuelle_2026_09.json.
+  - Mise a jour mensuelle: changer les 3 parametres + relancer les 2 scripts.
+
+Stage Summary:
+- Soja septembre 4 582 t vs 3 781 t obj (121,2%) ; concentres 1 810 t vs 1 601 t (113,0%).
+- YTD: soja 46 018 t vs 38 140 t (120,7%) ; concentres 14 498 t vs 17 393 t (83,4%) — retard concentres de 2 895 t, ratio YTD 3,17:1 vs cible bundle 2,5.
+- Q4 2026: 31 734 t / 15 451,5 M FCFA ; 2027: 98 201 t / 44 339,1 M FCFA (prix 17 678 / 16 550).
+- Tous les fichiers _upd regeneres (Excel + 2 dossiers de 5 PDFs).

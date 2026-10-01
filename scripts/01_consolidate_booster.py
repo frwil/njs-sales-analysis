@@ -4,7 +4,7 @@ Période: Octobre 2025 - Septembre 2026
 Sources:
   - 86d96135...xlsx : Jan-Dec 2025 (avec Agence + Region)
   - ventes janv a juin 2026.xlsx : Jan-Jun 2026 (avec agence, sans region)
-  - NJS GROUP ERP (40).xlsx : Sep 2026 (latest, plus complet)
+  - njs_erp_45.csv : Sep 2026 (latest, plus complet)
   - NJS GROUP ERP (25).xlsx : Août 2026 complet
   - NJS GROUP ERP (9).xlsx : Juillet 2026 complet
 """
@@ -62,16 +62,33 @@ print(f"   H1 2026 rows: {len(df_h1):,}")
 print("\n3. Loading H2 2026 ERP files (Jul, Aug, Sep)...")
 # Jul: file (9).xlsx (Jul 1-31, most complete)
 # Aug: file (25).xlsx (Aug 1-31, complete)
-# Sep: file (6) (1).xlsx (Sep 1-19, latest)
+# Sep: file (51).xlsx (Sep 1-30, mois complet)
 h2_files = [
     ("Jul", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx")),
     ("Aug", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (25).xlsx")),
-    ("Sep", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (6) (1).xlsx")),
+    ("Sep", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx")),
 ]
 df_h2_list = []
 for month_label, fp in h2_files:
     print(f"   Loading {month_label}: {os.path.basename(fp)}")
-    df_m = pd.read_excel(fp, sheet_name="Sheet 1", header=1)
+    if fp.lower().endswith('.csv'):
+        # CSV export (same ERP layout: title row 0, header row 1, latin-1, semicolon-separated)
+        df_m = pd.read_csv(fp, encoding='latin-1', sep=';', header=1, on_bad_lines='skip', engine='python')
+        # Column names come out with mojibake accents — standardize by position
+        col_names = ['Réf. produit', 'Description du produit', 'Qté commandée', 'Réf.',
+                     'Réf. commande client', 'Tiers', 'Date de commande', 'Mode reglement',
+                     'Montant HT', 'Montant TTC', 'Auteur', 'Date modif.', 'Facturé',
+                     'État', 'StatutFacture', 'agence']
+        df_m.columns = col_names[:len(df_m.columns)]
+        # French numeric format -> float
+        for num_col in ['Qté commandée', 'Montant HT']:
+            df_m[num_col] = (df_m[num_col].astype(str)
+                             .str.replace(' ', '', regex=False)
+                             .str.replace('\xa0', '', regex=False)
+                             .str.replace(',', '.', regex=False))
+            df_m[num_col] = pd.to_numeric(df_m[num_col], errors='coerce')
+    else:
+        df_m = pd.read_excel(fp, sheet_name="Sheet 1", header=1)
     df_m['source'] = f'2026_{month_label.lower()}'
     df_h2_list.append(df_m)
 df_h2 = pd.concat(df_h2_list, ignore_index=True)

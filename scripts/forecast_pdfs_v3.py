@@ -34,6 +34,56 @@ q4_df = pd.read_csv(Q4_CSV)
 f2027_df = pd.read_csv(F2027_CSV)
 hist_df = pd.read_csv(DATASET_CSV, parse_dates=['date'], low_memory=False)
 
+# === Ajouter septembre 2026 Livrée (réel) à l'historique YTD ===
+# Les lignes du mois 9 du CSV Q4 contiennent les ventes réelles de septembre
+# (le forecast Q4 démarre au mois 10 ; le mois 9 = réel injecté).
+sep_act = q4_df[q4_df['month'] == 9].copy()
+print(f"Septembre réel: {len(sep_act)} lignes, {sep_act['tonnes'].sum():.0f} t, {sep_act['ca_m_fcfa'].sum():.0f} M FCFA")
+if len(sep_act) > 0:
+    sep_act['date'] = pd.to_datetime(sep_act['date'])
+    sep_rows = pd.DataFrame({
+        'date': sep_act['date'],
+        'year': sep_act['year'],
+        'month': sep_act['month'],
+        'ref': sep_act['ref'],
+        'family': sep_act['family'],
+        'description': '',
+        'client': '',
+        'agence': sep_act['agence'],
+        'region': sep_act['region'],
+        'qte': 0.0,
+        'weight_kg': 0.0,
+        'kg': 0.0,
+        'tonnes': sep_act['tonnes'],
+        'sacs_50': sep_act['sacs_50'],
+        'montant_ttc': sep_act['ca_m_fcfa'] * 1e6,
+        'montant_ht': 0.0,
+        'source': 'Livree_Septembre',
+    })
+    hist_df = pd.concat([hist_df, sep_rows], ignore_index=True)
+    print(f"Historique étendu: {len(hist_df):,} records, jusqu'au {hist_df['date'].max().date()}")
+
+# Prix soja 2026 dynamiques (moyenne pondérée + médiane mensuelle Jan-Sep)
+_soja_2026 = hist_df[(hist_df['year'] == 2026) & (hist_df['family'] == 'TOURTEAUX')]
+_soja_sacs_2026 = _soja_2026['sacs_50'].sum()
+PRIX_MOY_POND_YTD = _soja_2026['montant_ttc'].sum() / _soja_sacs_2026 if _soja_sacs_2026 > 0 else 0
+_soja_monthly = _soja_2026.groupby('month').apply(lambda g: g['montant_ttc'].sum() / g['sacs_50'].sum() if g['sacs_50'].sum() > 0 else None).dropna()
+PRIX_MEDIAN_YTD = _soja_monthly.median()
+# Aligné sur la valeur officielle des modèles (pace_11 / Excel) : moyenne pondérée
+# YTD Jan-Sep calculée directement sur l'ERP (le CSV Q4 arrondit le CA de septembre).
+PRIX_MOY_POND_YTD = 17678
+# Septembre soja (pour le tableau des prix)
+_sep_soja = _soja_2026[_soja_2026['month'] == 9]
+_sep_sacs = _sep_soja['sacs_50'].sum()
+_sep_ca = _sep_soja['montant_ttc'].sum() / 1e6
+_sep_prix = _sep_ca * 1e6 / _sep_sacs if _sep_sacs > 0 else 0
+_sep_daily = _sep_soja.groupby(_sep_soja['date'].dt.date).apply(
+    lambda g: g['montant_ttc'].sum() / g['sacs_50'].sum() if g['sacs_50'].sum() > 0 else None).dropna()
+_sep_prix_min = _sep_daily.min() if len(_sep_daily) > 0 else 0
+_sep_prix_max = _sep_daily.max() if len(_sep_daily) > 0 else 0
+print(f"Prix soja YTD Jan-Sep 2026: moyenne pondérée {PRIX_MOY_POND_YTD:.0f}, médiane mensuelle {PRIX_MEDIAN_YTD:.0f}")
+print(f"Septembre soja: {_sep_sacs:,.0f} sacs, {_sep_ca:.0f} M FCFA, prix moyen {_sep_prix:.0f} FCFA/sac (min {_sep_prix_min:.0f}, max {_sep_prix_max:.0f})")
+
 # Helpers de formatage
 def fmt_t(x):
     """Format tonnes: 1234 -> '1 234'"""
@@ -63,11 +113,13 @@ Q4_MONTH['pct'] = Q4_MONTH['ca'] / Q4_TOTAL_CA * 100
 
 Q4_TOP_AGENCES = q4_df.groupby(['agence','region']).agg(ca=('ca_m_fcfa','sum')).reset_index().sort_values('ca', ascending=False).head(5)
 
-# YTD 2026 (Jan-Août réel) + Q4 forecast par famille
-hist_2026_ytd = hist_df[(hist_df['date'].dt.year == 2026) & (hist_df['date'].dt.month <= 8)]
+# YTD 2026 (Jan-Sep réel) + forecast Oct-Déc par famille
+hist_2026_ytd = hist_df[(hist_df['date'].dt.year == 2026) & (hist_df['date'].dt.month <= 9)]
 YTD_2026_BY_FAM = hist_2026_ytd.groupby('family')['tonnes'].sum()
 YTD_2026_TOTAL_T = YTD_2026_BY_FAM.sum()
-Q4_FAM_BY_FAM = q4_df.groupby('family')['tonnes'].sum()
+# Forecast Q4 hors septembre (sept est déjà dans le YTD réel)
+Q4_FAM_BY_FAM = q4_df[q4_df['month'] >= 10].groupby('family')['tonnes'].sum()
+Q4_FCST_T = Q4_FAM_BY_FAM.sum()
 
 # === 2027 ===
 F2027_TOTAL_T = f2027_df['tonnes'].sum()
@@ -86,16 +138,16 @@ HIST_BY_YEAR_FAM = {}
 for year in [2023, 2024, 2025, 2026]:
     yr_df = hist_df[hist_df['date'].dt.year == year]
     if year == 2026:
-        yr_df = yr_df[yr_df['date'].dt.month <= 8]  # YTD Jan-Août
+        yr_df = yr_df[yr_df['date'].dt.month <= 9]  # YTD Jan-Sep réel
     HIST_BY_YEAR_FAM[year] = yr_df.groupby('family')['tonnes'].sum()
 
-# Total 2026 LY = YTD réel + Q4 forecast
+# Total 2026 LY = YTD réel (Jan-Sep) + forecast Oct-Déc
 LY_2026_BY_FAM_T = YTD_2026_BY_FAM.add(Q4_FAM_BY_FAM, fill_value=0)
 LY_2026_TOTAL_T = LY_2026_BY_FAM_T.sum()
 
-# CA 2026 LY = YTD réel + Q4 forecast
+# CA 2026 LY = YTD réel + forecast Oct-Déc
 YTD_2026_CA_BY_FAM = hist_2026_ytd.groupby('family')['montant_ttc'].sum() / 1e6
-Q4_CA_BY_FAM = q4_df.groupby('family')['ca_m_fcfa'].sum()
+Q4_CA_BY_FAM = q4_df[q4_df['month'] >= 10].groupby('family')['ca_m_fcfa'].sum()
 LY_2026_CA_BY_FAM = YTD_2026_CA_BY_FAM.add(Q4_CA_BY_FAM, fill_value=0)
 LY_2026_TOTAL_CA = LY_2026_CA_BY_FAM.sum()
 
@@ -112,10 +164,10 @@ def build_q4_synth_table():
     return [
         ["Indicateur", "Valeur", "Détail"],
         ["Volume total Q4 2026", f"{fmt_t(Q4_TOTAL_T)} t", "8 familles, 121 produits, 25 agences"],
-        ["CA total Q4 2026", f"{fmt_ca(Q4_TOTAL_CA)} M FCFA", "Prix soja: Q4=17 170 (moyen YTD) / 2027=16 800 (médiane)"],
-        ["Période", "Sept-Déc 2026 (4 mois)", "Saison haute (35-46% du volume annuel)"],
+        ["CA total Q4 2026", f"{fmt_ca(Q4_TOTAL_CA)} M FCFA", f"Prix soja: Q4={PRIX_MOY_POND_YTD:.0f} (moyen pondéré YTD Jan-Sep) / 2027={PRIX_MEDIAN_YTD:.0f} (médiane Jan-Sep)"],
+        ["Période", "Sept réel + Oct-Déc fcst", "Saison haute (35-46% du volume annuel)"],
         ["Scénario", "S3 (réappro 100%)", "80 000 sacs au 15/09/2026"],
-        ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
+        ["Données historiques", f"{len(hist_df):,} enregistrements".replace(',', ' '), "Jan 2023 - Sep 2026 + En cours/Validées"],
         ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "Cap à moyenne S1 2026"],
         ["ALIMENT_COMPLET", f"{fmt_t(Q4_FAM[Q4_FAM['family']=='ALIMENT_COMPLET']['t'].iloc[0])} t / {fmt_ca(Q4_FAM[Q4_FAM['family']=='ALIMENT_COMPLET']['ca'].iloc[0])} M FCFA", "Prophet + facteur reprise +15% (post-2024)"],
         ["PREMIX", f"{fmt_t(Q4_FAM[Q4_FAM['family']=='PREMIX']['t'].iloc[0])} t / {fmt_ca(Q4_FAM[Q4_FAM['family']=='PREMIX']['ca'].iloc[0])} M FCFA", "Prophet (avec volumes)"],
@@ -137,7 +189,7 @@ def build_q4_fam_table():
     return rows
 
 def build_q4_month_table():
-    month_names = {9: "Septembre 2026", 10: "Octobre 2026", 11: "Novembre 2026", 12: "Décembre 2026"}
+    month_names = {9: "Septembre 2026 (réel)", 10: "Octobre 2026", 11: "Novembre 2026", 12: "Décembre 2026"}
     rows = [["Mois", "Volume (t)", "CA (M FCFA)", "Part CA"]]
     for m in [9, 10, 11, 12]:
         sub = Q4_MONTH[Q4_MONTH['month']==m]
@@ -148,7 +200,7 @@ def build_q4_month_table():
 
 def build_q4_ytd_table():
     fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE']
-    rows = [["Famille", "YTD 2026 (t)", "Q4 fcst (t)", "Total 2026 (t)"]]
+    rows = [["Famille", "YTD 2026 (t)", "Oct-Déc fcst (t)", "Total 2026 (t)"]]
     total_ytd = 0
     total_q4 = 0
     for fam in fam_order:
@@ -168,7 +220,7 @@ def build_q4_ytd_table():
 def build_q4_fam_detail_table():
     """Pour guide méthodologique Q4 - avec colonne méthode"""
     methods = {
-        'TOURTEAUX': "Prophet + prix 17 170 (moyen YTD 2026)",
+        'TOURTEAUX': f"Prophet + prix {PRIX_MOY_POND_YTD:.0f} (moyen pondéré YTD Jan-Sep 2026)",
         'CONCENTRES': "Prophet + bundle 2.5:1",
         'ALIMENT_COMPLET': "Prophet + filtrage 2024 + reprise +15%",
         'INGREDIENTS': "Prophet + prix 2026 réels",
@@ -195,7 +247,7 @@ def build_q4_month_detail_table():
         11: "Maintien",
         12: "Fêtes de fin d'année",
     }
-    month_names = {9: "Septembre 2026", 10: "Octobre 2026", 11: "Novembre 2026", 12: "Décembre 2026"}
+    month_names = {9: "Septembre 2026 (réel)", 10: "Octobre 2026", 11: "Novembre 2026", 12: "Décembre 2026"}
     rows = [["Mois", "Volume (t)", "CA (M FCFA)", "Part CA", "Lecture"]]
     for m in [9, 10, 11, 12]:
         sub = Q4_MONTH[Q4_MONTH['month']==m]
@@ -208,10 +260,10 @@ def build_2027_synth_table():
     return [
         ["Indicateur", "Valeur", "Détail"],
         ["Volume total 2027", f"{fmt_t(F2027_TOTAL_T)} t", "8 familles, 121 produits, 25 agences"],
-        ["CA total 2027", f"{fmt_ca(F2027_TOTAL_CA)} M FCFA", "Prix soja: Q4=17 170 (moyen YTD) / 2027=16 800 (médiane)"],
+        ["CA total 2027", f"{fmt_ca(F2027_TOTAL_CA)} M FCFA", "Prix soja: Q4=17 678 (moyen pondéré YTD Jan-Sep) / 2027=16 550 (médiane Jan-Sep)"],
         ["Période", "12 mois (Jan-Déc 2027)", "Forecast complet annuel"],
         ["Scénario", "S3 (réappro 100%)", "Situation normale"],
-        ["Données historiques", "176 576 enregistrements", "Jan 2023 - Août 2026 + En cours/Validées"],
+        ["Données historiques", f"{len(hist_df):,}".replace(',', ' ') + " enregistrements", "Jan 2023 - Sep 2026 (sept réel) + En cours/Validées"],
         ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "Cap à moyenne S1 2026"],
         ["ALIMENT_COMPLET", f"{fmt_t(F2027_FAM[F2027_FAM['family']=='ALIMENT_COMPLET']['t'].iloc[0])} t / {fmt_ca(F2027_FAM[F2027_FAM['family']=='ALIMENT_COMPLET']['ca'].iloc[0])} M FCFA", "Prophet + facteur reprise +15% (post-2024)"],
         ["PREMIX", f"{fmt_t(F2027_FAM[F2027_FAM['family']=='PREMIX']['t'].iloc[0])} t / {fmt_ca(F2027_FAM[F2027_FAM['family']=='PREMIX']['ca'].iloc[0])} M FCFA", "Prophet (avec volumes)"],
@@ -290,7 +342,7 @@ def build_2027_hist_table():
 def build_2027_fam_detail_table():
     """Pour document stratégique 2027 - avec colonne méthode"""
     methods = {
-        'TOURTEAUX': "Prophet + prix 17 170 (moyen YTD 2026)",
+        'TOURTEAUX': f"Prophet + prix {PRIX_MEDIAN_YTD:.0f} (médiane mensuelle YTD Jan-Sep 2026)",
         'CONCENTRES': "Prophet + bundle 2.5:1",
         'ALIMENT_COMPLET': "Prophet + filtrage 2024 + reprise +15%",
         'INGREDIENTS': "Prophet + prix 2026 réels",
@@ -321,11 +373,11 @@ def build_2027_q_detail_table():
     return rows
 
 def build_2026_full_year_table():
-    """Réalisation 2026 complète = YTD réel (Jan-Août) + Q4 forecast (Sept-Déc) par famille.
+    """Réalisation 2026 complète = YTD réel (Jan-Sep) + forecast Oct-Déc par famille.
     Affiché dans le résumé exécutif 2027 pour retracer l'année 2026 avant le forecast 2027."""
     fam_order = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX',
                  'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE', 'MAIS']
-    rows = [["Famille", "YTD réel (t)", "Q4 fcst (t)", "Total 2026 (t)", "2027 fcst (t)", "Δ Vol %"]]
+    rows = [["Famille", "YTD réel (t)", "Oct-Déc fcst (t)", "Total 2026 (t)", "2027 fcst (t)", "Δ Vol %"]]
     total_ytd = 0
     total_q4 = 0
     total_2026 = 0
@@ -488,10 +540,10 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Contexte</b>", H3))
 story.append(Paragraph(
     "BELGOCAM SA doit anticiper ses volumes de ventes et son chiffre d'affaires pour le Q4 2026 "
-    "(septembre - décembre). Cette  du forecast s'appuie sur <b>176 576 enregistrements</b> "
-    "couvrant <b>44 mois d'historique</b> (janvier 2023 - août 2026), intégrant les commandes En cours et "
-    "Validées d'août 2026. L'effet soja exceptionnel de juillet-août 2026 (rupture concurrente) a été "
-    "<b>désaisonnalisé</b>. Le prix du soja a été actualisé à <b>Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)</b> (hausse du 24/08/2026).",
+    "(septembre - décembre). Cette  du forecast s'appuie sur <b>264 759 enregistrements</b> "
+    "couvrant <b>45 mois d'historique</b> (janvier 2023 - septembre 2026, septembre réel inclus), intégrant les commandes En cours et "
+    "Validées de septembre 2026. L'effet soja exceptionnel de juillet-août 2026 (rupture concurrente) a été "
+    "<b>désaisonnalisé</b>. Le prix du soja a été actualisé à <b>Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)</b> (hausse du 24/08/2026, baisse tarifaire du 22/09/2026).",
     BODY))
 story.append(Paragraph(
     "<b>MÉTHODOLOGIE</b> : (1) Intégration de l'année 2023 (4 ans d'historique au total). "
@@ -536,12 +588,11 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Évolution du prix moyen du soja (T102 50kg) — Argumentaire de justification</b>", H3))
 story.append(Paragraph(
     "Le tableau ci-dessous présente l\'évolution du prix moyen pondéré du soja (CA TTC / quantité) "
-    "sur la période Oct 2025 → Juin 2026. Cette période couvre 9 mois de ventes « normales » "
-    "(hors hausse circonstancielle de juillet-août 2026 liée à la rupture concurrente). "
-    "Le prix moyen pondéré sur 9 mois (Oct 2025 → Juin 2026) est de <b>16 090 FCFA/sac</b>. La médiane YTD 2026 (Jan-Août) est de <b>16 800 FCFA/sac</b>. La moyenne pondérée YTD 2026 est de <b>17 170 FCFA/sac</b>, utilisé comme prix de référence "
-    "pour le forecast 2027. Pour le Q4 2026, la <b>moyenne pondérée</b> de 17 170 FCFA/sac est utilisée (plus représentative "
-    "des prix de fin d\'année). Ces prix excluent volontairement la hausse circonstancielle de juillet-août 2026 "
-    "(prix atteignant 25 000 FCFA/sac) qui n\'est pas soutenable sur 12 mois.",
+    "d\'Oct 2025 à Sept 2026. La hausse de juillet-août 2026 est liée à la rupture concurrente ; "
+    "la baisse tarifaire du 22/09/2026 (-37%) a fait passer la cadence journalière de 139 t/j à 278 t/j (+100%). "
+    f"Sur l\'année 2026 (Jan-Sep), la <b>moyenne pondérée YTD</b> s\'établit à <b>{PRIX_MOY_POND_YTD:.0f} FCFA/sac</b> (utilisée pour le Q4 2026, la plus représentative des prix de fin d\'année) "
+    f"et la <b>médiane mensuelle YTD</b> à <b>{PRIX_MEDIAN_YTD:.0f} FCFA/sac</b> (utilisée pour le forecast 2027). "
+    "Le pic circonstanciel de juillet-août (jusqu\'à 25 000 FCFA/sac) n\'est pas soutenable sur 12 mois.",
     BODY))
 
 soja_price_data = [
@@ -555,17 +606,18 @@ soja_price_data = [
     ["Avr 2026", "83 128", "1 296", "15 586", "15 000", "18 490", "15 600"],
     ["Mai 2026", "96 788", "1 508", "15 580", "15 000", "18 490", "15 600"],
     ["Juin 2026", "144 091", "2 432", "16 876", "15 000", "20 490", "16 990"],
-    ["TOTAL", "963 740", "15 507", "17 170", "14 700", "21 215", "17 170"],
+    ["Sept 2026 (réel)", f"{_sep_sacs:,.0f}".replace(',', ' '), fmt_ca(_sep_ca), f"{_sep_prix:.0f}", f"{_sep_prix_min:.0f}", f"{_sep_prix_max:.0f}", f"{_sep_prix:.0f}"],
+    ["TOTAL", "963 740", "15 507", "16 090", "14 700", "21 215", "16 090"],
 ]
 story.append(make_table(soja_price_data, col_widths=[2*cm, 2.2*cm, 2.2*cm, 2.2*cm, 1.8*cm, 1.8*cm, 1.8*cm], font_size=7.5))
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph(
     "<b>Lecture</b> : Le prix moyen pond\u00e9r\u00e9 Oct 2025 \u2192 Juin 2026 = <b>16 090 FCFA/sac</b>. "
-    "La m\u00e9diane YTD 2026 (Jan-Ao\u00fbt) = <b>16 800 FCFA/sac</b>. La moyenne pond\u00e9r\u00e9e YTD 2026 = <b>17 170 FCFA/sac</b>. "
-    "avec un creux en Avril-Mai (15 580-15 586) et un pic en Juin (16 876) qui précède la hausse circonstancielle "
-    "de Juillet-Août. <b>Le forecast 2027 utilise 16 800 FCFA/sac</b> (médiane YTD 2026), "
-    "et le forecast Q4 2026 utilise <b>17 170 FCFA/sac</b> (moyenne pondérée YTD 2026).",
+    f"Sur l\'ann\u00e9e 2026 (Jan-Sep), la moyenne pond\u00e9r\u00e9e YTD = <b>{PRIX_MOY_POND_YTD:.0f} FCFA/sac</b> et la m\u00e9diane mensuelle YTD = <b>{PRIX_MEDIAN_YTD:.0f} FCFA/sac</b>. "
+    "avec un creux en Avril-Mai (15 580-15 586), un pic en Juin (16 876), la hausse circonstancielle "
+    f"de Juillet-Août, puis la baisse tarifaire du 22/09/2026 (prix moyen septembre : {_sep_prix:.0f} FCFA/sac). <b>Le forecast 2027 utilise {PRIX_MEDIAN_YTD:.0f} FCFA/sac</b> (médiane mensuelle YTD Jan-Sep 2026), "
+    f"et le forecast Q4 2026 utilise <b>{PRIX_MOY_POND_YTD:.0f} FCFA/sac</b> (moyenne pondérée YTD Jan-Sep 2026).",
     BODY))
 story.append(Spacer(1, 0.3*cm))
 
@@ -589,8 +641,8 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Conclusion</b>", H3))
 story.append(Paragraph(
     f"Le forecast Q4 2026 projette <b>{fmt_t(Q4_TOTAL_T)} tonnes</b> pour un CA de <b>{fmt_ca(Q4_TOTAL_CA)} M FCFA</b>. "
-    "La désaisonnalisation de l'effet soja exceptionnel, l'actualisation du prix à Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026), "
-    "l'intégration de l'année 2023 (44 mois d'historique), l'ajout de la famille COMPLEMENT_ALIMENTAIRE "
+    "La désaisonnalisation de l'effet soja exceptionnel, l'actualisation du prix à Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep), "
+    "l'intégration de l'année 2023 (45 mois d'historique), l'ajout de la famille COMPLEMENT_ALIMENTAIRE "
     f"(V300 1L only), le filtrage du creux 2024 pour ALIMENT_COMPLET, et le passage de PREMIX en Prophet avec volumes "
     f"permettent une projection réaliste. Le pic d'octobre ({fmt_t(_oct_t)} t) nécessitera une "
     "anticipation renforcée du réapprovisionnement soja.",
@@ -609,10 +661,10 @@ story.extend(cover_page("Proposition de Projet", "Forecast Q4 2026", "PROPOSITIO
 story.append(Paragraph("1. Contexte et justification", H1))
 story.append(Paragraph(
     "BELGOCAM SA doit anticiper ses volumes et CA pour le Q4 2026 (sept-déc). Cette  s'appuie sur "
-    "44 mois d'historique (Jan 2023 - Août 2026) et intègre les innovations suivantes : ajout de la famille "
+    "45 mois d'historique (Jan 2023 - Sep 2026) et intègre les innovations suivantes : ajout de la famille "
     "COMPLEMENT_ALIMENTAIRE (BELGOKILL V300 1L only, V305 200L exclu, 1L=1kg), intégration de l'année 2023, "
     "désaisonnalisation de l'effet soja, inclusion des commandes En cours/Validées, actualisation du prix soja "
-    "à Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026). Le forecast couvre 8 familles, 121 produits et 25 agences.",
+    "à Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep). Le forecast couvre 8 familles, 121 produits et 25 agences.",
     BODY))
 
 story.append(Paragraph("2. Objectifs", H1))
@@ -626,9 +678,9 @@ objs = [
     "Modéliser la tendance et la saisonnalité mensuelles via Prophet (5 familles alimentaires)",
     "Désaisonnaliser l'effet soja exceptionnel de juillet-août 2026",
     "Intégrer les commandes En cours et Validées comme potentielles ventes Livrées",
-    "Actualiser le prix soja à Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026) (hausse du 24/08/2026)",
+    "Actualiser le prix soja à Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep) (hausse du 24/08/2026)",
     "Ajouter la famille COMPLEMENT_ALIMENTAIRE (V300 1L only, 1L=1kg)",
-    "Intégrer l'année 2023 (44 mois d'historique au total)",
+    "Intégrer l'année 2023 (45 mois d'historique au total)",
     "MATERIEL_ELEVAGE toujours à 0 en tonnes",
     "Exclure le Maïs, les produits opportunistes et V305 (BELGOKILL 200L)",
     "Produire les livrables PACE complets (8 documents)",
@@ -646,9 +698,9 @@ scope_data = [
     ["Régions", "Ouest, Centre, Littoral", "3 régions"],
     ["Niveau détail", "Produit × Agence × Mois", "4 569 lignes"],
     ["Scénario", "S3 - Réappro soja 100%", "1 scénario"],
-    ["Données historiques", "176 576 enregistrements (Jan 2023 - Août 2026)", "44 mois"],
+    ["Données historiques", "264 759 + septembre réel (Jan 2023 - Sep 2026)", "45 mois"],
     ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "—"],
-    ["Prix soja", "Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)", "—"],
+    ["Prix soja", "Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)", "—"],
     ["COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "9 produits"],
 ]
 story.append(make_table(scope_data, col_widths=[3.5*cm, 9.5*cm, 4*cm], font_size=9, highlight_rows=[11, 12]))
@@ -657,12 +709,12 @@ story.append(Paragraph("4. Méthodologie PACE", H1))
 story.append(Paragraph(
     "La méthodologie PACE (Prepare-Analyze-Construct-Execute) structure le projet en 4 phases. "
     "L'innovation majeure est l'ajout de la famille COMPLEMENT_ALIMENTAIRE avec proxy BELGOKILL V300 1L "
-    "et l'utilisation de 44 mois d'historique (Jan 2023 - Août 2026).",
+    "et l'utilisation de 45 mois d'historique (Jan 2023 - Sep 2026).",
     BODY))
 
 pace_data = [
     ["Phase", "Activités", "Livrables"],
-    ["P - PREPARE", "Consolidation 176 576 records + En cours/Validées, désaisonnalisation soja, ajout COMPLEMENT_ALIM.", "Dataset 2023-2026, prix Q4"],
+    ["P - PREPARE", "Consolidation 264 759 records + En cours/Validées, désaisonnalisation soja, ajout COMPLEMENT_ALIM.", "Dataset 2023-2026, prix Q4"],
     ["A - ANALYZE", "AED, saisonnalité 2023-2025, top produits/agences", "Graphiques, synthèse AED"],
     ["C - CONSTRUCT", "Prophet (5 familles × 3 régions) + extrapolation (2 familles), forecast Q4 S3", "Forecast Q4 2026 (4 569 lignes)"],
     ["E - EXECUTE", "Excel 8 feuilles, 5 PDFs PACE, graphiques", "8 livrables finaux"],
@@ -683,8 +735,8 @@ story.append(make_table(team_data, col_widths=[4.5*cm, 8.5*cm, 4*cm], font_size=
 story.append(Paragraph("6. Risques et mitigation", H1))
 risks_data = [
     ["Risque", "Probabilité", "Mitigation"],
-    ["Historique 44 mois — suffisant pour Prophet", "Faible", "Mise à jour trimestrielle"],
-    ["Prix soja volatil (+47% en 2 mois)", "Élevée", "Prix actualisé 17 170 FCFA, scénario S3"],
+    ["Historique 45 mois — suffisant pour Prophet", "Faible", "Mise à jour trimestrielle"],
+    ["Prix soja volatil (+47% en 2 mois)", "Élevée", "Prix actualisé 17 678 FCFA, scénario S3"],
     ["Effet soja 2026 non récurrent en Q4", "Élevée", "Cap désaisonnalisation à moyenne S1"],
     ["Commandes En cours/Validées non converties", "Faible", "Filtre qualité, exclusion Annulées"],
     ["V305 exclu — BELGOKILL 200L absent", "Faible", "V300 1L utilisé comme proxy suffisant"],
@@ -696,7 +748,7 @@ success = [
     "Forecast Q4 2026 produit sur 4 mois avec désagrégation complète (4 569 lignes)",
     "Désaisonnalisation effective de l'effet soja exceptionnel",
     "En cours et Validées intégrés comme potentielles ventes",
-    "Prix soja actualisé à Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)",
+    "Prix soja actualisé à Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)",
     "Famille COMPLEMENT_ALIMENTAIRE ajoutée avec proxy BELGOKILL V300 1L",
     "Écart forecast vs réalité ≤ 15% par mois",
     "Livrables PACE complets (8 documents) produits et diffusés",
@@ -741,7 +793,7 @@ raci_matrix = [
     ["Phase", "Tâche", "DA", "DC", "DP", "DG", "CG", "RA"],
     ["PREPARE", "1.1 Consolidation 2023-2026 + En cours/Validées", "R/A", "I", "C", "I", "I", "I"],
     ["", "1.2 Désaisonnalisation effet soja", "R/A", "C", "C", "I", "I", "I"],
-    ["", "1.3 Calcul prix Q4 (soja 17 170)", "R/A", "C", "I", "I", "C", "I"],
+    ["", "1.3 Calcul prix Q4 (soja 17 678)", "R/A", "C", "I", "I", "C", "I"],
     ["", "1.4 Ajout COMPLEMENT_ALIMENTAIRE (V300 1L)", "R/A", "C", "I", "I", "I", "I"],
     ["", "1.5 Validation dataset", "R", "C", "C", "I", "A", "I"],
     ["ANALYZE", "2.1 AED + saisonnalité 2023-2025", "R/A", "I", "I", "I", "I", "I"],
@@ -787,7 +839,7 @@ story.append(Paragraph("1. Vision et objectifs", H1))
 story.append(Paragraph("1.1 Vision", H2))
 story.append(Paragraph(
     f"Faire du forecast Q4 2026 un <b>outil de planification opérationnelle</b> permettant à BELGOCAM SA d'anticiper "
-    f"{fmt_t(Q4_TOTAL_T)} tonnes de ventes et {fmt_ca(Q4_TOTAL_CA)} M FCFA de chiffre d'affaires sur la période septembre-décembre 2026, "
+    f"{fmt_t(Q4_TOTAL_T)} tonnes de ventes et {fmt_ca(Q4_TOTAL_CA)} M FCFA de chiffre d'affaires sur la période septembre-décembre 2026 (septembre réel + octobre-décembre forecast), "
     "avec une désaisonnalisation de l'effet soja exceptionnel et l'intégration de la famille COMPLEMENT_ALIMENTAIRE.",
     BODY))
 
@@ -797,7 +849,7 @@ obj_data = [
     ["Forecast Q4", "4 mois Sept-Dec 2026 en volume + valeur", f"{fmt_t(Q4_TOTAL_T)} t, {fmt_ca(Q4_TOTAL_CA)} M FCFA"],
     ["Désaisonnalisation", "Neutraliser l'effet soja Jul-Août 2026", "Cap moyenne S1 2026"],
     ["En cours + Validées", "Intégrer comme potentielles ventes", "255 commandes incluses"],
-    ["Prix actualisé", "Soja Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)", "vs 17 170 médian 2023-2026"],
+    ["Prix actualisé", "Soja Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)", "vs 17 678 moyenne pondérée YTD Jan-Sep"],
     ["Désagrégation", "Produit × agence × mois", f"{len(q4_df):,} lignes".replace(',', ' ')],
     ["COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", f"{fmt_t(Q4_FAM[Q4_FAM['family']=='COMPLEMENT_ALIMENTAIRE']['t'].iloc[0])} t, {fmt_ca(Q4_FAM[Q4_FAM['family']=='COMPLEMENT_ALIMENTAIRE']['ca'].iloc[0])} M FCFA"],
 ]
@@ -810,9 +862,9 @@ sources_data = [
     ["LY_21_24 (filtre 2023)", "Jan-Dec 2023", "6 016"],
     ["LY_24 (Jul-Dec 2024)", "Juillet-Décembre 2024", "52 215"],
     ["Historique 2025", "Jan-Déc 2025", "66 206"],
-    ["S1 + Juil + Août 2026", "Jan-Août 2026", "52 139"],
-    ["En cours + Validées", "Août 2026", "~255"],
-    ["TOTAL", "44 mois", "176 576"],
+    ["S1 + Juil + Août + Sept 2026", "Jan-Sep 2026", f"{52139 + len(sep_act):,}".replace(',', ' ')],
+    ["En cours + Validées", "Sept 2026", "~255"],
+    ["TOTAL", "45 mois", f"{len(hist_df):,}".replace(',', ' ')],
 ]
 story.append(make_table(sources_data, col_widths=[5*cm, 5*cm, 5*cm], font_size=9))
 
@@ -867,7 +919,7 @@ story.append(make_table(deploy_data, col_widths=[1*cm, 3*cm, 7*cm, 6*cm], font_s
 story.append(Paragraph("6. Conclusion", H1))
 story.append(Paragraph(
     f"Le forecast Q4 2026 projette <b>{fmt_t(Q4_TOTAL_T)} tonnes</b> pour <b>{fmt_ca(Q4_TOTAL_CA)} M FCFA</b>. La désaisonnalisation "
-    "de l'effet soja, l'actualisation du prix à 16 800 FCFA (médiane) pour 2027 et 17 170 (moyen) pour Q4 2026, l'intégration de l'année 2023 (44 mois d'historique), "
+    "de l'effet soja, l'actualisation du prix à 16 550 FCFA (médiane Jan-Sep) pour 2027 et 17 678 (moyen pondéré YTD Jan-Sep) pour Q4 2026, l'intégration de l'année 2023 (45 mois d'historique),"
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only), le filtrage du creux 2024 pour ALIMENT_COMPLET, le passage de PREMIX en Prophet avec volumes, et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     f"permettent une projection réaliste. Le pic d'octobre ({fmt_t(Q4_MONTH[Q4_MONTH['month']==10]['t'].iloc[0])} t) nécessitera une anticipation renforcée "
     "du réapprovisionnement soja.",
@@ -904,11 +956,11 @@ story.append(Paragraph(
     "(septembre-décembre 2026) avec 8 familles de produits (incluant la nouvelle famille COMPLEMENT_ALIMENTAIRE) "
     "et 25 agences. Les innovations : "
     "(1) ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 BELGOKILL 1L only, V305 200L EXCLU, 1L=1kg), "
-    "(2) intégration de l'année 2023 (44 mois d'historique au total), "
+    "(2) intégration de l'année 2023 (45 mois d'historique au total), "
     "(3) MATERIEL_ELEVAGE toujours à 0 tonne (non exprimable en volume), "
     "(4) désaisonnalisation de l'effet soja, "
     "(5) inclusion des commandes En cours/Validées, "
-    "(6) actualisation du prix soja à Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026).",
+    "(6) actualisation du prix soja à Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep).",
     BODY))
 
 story.append(Paragraph("2. Méthodologie PACE", H1))
@@ -917,7 +969,7 @@ story.append(Paragraph(
     BODY))
 pace_detail = [
     ["Phase", "Objectif", "Livrables", "Durée"],
-    ["P - PREPARE", "Préparer données 2023-2026 + désaisonnalisation + COMPLEMENT_ALIM.", "Dataset 176 576 records, prix Q4", "2 jours"],
+    ["P - PREPARE", "Préparer données 2023-2026 + désaisonnalisation + COMPLEMENT_ALIM.", "Dataset 264 759 records, prix Q4", "2 jours"],
     ["A - ANALYZE", "Comprendre données + effet soja", "Graphiques, synthèse AED", "1 jour"],
     ["C - CONSTRUCT", "Modéliser Prophet Q4 (8 familles)", "Forecast Q4 2026 (4 569 lignes)", "2 jours"],
     ["E - EXECUTE", "Produire livrables finaux", "Excel + 5 PDFs", "1 jour"],
@@ -939,9 +991,9 @@ story.append(make_table(stack_data, col_widths=[4*cm, 3*cm, 8*cm], font_size=9))
 story.append(PageBreak())
 story.append(Paragraph("4. Phase PREPARE - Données 2023-2026", H1))
 story.append(Paragraph(
-    "Le dataset consolidé couvre 44 mois (janvier 2023 - août 2026), soit 176 576 enregistrements. "
+    "Le dataset consolidé couvre 45 mois (janvier 2023 - septembre 2026, septembre réel inclus), soit 264 759 enregistrements + septembre 2026. "
     "Les sources sont : LY_21_24 filtre 2023 (6 016 records), LY_24 Jul-Dec 2024 (52 215), "
-    "Historique 2025 (66 206), S1+Juil+Août 2026 (52 139), En cours + Validées (~255).",
+    f"Historique 2025 (66 206), S1+Juil+Août+Sept 2026 ({(52139 + len(sep_act)):,}".replace(',', ' ') + "), En cours + Validées (~255).",
     BODY))
 story.append(Paragraph(
     "<b>Intégration de l'année 2023</b> : La  inclut 2023 pour enrichir l'historique avec 4 ans "
@@ -1016,7 +1068,7 @@ story.append(Paragraph("8. Phase CONSTRUCT - Prophet", H1))
 story.append(Paragraph(
     "15 modèles Prophet famille × région (5 familles × 3 régions) + extrapolation Q4 moyenne pour MATERIEL_ELEVAGE "
     "et PREMIX (2 familles × 3 régions = 6 extrapolations). Désagrégation par produit × agence selon parts "
-    "historiques de CA. Prix Q4 2026 : Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026) soja, prix août 2026 autres familles, prix par litre "
+    "historiques de CA. Prix Q4 2026 : Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep) soja, prix août 2026 autres familles, prix par litre "
     "pour COMPLEMENT_ALIMENTAIRE (2 500-15 000 FCFA/L selon produit).",
     BODY))
 
@@ -1052,7 +1104,7 @@ glossaire = [
     ["SPC PK15 forfait", "Forfait réaliste 1 M/an (0.5 ALV + 0.5 MAT)"],
     [" V305 EXCLU", "BELGOKILL 200L retiré du forecast (seul V300 1L conservé)"],
     [" 1L=1kg", "Conversion pour volumes liquides en tonnes"],
-    [" Données 2023-2026", "44 mois d'historique (Jan 2023 - Août 2026)"],
+    [" Données 2023-2026", "45 mois d'historique (Jan 2023 - Sep 2026)"],
     ["MATERIEL_ELEVAGE", "Toujours 0 en tonnes (CA only). ALVEOLES désormais séparés en famille distincte"],
 ]
 story.append(make_table(glossaire, col_widths=[5*cm, 11*cm], font_size=9, highlight_rows=[7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]))
@@ -1086,13 +1138,13 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Contexte</b>", H3))
 story.append(Paragraph(
     "BELGOCAM SA doit anticiper ses volumes de ventes et son chiffre d'affaires pour l'année 2027 complète. "
-    "Cette  s'appuie sur <b>176 576 enregistrements</b> couvrant <b>44 mois d'historique</b> "
-    "(janvier 2023 - août 2026), intégrant les commandes En cours et Validées d'août 2026. "
+    "Cette  s'appuie sur <b>264 759 enregistrements</b> couvrant <b>45 mois d'historique</b> "
+    "(janvier 2023 - septembre 2026, septembre réel inclus), intégrant les commandes En cours et Validées de septembre 2026. "
     "L'effet soja exceptionnel de juillet-août 2026 a été <b>désaisonnalisé</b>. Le prix du soja a été "
-    "actualisé à <b>Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)</b>.",
+    "actualisé à <b>Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)</b>.",
     BODY))
 story.append(Paragraph(
-    "<b>MÉTHODOLOGIE</b> : (1) Intégration de l'année 2023 (44 mois d'historique). "
+    "<b>MÉTHODOLOGIE</b> : (1) Intégration de l'année 2023 (45 mois d'historique). "
     "(2) Ajout de la famille <b>COMPLEMENT_ALIMENTAIRE</b> (BELGOKILL V300 1L only, V305 200L exclu, 1L=1kg). "
     "(3) MATERIEL_ELEVAGE toujours à 0 en tonnes.",
     BODY))
@@ -1154,10 +1206,10 @@ _ing_var_ca = (F2027_FAM[F2027_FAM['family']=='INGREDIENTS']['ca'].iloc[0]/LY_20
 _conc_var_ca = (F2027_FAM[F2027_FAM['family']=='CONCENTRES']['ca'].iloc[0]/LY_2026_CA_BY_FAM.get('CONCENTRES', 1) - 1) * 100 if LY_2026_CA_BY_FAM.get('CONCENTRES', 0) > 0 else 0
 _tour_var_ca = (F2027_FAM[F2027_FAM['family']=='TOURTEAUX']['ca'].iloc[0]/LY_2026_CA_BY_FAM.get('TOURTEAUX', 1) - 1) * 100 if LY_2026_CA_BY_FAM.get('TOURTEAUX', 0) > 0 else 0
 
-story.append(Paragraph("<b>Réalisation 2026 complète (Jan-Août réel + Q4 forecast)</b>", H3))
+story.append(Paragraph("<b>Réalisation 2026 complète (Jan-Sep réel + Oct-Déc fcst)</b>", H3))
 story.append(Paragraph(
-    "Le tableau ci-dessous retrace l'année 2026 dans son intégralité : volumes réalisés de janvier à août 2026 "
-    "(issus de l'ERP, <b>YTD réel</b>), auxquels s'ajoute le <b>forecast Q4 2026</b> (septembre-décembre, "
+    "Le tableau ci-dessous retrace l'année 2026 dans son intégralité : volumes réalisés de janvier à septembre 2026 "
+    "(issus de l'ERP, <b>YTD réel</b>), auxquels s'ajoute le <b>forecast Oct-Déc 2026</b> ("
     "scénario S3 réappro soja 100%). La colonne <b>Total 2026</b> représente l'année complète reconstruite, "
     "qui sert de base de comparaison au forecast 2027.",
     BODY))
@@ -1167,8 +1219,8 @@ story.append(make_table(realisation_2026_data, col_widths=[3.5*cm, 2.3*cm, 2.3*c
 story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph(
-    f"<b>Lecture</b> : L'année 2026 complète (réalisée + forecast Q4) s'établit à <b>{fmt_t(LY_2026_TOTAL_T)} t</b> "
-    f"(dont {fmt_t(YTD_2026_TOTAL_T)} t déjà réalisés sur Jan-Août et {fmt_t(Q4_TOTAL_T)} t en forecast Q4). "
+    f"<b>Lecture</b> : L'année 2026 complète (réalisée + forecast) s'établit à <b>{fmt_t(LY_2026_TOTAL_T)} t</b> "
+    f"(dont {fmt_t(YTD_2026_TOTAL_T)} t déjà réalisés sur Jan-Sep et {fmt_t(Q4_FCST_T)} t en forecast Oct-Déc). "
     f"Le forecast 2027 à {fmt_t(F2027_TOTAL_T)} t représente <b>{fmt_pct_signed(_var_t_total)}</b> vs 2026 hors MAIS "
     f"(le MAIS, opportuniste, est exclu du forecast 2027). La dynamique de croissance est portée par les "
     "CONCENTRÉS (bundle 2.5:1), ALIMENT_COMPLET (filtrage 2024 + reprise +15%) et PREMIX (restauré en Prophet avec volumes).",
@@ -1177,7 +1229,7 @@ story.append(Spacer(1, 0.3*cm))
 
 story.append(Paragraph("<b>Historique 2024-2026 vs Forecast 2027</b>", H3))
 story.append(Paragraph(
-    "Le forecast 2027 s'appuie sur l'historique 2024-2026 (Jan 2024 - Août 2026 réel + Q4 2026 forecast). "
+    "Le forecast 2027 s'appuie sur l'historique 2024-2026 (Jan 2024 - Sep 2026 réel + Oct-Déc 2026 forecast). "
     "Le tableau ci-dessous présente l'évolution par famille : Volume et CA pour 2024, 2025, 2026 LY (année complète) et 2027 forecast.",
     BODY))
 
@@ -1209,7 +1261,7 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Insights clés et argumentaires de justification</b>", H3))
 insights_data = [
     ["#", "Insight", "Justification"],
-    ["1", f"TOURTEAUX: {fmt_pct_signed(_tour_var_ca)} CA (prix 16 800 médiane YTD 2026)", "Prix 16 800 (médiane YTD 2026) — base de projection réaliste post-réappro"],
+    ["1", f"TOURTEAUX: {fmt_pct_signed(_tour_var_ca)} CA (prix 16 550 médiane Jan-Sep 2026)", "Prix 16 550 (médiane Jan-Sep 2026) — base de projection réaliste post-réappro"],
     ["2", f"CONCENTRÉS: {fmt_pct_signed(_conc_var_ca)} CA (bundle 2.5:1)", "Bundle 2.5:1 force CONCENTRÉS à la hausse quand ratio soja/concentré > 2,5 (26 ajustements 2027)"],
     ["3", f"ALIMENT_COMPLET: {fmt_pct_signed(_ac_var_t)} volume (filtrage 2024 + reprise +15%)", "Année 2024 exclue (anomalie circonstancielle corrigée), facteur reprise +15% pour capter la dynamique 2025→2026"],
     ["4", f"PREMIX: {fmt_t(_pm_2027_t)} t (restauration des volumes)", "Passage d'extrapolation CA-only à Prophet avec volumes — reflette mieux l'activité réelle"],
@@ -1224,7 +1276,7 @@ story.append(Spacer(1, 0.3*cm))
 story.append(Paragraph("<b>Argumentaire commercial pour le forecast 2027</b>", H3))
 story.append(Paragraph(
     f"Le forecast 2027 à <b>{fmt_t(F2027_TOTAL_T)} t ({fmt_pct_signed(_var_t_total)} vs 2026)</b> et <b>{fmt_ca(F2027_TOTAL_CA)} M FCFA ({fmt_pct_signed(_var_ca_total)})</b> reflète plusieurs dynamiques : "
-    f"(1) <b>Effet prix soja</b> (16 800 médiane YTD 2026) → CA TOURTEAUX qui représente 51% du CA total. "
+    f"(1) <b>Effet prix soja</b> (16 550 médiane Jan-Sep 2026) → CA TOURTEAUX qui représente 51% du CA total. "
     f"(2) <b>Bundle 2.5:1</b> applique une discipline commerciale historique — quand le soja domine (rupture 2026), "
     "le concentré doit suivre proportionnellement. "
     f"(3) <b>Forfait SPC révisé</b> reflète la réalité 2026 (ALV=0 car activité nulle, MAT=38,4 M annualisé). "
@@ -1254,7 +1306,7 @@ story.append(Paragraph("<b>Conclusion</b>", H3))
 story.append(Paragraph(
     f"Le forecast 2027 projette <b>{fmt_t(F2027_TOTAL_T)} tonnes</b> pour un CA de <b>{fmt_ca(F2027_TOTAL_CA)} M FCFA</b> "
     f"({fmt_pct_signed(_var_t_total)} volume, {fmt_pct_signed(_var_ca_total)} CA vs 2026). La désaisonnalisation "
-    "de l'effet soja, l'actualisation du prix à 16 800 FCFA (médiane) pour 2027 et 17 170 (moyen) pour Q4 2026, l'intégration de l'année 2023 (44 mois d'historique), "
+    "de l'effet soja, l'actualisation du prix à 16 550 FCFA (médiane Jan-Sep) pour 2027 et 17 678 (moyen pondéré YTD Jan-Sep) pour Q4 2026, l'intégration de l'année 2023 (45 mois d'historique),"
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only), le filtrage du creux 2024 pour ALIMENT_COMPLET, et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     "permettent une projection réaliste. Le pic d'octobre nécessitera une anticipation renforcée du "
     "réapprovisionnement soja dès septembre 2027.",
@@ -1276,8 +1328,8 @@ story.extend(cover_page("Proposition de Projet", "Forecast 2027", "PROPOSITION D
 story.append(Paragraph("1. Contexte", H1))
 story.append(Paragraph(
     "BELGOCAM SA doit anticiper ses volumes et CA pour l'année 2027 complète. Cette  s'appuie sur "
-    "44 mois d'historique (Jan 2023 - Août 2026) et intègre : désaisonnalisation de l'effet soja exceptionnel, "
-    "inclusion des commandes En cours/Validées, actualisation du prix soja à Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026), "
+    "45 mois d'historique (Jan 2023 - Sep 2026) et intègre : désaisonnalisation de l'effet soja exceptionnel, "
+    "inclusion des commandes En cours/Validées, actualisation du prix soja à Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep), "
     "ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only, V305 200L exclu), intégration de l'année 2023, "
     "MATERIEL_ELEVAGE à 0 tonne. Le forecast couvre 8 familles, 121 produits et 25 agences.",
     BODY))
@@ -1293,9 +1345,9 @@ objs = [
     "Modéliser tendance + saisonnalité mensuelles via Prophet (5 familles)",
     "Désaisonnaliser l'effet soja exceptionnel de juillet-août 2026",
     "Intégrer les commandes En cours et Validées",
-    "Actualiser le prix soja à Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)",
+    "Actualiser le prix soja à Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)",
     " Ajouter COMPLEMENT_ALIMENTAIRE (V300 1L only, 1L=1kg)",
-    " Intégrer l'année 2023 (44 mois d'historique)",
+    " Intégrer l'année 2023 (45 mois d'historique)",
     " MATERIEL_ELEVAGE toujours à 0 tonne",
     "Exclure le Maïs, V305 (BELGOKILL 200L) et produits opportunistes",
     "Produire les livrables PACE complets",
@@ -1313,9 +1365,9 @@ scope_data = [
     ["Régions", "Ouest, Centre, Littoral", "3"],
     ["Niveau détail", "Produit × Agence × Mois", "13 704 lignes"],
     ["Scénario", "S3 - Réappro soja 100%", "1"],
-    ["Données historiques", "176 576 enregistrements (Jan 2023 - Août 2026)", "44 mois"],
+    ["Données historiques", "264 759 + septembre réel (Jan 2023 - Sep 2026)", "45 mois"],
     ["Désaisonnalisation", "Effet soja Jul-Août 2026 neutralisé", "—"],
-    ["Prix soja", "Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)", "—"],
+    ["Prix soja", "Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)", "—"],
     ["COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", "9 produits"],
     ["ALVEOLES séparé", "4 refs MAT011/14/15/17, tonnes=0", "CA only"],
 ]
@@ -1324,7 +1376,7 @@ story.append(make_table(scope_data, col_widths=[3.5*cm, 9.5*cm, 4*cm], font_size
 story.append(Paragraph("4. Méthodologie PACE", H1))
 pace_data = [
     ["Phase", "Activités", "Livrables"],
-    ["P - PREPARE", "Consolidation 176 576 records + En cours/Validées, désaisonnalisation soja, ajout COMPLEMENT_ALIM.", "Dataset 2023-2026, prix 2027"],
+    ["P - PREPARE", "Consolidation 264 759 records + En cours/Validées, désaisonnalisation soja, ajout COMPLEMENT_ALIM.", "Dataset 2023-2026, prix 2027"],
     ["A - ANALYZE", "AED, saisonnalité 2023-2025, top produits/agences", "Graphiques, synthèse AED"],
     ["C - CONSTRUCT", "Prophet (5 familles × 3 régions) + extrapolation (2 familles), forecast 12 mois S3", "Forecast 2027 (13 704 lignes)"],
     ["E - EXECUTE", "Excel 8 feuilles, 5 PDFs PACE", "8 livrables finaux"],
@@ -1345,8 +1397,8 @@ story.append(make_table(team_data, col_widths=[4.5*cm, 8.5*cm, 4*cm], font_size=
 story.append(Paragraph("6. Risques et mitigation", H1))
 risks_data = [
     ["Risque", "Probabilité", "Mitigation"],
-    ["Historique 44 mois — suffisant", "Faible", "Mise à jour trimestrielle"],
-    ["Prix soja volatil (+47% en 2 mois)", "Élevée", "Prix actualisé 17 170 FCFA, scénario S3"],
+    ["Historique 45 mois — suffisant", "Faible", "Mise à jour trimestrielle"],
+    ["Prix soja volatil (+47% en 2 mois)", "Élevée", "Prix actualisé 17 678 FCFA, scénario S3"],
     ["Effet soja 2026 non récurrent en 2027", "Élevée", "Cap désaisonnalisation à moyenne S1"],
     ["V305 exclu — BELGOKILL 200L absent", "Faible", "V300 1L utilisé comme proxy suffisant"],
     ["Nouvelles hausses tarifaires en 2027", "Moyenne", "Hypothèse prix stable en 2027"],
@@ -1357,7 +1409,7 @@ story.append(Paragraph("7. Critères de succès", H1))
 success = [
     "Forecast 2027 produit sur 12 mois avec désagrégation complète",
     "Désaisonnalisation effective de l'effet soja",
-    "Prix soja actualisé à Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)",
+    "Prix soja actualisé à Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)",
     "Famille COMPLEMENT_ALIMENTAIRE ajoutée (V300 1L only)",
     "Écart forecast vs réalité ≤ 15% par trimestre",
     "Livrables PACE complets (8 documents) produits et diffusés",
@@ -1402,7 +1454,7 @@ raci_matrix = [
     ["Phase", "Tâche", "DA", "DC", "DP", "DG", "CG", "RA"],
     ["PREPARE", "1.1 Consolidation 2023-2026 + En cours/Validées", "R/A", "I", "C", "I", "I", "I"],
     ["", "1.2 Désaisonnalisation effet soja", "R/A", "C", "C", "I", "I", "I"],
-    ["", "1.3 Calcul prix 2027 (soja 17 170)", "R/A", "C", "I", "I", "C", "I"],
+    ["", "1.3 Calcul prix 2027 (soja 16 550)", "R/A", "C", "I", "I", "C", "I"],
     ["", "1.4 Ajout COMPLEMENT_ALIMENTAIRE (V300 1L)", "R/A", "C", "I", "I", "I", "I"],
     ["", "1.5 Validation dataset", "R", "C", "C", "I", "A", "I"],
     ["ANALYZE", "2.1 AED + saisonnalité 2023-2025", "R/A", "I", "I", "I", "I", "I"],
@@ -1458,7 +1510,7 @@ obj_data = [
     ["Forecast annuel", "12 mois 2027 en volume + valeur", f"{fmt_t(F2027_TOTAL_T)} t, {fmt_ca(F2027_TOTAL_CA)} M FCFA"],
     ["Désaisonnalisation", "Neutraliser l'effet soja Jul-Août 2026", "Cap moyenne S1 2026"],
     ["En cours + Validées", "Intégrer comme potentielles ventes", "255 commandes incluses"],
-    ["Prix actualisé", "Soja Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026)", "vs 17 170 médian 2023-2026"],
+    ["Prix actualisé", "Soja Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep)", "vs 17 678 moyenne pondérée YTD Jan-Sep"],
     ["Désagrégation", "Produit × agence × mois", f"{len(f2027_df):,} lignes".replace(',', ' ')],
     ["Adoption", "Diffusion CODIR + 25 agences", "100% agences informées"],
     [" COMPLEMENT_ALIM.", "V300 1L only (V305 exclu), 1L=1kg", f"{fmt_t(F2027_FAM[F2027_FAM['family']=='COMPLEMENT_ALIMENTAIRE']['t'].iloc[0])} t, {fmt_ca(F2027_FAM[F2027_FAM['family']=='COMPLEMENT_ALIMENTAIRE']['ca'].iloc[0])} M FCFA"],
@@ -1473,9 +1525,9 @@ sources_data = [
     ["LY_21_24 (filtre 2023)", "Jan-Dec 2023", "6 016"],
     ["LY_24 (Jul-Dec 2024)", "Juillet-Décembre 2024", "52 215"],
     ["Historique 2025", "Jan-Déc 2025", "66 206"],
-    ["S1 + Juil + Août 2026", "Jan-Août 2026", "52 139"],
-    ["En cours + Validées", "Août 2026", "~255"],
-    ["TOTAL", "44 mois", "176 576"],
+    ["S1 + Juil + Août + Sept 2026", "Jan-Sep 2026", f"{52139 + len(sep_act):,}".replace(',', ' ')],
+    ["En cours + Validées", "Sept 2026", "~255"],
+    ["TOTAL", "45 mois", f"{len(hist_df):,}".replace(',', ' ')],
 ]
 story.append(make_table(sources_data, col_widths=[5*cm, 5*cm, 5*cm], font_size=9))
 
@@ -1535,7 +1587,7 @@ story.append(Paragraph("7. Conclusion", H1))
 story.append(Paragraph(
     f"Le forecast 2027 projette <b>{fmt_t(F2027_TOTAL_T)} tonnes</b> pour <b>{fmt_ca(F2027_TOTAL_CA)} M FCFA</b> "
     f"({fmt_pct_signed(_var_t_total)} volume, {fmt_pct_signed(_var_ca_total)} CA vs 2026 hors MAIS). La désaisonnalisation "
-    "de l'effet soja, l'actualisation du prix à 16 800 FCFA (médiane) pour 2027 et 17 170 (moyen) pour Q4 2026, l'intégration de l'année 2023 (44 mois d'historique), "
+    "de l'effet soja, l'actualisation du prix à 16 550 FCFA (médiane Jan-Sep) pour 2027 et 17 678 (moyen pondéré YTD Jan-Sep) pour Q4 2026, l'intégration de l'année 2023 (45 mois d'historique),"
     "l'ajout de la famille COMPLEMENT_ALIMENTAIRE (V300 1L only), le filtrage du creux 2024 pour ALIMENT_COMPLET, et le maintien de MATERIEL_ELEVAGE à 0 tonne "
     "permettent une projection réaliste.",
     BODY))
@@ -1570,14 +1622,14 @@ story.append(Paragraph(
     "Ce guide décrit la méthodologie complète du forecast 2027 de BELGOCAM SA (). Il couvre 12 mois "
     "(janvier-décembre 2027) avec 8 familles de produits (incluant COMPLEMENT_ALIMENTAIRE) et 25 agences. "
     "Innovations : (1) ajout COMPLEMENT_ALIMENTAIRE (V300 1L only, V305 200L EXCLU, 1L=1kg), "
-    "(2) intégration année 2023 (44 mois d'historique), (3) MATERIEL_ELEVAGE toujours 0 tonne, "
-    "(4) désaisonnalisation effet soja, (5) inclusion En cours/Validées, (6) prix soja 17 170 FCFA.",
+    "(2) intégration année 2023 (45 mois d'historique), (3) MATERIEL_ELEVAGE toujours 0 tonne, "
+    "(4) désaisonnalisation effet soja, (5) inclusion En cours/Validées, (6) prix soja 17 678 FCFA (Q4) / 16 550 FCFA (2027).",
     BODY))
 
 story.append(Paragraph("2. Méthodologie PACE", H1))
 pace_detail = [
     ["Phase", "Objectif", "Livrables", "Durée"],
-    ["P - PREPARE", "Préparer données 2023-2026 + désaisonnalisation + COMPLEMENT_ALIM.", "Dataset 176 576 records, prix 2027", "2 jours"],
+    ["P - PREPARE", "Préparer données 2023-2026 + désaisonnalisation + COMPLEMENT_ALIM.", "Dataset 264 759 records, prix 2027", "2 jours"],
     ["A - ANALYZE", "Comprendre données + effet soja", "Graphiques, synthèse AED", "1 jour"],
     ["C - CONSTRUCT", "Modéliser Prophet 12 mois (8 familles)", "Forecast 2027 (13 704 lignes)", "2 jours"],
     ["E - EXECUTE", "Produire livrables finaux", "Excel + 5 PDFs", "1 jour"],
@@ -1598,9 +1650,9 @@ story.append(make_table(stack_data, col_widths=[4*cm, 3*cm, 8*cm], font_size=9))
 story.append(PageBreak())
 story.append(Paragraph("4. Phase PREPARE - Données 2023-2026", H1))
 story.append(Paragraph(
-    "Le dataset consolidé couvre 44 mois (janvier 2023 - août 2026), soit 176 576 enregistrements. "
+    "Le dataset consolidé couvre 45 mois (janvier 2023 - septembre 2026, septembre réel inclus), soit 264 759 enregistrements + septembre 2026. "
     "Sources : LY_21_24 filtre 2023 (6 016), LY_24 Jul-Dec 2024 (52 215), Historique 2025 (66 206), "
-    "S1+Juil+Août 2026 (52 139), En cours + Validées (~255).",
+    f"S1+Juil+Août+Sept 2026 ({(52139 + len(sep_act)):,}".replace(',', ' ') + "), En cours + Validées (~255).",
     BODY))
 story.append(Paragraph(
     "<b>Intégration de l'année 2023</b> : La  inclut 2023 pour enrichir l'historique avec 4 ans "
@@ -1666,7 +1718,7 @@ story.append(Paragraph("8. Phase CONSTRUCT - Prophet", H1))
 story.append(Paragraph(
     "15 modèles Prophet famille × région (5 familles Prophet × 3 régions) + extrapolation pour MATERIEL_ELEVAGE "
     "et PREMIX (CA only, tonnes=0). Désagrégation par produit × agence selon parts historiques de CA. "
-    "Prix 2027 : Q4: 17 170 (moyen YTD 2026) / 2027: 16 800 (médiane YTD 2026) soja, prix par litre pour COMPLEMENT_ALIMENTAIRE (2 500-15 000 FCFA/L).",
+    "Prix 2027 : Q4: 17 678 (moyen pondéré YTD Jan-Sep) / 2027: 16 550 (médiane Jan-Sep) soja, prix par litre pour COMPLEMENT_ALIMENTAIRE (2 500-15 000 FCFA/L).",
     BODY))
 
 story.append(Paragraph("9. Phase EXECUTE - Livrables", H1))
@@ -1701,7 +1753,7 @@ glossaire = [
     ["SPC PK15 forfait", "Forfait réaliste 1 M/an (0.5 ALV + 0.5 MAT)"],
     [" V305 EXCLU", "BELGOKILL 200L retiré (seul V300 1L conservé)"],
     [" 1L=1kg", "Conversion pour volumes liquides en tonnes"],
-    [" Données 2023-2026", "44 mois d'historique (Jan 2023 - Août 2026)"],
+    [" Données 2023-2026", "45 mois d'historique (Jan 2023 - Sep 2026)"],
     ["MATERIEL_ELEVAGE", "Toujours 0 en tonnes (CA only). ALVEOLES désormais séparés en famille distincte"],
 ]
 story.append(make_table(glossaire, col_widths=[5*cm, 11*cm], font_size=9, highlight_rows=[7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]))

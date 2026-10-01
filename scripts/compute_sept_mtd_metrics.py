@@ -1,17 +1,18 @@
-"""Compute September MTD metrics from NJS GROUP ERP extraction (33).xlsx.
+"""Compute September MTD metrics from NJS GROUP ERP extraction (51).xlsx (mois complet 01-30/09/2026).
 Based on compute_aout_mtd_metrics.py — adapted for September 2026.
 
 Outputs:
-- /home/z/my-project/scripts/sept_mtd_01.json  (latest metrics)
+- /home/z/my-project/scripts/sept_mtd_10.json  (latest metrics, mois complet)
 """
 import openpyxl
+import os
 from collections import defaultdict, Counter
 from datetime import datetime, date, timedelta
 import json
 import re
 
-# Source (latest extraction: (36).xlsx as of 11/09/2026)
-SEPT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (6) (1).xlsx"
+# Source (extraction complete 01-30/09/2026)
+SEPT_SRC = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx"
 
 # Product refs
 SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}
@@ -54,12 +55,14 @@ AGENCE_MAP = {
 # Internal clients to exclude (SPC/PDC/Comptoir)
 INTERNAL_CLIENT_PATTERNS = []  # Tous les clients inclus (COMPTOIR, SPC, PDC) — seules les agences SPC/PDC sont exclues via AGENCE_MAP
 
-# Objectives September (monthly targets) — same as Aug for first estimate
+# Objectives September — S2 recalibrés (s2_recaled_objectives.json, mois 9)
+# TOURTEAUX 3781,3 t / CONCENTRES 1601,3 t (objectifs globaux S2 recalibrés)
+# INGREDIENTS 64,1 t (S2 recalibré mois 9) ; MAIS 130 t (pas de valeur S2 recalibrée, conservé)
 OBJ = {
-    'TOURTEAUX': 3850,  # t
-    'CONCENTRES': 1534,  # t (objectif réel)
+    'TOURTEAUX': 3781.3,  # t
+    'CONCENTRES': 1601.3,  # t
     'MAIS': 130,  # t
-    'INGREDIENTS': 320,  # t
+    'INGREDIENTS': 64.1,  # t
 }
 
 # Stock BEKOKO (au 08/08/2026, à mettre à jour si nouveau stock)
@@ -90,6 +93,37 @@ def detect_cols(ws):
 
 
 def load_livree(path):
+    """Load 'Livrée' rows from an ERP extraction (.xlsx or .csv).
+
+    Both formats share the same column layout (0=ref produit, 2=qte, 3=ref commande,
+    5=tiers, 6=date, 13=état, 15=agence for 16-col files; 18-col xlsx files have
+    agence at index 17). Returns (rows, col_idx).
+    """
+    if path.endswith('.csv'):
+        import pandas as pd
+        df = pd.read_csv(path, encoding='latin-1', sep=';', header=1,
+                         on_bad_lines='skip', engine='python')
+        cols = list(df.columns)
+        ncols = len(cols)
+        col_idx = {'etat': 13 if ncols <= 16 else 15,
+                   'agence': 15 if ncols <= 16 else 17}
+        rows = []
+        for t in df.itertuples(index=False, name=None):
+            r = list(t)
+            if not r or len(r) < max(col_idx['etat'], col_idx['agence']) + 1:
+                continue
+            if str(r[0] or '').strip().upper().startswith('TOTAL'):
+                continue
+            if str(r[col_idx['etat']] or '').strip() != 'Livrée':
+                continue
+            # Convert quantity to float (CSV uses comma decimals, e.g. "2,5")
+            try:
+                r[2] = float(str(r[2]).replace(' ', '').replace('\xa0', '').replace(',', '.'))
+            except (ValueError, TypeError):
+                r[2] = 0.0
+            rows.append(r)
+        return rows, col_idx
+
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     ws = wb['Sheet 1']
     col_idx = detect_cols(ws)
@@ -311,29 +345,42 @@ print(f"  Distribution ratios bundle:")
 for k in ['<= 3:1', '3-5:1', '5-10:1', '10-20:1', '> 20:1']:
     print(f"    {k}: {dist[k]}")
 
-# === Stock (placeholder, will need actual stock data) ===
-stock_eq_50_brut = sum(STOCK_BEKOKO[k] * (1 if k == '50kg' else (1/50 if k == '1kg' else 5/50 if k == '5kg' else 25/50)) for k in STOCK_BEKOKO)
-stock_t_brut = stock_eq_50_brut * 50 / 1000
-stock_eq_50_net = stock_eq_50_brut - SPC_ALLOCATION
-stock_t_net = stock_eq_50_net * 50 / 1000
+# === Stock (preserve latest BEKOKO inventory from sept_mtd_08.json, recompute dynamics) ===
+PREV_MTD = '/home/z/my-project/scripts/sept_mtd_08.json'
+prev_stock = {}
+if os.path.exists(PREV_MTD):
+    prev_data = json.load(open(PREV_MTD))
+    prev_stock = prev_data.get('stock', {})
+    print(f"[INFO] Stock preserve depuis {PREV_MTD} (inventaire BEKOKO {prev_stock.get('date')}: {prev_stock.get('brut_sacs')} sacs)")
+
+stock_eq_50_brut = float(prev_stock.get('brut_sacs', 0) or 0)
+stock_t_brut = float(prev_stock.get('brut_t', 0) or 0)
 
 # Vente soja sacs/jour (sept MTD)
 vente_soja_sacs_jour = total_soja_sacs / days_elapsed if days_elapsed > 0 else 0
 vente_soja_sacs_sem = vente_soja_sacs_jour * 6
-conso_moy = max(vente_soja_sacs_sem, 22383)  # keep max with S1 conso
 
-if vente_soja_sacs_jour > 0:
-    jours_stock = int(stock_eq_50_net / vente_soja_sacs_jour)
+if vente_soja_sacs_jour > 0 and stock_eq_50_brut > 0:
+    jours_stock = int(stock_eq_50_brut / vente_soja_sacs_jour)
     rupture_date = latest_date + timedelta(days=jours_stock)
 else:
     jours_stock = 0
     rupture_date = latest_date
 
-print(f"\n=== STOCK (au {STOCK_DATE}) ===")
+# Remaining working days after update_date (lun-sam, until 30/09)
+jours_restants = 0
+for d in range(1, 31):
+    dt = date(2026, 9, d)
+    if dt > latest_date and dt.weekday() < 6:
+        jours_restants += 1
+besoin_reste_sept_sacs = vente_soja_sacs_jour * jours_restants if vente_soja_sacs_jour > 0 else 0
+manque_fin_sept_sacs = max(0, besoin_reste_sept_sacs - stock_eq_50_brut)
+
+print(f"\n=== STOCK (inventaire {prev_stock.get('date')}, ventes au {latest_date.strftime('%d/%m/%Y')}) ===")
 print(f"  Stock brut: {stock_eq_50_brut:.0f} sacs ({stock_t_brut:.0f} t)")
-print(f"  Stock net (hors SPC): {stock_eq_50_net:.0f} sacs ({stock_t_net:.0f} t)")
 print(f"  Vente soja sept: {vente_soja_sacs_jour:.0f} sacs/jour, {vente_soja_sacs_sem:.0f} sacs/sem")
-print(f"  Jours de stock: {jours_stock}j — rupture probable {rupture_date.strftime('%d/%m/%Y')}")
+print(f"  Jours de stock (hyp. stock inchange): {jours_stock}j — rupture estimee {rupture_date.strftime('%d/%m/%Y')}")
+print(f"  Besoin reste septembre ({jours_restants}j): {besoin_reste_sept_sacs:.0f} sacs, manque estime: {manque_fin_sept_sacs:.0f} sacs")
 
 # === Zero-achat Sept vs S1 2026 ===
 # Need S1 baseline (Jan-Jun 2026)
@@ -422,7 +469,7 @@ for ag, cats in vol_by_agence.items():
 # Save summary
 summary = {
     'update_date': latest_date.strftime('%d/%m/%Y'),
-    'extraction_file': 'NJS GROUP ERP - Lignes de commandes + multicompany (33).xlsx',
+    'extraction_file': os.path.basename(SEPT_SRC),
     'days_elapsed': days_elapsed,
     'total_days_sep': total_days_sep,
     'pct_elapsed': round(pct_elapsed, 1),
@@ -443,17 +490,23 @@ summary = {
         'dist': dict(dist),
     },
     'stock': {
-        'date': STOCK_DATE,
-        'brut_sacs': round(stock_eq_50_brut, 0),
-        'brut_t': round(stock_t_brut, 0),
-        'net_sacs': round(stock_eq_50_net, 0),
-        'net_t': round(stock_t_net, 0),
-        'spc_exclu': SPC_ALLOCATION,
+        'date': prev_stock.get('date', '16/09/2026'),
+        'brut_sacs': prev_stock.get('brut_sacs', round(stock_eq_50_brut, 0)),
+        'brut_t': prev_stock.get('brut_t', round(stock_t_brut, 0)),
+        't102_sacs': prev_stock.get('t102_sacs'),
+        't1021_kg': prev_stock.get('t1021_kg'),
+        't1023_kg': prev_stock.get('t1023_kg'),
+        't1024_kg': prev_stock.get('t1024_kg'),
         'vente_sacs_jour': round(vente_soja_sacs_jour, 0),
         'vente_sacs_sem': round(vente_soja_sacs_sem, 0),
-        'conso_moy_sacs_sem': round(conso_moy, 0),
         'jours_stock': jours_stock,
         'rupture_date': rupture_date.strftime('%d/%m/%Y'),
+        'besoin_reste_sept_sacs': round(besoin_reste_sept_sacs, 0),
+        'manque_fin_sept_sacs': round(manque_fin_sept_sacs, 0),
+        'precedent_stock_brut_sacs': prev_stock.get('precedent_stock_brut_sacs'),
+        'precedent_stock_date': prev_stock.get('precedent_stock_date'),
+        'variation_pct': prev_stock.get('variation_pct'),
+        'note': prev_stock.get('note') or f"Stock central BEKOKO au {prev_stock.get('date')}.",
     },
     'zero_achat': {
         's1_clients': len(s1_clients),
@@ -475,18 +528,7 @@ summary = {
     'conc_by_agence': sorted(conc_by_ag, key=lambda x: -x['conc_t']),
 }
 
-OUT = '/home/z/my-project/scripts/sept_mtd_08.json'
-
-# Preserve stock info from previous sept_mtd_01.json (manually updated 07/09 with new stock central)
-import os
-prev_stock = None
-prev_path = '/home/z/my-project/scripts/sept_mtd_01.json'
-if os.path.exists(prev_path):
-    prev_data = json.load(open(prev_path))
-    if 'stock' in prev_data and prev_data['stock'].get('brut_sacs', 0) < 10000:
-        # Use previous stock info (manually updated with real stock central BEKOKO)
-        summary['stock'] = prev_data['stock']
-        print(f"\n[INFO] Preserved stock info from {prev_path} (BEKOKO central: {prev_data['stock'].get('brut_sacs')} sacs)")
+OUT = '/home/z/my-project/scripts/sept_mtd_10.json'
 
 with open(OUT, 'w', encoding='utf-8') as f:
     json.dump(summary, f, indent=2, ensure_ascii=False, default=str)

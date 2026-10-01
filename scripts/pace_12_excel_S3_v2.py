@@ -66,7 +66,7 @@ print("Creating sheet 1: Synthèse...")
 ws = wb.create_sheet("1. Synthèse")
 ws['A1'] = 'BELGOCAM SA - Forecast Q4 2026 (Septembre - Décembre)'
 ws['A1'].font = Font(bold=True, size=16, color='1F4E78')
-ws['A2'] = 'S3 | Données 2023-2026 (44 mois) | 8 familles | 25 agences | Prix soja médian 18 590 FCFA/sac'
+ws['A2'] = 'S3 | Données 2023-2026 (44 mois) | 8 familles | 25 agences | Prix soja 17 678 FCFA/sac (moy. pondérée YTD Jan-Sep)'
 ws['A2'].font = Font(italic=True, size=10, color='595959')
 
 ws['A4'] = 'SYNTHÈSE GLOBALE Q4 2026'
@@ -79,7 +79,8 @@ style_header_row(ws, 5, 3)
 
 total_t = fcst['tonnes'].sum()
 total_ca = fcst['ca_m_fcfa'].sum()
-total_sacs = fcst['sacs_50'].sum()
+# Sacs équivalent 50 kg : dérivé des tonnes (sacs_50 du CSV = unités pour les petits packs)
+total_sacs = total_t * 20
 
 global_data = [
     ('Volume total Q4', f"{total_t:,.0f}", 'tonnes'),
@@ -92,10 +93,10 @@ global_data = [
     ('Nb agences', f"{fcst['agence'].nunique()}", 'agences'),
     ('Nb régions', f"{fcst['region'].nunique()}", 'régions'),
     ('Méthode', 'Prophet (5 familles) + Extrapolation (MAT_ELEVAGE, PREMIX, ALVEOLES)', '—'),
-    ('Prix', 'Prix 2026 réels par unité + soja médian 18 590 FCFA/sac', 'Option A - extrapolation CA/qté'),
+    ('Prix', 'Prix 2026 réels par unité + soja 17 678 FCFA/sac (moy. pondérée YTD Jan-Sep)', 'Option A - extrapolation CA/qté'),
     ('COMPLEMENT_ALIMENTAIRE', 'V300 1L only (V305 200L exclu), 1L=1kg', '9 produits'),
     ('ALVEOLES (séparé du MAT_ELEVAGE)', '4 refs (MAT011, MAT014, MAT015, MAT017), tonnes=0', 'CA only'),
-    ('Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026)', '176 576 records'),
+    ('Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026)', '264 759 records'),
 ]
 
 row = 6
@@ -310,7 +311,7 @@ for _, r in by_prod.iterrows():
     ws.cell(row=row, column=2, value=desc)
     ws.cell(row=row, column=3, value=r['family'])
     ws.cell(row=row, column=4, value=round(r['tonnes'], 1))
-    ws.cell(row=row, column=5, value=round(r['sacs_50'], 0))
+    ws.cell(row=row, column=5, value=round(r['tonnes'] * 20, 0))
     ws.cell(row=row, column=6, value=round(r['ca_m_fcfa'], 1))
     ws.cell(row=row, column=7, value=f"{pct:.1f}%")
     color = NEW_FAMILY_COLOR if r['family'] in ('COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else S3_COLOR
@@ -388,7 +389,7 @@ ws['A1'] = 'FORECAST Q4 2026 (S3) - DÉTAIL COMPLET (Produit × Agence × Mois)'
 ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
 
 row = 3
-headers = ['Réf', 'Description', 'Famille', 'Agence', 'Région', 'Mois', 'Année', 'Tonnes', 'Sacs 50kg', 'Prix TTC/sac', 'CA (M FCFA)']
+headers = ['Réf', 'Description', 'Famille', 'Agence', 'Région', 'Mois', 'Année', 'Tonnes', 'Sacs/unités', 'Prix TTC/unité', 'CA (M FCFA)']
 for i, h in enumerate(headers, 1):
     ws.cell(row=row, column=i, value=h)
 style_header_row(ws, row, len(headers))
@@ -433,7 +434,7 @@ hypotheses = [
     ('NIVEAU DE DÉTAIL', '15 modèles Prophet famille × région + 9 extrapolations, désagrégés en produit × agence'),
     ('', ''),
     ('MÉTHODE', ''),
-    ('Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026), 176 576 records'),
+    ('Données 2023-2026', '44 mois d\'historique (Jan 2023 - Août 2026), 264 759 records'),
     ('Famille COMPLEMENT_ALIMENTAIRE', '9 produits liquides (V300 BELGOKILL 1L + CA001-CA008), 1L=1kg'),
     ('Famille ALVEOLES (séparé du MAT_ELEVAGE)', '4 refs (MAT011-80010002, MAT014-80010003, MAT015, MAT017), tonnes=0, CA only'),
     ('V305 (BELGOKILL 200L)', 'EXCLU du forecast selon demande utilisateur'),
@@ -459,7 +460,7 @@ hypotheses = [
     ('Septembre', 'Volume soja × 0.7 (réappro mi-mois)'),
     ('Octobre - Décembre', 'Volume soja × 1.0 (stock reconstitué)'),
     ('', ''),
-    ('PRIX', 'Prix 2026 réels par unité (66 refs) + soja médian 18 590 FCFA/sac (2023-2026)'),
+    ('PRIX', 'Prix 2026 réels par unité (66 refs) + soja 17 678 FCFA/sac (moy. pondérée YTD Jan-Sep)'),
     ('STOCK SOJA (BEKOKO)', '71 230 sacs net au 08/08/2026, rupture probable 16/09 sans réappro'),
     ('SAISONNALITÉ Q4', 'Q4 = 35-46% du volume annuel selon les familles'),
     ('LIMITES', '44 mois d\'historique (suffisant pour Prophet yearly seasonality)'),
