@@ -2,13 +2,16 @@
 Rapport de Performance Mensuelle — BELGOCAM SA / NJS GROUP (LIVRABLE MENSUEL)
 Mois : Septembre 2026 (données complètes 01-30/09/2026)
 
-6 sections :
+8 sections :
  1. Performance globale par famille vs objectifs de septembre
  2. Performance par agence × famille vs objectifs de septembre
  3. Performance par région × famille vs objectifs de septembre
  4. Performance (tendance mensuelle) par famille vs objectifs Jan → Sept (YTD)
  5. Performance (tendance mensuelle) par agence × (Soja & Concentrés) YTD vs objectifs
  6. Performance (tendance mensuelle) par région × (Soja & Concentrés) YTD vs objectifs
+ 7. Analyse comparée volumes vs CA : le CA suit-il les volumes ?
+ 8. Encaissements (StatutFacture) : Payée / Créance / Impayée par agence
+ 9. Mix-produit & combo gagnant : CA et encaissement par famille et par combo agence × produit
 
 Usage mensuel : mettre à jour DATA_PATH + MONTH_LABEL puis relancer.
 """
@@ -184,9 +187,10 @@ story.append(Paragraph("BELGOCAM SA", TITLE))
 story.append(Paragraph("NJS GROUP — Direction Générale", ParagraphStyle('Sub', parent=BODY, fontSize=12, textColor=GRAY, spaceAfter=30)))
 story.append(HRFlowable(width='100%', thickness=2, color=GOLD, spaceAfter=20))
 story.append(Paragraph("Rapport de Performance Mensuelle", H1))
-story.append(Paragraph(f"{MONTH_LABEL} — données complètes du mois (ERP, ventes livrées)", ParagraphStyle('S2', parent=BODY, fontSize=13, textColor=NAVY, spaceAfter=24)))
+story.append(Paragraph(f"{MONTH_LABEL} — données complètes du mois (ERP — Livrée + Validée + En cours)", ParagraphStyle('S2', parent=BODY, fontSize=13, textColor=NAVY, spaceAfter=24)))
 
 kpi = DATA['sc_ytd']
+enc = DATA['encaissements']
 cover_kpis = [
     ["Indicateur", "Valeur"],
     ["Soja Septembre (réel vs obj)", f"{fmt(DATA['global_sept']['TOURTEAUX']['t'])} t vs {fmt(DATA['global_sept']['TOURTEAUX']['obj'])} t ({pct(DATA['global_sept']['TOURTEAUX']['pct'])})"],
@@ -194,13 +198,17 @@ cover_kpis = [
     ["Soja YTD Jan-Sep (réel vs obj)", f"{fmt(kpi['soja']['t'])} t vs {fmt(kpi['soja']['obj'])} t ({pct(kpi['soja']['pct'])})"],
     ["Concentrés YTD Jan-Sep (réel vs obj)", f"{fmt(kpi['conc']['t'])} t vs {fmt(kpi['conc']['obj'])} t ({pct(kpi['conc']['pct'])})"],
     ["Ratio soja:concentrés YTD", f"{DATA['ratio_soja_conc_ytd']} (cible bundle ≤ 2,5)"],
+    ["CA Septembre (TTC, toutes familles)", f"{fmt1(enc['total'])} M FCFA"],
+    ["Taux d'encaissement (Payée / TTC)", f"{pct(enc['taux_encaissement'])}"],
+    ["Créances + impayées Septembre", f"{fmt1(enc['creance'] + enc['impayee'])} M FCFA"],
 ]
 story.append(make_table(cover_kpis, col_widths=[7.5*cm, 9*cm], font_size=10, highlight_rows=[1, 2]))
 story.append(Spacer(1, 1.2*cm))
 story.append(Paragraph(
     "Ce rapport présente la performance commerciale du mois comparée aux objectifs recalibrés, "
-    "ainsi que la tendance cumulée depuis janvier (YTD), par famille, par agence et par région. "
-    "Il est mis à jour chaque mois à partir de l'extraction ERP des ventes livrées.",
+    "la tendance cumulée depuis janvier (YTD), par famille, par agence et par région, "
+    "puis la lecture financière : le chiffre d'affaires suit-il les volumes, et que reste-t-il à encaisser ? "
+    "Il est mis à jour chaque mois à partir de l'extraction ERP des ventes du mois (Livrée + Validée + En cours).",
     BODY))
 story.append(Spacer(1, 0.4*cm))
 story.append(Paragraph(f"Données au {DATA['meta']['update_date']} — Source : {DATA['meta']['source_erp']}", SMALL))
@@ -417,6 +425,156 @@ story.append(Paragraph(
     f"Centre {pct(ry['Centre']['conc']['pct'])}, Ouest {pct(ry['Ouest']['conc']['pct'])}.",
     BODY))
 
+# --- SECTION 7 : Analyse comparée Volumes vs CA ---
+story.append(PageBreak())
+story.append(Paragraph("7. Analyse comparée Volumes vs CA — le CA suit-il les volumes ?", H1))
+story.append(Paragraph(
+    "Faire des volumes sans chiffre d'affaires est dangereux : cette section compare le CA réalisé à "
+    "l'<b>objectif CA du mois</b>. Les objectifs CA du S1 ont été fournis (fichier Obj S1, feuille CA) ; pour le S2, "
+    "l'objectif CA est <b>déduit du fichier des objectifs S1</b> : prix moyen S1 par famille (CA objectif ÷ volume objectif) "
+    "appliqué aux volumes S2 recalibrés. Lecture : si % CA &lt; % volume, le CA ne suit pas les volumes.", BODY))
+story.append(Paragraph(
+    f"<b>Lecture de septembre</b> : le CA <b>suit</b> les volumes, et les dépasse même : le prix moyen de septembre "
+    f"est supérieur au prix S1 retenu dans l'objectif sur la plupart des familles (ex. soja à {fmt(DATA['ca_sept']['TOURTEAUX']['prix_moy'])} F/t "
+    f"vs {fmt(DATA['ca_sept']['TOURTEAUX']['prix_obj'])} F/t). Le seul décrochage est <b>PREMIX</b>, sous objectif "
+    f"en volume ({pct(DATA['ca_sept']['PREMIX']['pct_vol'])}) comme en CA ({pct(DATA['ca_sept']['PREMIX']['pct_ca'])}). "
+    f"<b>Vigilance T4</b> : la baisse tarifaire soja engagée le 22/09 (prix Q4 budgété 17 678 F/sac vs 23 986 F/sac réalisé "
+    f"en septembre) va mécaniquement ralentir le CA par rapport aux volumes — ce ratio est à suivre chaque mois.",
+    BODY))
+
+rows = [["Famille", "CA Sept (M)", "CA obj.* (M)", "% CA", "% Volume", "Prix Sept (F/t)", "Prix obj. S1 (F/t)"]]
+for fam in ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']:
+    d = DATA['ca_sept'][fam]
+    rows.append([fam, fmt1(d['ca']), fmt1(d['attendu']) if d['attendu'] is not None else "—",
+                 pct_cell(d['pct_ca']), pct_cell(d['pct_vol']),
+                 fmt(d['prix_moy']), fmt(d['prix_obj'])])
+rows.append(["TOTAL (8 familles)", fmt1(sum(DATA['ca_sept'][f]['ca'] for f in DATA['ca_sept'])),
+             fmt1(sum(DATA['ca_sept'][f]['attendu'] or 0 for f in DATA['ca_sept'])),
+             pct_cell((sum(DATA['ca_sept'][f]['ca'] for f in DATA['ca_sept'])
+                       / sum(DATA['ca_sept'][f]['attendu'] or 0 for f in DATA['ca_sept'])) * 100),
+             "—", "—", "—"])
+story.append(make_table(rows, col_widths=[3.0*cm, 1.9*cm, 2.0*cm, 1.4*cm, 1.5*cm, 2.3*cm, 2.4*cm], font_size=8, highlight_rows=[len(rows)-1]))
+story.append(Paragraph("(*) Objectif CA : S1 fourni (fichier Obj S1, feuille CA) ; S2 dérivé = volume S2 recalibré × prix moyen S1 de la famille.", SMALL))
+
+story.append(Spacer(1, 0.35*cm))
+story.append(img(f'{CHARTS_DIR}/perf_07_agence_ca_vs_vol.png'))
+story.append(Spacer(1, 0.3*cm))
+ca_ag = DATA['ca_agence_sept']
+rows2 = [["Agence", "% Volume (t)", "% CA", "Écart CA - Vol (pts)", "CA Sept (M)", "CA attendu* (M)"]]
+ags_sorted = sorted(ca_ag, key=lambda a: ca_ag[a]['ecart_ca_vol'] if ca_ag[a]['ecart_ca_vol'] is not None else 999)
+hl = []
+for i, a in enumerate(ags_sorted):
+    d = ca_ag[a]
+    e = d['ecart_ca_vol']
+    rows2.append([a, pct_cell(d['pct_vol']), pct_cell(d['pct_ca']),
+                  (f"+{fmt(e)}" if e is not None and e >= 0 else fmt(e)) if e is not None else "—",
+                  fmt1(d['ca']), fmt1(d['attendu'])])
+    if e is not None and e < -10:
+        hl.append(i + 1)
+story.append(make_table(rows2, col_widths=[2.6*cm, 2.0*cm, 2.0*cm, 2.8*cm, 2.3*cm, 2.4*cm], font_size=8, highlight_rows=hl))
+story.append(Paragraph("(*) CA attendu = objectif volume (soja + concentrés) × prix moyens S1 du fichier Obj S1. Un écart négatif > 10 pts signale un CA en retard sur les volumes.", SMALL))
+story.append(Spacer(1, 0.3*cm))
+story.append(Paragraph(
+    f"<b>Points clés</b> : aucune agence ne présente de décrochage CA vs volumes en septembre — le CA est partout "
+    f"au-dessus du % volume, tiré par des prix de septembre supérieurs aux prix S1 retenus dans l'objectif CA. "
+    f"Les écarts positifs les plus forts (Bertoua, Nkoabang, Famla) reflètent surtout un mix à fort contenu soja "
+    f"à prix de septembre élevé. Le vrai risque est devant nous : au T4, avec le prix soja budgété à 17 678 F/sac "
+    f"(baisse de 26 % vs septembre), le même volume générera moins de CA — le suivi mensuel de ce tableau deviendra critique.",
+    BODY))
+story.append(PageBreak())
+
+# --- SECTION 8 : Encaissements ---
+story.append(Paragraph("8. Encaissements — Payée / Créance / Impayée (StatutFacture)", H1))
+story.append(Paragraph(
+    "Les encaissements correspondent au <b>montant TTC</b> de l'extraction, ventilé par le statut de facture "
+    "(le champ « Mode règlement » étant vide sur la quasi-totalité des lignes, StatutFacture est le champ fiable : "
+    "Payée = encaissée, Créance = facturée non encore encaissée, Impayée = facture en souffrance). "
+    "Les fichiers d'objectifs ne fixent pas de cible d'encaissement (les objectifs CA sont dérivés, cf. section 7) : "
+    "l'objectif implicite retenu ici est <b>100 % du TTC facturé encaissé</b>, avec un taux cible ≥ 98 %.",
+    BODY))
+
+rows = [["Indicateur (Septembre, TTC)", "Montant"]]
+rows.append(["CA total du mois", f"{fmt1(enc['total'])} M FCFA"])
+rows.append([Paragraph("Payée (encaissée)", ParagraphStyle('C', parent=CELL, fontName='DejaVuSans-Bold', textColor=GREEN)),
+             Paragraph(f"{fmt1(enc['payee'])} M FCFA", ParagraphStyle('C2', parent=CELL, fontName='DejaVuSans-Bold', textColor=GREEN, alignment=TA_RIGHT))])
+rows.append(["Créance (facturée, à encaisser)", f"{fmt1(enc['creance'])} M FCFA"])
+rows.append(["Impayée (en souffrance)", f"{fmt1(enc['impayee'])} M FCFA"])
+rows.append(["Taux d'encaissement (Payée / TTC)", pct(enc['taux_encaissement'])])
+story.append(make_table(rows, col_widths=[10*cm, 6.5*cm], font_size=9.5, highlight_rows=[1]))
+
+story.append(Spacer(1, 0.35*cm))
+story.append(img(f'{CHARTS_DIR}/perf_08_encaissements.png'))
+
+story.append(Spacer(1, 0.3*cm))
+pa = enc['par_agence']
+rows2 = [["Agence", "CA Sept (M)", "Payée (M)", "Créance (M)", "Impayée (M)", "Taux"]]
+ags_enc = sorted(pa, key=lambda a: pa[a]['creance'] + pa[a]['impayee'], reverse=True)
+hl = []
+for i, a in enumerate(ags_enc):
+    d = pa[a]
+    if d['creance'] + d['impayee'] > 0:
+        hl.append(i + 1)
+    rows2.append([a, fmt1(d['ca']), fmt1(d['payee']), fmt1(d['creance']), fmt1(d['impayee']), pct(d['taux'])])
+story.append(make_table(rows2, col_widths=[2.6*cm, 2.3*cm, 2.3*cm, 2.2*cm, 2.2*cm, 1.8*cm], font_size=8.5, highlight_rows=hl))
+story.append(Spacer(1, 0.3*cm))
+story.append(Paragraph(
+    f"<b>Points clés</b> : taux d'encaissement global de <b>{pct(enc['taux_encaissement'])}</b> — le modèle de prépaiement "
+    f"à la commande protège la trésorerie (les commandes « En cours » de septembre sont déjà facturées et payées). "
+    f"Le risque résiduel est concentré : <b>Ndobo</b> porte {fmt1(pa['Ndobo']['creance'])} M de créance + "
+    f"{fmt1(pa['Ndobo']['impayee'])} M d'impayé (taux {pct(pa['Ndobo']['taux'])}) — essentiellement la commande Validée du mois — "
+    f"et <b>Messassi</b> {fmt1(pa['Messassi']['impayee'])} M d'impayé. À collecter dès la livraison, avant la clôture comptable du mois.",
+    BODY))
+
+# --- SECTION 9 : Mix-produit & combos gagnants ---
+story.append(PageBreak())
+story.append(Paragraph("9. Mix-produit & combo gagnant — qui génère le CA encaissé ?", H1))
+story.append(Paragraph(
+    "Dernière lecture financière : le <b>mix-produit</b> (contribution de chaque famille au CA du mois) croisé avec "
+    "l'encaissement, puis les <b>combos agence × produit</b> classés par CA. Le combo gagnant est celui qui combine "
+    "un CA élevé et un encaissement total (taux 100 %) — c'est lui qu'il faut pousser au T4, car il finance la trésorerie "
+    "sans risque de crédit.", BODY))
+
+mx = DATA['mix_famille']
+rows = [["Famille", "CA Sept (M)", "% du CA", "Encaissé (M)", "Non encaissé (M)", "Taux"]]
+hl = []
+fam_sorted = sorted(mx, key=lambda f: mx[f]['ca'], reverse=True)
+for i, f in enumerate(fam_sorted):
+    d = mx[f]
+    if d['non_encaisse'] > 0:
+        hl.append(i + 1)
+    rows.append([f, fmt1(d['ca']), f"{pct(d['part_ca'])}", fmt1(d['payee']), fmt1(d['non_encaisse']), pct(d['taux'])])
+story.append(make_table(rows, col_widths=[3.4*cm, 2.2*cm, 1.7*cm, 2.3*cm, 2.7*cm, 1.6*cm], font_size=8.5, highlight_rows=hl))
+
+story.append(Spacer(1, 0.35*cm))
+story.append(img(f'{CHARTS_DIR}/perf_09_mix_encaissements.png'))
+
+story.append(Spacer(1, 0.35*cm))
+rows2 = [["Agence", "Produit", "CA Sept (M)", "% du CA total", "Non encaissé (M)", "Taux"]]
+hl2 = []
+for i, c in enumerate(DATA['combos']):
+    if c['non_encaisse'] > 0.5:
+        hl2.append(i + 1)
+    rows2.append([c['agence'], 'Soja' if c['famille'] == 'TOURTEAUX' else 'Concentrés',
+                  fmt1(c['ca']), f"{pct(c['part_ca'])}", fmt1(c['non_encaisse']), pct(c['taux'])])
+story.append(make_table(rows2, col_widths=[2.5*cm, 2.0*cm, 2.3*cm, 2.4*cm, 2.6*cm, 1.6*cm], font_size=8, highlight_rows=hl2))
+
+story.append(Spacer(1, 0.35*cm))
+story.append(img(f'{CHARTS_DIR}/perf_10_combos.png'))
+
+story.append(Spacer(1, 0.3*cm))
+top_combo = DATA['combos'][0]
+top2 = DATA['combos'][1]
+ndobo_soja = next(c for c in DATA['combos'] if c['agence'] == 'Ndobo' and c['famille'] == 'TOURTEAUX')
+story.append(Paragraph(
+    f"<b>Points clés</b> : le duo <b>soja + concentrés = {pct(mx['TOURTEAUX']['part_ca'] + mx['CONCENTRES']['part_ca'])} du CA</b> "
+    f"de septembre, encaissé à plus de 98 %. Combo gagnant : <b>Soja × {top_combo['agence']}</b> "
+    f"({fmt1(top_combo['ca'])} M, {pct(top_combo['part_ca'])} du CA total, taux {pct(top_combo['taux'])}) et "
+    f"<b>Concentrés × {top2['agence']}</b> ({fmt1(top2['ca'])} M, taux {pct(top2['taux'])}) — CA élevé, encaissement total, "
+    f"zéro risque de crédit. À l'opposé, <b>Soja × Ndobo</b> ({fmt1(ndobo_soja['non_encaisse'])} M non encaissés, "
+    f"taux {pct(ndobo_soja['taux'])}) : la commande Validée de Ndobo reste le seul vrai risque du mois. "
+    f"Au T4, pousser les combos gagnants (soja Ouest + concentrés Famla) plutôt que d'étendre le crédit client.",
+    BODY))
+
 # --- Recommandations ---
 story.append(Spacer(1, 0.4*cm))
 story.append(Paragraph("Recommandations pour le mois suivant", H2))
@@ -425,6 +583,9 @@ recos = [
     "<b>Concentrés</b> — Retard YTD de 2 895 t vs objectif : plan de rattrapage T4 avec objectifs hebdomadaires par agence.",
     "<b>Littoral</b> — Région en décrochage sur les deux familles : revue des comptes clés (Ndobo, Village, Pk11, Nkongsamba, Buea) et plan de relance.",
     "<b>Prix soja</b> — Suivre l'effet de la baisse tarifaire du 22/09 (cadence x2) et sécuriser le réapprovisionnement avant la rupture prévue début octobre.",
+    f"<b>CA vs volumes (T4)</b> — La baisse tarifaire soja va découpler CA et volumes : suivre chaque mois le tableau de la section 7 et alerter dès qu'un % CA passe sous le % volume (écart > 10 pts).",
+    f"<b>Encaissements</b> — Collecter la créance Ndobo ({fmt1(DATA['encaissements']['par_agence']['Ndobo']['creance'])} M) et l'impayé Messassi dès la livraison des commandes Validée ; maintenir le taux ≥ 98 %.",
+    "<b>Objectif CA formel</b> — Faire valider par la Direction un objectif CA mensuel (volumes × prix budgétés) et une cible d'encaissement, pour remplacer l'objectif CA dérivé du fichier S1.",
     "<b>Rituel mensuel</b> — Ce rapport sera mis à jour chaque mois avec l'extraction ERP du mois clos.",
 ]
 for rec in recos:
@@ -434,9 +595,12 @@ for rec in recos:
 story.append(Spacer(1, 0.4*cm))
 story.append(Paragraph("Méthodologie & sources", H2))
 methodo = [
-    f"<b>Périmètre</b> : ventes livrées (état « Livrée ») des 14 agences BELGOCAM, toutes familles, extraction ERP du {DATA['meta']['update_date']}.",
+    f"<b>Périmètre</b> : ventes du mois (états « Livrée », « Validée » et « En cours » — ces commandes restent rattachées au mois dans la configuration ERP) des 14 agences BELGOCAM, toutes familles, extraction ERP du {DATA['meta']['update_date']}.",
     f"<b>Actuals</b> : janvier-août 2026 issus du dataset historique consolidé ; {MONTH_LABEL} issu de l'extraction {DATA['meta']['source_erp']}.",
-    "<b>Objectifs</b> : mois 1-6 = objectifs Takou ; mois 7-12 = objectifs S2 recalibrés (14 agences, cohérents avec le national).",
+    "<b>Objectifs volumes</b> : mois 1-6 = objectifs Takou ; mois 7-12 = objectifs S2 recalibrés (14 agences, cohérents avec le national).",
+    "<b>Objectifs CA</b> : S1 fournis (fichier Obj S1, feuille CA) ; S2 dérivés = volumes S2 recalibrés × prix moyens S1 (CA S1 ÷ volume S1 par famille).",
+    "<b>Encaissements</b> : montant TTC ventilé par StatutFacture (Payée / Créance / Impayée) ; pas de cible d'encaissement dans les fichiers — objectif implicite 100 % du TTC facturé (taux cible ≥ 98 %).",
+    "<b>Mix-produit & combos</b> : part de chaque famille et de chaque combo agence × produit dans le CA du mois, croisée avec le taux d'encaissement (Payée / TTC).",
     "<b>Unités</b> : volumes en tonnes ; CA en M FCFA (TTC) ; % d'objectif = réel / objectif × 100.",
     "<b>Familles</b> : TOURTEAUX (soja), CONCENTRÉS, ALIMENT COMPLET, INGRÉDIENTS, PREMIX, COMPLÉMENT ALIMENTAIRE, ALVÉOLES, MATÉRIEL D'ÉLEVAGE.",
 ]
