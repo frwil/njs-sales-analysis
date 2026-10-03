@@ -22,7 +22,8 @@ Actuals :
  - Mois antérieurs : scripts/dataset_2023_2026.csv (Livrée, 14 agences)
  - Mois courant : extraction ERP du mois (Livrée + Validée + En cours —
    ces commandes restent rattachées au mois dans la configuration ERP) :
-   Jan-Juin = fichier S1 (6 feuilles), Juil = (9), Août = (27), Sept = (51)
+   Jan-Mar = (54), Avr-Jun = (55), Jul-Sep = (56) — extractions globales BELGOCAM.
+ - Règle : toute vente dont le montant HT ou TTC est à 0 n'est pas intégrée.
 
 Usage mensuel : passer le n° du mois en argument ; ajouter le mois suivant
 dans ERP_SOURCES quand une nouvelle extraction est disponible.
@@ -55,18 +56,18 @@ MOIS_FR_COURT = ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin',
 MONTH_LABEL = f"{MOIS_FR[MONTH_NUM - 1]} 2026"
 
 # Source ERP du mois : (fichier, feuille, (col État, col StatutFacture, col agence))
-# Jan-Juin : extraction S1 (fichier à 6 feuilles mensuelles, 2 colonnes de plus) ;
-# Juillet/Août/Septembre : extractions du mois (même gabarit 16 colonnes).
+# Extractions globales BELGOCAM (17 colonnes, dates en chaînes dd/mm/yyyy) :
+# (54) Jan-Mar, (55) Avr-Jun, (56) Jul-Sep.
 ERP_SOURCES = {
-    1: ("ventes janv a juin 2026.xlsx", "Sheet 1", (15, 16, 17)),
-    2: ("ventes janv a juin 2026.xlsx", "Feuil1", (15, 16, 17)),
-    3: ("ventes janv a juin 2026.xlsx", "Feuil2", (15, 16, 17)),
-    4: ("ventes janv a juin 2026.xlsx", "Feuil3", (15, 16, 17)),
-    5: ("ventes janv a juin 2026.xlsx", "Feuil4", (15, 16, 17)),
-    6: ("ventes janv a juin 2026.xlsx", "Feuil5", (15, 16, 17)),
-    7: ("NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx", "Sheet 1", (13, 14, 15)),
-    8: ("NJS GROUP ERP - Lignes de commandes + multicompany (27).xlsx", "Sheet 1", (13, 14, 15)),
-    9: ("NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx", "Sheet 1", (13, 14, 15)),
+    1: ("NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", "Sheet 1", (14, 15, 16)),
+    2: ("NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", "Sheet 1", (14, 15, 16)),
+    3: ("NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", "Sheet 1", (14, 15, 16)),
+    4: ("NJS GROUP ERP - Lignes de commandes + multicompany (55).xlsx", "Sheet 1", (14, 15, 16)),
+    5: ("NJS GROUP ERP - Lignes de commandes + multicompany (55).xlsx", "Sheet 1", (14, 15, 16)),
+    6: ("NJS GROUP ERP - Lignes de commandes + multicompany (55).xlsx", "Sheet 1", (14, 15, 16)),
+    7: ("NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", "Sheet 1", (14, 15, 16)),
+    8: ("NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", "Sheet 1", (14, 15, 16)),
+    9: ("NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", "Sheet 1", (14, 15, 16)),
 }
 ERP_FILE, ERP_SHEET, (IDX_ETAT, IDX_STATUT, IDX_AGENCE) = ERP_SOURCES.get(MONTH_NUM, ERP_SOURCES[9])
 ERP_FILE = f"/home/z/my-project/upload/{ERP_FILE}"
@@ -80,11 +81,16 @@ SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}
 CONC_REFS = {'C101': 50, 'C102': 50, 'C103': 50, 'C104': 50, 'C1042': 1, 'C1043': 5, 'C1044': 25,
              'C105': 50, 'C1053': 1, 'C1054': 5, 'C1055': 25, 'C108': 50, 'C1022': 5}
 ALIMENT_REFS = {'CB100': 25, 'CB200': 25, 'CB101': 5, 'CB201': 5, 'PB100': 25, 'PB200': 25,
-                'DB100': 25, 'DB200': 25, 'ALAP25': 25}
+                'DB100': 25, 'DB200': 25, 'ALAP25': 25,
+                # BELGOFISH (aliments poissons) : séparés uniquement pour les forecasts 2027,
+                # intégrés aux ALIMENTS COMPLETS dans les datasets et monthly performance
+                'APCL2': 15, 'APCL25': 5, 'APCL3': 15, 'APCL30': 1, 'APCL35': 5,
+                'APCL4.5': 15, 'APCL4.55': 5, 'APCL450': 1, 'APCL6': 15, 'APCL65': 5,
+                'APCL8': 15, 'APCL80': 1, 'APCL85': 5}
 INGREDIENT_REFS = {'B100': 25, 'E101': 25, 'I105': 25, 'B1001': 1, 'B1003': 5, 'B1004': 25,
                    'E1011': 1, 'E1013': 5, 'E1014': 0.2, 'I1051': 1, 'I1053': 5, 'I1054': 25,
                    'I106': 25, 'I1061': 1, 'I107': 25, 'I1071': 1, 'P105': 25, 'P1051': 1, 'P1053': 5,
-                   'F114': 50, 'F1145': 50, 'F1146': 25, 'F1147': 1}
+                   'F114': 50, 'F1145': 50, 'F1146': 25, 'F1147': 1, 'F1143': 25, 'I1063': 5}
 PREMIX_REFS = {'P102N2': 25, 'P104N2': 25, 'P109': 25, 'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25}
 MATERIEL_REFS = {f'MAT{i:03d}': 1 for i in range(1, 100)}
 MATERIEL_REFS.update({'MAT014-80010003': 1, 'MAT011-80010002': 1})
@@ -115,6 +121,15 @@ AGENCE_MAP = {
     'AGENCE NKOLBISSON': ('Nkolbisson', 'Centre'), 'AGENCE NKOABANG': ('Nkoabang', 'Centre'),
     'AGENCE DE BAMENDA - DEPOT MBOUDA': ('Mbouda', 'Ouest'), 'AGENCE BUEA': ('Buea', 'Littoral'),
 }
+
+# Ventes internes (clients SPC/PDC/COMPTOIR/EMANA) : intégrées au CA, exclues des volumes
+INTERNAL_CLIENT_PATTERNS = ['SPC', 'PDC', 'COMPTOIR', 'EMANA']
+
+def is_internal_client(client_str):
+    if not client_str:
+        return False
+    s = str(client_str).upper()
+    return any(p in s for p in INTERNAL_CLIENT_PATTERNS)
 
 # Familles objectifs (S1/S2) → familles actuals
 FAM_OBJ_TO_ACT = {
@@ -159,22 +174,35 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     # Actuals du mois = Livrée + Validée + En cours (restent rattachées au mois dans l'ERP)
     if etat not in ('Livrée', 'Validée', 'En cours'):
         continue
+    # Règle : une vente dont le montant HT ou TTC est à 0 n'est pas intégrée
+    ht = r[8] if len(r) > 8 and isinstance(r[8], (int, float)) else 0
+    ttc = r[9] if len(r) > 9 and isinstance(r[9], (int, float)) else 0
+    if ht <= 0 or ttc == 0:
+        continue
     etat_counts[etat] += 1
     date_str = str(r[6])[:10] if r[6] else ''
     if f'/{MONTH_NUM:02d}/2026' not in date_str:
         continue
     agence_raw = r[IDX_AGENCE] if len(r) > IDX_AGENCE and r[IDX_AGENCE] else ''
-    if agence_raw not in AGENCE_MAP:
+    # Clients internes (COMPTOIR/PDC/SPC/EMANA) rattachés aux agences classiques :
+    # comptés intégralement (CA + volumes). Agences SPC non mappées : CA oui, volumes non.
+    interne = is_internal_client(r[5])
+    if agence_raw in AGENCE_MAP:
+        agence, region = AGENCE_MAP[agence_raw]
+        vol_zero = False
+    elif interne:
+        agence, region = (str(agence_raw).strip() or 'SPC'), None
+        vol_zero = True
+    else:
         continue
-    agence, region = AGENCE_MAP[agence_raw]
     qte = r[2] or 0
     kg = qte * ALL_REFS.get(ref, 1)
     sep_records.append({
         'date': pd.to_datetime(date_str, format='%d/%m/%Y'),
         'year': 2026, 'month': MONTH_NUM,
         'family': family, 'agence': agence, 'region': region,
-        'tonnes': 0 if family in ('MATERIEL_ELEVAGE', 'ALVEOLES') else kg / 1000,
-        'sacs_50': kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') else 0,
+        'tonnes': 0 if (family in ('MATERIEL_ELEVAGE', 'ALVEOLES') or vol_zero) else kg / 1000,
+        'sacs_50': 0 if (family in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES') or vol_zero) else kg / 50,
         'montant_ttc': r[9] or 0,
         'etat': etat,
         'statut_facture': str(r[IDX_STATUT]).strip() if len(r) > IDX_STATUT and r[IDX_STATUT] else '(vide)',
@@ -507,6 +535,106 @@ for agence, _ in AGENCE_MAP.values():
 combos = sorted(combo_rows, key=lambda r: r['ca'], reverse=True)
 
 # ============================================================
+# 7b. Analyse hebdomadaire : vs semaine précédente & vs même semaine du mois précédent
+# ============================================================
+print("\n7b. Analyse hebdomadaire (vs semaine précédente / vs même semaine M-1)...")
+
+def week_start_of(d):
+    """Lundi de la semaine (ISO) contenant la date d."""
+    return d - pd.Timedelta(days=d.weekday())
+
+def delta_pct(new, old):
+    return round((new - old) / old * 100, 1) if old else None
+
+# Mois précédent (dataset = Livrée) ; mois courant = sep_df (tous états)
+y_m1, m_m1 = (2025, 12) if MONTH_NUM == 1 else (2026, MONTH_NUM - 1)
+df_m1 = pd.read_csv("/home/z/my-project/scripts/dataset_2023_2026.csv",
+                    parse_dates=['date'], usecols=['date', 'tonnes', 'montant_ttc'], low_memory=False)
+df_m1 = df_m1[(df_m1['date'].dt.year == y_m1) & (df_m1['date'].dt.month == m_m1)].copy()
+df_cur = sep_df[['date', 'tonnes', 'montant_ttc']].copy()
+df_m1['week'] = df_m1['date'].map(week_start_of)
+df_cur['week'] = df_cur['date'].map(week_start_of)
+
+def week_agg(sub):
+    return {
+        'ca': float(sub['montant_ttc'].sum()) / 1e6,
+        'tonnes': float(sub['tonnes'].sum()),
+        'n_lignes': int(len(sub)),
+    }
+
+weeks_cur = sorted(df_cur['week'].unique())
+weeks_m1 = sorted(df_m1['week'].unique())
+weeks_cur_set = set(weeks_cur)
+weeks_m1_set = set(weeks_m1)
+MOIS_M1_LABEL = ['Déc', 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août'][MONTH_NUM - 1]
+
+# Bornes du mois courant et du mois précédent (affichage des semaines de bord)
+month_start = pd.Timestamp(2026, MONTH_NUM, 1)
+month_end = pd.Timestamp(2026, MONTH_NUM, calendar.monthrange(2026, MONTH_NUM)[1])
+m1_start = pd.Timestamp(y_m1, m_m1, 1)
+m1_end = pd.Timestamp(y_m1, m_m1, calendar.monthrange(y_m1, m_m1)[1])
+
+semaines = []
+vs_prev = []
+vs_m1 = []
+for i, ws in enumerate(weeks_cur):
+    sub = df_cur[df_cur['week'] == ws]
+    agg = week_agg(sub)
+    we = ws + pd.Timedelta(days=6)
+    # Affichage borné au mois (les semaines de bord débordent sur les mois voisins)
+    d_aff, f_aff = max(ws, month_start), min(we, month_end)
+    semaines.append({
+        'label': f"W{i + 1}", 'debut': f"{d_aff.day:02d}/{d_aff.month:02d}", 'fin': f"{f_aff.day:02d}/{f_aff.month:02d}",
+        'ca': round(agg['ca'], 1), 'tonnes': round(agg['tonnes'], 1), 'n_lignes': agg['n_lignes'],
+    })
+    # vs semaine précédente directe : semaine calendaire immédiatement antérieure
+    # (pour W1, c'est la dernière semaine complète du mois précédent, ex. 24/08-30/08)
+    prev_ws = ws - pd.Timedelta(days=7)
+    if prev_ws in weeks_cur_set:
+        prev_sub = df_cur[df_cur['week'] == prev_ws]
+    elif prev_ws in weeks_m1_set:
+        prev_sub = df_m1[df_m1['week'] == prev_ws]
+    else:
+        prev_sub = None
+    if prev_sub is not None and len(prev_sub):
+        p_agg = week_agg(prev_sub)
+        p_we = prev_ws + pd.Timedelta(days=6)
+        p_from_m1 = prev_ws not in weeks_cur_set
+        p_d = max(prev_ws, m1_start if p_from_m1 else month_start)
+        p_f = min(p_we, m1_end if p_from_m1 else month_end)
+        vs_prev.append({
+            'semaine': f"W{i + 1} ({semaines[-1]['debut']}-{semaines[-1]['fin']})",
+            'semaine_prec': f"{p_d.day:02d}/{p_d.month:02d}-{p_f.day:02d}/{p_f.month:02d}",
+            'ca': round(agg['ca'], 1), 'ca_prec': round(p_agg['ca'], 1),
+            'delta_ca_pct': delta_pct(agg['ca'], p_agg['ca']),
+            'tonnes': round(agg['tonnes'], 1), 'tonnes_prec': round(p_agg['tonnes'], 1),
+            'delta_t_pct': delta_pct(agg['tonnes'], p_agg['tonnes']),
+        })
+    # vs même semaine (même rang) du mois précédent
+    if i < len(weeks_m1):
+        ws_m1_i = weeks_m1[i]
+        m1_sub = df_m1[df_m1['week'] == ws_m1_i]
+        a_m1 = week_agg(m1_sub)
+        m1_we = ws_m1_i + pd.Timedelta(days=6)
+        m1_d, m1_f = max(ws_m1_i, m1_start), min(m1_we, m1_end)
+        vs_m1.append({
+            'semaine': f"W{i + 1} ({semaines[-1]['debut']}-{semaines[-1]['fin']})",
+            'semaine_m1': f"W{i + 1} {MOIS_M1_LABEL} ({m1_d.day:02d}/{m1_d.month:02d}-{m1_f.day:02d}/{m1_f.month:02d})",
+            'ca': round(agg['ca'], 1), 'ca_m1': round(a_m1['ca'], 1),
+            'delta_ca_pct': delta_pct(agg['ca'], a_m1['ca']),
+            'tonnes': round(agg['tonnes'], 1), 'tonnes_m1': round(a_m1['tonnes'], 1),
+            'delta_t_pct': delta_pct(agg['tonnes'], a_m1['tonnes']),
+        })
+
+analyse_semaine = {
+    'semaines': semaines,
+    'vs_semaine_precedente': vs_prev,
+    'vs_meme_semaine_mois_precedent': vs_m1,
+}
+for s in semaines:
+    print(f"   {s['label']} ({s['debut']}-{s['fin']}): {s['tonnes']} t, {s['ca']} M")
+
+# ============================================================
 # 8. Sauvegarde JSON
 # ============================================================
 out = {
@@ -535,6 +663,7 @@ out = {
                     for fam in MAIN_FAMILIES},
     'mix_famille': mix_famille,
     'combos': combos,
+    'analyse_semaine': analyse_semaine,
 }
 with open(OUT_JSON, 'w', encoding='utf-8') as f:
     json.dump(out, f, ensure_ascii=False, indent=2)

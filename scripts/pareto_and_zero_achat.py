@@ -50,6 +50,15 @@ FIRST_QUARTER_SHEETS = {"Sheet 1", "Feuil1", "Feuil2"}
 
 TIERS_RE = re.compile(r"^\s*([A-Z]{2,}[\w-]*?)\s*-\s+(.+?)\s*$")
 
+# Règle : l'analyse zéro achat exclut les clients internes (COMPTOIR, SPC, PDC, EMANA)
+INTERNAL_PATTERNS = ('COMPTOIR', 'SPC', 'PDC', 'EMANA')
+
+def is_internal(tiers_str):
+    if tiers_str is None:
+        return False
+    s = str(tiers_str).upper()
+    return any(p in s for p in INTERNAL_PATTERNS)
+
 def split_tiers(tiers):
     if tiers is None:
         return ("", "")
@@ -83,6 +92,8 @@ for sheet_name, month_label, m_idx in MONTHS:
 
         if tiers is None:
             continue
+        if is_internal(tiers):
+            continue  # clients internes exclus de l'analyse zéro achat
         ref_c, name_c = split_tiers(tiers)
         key = (ref_c, name_c)
 

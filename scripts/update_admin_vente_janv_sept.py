@@ -6,14 +6,16 @@ Méthodologie identique au remplissage S1 final (fill_admin_vente_v2.py) :
 - Montant HT (convention du fichier, col 6 en 2025 / col 8 en 2026)
 - catégorie = cat_map.json pour LES DEUX années (comparabilité)
 - 2025 (Jan-Sep) : upload/86d96135-9db7-45bc-bba6-a69efa2c5ee3.xlsx
-    (ref=0, qté=2, date=5, HT=6, état=9, vol natif t=11, agence=12) — volume M1051 recalculé qté×50kg
-- 2026 Jan-Juin : upload/ventes janv a juin 2026.xlsx — 6 feuilles, 17 colonnes
-    (ref=0, desc=1, qté=2, HT=8, état=15, agence=17)
-- 2026 Juillet : ERP (9), Août : ERP (27), Septembre : ERP (51) — 16 colonnes
-    (ref=0, desc=1, qté=2, HT=8, état=13, agence=15)
+    (ref=0, qté=2, date=5, HT=6, TTC=7, état=9, vol natif t=11, agence=12) — volume M1051 recalculé qté×50kg
+- 2026 Jan-Sep : extractions globales BELGOCAM (54) Jan-Mar, (55) Avr-Jun, (56) Jul-Sep — 17 colonnes
+    (ref=0, desc=1, qté=2, HT=8, TTC=9, état=14, agence=16)
+- Règle : toute vente dont le montant HT ou TTC est à 0 n'est pas intégrée.
+- Clients internes (COMPTOIR/PDC/SPC) : comptés intégralement (CA + volumes).
+- Agences SPC/PDC (dépôts internes) : CA intégré aux rubriques, volumes non ; aucune ligne
+  ajoutée au tableau par agence (l'écart rubriques − total agences = CA des agences SPC/PDC).
 
 Écrit dans download/ADMINISTRATEUR_DE_VENTE_rempli.xlsx (structure et formules conservées) :
-- Feuille 1 « CAHT par agence A » : B117-B130 (2026), D117-D130 (2025)
+- Feuille 1 « CAHT par agence A » : B117-B130 (2026), D117-D130 (2025), Total en 131
 - Feuille 2 « Ventes par produits A » : L46-L55 (2026), N46-N55 (2025), ligne PREMIX R51
 - Feuille 3 « Vente en volume A » : D24-D29 (2026), E24-E29 (2025)
 """
@@ -112,7 +114,11 @@ for row in ws25.iter_rows(min_row=2, values_only=True):
         continue
     try:
         c = float(ca) if ca else 0
+        ttc_25 = float(row[7]) if row[7] else 0
     except Exception:
+        continue
+    # Règle : une vente dont le montant HT ou TTC est à 0 n'est pas intégrée
+    if c <= 0 or ttc_25 == 0:
         continue
     ref_str = str(ref).strip()
     # catégorie = cat_map (même mapping que 2026, pas la catégorie native du fichier)
@@ -129,13 +135,23 @@ for row in ws25.iter_rows(min_row=2, values_only=True):
             vol_t = float(row[11]) if row[11] else 0
         except Exception:
             vol_t = 0
+    # Règles métier : MATERIEL ELEVAGE (pièces) et ALVEOLES (paquets) sans volume ;
+    # DIVERS sans volume sauf la pierre à lécher PL102 (5 kg)
+    if cat == "MATERIEL ELEVAGE" or cat == "ALVEOLE" or (cat == "DIVERS" and ref_str != "PL102"):
+        vol_t = 0
+    agence_raw25 = str(agence).strip() if agence else ""
+    # Agences SPC/PDC (dépôts internes) : CA compté, volumes non (règle « CA oui, volumes non »)
+    spc_depot25 = agence_raw25.upper().startswith("SPC") or agence_raw25.upper().startswith("PDC")
     agence_norm = normalize_agence(agence)
-    if agence_norm:
+    if spc_depot25:
+        agence_ca_2025["SPC/PDC"] += c
+    elif agence_norm:
         agence_ca_2025[agence_norm] += c
     cat_ca_2025[cat] += c
-    cat_vol_2025[cat] += vol_t
     prod_ca_2025[ref_str] += c
-    prod_vol_2025[ref_str] += vol_t
+    if not spc_depot25:
+        cat_vol_2025[cat] += vol_t
+        prod_vol_2025[ref_str] += vol_t
 wb25.close()
 print(f"  2025 Jan-Sep — CA total: {sum(agence_ca_2025.values())/1e6:.1f} M FCFA | Vol: {sum(cat_vol_2025.values()):.1f} t")
 
@@ -163,20 +179,33 @@ def read_2026_rows(wb, sheet_names, col_ca, col_etat, col_agence, expected_month
             try:
                 q = float(qte) if qte else 0
                 c = float(ca) if ca else 0
+                ttc = float(row[col_ca + 1]) if len(row) > col_ca + 1 and row[col_ca + 1] else 0
             except Exception:
+                continue
+            # Règle : une vente dont le montant HT ou TTC est à 0 n'est pas intégrée
+            if c <= 0 or ttc == 0:
                 continue
             if ref_str == "M1051" and c == 0:
                 continue
             weight = parse_weight_kg(ref_str, desc)
-            vol_t = q * weight / 1000.0
             cat = cat_map.get(ref_str, "DIVERS")
+            # Règles métier : MATERIEL ELEVAGE (pièces) et ALVEOLES (paquets) sans volume ;
+            # DIVERS sans volume sauf la pierre à lécher PL102 (5 kg, seul produit divers vendu au poids)
+            sans_volume = cat == "MATERIEL ELEVAGE" or cat == "ALVEOLE" or (cat == "DIVERS" and ref_str != "PL102")
+            vol_t = 0 if sans_volume else q * weight / 1000.0
+            agence_raw26 = str(agence).strip() if agence else ""
+            # Agences SPC/PDC (dépôts internes) : CA compté, volumes non (règle « CA oui, volumes non »)
+            spc_depot26 = agence_raw26.upper().startswith("SPC") or agence_raw26.upper().startswith("PDC")
             agence_norm = normalize_agence(agence)
-            if agence_norm:
+            if spc_depot26:
+                agence_ca_2026["SPC/PDC"] += c
+            elif agence_norm:
                 agence_ca_2026[agence_norm] += c
             cat_ca_2026[cat] += c
-            cat_vol_2026[cat] += vol_t
             prod_ca_2026[ref_str] += c
-            prod_vol_2026[ref_str] += vol_t
+            if not spc_depot26:
+                cat_vol_2026[cat] += vol_t
+                prod_vol_2026[ref_str] += vol_t
 
 
 agence_ca_2026 = defaultdict(float)
@@ -185,22 +214,17 @@ cat_vol_2026 = defaultdict(float)
 prod_ca_2026 = defaultdict(float)
 prod_vol_2026 = defaultdict(float)
 
-# Janvier-Juin : classeur S1 (17 colonnes : HT=8, état=15, agence=17)
-print("Lecture fichier 2026 Jan-Juin (ventes janv a juin 2026.xlsx)...")
-wb26 = openpyxl.load_workbook('upload/ventes janv a juin 2026.xlsx', read_only=True, data_only=True)
-read_2026_rows(wb26, wb26.sheetnames, col_ca=8, col_etat=15, col_agence=17)
-wb26.close()
-
-# Juillet / Août / Septembre : ERP (9), (27), (51) — 16 colonnes (HT=8, état=13, agence=15)
-ERP_MENSUELS = [
-    ('upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx', 7),
-    ('upload/NJS GROUP ERP - Lignes de commandes + multicompany (27).xlsx', 8),
-    ('upload/NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx', 9),
+# 2026 Jan-Sep : extractions globales BELGOCAM — 17 colonnes (HT=8, TTC=9, état=14, agence=16)
+ERP_2026 = [
+    ('upload/NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx', [1, 2, 3]),
+    ('upload/NJS GROUP ERP - Lignes de commandes + multicompany (55).xlsx', [4, 5, 6]),
+    ('upload/NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx', [7, 8, 9]),
 ]
-for path, mois in ERP_MENSUELS:
-    print(f"Lecture fichier 2026 mois {mois} ({path.split('/')[-1]})...")
+for path, mois_list in ERP_2026:
+    print(f"Lecture fichier 2026 ({path.split('/')[-1]}, mois {mois_list[0]}-{mois_list[-1]})...")
     wbm = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    read_2026_rows(wbm, ['Sheet 1'], col_ca=8, col_etat=13, col_agence=15, expected_month=mois)
+    for mois in mois_list:
+        read_2026_rows(wbm, ['Sheet 1'], col_ca=8, col_etat=14, col_agence=16, expected_month=mois)
     wbm.close()
 print(f"  2026 Jan-Sep — CA total: {sum(agence_ca_2026.values())/1e6:.1f} M FCFA | Vol: {sum(cat_vol_2026.values()):.1f} t")
 
@@ -261,6 +285,7 @@ print(f"{'Agence':<16} {'CA 2025 (M)':>13} {'CA 2026 (M)':>13}")
 print("-" * 45)
 for label, agence in agences_ordre:
     print(f"{label:<16} {agence_ca_2025.get(agence, 0)/1e6:>13.1f} {agence_ca_2026.get(agence, 0)/1e6:>13.1f}")
+print(f"{'SPC/PDC':<16} {agence_ca_2025.get('SPC/PDC', 0)/1e6:>13.1f} {agence_ca_2026.get('SPC/PDC', 0)/1e6:>13.1f}")
 
 # ===== CONTRÔLE : cohérence avec le S1 livré (Jan-Sep doit être >= S1) =====
 with open('scripts/admin_vente_data.json', encoding='utf-8') as f:
@@ -271,6 +296,9 @@ for r in ['TOURTEAU SOJA', 'INGREDIENTS', 'MAIS', 'MATERIEL ELEVAGE', 'ALIMENTS 
           'CONCENTRES', 'DIVERSES', 'PRODUITS ACCESSOIRES', 'ALVEOLES']:
     d_ca = rubriques_2026[r]['ca'] - s1_data['rubriques_2026'][r]['ca']
     d_vol = rubriques_2026[r]['vol'] - s1_data['rubriques_2026'][r]['vol']
+    # MATERIEL ELEVAGE : pas de volume (pièces, règle métier) — l'ancien S1 en portait un à tort
+    if r == 'MATERIEL ELEVAGE':
+        d_vol = 0
     flag = "" if (d_ca >= -1 and d_vol >= -1) else "  <-- ANOMALIE"
     if flag:
         ok = False
@@ -294,11 +322,26 @@ SRC_OUT = 'download/ADMINISTRATEUR_DE_VENTE_rempli.xlsx'
 wb = openpyxl.load_workbook(SRC_OUT)
 
 # Feuille 1 : CAHT par agence A — B117-B130 (2026), D117-D130 (2025)
+# Les CA des agences SPC/PDC ne sont PAS ajoutés au tableau : l'écart entre le total
+# des rubriques (qui les intègre) et le total par agence correspond aux agences SPC/PDC.
 ws1 = wb['CAHT par agence A']
 for i, item in enumerate(agences_ordre):
     row = 117 + i
     ws1.cell(row=row, column=2, value=round(agence_ca_2026.get(item[1], 0), 2))
     ws1.cell(row=row, column=4, value=round(agence_ca_2025.get(item[1], 0), 2))
+
+# Total en ligne 131 (structure d'origine), formules et % remis en place
+ws1.cell(row=131, column=1, value='Total')
+ws1.cell(row=131, column=2, value='=SUM(B117:B130)')
+ws1.cell(row=131, column=3, value='=SUM(C117:C130)')
+ws1.cell(row=131, column=4, value='=SUM(D117:D130)')
+ws1.cell(row=131, column=5, value='=SUM(E117:E130)')
+for r in range(117, 131):
+    ws1.cell(row=r, column=3, value=f'=+B{r}/$B$131')
+    ws1.cell(row=r, column=5, value=f'=+D{r}/D131')
+# Nettoyage d'une éventuelle ligne résiduelle en 132
+for col in range(1, 6):
+    ws1.cell(row=132, column=col, value=None)
 
 # Feuille 2 : Ventes par produits A — L46-L55 (2026), N46-N55 (2025)
 # Structure actuelle du fichier : R46 TOURTEAU SOJA ... R51 PREMIX ... R55 MAIS

@@ -117,6 +117,8 @@ for r in rows[1:]:
     region = map_region(region_raw) or region_default
     
     montant_ht = r[2] if r[2] else 0  # montantHT (col 2)
+    # Règle : une vente dont le montant HT est à 0 n'est pas intégrée
+    if not isinstance(montant_ht, (int, float)) or montant_ht <= 0: continue
     qte = r[3] if r[3] else 0
     kg = tonnes * 1000
     sacs_50 = kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE') else 0
@@ -128,7 +130,7 @@ for r in rows[1:]:
         'qte': qte, 'weight_kg': 0, 'kg': kg, 'tonnes': tonnes,
         'sacs_50': sacs_50,
         'montant_ttc': 0, 'montant_ht': montant_ht,
-        'source': 'LY_2023'
+        'source': 'LY_2023', 'interne': False
     })
 
 print(f"  2023 records loaded: {len(records_2023)}")

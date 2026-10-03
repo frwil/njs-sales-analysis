@@ -11,9 +11,15 @@ CHANGEMENTS vs version précédente (2021-2026):
 Sources:
   - LY_24 (Jul-Dec 2024): 54,944 rows (excl #N/A)
   - 2025 (Jan-Dec): 86d96135 file
-  - S1 2026 (Jan-Juin): ventes janv a juin 2026
-  - Juil 2026: NJS GROUP ERP (9)
-  - Août 2026: NJS GROUP ERP (27) - dernière extraction
+  - 2026 (Jan-Sep): extractions globales BELGOCAM (54) Jan-Mar, (55) Avr-Jun, (56) Jul-Sep
+
+Règle : toute vente dont le montant HT ou TTC est à 0 n'est pas intégrée.
+
+Ventes internes (clients SPC/PDC/COMPTOIR/EMANA) : drapeau `interne=True`.
+Dans le monthly performance, les clients internes rattachés aux agences classiques
+sont comptés intégralement (CA + volumes) ; seules les agences SPC non mappées
+(SPC BUEA, SPC PK15…) gardent leur CA mais pas leurs volumes.
+Les analyses qui excluent (forecasts PDC/SPC, zéro achat) filtrent sur le drapeau.
 
 Familles finales (7):
   - TOURTEAUX (soja)
@@ -36,9 +42,12 @@ import os
 # === Source files ===
 FILE_LY_24 = "/home/z/my-project/upload/21_24.xlsx"  # LY_24 sheet (Jul-Dec 2024)
 FILE_2025 = "/home/z/my-project/upload/86d96135-9db7-45bc-bba6-a69efa2c5ee3.xlsx"
-FILE_S1_2026 = "/home/z/my-project/upload/ventes janv a juin 2026.xlsx"
-FILE_JUIL = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx"
-FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (27).xlsx"
+# Extractions globales BELGOCAM 2026 : (fichier, (mois min, mois max)) — 17 colonnes, dates en chaînes
+FILE_2026 = [
+    ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", (1, 3)),
+    ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (55).xlsx", (4, 6)),
+    ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", (7, 9)),
+]
 
 # === Product refs and weights (kg per unit) ===
 SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}
@@ -54,10 +63,16 @@ INGREDIENT_REFS = {
     'I106': 25, 'I1061': 1, 'I107': 25, 'I1071': 1,
     'P105': 25, 'P1051': 1, 'P1053': 5,
     'F114': 50, 'F1145': 50, 'F1146': 25, 'F1147': 1,
+    'F1143': 25, 'I1063': 5,
 }
 ALIMENT_REFS = {'CB100': 25, 'CB200': 25, 'CB101': 5, 'CB201': 5,
                 'PB100': 25, 'PB200': 25, 'DB100': 25, 'DB200': 25,
-                'ALAP25': 25}
+                'ALAP25': 25,
+                # BELGOFISH (aliments poissons) : séparés uniquement pour les forecasts 2027,
+                # intégrés aux ALIMENTS COMPLETS dans les datasets et monthly performance
+                'APCL2': 15, 'APCL25': 5, 'APCL3': 15, 'APCL30': 1, 'APCL35': 5,
+                'APCL4.5': 15, 'APCL4.55': 5, 'APCL450': 1, 'APCL6': 15, 'APCL65': 5,
+                'APCL8': 15, 'APCL80': 1, 'APCL85': 5}
 
 # === NOUVEAU: COMPLEMENT ALIMENTAIRE (liquides) ===
 # Tous les produits BELGOxxx liquides (1L = 1kg) + V305 (200L = 200kg)
@@ -75,12 +90,13 @@ COMPLEMENT_REFS = {
     'CA008.1': 1,     # BELGO FRESH 1L = 1 kg
 }
 
+# MATERIEL ELEVAGE : pièces/paquets sans poids (règle métier) → poids 0, volume 0, CA uniquement
 MATERIEL_REFS = {
-    'MAT003': 1, 'MAT004': 1, 'MAT005': 1, 'MAT006': 1, 'MAT007': 1, 'MAT008': 1, 'MAT009': 1,
-    'MAT011': 1, 'MAT014': 1, 'MAT015': 1, 'MAT017': 1,
-    'MAT020': 1, 'MAT033': 1, 'MAT039': 1, 'MAT040': 1, 'MAT042': 1,
-    'MAT047': 1, 'MAT049': 1, 'MAT050': 1, 'MAT054': 1, 'MAT055': 1, 'MAT073': 1,
-    'MAT014-80010003': 1, 'MAT011-80010002': 1,
+    'MAT003': 0, 'MAT004': 0, 'MAT005': 0, 'MAT006': 0, 'MAT007': 0, 'MAT008': 0, 'MAT009': 0,
+    'MAT011': 0, 'MAT014': 0, 'MAT015': 0, 'MAT017': 0,
+    'MAT020': 0, 'MAT033': 0, 'MAT039': 0, 'MAT040': 0, 'MAT042': 0,
+    'MAT047': 0, 'MAT049': 0, 'MAT050': 0, 'MAT054': 0, 'MAT055': 0, 'MAT073': 0,
+    'MAT014-80010003': 0, 'MAT011-80010002': 0,
 }
 PREMIX_REFS = {'P102N2': 25, 'P104N2': 25, 'P109': 25, 'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25}
 
@@ -207,11 +223,14 @@ for r in rows_24[1:]:
     
     qte = r[2] if r[2] else 0
     weight = get_weight(ref)
-    kg = qte * weight
+    # MATERIEL_ELEVAGE : pas de volume, uniquement le CA (règle métier)
+    kg = 0 if family == 'MATERIEL_ELEVAGE' else qte * weight
     # For COMPLEMENT_ALIMENTAIRE and MATERIEL, no "sacs_50" notion
     sacs_50 = kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE') else 0
     
     montant_ht = r[7] if r[7] else 0
+    # Règle : une vente dont le montant HT est à 0 n'est pas intégrée
+    if not isinstance(montant_ht, (int, float)) or montant_ht <= 0: continue
     date_str = str(r[5])[:10] if r[5] else ''
     try:
         date = pd.to_datetime(date_str, format='%d/%m/%Y')
@@ -226,7 +245,7 @@ for r in rows_24[1:]:
         'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': kg / 1000,
         'sacs_50': sacs_50,
         'montant_ttc': 0, 'montant_ht': montant_ht,
-        'source': 'LY_24'
+        'source': 'LY_24', 'interne': False
     })
 print(f"  Records loaded: {len(records_24)}")
 df_24 = pd.DataFrame(records_24)
@@ -266,16 +285,29 @@ for r in ws.iter_rows(min_row=2, values_only=True):
     family = get_family(ref)
     if family in ('EXCLUDED', 'AUTRES'): continue
     client = r[cols_2025['client']]
-    if is_internal_client(client): continue
+    # Clients internes (COMPTOIR/PDC/SPC/EMANA) rattachés aux agences classiques :
+    # comptés intégralement (CA + volumes). Agences SPC non mappées : CA oui, volumes non.
+    # Le drapeau `interne` reste posé pour les analyses qui excluent (forecasts, zéro achat).
+    interne = is_internal_client(client)
     agence_raw = r[cols_2025['agence']]
-    agence_short, region = AGENCE_MAP.get(agence_raw, (None, None))
-    if not agence_short: continue
+    if agence_raw in AGENCE_MAP:
+        agence_short, region = AGENCE_MAP[agence_raw]
+        vol_zero = False
+    elif interne:
+        agence_short, region = (str(agence_raw).strip() or 'SPC'), None
+        vol_zero = True
+    else:
+        continue
     qte = r[cols_2025['qte']] or 0
     weight = get_weight(ref)
-    kg = qte * weight
-    sacs_50 = kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE') else 0
+    # MATERIEL_ELEVAGE : pas de volume, uniquement le CA (règle métier)
+    kg = 0 if (vol_zero or family == 'MATERIEL_ELEVAGE') else qte * weight
+    sacs_50 = 0 if (vol_zero or family in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE')) else kg / 50
     montant_ttc = r[cols_2025['montant_ttc']] or 0
     montant_ht = r[cols_2025['montant_ht']] or 0
+    # Règle : une vente dont le montant HT ou TTC est à 0 n'est pas intégrée
+    if not isinstance(montant_ht, (int, float)) or montant_ht <= 0 \
+       or not isinstance(montant_ttc, (int, float)) or montant_ttc == 0: continue
     date = parse_date(r[cols_2025['date']])
     if date is None: continue
     records_2025.append({
@@ -285,16 +317,15 @@ for r in ws.iter_rows(min_row=2, values_only=True):
         'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': kg / 1000,
         'sacs_50': sacs_50,
         'montant_ttc': montant_ttc, 'montant_ht': montant_ht,
-        'source': '2025'
+        'source': '2025', 'interne': interne
     })
 print(f"  2025: {len(records_2025)} records")
 
 
-# === Load S1 2026 (Jan-Juin) ===
+# === Load 2026 (Jan-Sep) : extractions globales BELGOCAM (54)/(55)/(56) ===
 print("\n" + "=" * 70)
-print("Loading S1 2026 (Jan-Juin)...")
+print("Loading 2026 (Jan-Sep) — extractions globales (54)/(55)/(56)...")
 print("=" * 70)
-wb = openpyxl.load_workbook(FILE_S1_2026, read_only=True, data_only=True)
 
 def detect_cols_2026(ws, header_row=2):
     header = None
@@ -313,9 +344,10 @@ def detect_cols_2026(ws, header_row=2):
         elif h == 'agence': indices['agence'] = i
     return indices
 
-records_s1 = []
-for sheet_name in wb.sheetnames:
-    ws = wb[sheet_name]
+records_2026 = []
+for path, (mois_min, mois_max) in FILE_2026:
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    ws = wb['Sheet 1']
     cols = detect_cols_2026(ws, header_row=2)
     if 'ref' not in cols: continue
     for r in ws.iter_rows(min_row=3, values_only=True):
@@ -327,123 +359,51 @@ for sheet_name in wb.sheetnames:
         family = get_family(ref)
         if family in ('EXCLUDED', 'AUTRES'): continue
         client = r[cols['client']]
-        if is_internal_client(client): continue
+        # Clients internes (COMPTOIR/PDC/SPC/EMANA) rattachés aux agences classiques :
+        # comptés intégralement (CA + volumes). Agences SPC non mappées : CA oui, volumes non.
+        # Le drapeau `interne` reste posé pour les analyses qui excluent (forecasts, zéro achat).
+        interne = is_internal_client(client)
         agence_raw = r[cols['agence']]
-        agence_short, region = AGENCE_MAP.get(agence_raw, (None, None))
-        if not agence_short: continue
-        qte = r[cols['qte']] or 0
-        weight = get_weight(ref)
-        kg = qte * weight
-        sacs_50 = kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE') else 0
-        montant_ttc = r[cols['montant_ttc']] or 0
-        montant_ht = r[cols['montant_ht']] or 0
+        if agence_raw in AGENCE_MAP:
+            agence_short, region = AGENCE_MAP[agence_raw]
+            vol_zero = False
+        elif interne:
+            agence_short, region = (str(agence_raw).strip() or 'SPC'), None
+            vol_zero = True
+        else:
+            continue
         date = parse_date(r[cols['date']])
         if date is None: continue
-        records_s1.append({
+        # Filtre mensuel du fichier (garde-fou anti-doublon / hors période)
+        if date.year != 2026 or not (mois_min <= date.month <= mois_max): continue
+        qte = r[cols['qte']] or 0
+        weight = get_weight(ref)
+        # MATERIEL_ELEVAGE : pas de volume, uniquement le CA (règle métier)
+        kg = 0 if (vol_zero or family == 'MATERIEL_ELEVAGE') else qte * weight
+        sacs_50 = 0 if (vol_zero or family in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE')) else kg / 50
+        montant_ttc = r[cols['montant_ttc']] or 0
+        montant_ht = r[cols['montant_ht']] or 0
+        # Règle : une vente dont le montant HT ou TTC est à 0 n'est pas intégrée
+        if not isinstance(montant_ht, (int, float)) or montant_ht <= 0 \
+           or not isinstance(montant_ttc, (int, float)) or montant_ttc == 0: continue
+        records_2026.append({
             'date': date, 'year': date.year, 'month': date.month,
             'ref': ref, 'family': family, 'description': r[cols['desc']],
             'client': client, 'agence': agence_short, 'region': region,
             'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': kg / 1000,
             'sacs_50': sacs_50,
             'montant_ttc': montant_ttc, 'montant_ht': montant_ht,
-            'source': 'S1_2026'
+            'source': 'BELGOCAM_2026', 'interne': interne
         })
-print(f"  S1 2026: {len(records_s1)} records")
-
-
-# === Load Juillet 2026 ===
-print("\n" + "=" * 70)
-print("Loading Juillet 2026...")
-print("=" * 70)
-wb = openpyxl.load_workbook(FILE_JUIL, read_only=True, data_only=True)
-ws = wb['Sheet 1']
-cols = detect_cols_2026(ws, header_row=2)
-
-records_juil = []
-for r in ws.iter_rows(min_row=3, values_only=True):
-    if not r or len(r) <= max(cols.values()): continue
-    if r[cols['ref']] == 'Total': continue
-    etat = str(r[cols['etat']]).strip() if r[cols['etat']] else ''
-    if etat != 'Livrée': continue
-    ref = str(r[cols['ref']])
-    family = get_family(ref)
-    if family in ('EXCLUDED', 'AUTRES'): continue
-    client = r[cols['client']]
-    if is_internal_client(client): continue
-    agence_raw = r[cols['agence']]
-    agence_short, region = AGENCE_MAP.get(agence_raw, (None, None))
-    if not agence_short: continue
-    date_str = str(r[cols['date']]) if r[cols['date']] else ''
-    if '/07/2026' not in date_str: continue
-    qte = r[cols['qte']] or 0
-    weight = get_weight(ref)
-    kg = qte * weight
-    sacs_50 = kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE') else 0
-    montant_ttc = r[cols['montant_ttc']] or 0
-    montant_ht = r[cols['montant_ht']] or 0
-    date = parse_date(r[cols['date']])
-    if date is None: continue
-    records_juil.append({
-        'date': date, 'year': date.year, 'month': date.month,
-        'ref': ref, 'family': family, 'description': r[cols['desc']],
-        'client': client, 'agence': agence_short, 'region': region,
-        'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': kg / 1000,
-        'sacs_50': sacs_50,
-        'montant_ttc': montant_ttc, 'montant_ht': montant_ht,
-        'source': 'Juil_2026'
-    })
-print(f"  Juillet 2026: {len(records_juil)} records")
-
-
-# === Load Août 2026 ===
-print("\n" + "=" * 70)
-print("Loading Août 2026...")
-print("=" * 70)
-wb = openpyxl.load_workbook(FILE_AOUT, read_only=True, data_only=True)
-ws = wb['Sheet 1']
-cols = detect_cols_2026(ws, header_row=2)
-
-records_aout = []
-for r in ws.iter_rows(min_row=3, values_only=True):
-    if not r or len(r) <= max(cols.values()): continue
-    if r[cols['ref']] == 'Total': continue
-    etat = str(r[cols['etat']]).strip() if r[cols['etat']] else ''
-    if etat != 'Livrée': continue
-    if not r[cols['date']] or '/08/2026' not in str(r[cols['date']]): continue
-    if str(r[cols['date']]) == '27/08/2026': continue  # Skip partial 27/08 (early extraction)
-    ref = str(r[cols['ref']])
-    family = get_family(ref)
-    if family in ('EXCLUDED', 'AUTRES'): continue
-    client = r[cols['client']]
-    if is_internal_client(client): continue
-    agence_raw = r[cols['agence']]
-    agence_short, region = AGENCE_MAP.get(agence_raw, (None, None))
-    if not agence_short: continue
-    qte = r[cols['qte']] or 0
-    weight = get_weight(ref)
-    kg = qte * weight
-    sacs_50 = kg / 50 if family not in ('MATERIEL_ELEVAGE', 'COMPLEMENT_ALIMENTAIRE') else 0
-    montant_ttc = r[cols['montant_ttc']] or 0
-    montant_ht = r[cols['montant_ht']] or 0
-    date = parse_date(r[cols['date']])
-    if date is None: continue
-    records_aout.append({
-        'date': date, 'year': date.year, 'month': date.month,
-        'ref': ref, 'family': family, 'description': r[cols['desc']],
-        'client': client, 'agence': agence_short, 'region': region,
-        'qte': qte, 'weight_kg': weight, 'kg': kg, 'tonnes': kg / 1000,
-        'sacs_50': sacs_50,
-        'montant_ttc': montant_ttc, 'montant_ht': montant_ht,
-        'source': 'Aout_2026'
-    })
-print(f"  Août 2026: {len(records_aout)} records")
+    wb.close()
+print(f"  2026 (Jan-Sep): {len(records_2026)} records")
 
 
 # === Consolidate ===
 print("\n" + "=" * 70)
 print("Consolidating 2024-2026...")
 print("=" * 70)
-all_records = records_24 + records_2025 + records_s1 + records_juil + records_aout
+all_records = records_24 + records_2025 + records_2026
 df = pd.DataFrame(all_records)
 print(f"Total records: {len(df)}")
 print(f"Date range: {df['date'].min().date()} → {df['date'].max().date()}")

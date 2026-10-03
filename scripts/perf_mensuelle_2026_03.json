@@ -4,7 +4,7 @@
     "label": "Mars 2026",
     "update_date": "31/03/2026",
     "jours_ouvres": null,
-    "source_erp": "ventes janv a juin 2026.xlsx"
+    "source_erp": "NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx"
   },
   "global_sept": {
     "TOURTEAUX": {
@@ -22,11 +22,11 @@
       "ca": 1034.4
     },
     "ALIMENT_COMPLET": {
-      "t": 76.0,
+      "t": 84.5,
       "obj": 93.0,
-      "pct": 81.7,
-      "ecart": -17.0,
-      "ca": 61.9
+      "pct": 90.8,
+      "ecart": -8.5,
+      "ca": 72.5
     },
     "INGREDIENTS": {
       "t": 80.4,
@@ -61,7 +61,7 @@
       "obj": 0.0,
       "pct": null,
       "ecart": 0.0,
-      "ca": 18.1
+      "ca": 22.1
     }
   },
   "agence_sept": {
@@ -77,9 +77,9 @@
         "pct": 62.8
       },
       "ALIMENT_COMPLET": {
-        "t": 6.0,
+        "t": 7.1,
         "obj": 7.8,
-        "pct": 76.2
+        "pct": 90.6
       },
       "INGREDIENTS": {
         "t": 13.9,
@@ -119,9 +119,9 @@
         "pct": 47.1
       },
       "ALIMENT_COMPLET": {
-        "t": 21.6,
+        "t": 23.2,
         "obj": 12.6,
-        "pct": 171.8
+        "pct": 184.8
       },
       "INGREDIENTS": {
         "t": 9.6,
@@ -161,9 +161,9 @@
         "pct": 75.2
       },
       "ALIMENT_COMPLET": {
-        "t": 4.1,
+        "t": 5.3,
         "obj": 3.7,
-        "pct": 111.4
+        "pct": 144.0
       },
       "INGREDIENTS": {
         "t": 4.8,
@@ -203,9 +203,9 @@
         "pct": 71.8
       },
       "ALIMENT_COMPLET": {
-        "t": 11.5,
+        "t": 11.9,
         "obj": 14.3,
-        "pct": 80.3
+        "pct": 83.6
       },
       "INGREDIENTS": {
         "t": 13.3,
@@ -287,9 +287,9 @@
         "pct": 111.9
       },
       "ALIMENT_COMPLET": {
-        "t": 7.6,
+        "t": 7.9,
         "obj": 13.1,
-        "pct": 57.9
+        "pct": 60.7
       },
       "INGREDIENTS": {
         "t": 5.2,
@@ -329,9 +329,9 @@
         "pct": 91.3
       },
       "ALIMENT_COMPLET": {
-        "t": 3.2,
+        "t": 3.3,
         "obj": 5.0,
-        "pct": 63.1
+        "pct": 64.8
       },
       "INGREDIENTS": {
         "t": 3.4,
@@ -371,9 +371,9 @@
         "pct": 73.2
       },
       "ALIMENT_COMPLET": {
-        "t": 0.9,
+        "t": 1.1,
         "obj": 4.0,
-        "pct": 21.9
+        "pct": 27.6
       },
       "INGREDIENTS": {
         "t": 3.4,
@@ -413,9 +413,9 @@
         "pct": 64.8
       },
       "ALIMENT_COMPLET": {
-        "t": 2.5,
+        "t": 4.5,
         "obj": 7.1,
-        "pct": 35.5
+        "pct": 63.5
       },
       "INGREDIENTS": {
         "t": 5.3,
@@ -455,9 +455,9 @@
         "pct": 59.8
       },
       "ALIMENT_COMPLET": {
-        "t": 2.7,
+        "t": 3.0,
         "obj": 5.0,
-        "pct": 53.9
+        "pct": 60.5
       },
       "INGREDIENTS": {
         "t": 4.4,
@@ -497,9 +497,9 @@
         "pct": 119.8
       },
       "ALIMENT_COMPLET": {
-        "t": 1.7,
+        "t": 1.8,
         "obj": 4.3,
-        "pct": 39.7
+        "pct": 42.1
       },
       "INGREDIENTS": {
         "t": 2.9,
@@ -539,9 +539,9 @@
         "pct": 65.4
       },
       "ALIMENT_COMPLET": {
-        "t": 4.8,
+        "t": 5.6,
         "obj": 3.7,
-        "pct": 129.3
+        "pct": 152.1
       },
       "INGREDIENTS": {
         "t": 3.1,
@@ -623,9 +623,9 @@
         "pct": 39.1
       },
       "ALIMENT_COMPLET": {
-        "t": 4.2,
+        "t": 4.3,
         "obj": 6.1,
-        "pct": 68.9
+        "pct": 70.1
       },
       "INGREDIENTS": {
         "t": 2.2,
@@ -667,9 +667,9 @@
         "pct": 69.8
       },
       "ALIMENT_COMPLET": {
-        "t": 11.3,
+        "t": 12.4,
         "obj": 14.8,
-        "pct": 76.7
+        "pct": 84.3
       },
       "INGREDIENTS": {
         "t": 22.7,
@@ -709,9 +709,9 @@
         "pct": 63.6
       },
       "ALIMENT_COMPLET": {
-        "t": 35.6,
+        "t": 41.6,
         "obj": 35.3,
-        "pct": 100.6
+        "pct": 117.6
       },
       "INGREDIENTS": {
         "t": 29.1,
@@ -751,9 +751,9 @@
         "pct": 71.3
       },
       "ALIMENT_COMPLET": {
-        "t": 29.1,
+        "t": 30.5,
         "obj": 43.5,
-        "pct": 66.9
+        "pct": 70.0
       },
       "INGREDIENTS": {
         "t": 28.5,
@@ -813,15 +813,15 @@
     },
     "ALIMENT_COMPLET": {
       "1": {
-        "t": 81.7,
+        "t": 87.9,
         "obj": 94.0
       },
       "2": {
-        "t": 79.2,
+        "t": 91.0,
         "obj": 84.0
       },
       "3": {
-        "t": 76.0,
+        "t": 84.5,
         "obj": 93.0
       }
     },
@@ -910,10 +910,10 @@
       "ca": 3088.3
     },
     "ALIMENT_COMPLET": {
-      "t": 236.9,
+      "t": 263.4,
       "obj": 271.0,
-      "pct": 87.4,
-      "ca": 194.6
+      "pct": 97.2,
+      "ca": 227.5
     },
     "INGREDIENTS": {
       "t": 243.3,
@@ -943,7 +943,7 @@
       "t": 0.0,
       "obj": 0.0,
       "pct": null,
-      "ca": 72.7
+      "ca": 74.8
     }
   },
   "agence_sc_monthly": {
@@ -1565,13 +1565,13 @@
       "pct_vol": 67.9
     },
     "ALIMENT_COMPLET": {
-      "ca": 61.9,
+      "ca": 72.5,
       "attendu": 78.6,
-      "pct_ca": 78.8,
-      "prix_moy": 815092.0,
+      "pct_ca": 92.3,
+      "prix_moy": 858808.0,
       "prix_obj": 845283.0,
-      "prix_ref": 821191.0,
-      "pct_vol": 81.7
+      "prix_ref": 863634.0,
+      "pct_vol": 90.8
     },
     "INGREDIENTS": {
       "ca": 110.4,
@@ -1610,9 +1610,9 @@
       "pct_vol": null
     },
     "MATERIEL_ELEVAGE": {
-      "ca": 18.1,
+      "ca": 22.1,
       "attendu": 29.5,
-      "pct_ca": 61.4,
+      "pct_ca": 74.7,
       "prix_moy": null,
       "prix_obj": null,
       "prix_ref": null,
@@ -1633,10 +1633,10 @@
       "pct_vol": 69.9
     },
     "ALIMENT_COMPLET": {
-      "ca": 194.6,
+      "ca": 227.5,
       "attendu": 229.1,
-      "pct_ca": 84.9,
-      "pct_vol": 87.4
+      "pct_ca": 99.3,
+      "pct_vol": 97.2
     },
     "INGREDIENTS": {
       "ca": 323.2,
@@ -1663,9 +1663,9 @@
       "pct_vol": null
     },
     "MATERIEL_ELEVAGE": {
-      "ca": 72.7,
+      "ca": 74.8,
       "attendu": 87.1,
-      "pct_ca": 83.4,
+      "pct_ca": 85.9,
       "pct_vol": null
     }
   },
@@ -1798,40 +1798,40 @@
     }
   },
   "encaissements": {
-    "payee": 2483.5,
+    "payee": 2509.6,
     "creance": 0.5,
-    "impayee": 11.6,
+    "impayee": 0.0,
     "vide": 0.0,
-    "total": 2495.6,
-    "taux_encaissement": 99.5,
+    "total": 2510.1,
+    "taux_encaissement": 100.0,
     "par_agence": {
       "Famla": {
-        "ca": 596.0,
-        "payee": 595.9,
+        "ca": 597.3,
+        "payee": 597.3,
         "creance": 0.1,
         "impayee": 0.0,
         "taux": 100.0
       },
       "Messassi": {
-        "ca": 236.5,
-        "payee": 236.2,
+        "ca": 238.5,
+        "payee": 238.3,
         "creance": 0.3,
         "impayee": 0.0,
         "taux": 99.9
       },
       "Bertoua": {
-        "ca": 118.7,
-        "payee": 118.7,
+        "ca": 120.3,
+        "payee": 120.3,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
       },
       "Ndobo": {
-        "ca": 375.6,
-        "payee": 363.9,
+        "ca": 376.2,
+        "payee": 376.2,
         "creance": 0.0,
-        "impayee": 11.6,
-        "taux": 96.9
+        "impayee": 0.0,
+        "taux": 100.0
       },
       "Djeleng": {
         "ca": 194.8,
@@ -1841,50 +1841,50 @@
         "taux": 100.0
       },
       "Village": {
-        "ca": 137.7,
-        "payee": 137.7,
+        "ca": 138.2,
+        "payee": 138.2,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
       },
       "Pk11": {
-        "ca": 99.8,
-        "payee": 99.8,
+        "ca": 99.9,
+        "payee": 99.9,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
       },
       "Ngaoundere": {
-        "ca": 75.8,
-        "payee": 75.8,
+        "ca": 76.1,
+        "payee": 76.1,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
       },
       "Ahala": {
-        "ca": 167.7,
-        "payee": 167.7,
+        "ca": 170.2,
+        "payee": 170.2,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
       },
       "Nkongsamba": {
-        "ca": 125.5,
-        "payee": 125.5,
+        "ca": 126.0,
+        "payee": 126.0,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
       },
       "Nkolbisson": {
-        "ca": 70.6,
-        "payee": 70.6,
+        "ca": 70.7,
+        "payee": 70.7,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
       },
       "Nkoabang": {
-        "ca": 82.7,
-        "payee": 82.7,
+        "ca": 83.7,
+        "payee": 83.7,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
@@ -1897,8 +1897,8 @@
         "taux": 100.0
       },
       "Buea": {
-        "ca": 88.3,
-        "payee": 88.3,
+        "ca": 88.4,
+        "payee": 88.4,
         "creance": 0.0,
         "impayee": 0.0,
         "taux": 100.0
@@ -1918,22 +1918,22 @@
   "mix_famille": {
     "TOURTEAUX": {
       "ca": 1250.2,
-      "part_ca": 50.1,
-      "payee": 1238.2,
-      "non_encaisse": 12.0,
-      "taux": 99.0
+      "part_ca": 49.8,
+      "payee": 1249.8,
+      "non_encaisse": 0.3,
+      "taux": 100.0
     },
     "CONCENTRES": {
       "ca": 1034.4,
-      "part_ca": 41.4,
+      "part_ca": 41.2,
       "payee": 1034.3,
       "non_encaisse": 0.1,
       "taux": 100.0
     },
     "ALIMENT_COMPLET": {
-      "ca": 61.9,
-      "part_ca": 2.5,
-      "payee": 61.9,
+      "ca": 72.5,
+      "part_ca": 2.9,
+      "payee": 72.5,
       "non_encaisse": 0.0,
       "taux": 100.0
     },
@@ -1946,7 +1946,7 @@
     },
     "PREMIX": {
       "ca": 18.7,
-      "part_ca": 0.8,
+      "part_ca": 0.7,
       "payee": 18.7,
       "non_encaisse": 0.0,
       "taux": 100.0
@@ -1959,9 +1959,9 @@
       "taux": 100.0
     },
     "MATERIEL_ELEVAGE": {
-      "ca": 18.1,
-      "part_ca": 0.7,
-      "payee": 18.1,
+      "ca": 22.1,
+      "part_ca": 0.9,
+      "payee": 22.1,
       "non_encaisse": 0.0,
       "taux": 100.0
     }
@@ -1990,9 +1990,9 @@
       "famille": "TOURTEAUX",
       "ca": 235.8,
       "part_ca": 9.4,
-      "payee": 224.1,
-      "non_encaisse": 11.6,
-      "taux": 95.1
+      "payee": 235.8,
+      "non_encaisse": 0.0,
+      "taux": 100.0
     },
     {
       "agence": "Messassi",
@@ -2034,7 +2034,7 @@
       "agence": "Djeleng",
       "famille": "TOURTEAUX",
       "ca": 89.0,
-      "part_ca": 3.6,
+      "part_ca": 3.5,
       "payee": 89.0,
       "non_encaisse": 0.0,
       "taux": 100.0
@@ -2088,7 +2088,7 @@
       "agence": "Bertoua",
       "famille": "CONCENTRES",
       "ca": 58.8,
-      "part_ca": 2.4,
+      "part_ca": 2.3,
       "payee": 58.8,
       "non_encaisse": 0.0,
       "taux": 100.0
@@ -2124,7 +2124,7 @@
       "agence": "Buea",
       "famille": "TOURTEAUX",
       "ca": 51.2,
-      "part_ca": 2.1,
+      "part_ca": 2.0,
       "payee": 51.2,
       "non_encaisse": 0.0,
       "taux": 100.0
@@ -2169,7 +2169,7 @@
       "agence": "Pk11",
       "famille": "CONCENTRES",
       "ca": 36.3,
-      "part_ca": 1.5,
+      "part_ca": 1.4,
       "payee": 36.3,
       "non_encaisse": 0.0,
       "taux": 100.0
@@ -2219,5 +2219,143 @@
       "non_encaisse": 0.0,
       "taux": 100.0
     }
-  ]
+  ],
+  "analyse_semaine": {
+    "semaines": [
+      {
+        "label": "W1",
+        "debut": "02/03",
+        "fin": "08/03",
+        "ca": 726.2,
+        "tonnes": 1744.1,
+        "n_lignes": 2356
+      },
+      {
+        "label": "W2",
+        "debut": "09/03",
+        "fin": "15/03",
+        "ca": 542.9,
+        "tonnes": 1203.0,
+        "n_lignes": 2209
+      },
+      {
+        "label": "W3",
+        "debut": "16/03",
+        "fin": "22/03",
+        "ca": 495.1,
+        "tonnes": 1058.3,
+        "n_lignes": 1994
+      },
+      {
+        "label": "W4",
+        "debut": "23/03",
+        "fin": "29/03",
+        "ca": 561.2,
+        "tonnes": 1205.8,
+        "n_lignes": 2225
+      },
+      {
+        "label": "W5",
+        "debut": "30/03",
+        "fin": "31/03",
+        "ca": 184.7,
+        "tonnes": 404.6,
+        "n_lignes": 709
+      }
+    ],
+    "vs_semaine_precedente": [
+      {
+        "semaine": "W1 (02/03-08/03)",
+        "semaine_prec": "23/02-28/02",
+        "ca": 726.2,
+        "ca_prec": 638.7,
+        "delta_ca_pct": 13.7,
+        "tonnes": 1744.1,
+        "tonnes_prec": 1456.6,
+        "delta_t_pct": 19.7
+      },
+      {
+        "semaine": "W2 (09/03-15/03)",
+        "semaine_prec": "02/03-08/03",
+        "ca": 542.9,
+        "ca_prec": 726.2,
+        "delta_ca_pct": -25.2,
+        "tonnes": 1203.0,
+        "tonnes_prec": 1744.1,
+        "delta_t_pct": -31.0
+      },
+      {
+        "semaine": "W3 (16/03-22/03)",
+        "semaine_prec": "09/03-15/03",
+        "ca": 495.1,
+        "ca_prec": 542.9,
+        "delta_ca_pct": -8.8,
+        "tonnes": 1058.3,
+        "tonnes_prec": 1203.0,
+        "delta_t_pct": -12.0
+      },
+      {
+        "semaine": "W4 (23/03-29/03)",
+        "semaine_prec": "16/03-22/03",
+        "ca": 561.2,
+        "ca_prec": 495.1,
+        "delta_ca_pct": 13.4,
+        "tonnes": 1205.8,
+        "tonnes_prec": 1058.3,
+        "delta_t_pct": 13.9
+      },
+      {
+        "semaine": "W5 (30/03-31/03)",
+        "semaine_prec": "23/03-29/03",
+        "ca": 184.7,
+        "ca_prec": 561.2,
+        "delta_ca_pct": -67.1,
+        "tonnes": 404.6,
+        "tonnes_prec": 1205.8,
+        "delta_t_pct": -66.4
+      }
+    ],
+    "vs_meme_semaine_mois_precedent": [
+      {
+        "semaine": "W1 (02/03-08/03)",
+        "semaine_m1": "W1 Fév (02/02-08/02)",
+        "ca": 726.2,
+        "ca_m1": 625.6,
+        "delta_ca_pct": 16.1,
+        "tonnes": 1744.1,
+        "tonnes_m1": 1378.9,
+        "delta_t_pct": 26.5
+      },
+      {
+        "semaine": "W2 (09/03-15/03)",
+        "semaine_m1": "W2 Fév (09/02-15/02)",
+        "ca": 542.9,
+        "ca_m1": 563.3,
+        "delta_ca_pct": -3.6,
+        "tonnes": 1203.0,
+        "tonnes_m1": 1219.6,
+        "delta_t_pct": -1.4
+      },
+      {
+        "semaine": "W3 (16/03-22/03)",
+        "semaine_m1": "W3 Fév (16/02-22/02)",
+        "ca": 495.1,
+        "ca_m1": 571.9,
+        "delta_ca_pct": -13.4,
+        "tonnes": 1058.3,
+        "tonnes_m1": 1208.5,
+        "delta_t_pct": -12.4
+      },
+      {
+        "semaine": "W4 (23/03-29/03)",
+        "semaine_m1": "W4 Fév (23/02-28/02)",
+        "ca": 561.2,
+        "ca_m1": 638.7,
+        "delta_ca_pct": -12.1,
+        "tonnes": 1205.8,
+        "tonnes_m1": 1456.6,
+        "delta_t_pct": -17.2
+      }
+    ]
+  }
 }

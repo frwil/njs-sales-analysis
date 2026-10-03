@@ -15,6 +15,7 @@ Le YTD de chaque fichier est arrêté au mois du fichier (ex. fichier de mars = 
  7. Analyse comparée volumes vs CA : le CA suit-il les volumes ?
  8. Encaissements (StatutFacture) : Payée / Créance / Impayée par agence
  9. Mix-produit & combo gagnant : CA et encaissement par famille et par combo agence × produit
+10. Analyse hebdomadaire : chaque semaine du mois vs semaine précédente directe et vs même semaine du mois précédent
 
 Usage : lancer compute_monthly_performance.py <mois> puis ce script <mois>.
 """
@@ -672,6 +673,63 @@ if combos:
 else:
     pc9 = ("Aucune vente soja/concentrés enregistrée ce mois-ci : pas de combo analysable.")
 story.append(Paragraph(f"<b>Points clés</b> : {pc9}", BODY))
+
+# --- SECTION 10 : Analyse hebdomadaire ---
+story.append(PageBreak())
+story.append(Paragraph(f"10. Analyse hebdomadaire — {MONTH_LABEL} vs semaine précédente & même semaine du mois précédent", H1))
+story.append(Paragraph(
+    "Le mois est découpé en semaines complètes (lundi → dimanche, dernière semaine tronquée en fin de mois). "
+    "Chaque semaine est comparée (a) à la semaine précédente directe — pour W1, la dernière semaine du mois "
+    "précédent — et (b) à la semaine de même rang du mois précédent. Volumes en tonnes, CA en M FCFA (TTC). "
+    "Semaines de référence du mois précédent : dataset historique (états « Livrée »).", BODY))
+story.append(Spacer(1, 0.25*cm))
+
+sem10 = DATA.get('analyse_semaine', {})
+semaines10 = sem10.get('semaines', [])
+vs_prev10 = sem10.get('vs_semaine_precedente', [])
+vs_m110 = sem10.get('vs_meme_semaine_mois_precedent', [])
+
+if semaines10:
+    rows10 = [['Semaine', 'Période', 'CA (M FCFA)', 'Tonnes', 'Lignes']]
+    for s in semaines10:
+        rows10.append([s['label'], f"{s['debut']} → {s['fin']}", fmt1(s['ca']), fmt(s['tonnes']),
+                       f"{s['n_lignes']:,}".replace(',', ' ')])
+    story.append(Paragraph("Découpage hebdomadaire du mois", H2))
+    story.append(make_table(rows10, col_widths=[2.2*cm, 3.8*cm, 3.4*cm, 2.8*cm, 2.6*cm], font_size=8.5))
+    story.append(Spacer(1, 0.35*cm))
+
+if vs_prev10:
+    rows10b = [['Semaine', 'Semaine précédente', 'CA (M)', 'Δ CA %', 'Tonnes', 'Δ t %']]
+    for v in vs_prev10:
+        rows10b.append([v['semaine'], v['semaine_prec'], fmt1(v['ca']), pct(v['delta_ca_pct']),
+                        fmt(v['tonnes']), pct(v['delta_t_pct'])])
+    story.append(Paragraph("a) vs semaine précédente (directe)", H2))
+    story.append(make_table(rows10b, col_widths=[3.4*cm, 3.4*cm, 2.2*cm, 2.0*cm, 2.2*cm, 1.6*cm], font_size=8.5))
+    story.append(Spacer(1, 0.35*cm))
+
+if vs_m110:
+    rows10c = [['Semaine', 'Même semaine mois précédent', 'CA (M)', 'Δ CA %', 'Tonnes', 'Δ t %']]
+    for v in vs_m110:
+        rows10c.append([v['semaine'], v['semaine_m1'], fmt1(v['ca']), pct(v['delta_ca_pct']),
+                        fmt(v['tonnes']), pct(v['delta_t_pct'])])
+    story.append(Paragraph("b) vs même semaine du mois précédent", H2))
+    story.append(make_table(rows10c, col_widths=[3.4*cm, 4.4*cm, 2.2*cm, 2.0*cm, 2.2*cm, 1.6*cm], font_size=8.5))
+    story.append(Spacer(1, 0.35*cm))
+
+if vs_prev10 and vs_m110:
+    last_p = vs_prev10[-1]
+    last_m = vs_m110[-1]
+    pc10 = []
+    if last_p['delta_ca_pct'] is not None:
+        pc10.append(f"la dernière semaine ({last_p['semaine']}) progresse de <b>{pct(last_p['delta_ca_pct'])}</b> en CA "
+                    f"(<b>{pct(last_p['delta_t_pct'])}</b> en tonnes) vs la semaine précédente")
+    if last_m['delta_ca_pct'] is not None:
+        pc10.append(f"vs la même semaine du mois précédent : <b>{pct(last_m['delta_ca_pct'])}</b> en CA "
+                    f"(<b>{pct(last_m['delta_t_pct'])}</b> en tonnes)")
+    if pc10:
+        story.append(Paragraph(f"<b>Points clés</b> : Sur {', '.join(pc10)}. "
+                               "Suivre ce rythme hebdomadaire pour détecter tôt les décrochages de fin de mois.", BODY))
+    story.append(Spacer(1, 0.3*cm))
 
 # --- Recommandations ---
 story.append(Spacer(1, 0.4*cm))
