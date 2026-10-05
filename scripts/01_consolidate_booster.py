@@ -1,12 +1,13 @@
 """
 Consolidation des données de ventes Chick Booster + Piglet Booster
-Période: Octobre 2025 - Septembre 2026
+Période: Octobre 2025 - Octobre 2026
 Sources:
   - 86d96135...xlsx : Jan-Dec 2025 (avec Agence + Region)
   - ventes janv a juin 2026.xlsx : Jan-Jun 2026 (avec agence, sans region)
-  - njs_erp_45.csv : Sep 2026 (latest, plus complet)
-  - NJS GROUP ERP (25).xlsx : Août 2026 complet
   - NJS GROUP ERP (9).xlsx : Juillet 2026 complet
+  - NJS GROUP ERP (25).xlsx : Août 2026 complet
+  - NJS GROUP ERP (61).xlsx : Septembre 2026 (bilan définitif au 30/09)
+  - NJS GROUP ERP (60).xlsx : Octobre 2026 MTD (01-05/10)
 """
 import pandas as pd
 import os
@@ -57,16 +58,18 @@ df_h1 = df_h1.rename(columns={'Qté commandée': 'qte_sacs'})
 print(f"   H1 2026 rows: {len(df_h1):,}")
 
 # ============================================================
-# 3. Load H2 2026 (Jul, Aug, Sep from NJS GROUP ERP)
+# 3. Load H2 2026 (Jul, Aug, Sep, Oct from NJS GROUP ERP)
 # ============================================================
-print("\n3. Loading H2 2026 ERP files (Jul, Aug, Sep)...")
+print("\n3. Loading H2 2026 ERP files (Jul, Aug, Sep, Oct)...")
 # Jul: file (9).xlsx (Jul 1-31, most complete)
 # Aug: file (25).xlsx (Aug 1-31, complete)
-# Sep: file (51).xlsx (Sep 1-30, mois complet)
+# Sep: file (61).xlsx (Sep 1-30, bilan définitif au 30/09)
+# Oct: file (60).xlsx (Oct 1-5, mois en cours)
 h2_files = [
     ("Jul", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (9).xlsx")),
     ("Aug", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (25).xlsx")),
-    ("Sep", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx")),
+    ("Sep", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (61).xlsx")),
+    ("Oct", os.path.join(UPLOAD, "NJS GROUP ERP - Lignes de commandes + multicompany (60).xlsx")),
 ]
 df_h2_list = []
 for month_label, fp in h2_files:
@@ -261,10 +264,10 @@ def product_format(s):
 
 df_booster['format'] = df_booster['Description du produit'].apply(product_format)
 
-# Filter to target period: Oct 2025 - Sep 2026
-mask_period = (df_booster['Date de commande'] >= '2025-10-01') & (df_booster['Date de commande'] <= '2026-09-30')
+# Filter to target period: Oct 2025 - Oct 2026 (octobre = MTD 01-05/10)
+mask_period = (df_booster['Date de commande'] >= '2025-10-01') & (df_booster['Date de commande'] <= '2026-10-31')
 df_booster = df_booster[mask_period].copy()
-print(f"\n8. Filtered to Oct 2025 - Sep 2026: {len(df_booster):,} rows")
+print(f"\n8. Filtered to Oct 2025 - Oct 2026: {len(df_booster):,} rows")
 
 # ============================================================
 # 9. Save consolidated data

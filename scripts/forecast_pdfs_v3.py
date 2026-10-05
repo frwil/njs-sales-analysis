@@ -26,7 +26,7 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 
 # === CHARGEMENT DYNAMIQUE DES DONNÉES ===
 print("Chargement dynamique des données...")
-Q4_CSV = "/home/z/my-project/scripts/forecast_q4_2026_S3.csv"
+Q4_CSV = "/home/z/my-project/scripts/forecast_q4_2026_S3_upd.csv"
 F2027_CSV = "/home/z/my-project/scripts/forecast_2027_S3.csv"
 DATASET_CSV = "/home/z/my-project/scripts/dataset_2023_2026.csv"
 
@@ -524,7 +524,7 @@ def cover_page(title, subtitle, doc_type, date_str="3 septembre 2026"):
 # ============================================
 # Q4 2026 - 5 PDFs
 # ============================================
-Q4_DIR = "/home/z/my-project/download/forecast_q4_2026"
+Q4_DIR = "/home/z/my-project/download/forecast_q4_2026_upd"
 os.makedirs(Q4_DIR, exist_ok=True)
 
 # === Q4 2026: 1. RÉSUMÉ EXÉCUTIF ===
@@ -1123,7 +1123,7 @@ for f in sorted(os.listdir(Q4_DIR)):
 # ============================================
 # 2027 - 5 PDFs (use updated numbers)
 # ============================================
-F2027_DIR = "/home/z/my-project/download/forecast_2027"
+F2027_DIR = "/home/z/my-project/download/forecast_2027_upd"
 os.makedirs(F2027_DIR, exist_ok=True)
 
 # === 2027: 1. RÉSUMÉ EXÉCUTIF ===

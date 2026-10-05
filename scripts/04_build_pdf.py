@@ -83,9 +83,9 @@ df = pd.read_csv(os.path.join(WORK, 'booster_consolidated.csv'))
 df['Date de commande'] = pd.to_datetime(df['Date de commande'])
 
 months_order = ['2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03',
-                '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09']
+                '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09', '2026-10']
 month_labels_fr = ['Oct 25', 'Nov 25', 'Déc 25', 'Jan 26', 'Fév 26', 'Mar 26',
-                   'Avr 26', 'Mai 26', 'Juin 26', 'Juil 26', 'Août 26', 'Sep 26']
+                   'Avr 26', 'Mai 26', 'Juin 26', 'Juil 26', 'Août 26', 'Sep 26', 'Oct 26*']
 
 # Compute aggregates
 total_vol = df['qte_tonnes'].sum()
@@ -99,11 +99,13 @@ pivot_month = df.pivot_table(values='qte_tonnes', index='mois', columns='famille
 pivot_month = pivot_month.reindex(months_order, fill_value=0)
 pivot_month['Total'] = pivot_month.sum(axis=1)
 monthly_totals = pivot_month['Total']
-peak_month = monthly_totals.idxmax()
-peak_value = monthly_totals.max()
-low_month = monthly_totals.idxmin()
-low_value = monthly_totals.min()
-avg_month = monthly_totals.mean()
+# Pic/creux et moyenne calculés sur les 12 mois pleins (octobre 2026 = MTD partiel)
+full_months = monthly_totals.drop('2026-10', errors='ignore')
+peak_month = full_months.idxmax()
+peak_value = full_months.max()
+low_month = full_months.idxmin()
+low_value = full_months.min()
+avg_month = full_months.mean()
 
 # Region totals
 region_totals = df.groupby('region')['qte_tonnes'].sum().sort_values(ascending=False)
@@ -268,7 +270,7 @@ def cover_page(canvas, doc):
     canvas.setFillColor(WHITE)
     canvas.drawString(MARGIN_L, PAGE_H - 2 * cm, "RAPPORT D'ANALYSE COMMERCIALE")
     canvas.setFont(FONT_BODY, 9)
-    canvas.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2 * cm, "Septembre 2026")
+    canvas.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2 * cm, "Octobre 2026")
     canvas.restoreState()
 
 
@@ -378,7 +380,7 @@ story.append(Paragraph("RAPPORT D'ANALYSE COMMERCIALE", style_kicker_cover))
 story.append(Paragraph("Analyse des ventes<br/>Chick &amp; Piglet Booster", style_title_cover))
 # Subtitle
 story.append(Spacer(1, 0.3 * cm))
-story.append(Paragraph("Évolution mensuelle en volume - Octobre 2025 à Septembre 2026", style_subtitle_cover))
+story.append(Paragraph("Évolution mensuelle en volume - Octobre 2025 à Octobre 2026", style_subtitle_cover))
 story.append(Spacer(1, 0.2 * cm))
 story.append(Paragraph("Par agence &amp; par région", style_subtitle_cover))
 
@@ -386,7 +388,7 @@ story.append(Paragraph("Par agence &amp; par région", style_subtitle_cover))
 story.append(Spacer(1, 5 * cm))
 
 # Summary block
-summary_text = """Ce rapport présente une analyse détaillée de l'évolution des ventes des gammes Chick Booster et Piglet Booster sur la période d'octobre 2025 à septembre 2026. Les données consolidées couvrent 12 mois d'activité commerciale, issues du système ERP NJS Group, et portent sur le volume écoulé en tonnes à travers les agences et régions du réseau BELGOCAM. L'analyse met en évidence les tendances mensuelles, la performance relative des différentes agences et régions, ainsi que la répartition par produit et format."""
+summary_text = """Ce rapport présente une analyse détaillée de l'évolution des ventes des gammes Chick Booster et Piglet Booster sur la période d'octobre 2025 à octobre 2026. Les données consolidées couvrent 12 mois pleins d'activité commerciale plus le début du mois d'octobre 2026 (du 1er au 5), issues du système ERP NJS Group, et portent sur le volume écoulé en tonnes à travers les agences et régions du réseau BELGOCAM. L'analyse met en évidence les tendances mensuelles, la performance relative des différentes agences et régions, ainsi que la répartition par produit et format."""
 story.append(Paragraph(summary_text, style_summary_cover))
 
 story.append(Spacer(1, 1.2 * cm))
@@ -394,7 +396,7 @@ story.append(Spacer(1, 1.2 * cm))
 # Meta block
 meta_data = [
     [Paragraph("<b>Période analysée</b>", style_meta_cover),
-     Paragraph("Octobre 2025 - Septembre 2026 (12 mois)", style_meta_cover)],
+     Paragraph("Octobre 2025 - Octobre 2026 (13 mois, octobre partiel au 05/10)", style_meta_cover)],
     [Paragraph("<b>Source des données</b>", style_meta_cover),
      Paragraph("ERP NJS Group - Lignes de commandes multicompany", style_meta_cover)],
     [Paragraph("<b>Périmètre</b>", style_meta_cover),
@@ -402,7 +404,7 @@ meta_data = [
     [Paragraph("<b>Métrique principale</b>", style_meta_cover),
      Paragraph("Volume en tonnes (t)", style_meta_cover)],
     [Paragraph("<b>Date d'édition</b>", style_meta_cover),
-     Paragraph("26 septembre 2026", style_meta_cover)],
+     Paragraph("5 octobre 2026", style_meta_cover)],
 ]
 meta_table = Table(meta_data, colWidths=[5 * cm, 11 * cm])
 meta_table.setStyle(TableStyle([
@@ -426,13 +428,13 @@ story.append(Paragraph("Vue d'ensemble de l'activité Booster", style_h1))
 story.append(HRFlowable(width="100%", thickness=2, color=PRIMARY, spaceBefore=2, spaceAfter=12))
 
 # Intro paragraph
-intro = """<b>Cette synthèse présente les chiffres clés de l'activité des gammes Chick Booster et Piglet Booster</b> sur la période d'octobre 2025 à septembre 2026. Les données ont été consolidées à partir des exports ERP NJS Group couvrant l'ensemble du réseau d'agences BELGOCAM au Cameroun. L'analyse porte exclusivement sur les volumes écoulés exprimés en tonnes, avec une déclinaison par agence, par région, par produit et par format."""
+intro = """<b>Cette synthèse présente les chiffres clés de l'activité des gammes Chick Booster et Piglet Booster</b> sur la période d'octobre 2025 à octobre 2026 (12 mois pleins + début octobre). Les données ont été consolidées à partir des exports ERP NJS Group couvrant l'ensemble du réseau d'agences BELGOCAM au Cameroun. L'analyse porte exclusivement sur les volumes écoulés exprimés en tonnes, avec une déclinaison par agence, par région, par produit et par format."""
 story.append(Paragraph(intro, style_body))
 
 # KPI cards row (3 cards per row)
 kpi_w = (CONTENT_W - 2 * 0.3 * cm) / 3  # 3 cards with gaps
 kpis_row1 = [
-    KPICard("VOLUME TOTAL (12 MOIS)", f"{total_vol:,.1f} t".replace(',', ' '), kpi_w),
+    KPICard("VOLUME TOTAL (13 MOIS*)", f"{total_vol:,.1f} t".replace(',', ' '), kpi_w),
     KPICard("AGENCES ACTIVES", f"{n_agences}", kpi_w),
     KPICard("RÉGIONS COUVERTES", f"{n_regions}", kpi_w),
 ]
@@ -453,7 +455,7 @@ story.append(Spacer(1, 0.3 * cm))
 kpis_row2 = [
     KPICard("VOLUME CHICK BOOSTER", f"{chick_vol:,.1f} t".replace(',', ' '), kpi_w),
     KPICard("VOLUME PIGLET BOOSTER", f"{piglet_vol:,.1f} t".replace(',', ' '), kpi_w),
-    KPICard("MOYENNE MENSUELLE", f"{avg_month:,.1f} t".replace(',', ' '), kpi_w),
+    KPICard("MOYENNE MENSUELLE (12 MOIS PLEINS)", f"{avg_month:,.1f} t".replace(',', ' '), kpi_w),
 ]
 kpi_table_2 = Table([kpis_row2], colWidths=[kpi_w, kpi_w, kpi_w])
 kpi_table_2.setStyle(TableStyle([
@@ -466,7 +468,13 @@ kpi_table_2.setStyle(TableStyle([
     ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
 ]))
 story.append(kpi_table_2)
-story.append(Spacer(1, 0.6 * cm))
+story.append(Spacer(1, 0.15 * cm))
+story.append(Paragraph(
+    "* Octobre 2026 = du 1er au 5 octobre (mois en cours). La moyenne mensuelle est calculée sur les 12 mois pleins "
+    "(octobre 2025 à septembre 2026).",
+    style_caption
+))
+story.append(Spacer(1, 0.45 * cm))
 
 # Highlights section
 story.append(Paragraph("Faits marquants", style_h2))
@@ -519,7 +527,7 @@ top5_table.setStyle(TableStyle([
 ]))
 story.append(top5_table)
 story.append(Spacer(1, 0.2 * cm))
-story.append(Paragraph("Tableau 1 - Top 5 agences par volume cumulé sur la période Oct 25 - Sep 26", style_caption))
+story.append(Paragraph("Tableau 1 - Top 5 agences par volume cumulé sur la période Oct 25 - Oct 26", style_caption))
 
 # No PageBreak - let content flow naturally to use page space efficiently
 story.append(Spacer(1, 0.6 * cm))
@@ -541,7 +549,7 @@ story.append(Paragraph("Figure 1 - Évolution mensuelle des ventes Booster (tonn
 
 # Commentary
 commentary1 = f"""
-L'évolution mensuelle des ventes sur les 12 derniers mois révèle une <b>activité globale dynamique mais irrégulière</b>. Le volume total écoulé atteint <b>{total_vol:.1f} tonnes</b> sur la période, avec une moyenne mensuelle de {avg_month:.1f} t. La courbe totale (en bleu marine) met en évidence plusieurs pics et creux marquants qui méritent une attention particulière.
+L'évolution mensuelle des ventes sur les 13 derniers mois (dont octobre 2026 partiel, du 1er au 5) révèle une <b>activité globale dynamique mais irrégulière</b>. Le volume total écoulé atteint <b>{total_vol:.1f} tonnes</b> sur la période, avec une moyenne mensuelle de {avg_month:.1f} t sur les 12 mois pleins. La courbe totale (en bleu marine) met en évidence plusieurs pics et creux marquants qui méritent une attention particulière.
 
 Le <b>pic d'activité est observé en {peak_label} avec {peak_value:.1f} t</b>, soit près de {(peak_value/avg_month - 1)*100:.0f}% au-dessus de la moyenne mensuelle. Cette performance s'explique par la conjonction d'une forte dynamique sur les deux gammes produits et d'un mois complet d'activité (31 jours). À l'inverse, le <b>point bas de {low_value:.1f} t est atteint en {low_label}</b>, traduisant le ralentissement saisonnier classique de fin d'année civile.
 
@@ -730,7 +738,7 @@ top10_table.setStyle(TableStyle([
 ]))
 story.append(top10_table)
 story.append(Spacer(1, 0.2 * cm))
-story.append(Paragraph("Tableau 4 - Top 10 agences par volume cumulé (Oct 25 - Sep 26)", style_caption))
+story.append(Paragraph("Tableau 4 - Top 10 agences par volume cumulé (Oct 25 - Oct 26)", style_caption))
 
 # Commentary
 top1_ag = agence_totals.index[0]
@@ -785,8 +793,12 @@ prod_data = [
      Paragraph("<b>Format</b>", style_table_header),
      Paragraph("<b>Volume (t)</b>", style_table_header),
      Paragraph("<b>% du total</b>", style_table_header),
-     Paragraph("<b>Moy. mensuelle</b>", style_table_header)]
+     Paragraph("<b>Moy. mensuelle (12 mois pleins)</b>", style_table_header)]
 ]
+# Volume octobre 2026 (MTD 01-05/10) exclu des moyennes mensuelles
+oct_mask = df['mois'] == '2026-10'
+oct_vol_by_prod = df[oct_mask].groupby('Description du produit')['qte_tonnes'].sum()
+oct_total = float(df[oct_mask]['qte_tonnes'].sum())
 for prod in prod_order:
     if prod in prod_totals.index:
         vol = prod_totals[prod]
@@ -795,7 +807,7 @@ for prod in prod_order:
     fam = "Chick Booster" if "CHICK" in prod else "Piglet Booster"
     fmt = "25 Kg" if "25" in prod else "5 Kg"
     pct = vol / total_vol * 100
-    moy = vol / 12
+    moy = (vol - oct_vol_by_prod.get(prod, 0)) / 12
     prod_data.append([
         Paragraph(prod.title(), style_table_cell),
         Paragraph(fam, style_table_cell_center),
@@ -811,7 +823,7 @@ prod_data.append([
     Paragraph("", style_table_cell),
     Paragraph(f"<b>{total_vol:.2f}</b>", style_table_total),
     Paragraph("<b>100.0%</b>", style_table_total),
-    Paragraph(f"<b>{total_vol/12:.2f}</b>", style_table_total),
+    Paragraph(f"<b>{(total_vol - oct_total) / 12:.2f}</b>", style_table_total),
 ])
 prod_table = Table(prod_data, colWidths=[4.5 * cm, 2.8 * cm, 1.8 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm])
 prod_table.setStyle(TableStyle([
@@ -830,7 +842,7 @@ prod_table.setStyle(TableStyle([
 ]))
 story.append(prod_table)
 story.append(Spacer(1, 0.2 * cm))
-story.append(Paragraph("Tableau 5 - Synthèse par produit (Oct 25 - Sep 26)", style_caption))
+story.append(Paragraph("Tableau 5 - Synthèse par produit (Oct 25 - Oct 26)", style_caption))
 
 # Spacer
 story.append(Spacer(1, 0.6 * cm))
@@ -866,7 +878,7 @@ story.append(Paragraph(commentary5, style_body))
 # Key observations
 story.append(Paragraph("Observations clés", style_h2))
 obs_text = f"""
-<b>• Régularité du leader :</b> {agence_totals.index[0]} maintient un volume mensuel supérieur à 10 t pendant la majorité des 12 mois, ce qui démontre la maturité de son marché local.<br/>
+<b>• Régularité du leader :</b> {agence_totals.index[0]} maintient un volume mensuel supérieur à 10 t pendant la majorité des mois, ce qui démontre la maturité de son marché local.<br/>
 <b>• Saisonnalité commune :</b> La plupart des agences présentent un creux d'activité en fin d'année civile (Nov-Déc), suivi d'une reprise progressive à partir de janvier.<br/>
 <b>• Pic estival :</b> Le mois de {peak_label} est marqué par une intensification généralisée, visible par l'assombrissement simultané de plusieurs lignes de la heatmap.<br/>
 <b>• Agences émergentes :</b> Plusieurs agences de milieu de classement montrent une intensification sur les derniers mois, suggérant un potentiel de croissance à exploiter.
@@ -887,7 +899,7 @@ story.append(KeepTogether([
 
 # Conclusion text
 conclusion1 = f"""
-Cette <b>analyse des ventes Chick &amp; Piglet Booster sur la période Octobre 2025 - Septembre 2026</b> dresse un panorama complet de l'activité des gammes Booster sur le réseau BELGOCAM. Avec <b>{total_vol:.1f} tonnes</b> écoulées sur 12 mois, l'activité démontre un socle commercial solide, soutenu par un réseau de {n_agences} agences actives réparties sur {n_regions} régions. La moyenne mensuelle de {avg_month:.1f} t traduit une régularité satisfaisante, avec des variations saisonnières contenues autour de cette moyenne.
+Cette <b>analyse des ventes Chick &amp; Piglet Booster sur la période Octobre 2025 - Octobre 2026</b> dresse un panorama complet de l'activité des gammes Booster sur le réseau BELGOCAM. Avec <b>{total_vol:.1f} tonnes</b> écoulées sur 12 mois pleins (plus le début d'octobre 2026), l'activité démontre un socle commercial solide, soutenu par un réseau de {n_agences} agences actives réparties sur {n_regions} régions. La moyenne mensuelle de {avg_month:.1f} t (calculée sur les 12 mois pleins) traduit une régularité satisfaisante, avec des variations saisonnières contenues autour de cette moyenne.
 """
 
 story.append(Paragraph(conclusion1, style_body))
@@ -912,7 +924,7 @@ story.append(Paragraph(findings, style_body))
 
 story.append(Paragraph("Limites et précautions de lecture", style_h2))
 limits = """
-Cette analyse porte exclusivement sur les volumes écoulés (en tonnes) et ne prend pas en compte le chiffre d'affaires, les marges, ni la rentabilité par produit. Les données du mois de septembre 2026 couvrent la période du 1er au 26 septembre (mois partiel), ce qui peut sous-estimer légèrement le volume total du dernier mois. Par ailleurs, certaines lignes de commande ne renseignent pas l'agence d'origine (4,9 t sur la période, soit moins de 1% du volume), ce qui n'affecte pas significativement les conclusions mais mérite d'être noté pour la qualité des données en amont.
+Cette analyse porte exclusivement sur les volumes écoulés (en tonnes) et ne prend pas en compte le chiffre d'affaires, les marges, ni la rentabilité par produit. Le mois de septembre 2026 est couvert en intégralité (bilan définitif au 30/09, extraction (61)) ; le mois d'octobre 2026 couvre uniquement la période du 1er au 5 octobre (mois en cours, extraction (60)), ce qui peut sous-estimer le volume du dernier mois. Par ailleurs, certaines lignes de commande ne renseignent pas l'agence d'origine (4,9 t sur la période, soit moins de 1% du volume), ce qui n'affecte pas significativement les conclusions mais mérite d'être noté pour la qualité des données en amont.
 """
 story.append(Paragraph(limits, style_body))
 
@@ -927,7 +939,7 @@ story.append(Paragraph(note_text, ParagraphStyle('note', parent=style_body, font
 # ============================================================
 # Build PDF
 # ============================================================
-output_path = os.path.join(DOWNLOAD, "Analyse_Booster_Oct2025-Sep2026.pdf")
+output_path = os.path.join(DOWNLOAD, "Analyse_Booster_Oct2025-Oct2026.pdf")
 
 # Build with two page templates: cover + body
 # NB: BaseDocTemplate (pas SimpleDocTemplate) — en reportlab 5, SimpleDocTemplate
@@ -942,7 +954,7 @@ doc = BaseDocTemplate(
     bottomMargin=MARGIN_B,
     title="Analyse Ventes Chick & Piglet Booster - Oct 2025 à Sep 2026",
     author="Z.ai",
-    subject="Analyse des ventes en volume (tonnes) sur 12 mois",
+    subject="Analyse des ventes en volume (tonnes) sur 13 mois (dont octobre partiel)",
     creator="Z.ai - ReportLab"
 )
 

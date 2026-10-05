@@ -13,7 +13,7 @@ from openpyxl.utils import get_column_letter
 import os
 
 # Load forecast
-fcst = pd.read_csv("/home/z/my-project/scripts/forecast_q4_2026_S3.csv", parse_dates=['date'])
+fcst = pd.read_csv("/home/z/my-project/scripts/forecast_q4_2026_S3_upd.csv", parse_dates=['date'])
 print(f"Loaded {len(fcst)} forecast records")
 
 # Load descriptions from new 2023-2026 dataset
@@ -488,7 +488,7 @@ ws.column_dimensions['A'].width = 35
 ws.column_dimensions['B'].width = 80
 
 # === Save ===
-output_path = "/home/z/my-project/download/forecast_q4_2026_S3_volumes_valeurs.xlsx"
+output_path = "/home/z/my-project/download/forecast_q4_2026_S3_volumes_valeurs_upd.xlsx"
 wb.save(output_path)
 print(f"\n=== EXCEL S3 SAVED ===")
 print(f"Path: {output_path}")

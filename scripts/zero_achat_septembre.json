@@ -1,0 +1,209 @@
+{
+  "ventes": {
+    "s1_moy": {
+      "TOURTEAUX": 4674.8,
+      "CONCENTRES": 1435.3,
+      "ALIMENT_COMPLET": 70.2,
+      "INGREDIENTS": 65.9,
+      "PREMIX": 7.4,
+      "COMPLEMENT_ALIMENTAIRE": 0.4,
+      "MATERIEL_ELEVAGE": 0,
+      "MAIS": 0,
+      "INGREDIENTS_HORS_MAIS": 65.9,
+      "TOTAL": 6254.0
+    },
+    "juillet": {
+      "TOURTEAUX": 7709.7,
+      "CONCENTRES": 1796.1,
+      "ALIMENT_COMPLET": 77.8,
+      "INGREDIENTS": 70.0,
+      "PREMIX": 10.8,
+      "COMPLEMENT_ALIMENTAIRE": 0.4,
+      "MATERIEL_ELEVAGE": 0.0,
+      "MAIS": 0.0,
+      "INGREDIENTS_HORS_MAIS": 70.0,
+      "TOTAL": 9664.8
+    },
+    "aout": {
+      "TOURTEAUX": 3819.0,
+      "CONCENTRES": 1653.5,
+      "ALIMENT_COMPLET": 69.8,
+      "INGREDIENTS": 71.3,
+      "PREMIX": 7.1,
+      "COMPLEMENT_ALIMENTAIRE": 0.2,
+      "MATERIEL_ELEVAGE": 0.0,
+      "MAIS": 0.0,
+      "INGREDIENTS_HORS_MAIS": 71.3,
+      "TOTAL": 5621.0
+    },
+    "septembre": {
+      "TOURTEAUX": 4464.8,
+      "CONCENTRES": 1713.3,
+      "ALIMENT_COMPLET": 93.4,
+      "INGREDIENTS": 74.7,
+      "PREMIX": 5.6,
+      "COMPLEMENT_ALIMENTAIRE": 0.5,
+      "MATERIEL_ELEVAGE": 0.0,
+      "MAIS": 0.0,
+      "INGREDIENTS_HORS_MAIS": 74.7,
+      "TOTAL": 6352.4
+    },
+    "obj_septembre": {
+      "TOURTEAUX": 3781.3,
+      "CONCENTRES": 1601.3,
+      "ALIMENT_COMPLET": 73.2,
+      "INGREDIENTS": 64.1,
+      "PREMIX": 9.4,
+      "COMPLEMENT_ALIMENTAIRE": 0.4,
+      "MATERIEL_ELEVAGE": null
+    }
+  },
+  "clients": {
+    "s1_total": 1361,
+    "maintenus": 796,
+    "maintenus_pct": 58.5,
+    "churned_total": 565,
+    "churned_eleve": 467,
+    "churned_surveiller": 51,
+    "churned_fin_mois": 47,
+    "ca_churned_eleve_m": 1712.0,
+    "ca_churned_surveiller_m": 80.8,
+    "ca_churned_fin_mois_m": 57.2,
+    "ca_s1_maintenus_m": 14057.8,
+    "nouveaux": 66,
+    "ca_gagne_nouveaux_m": 94.4,
+    "reactives": 66,
+    "top10_churned": [
+      {
+        "client": "CU2504-13348 -  TIMENE JEAN (ZDCL00125)",
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "ca_s1_m": 78.5,
+        "jour_moy": 14.6,
+        "nb_achats": 16
+      },
+      {
+        "client": "CU2407-00581 -  FECAM",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 72.0,
+        "jour_moy": 16.5,
+        "nb_achats": 27
+      },
+      {
+        "client": "CU2407-00281 -  GIC ESPOIR KELENG (POKAM MERLINE)",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 63.3,
+        "jour_moy": 15.0,
+        "nb_achats": 26
+      },
+      {
+        "client": "CU2407-00266 -  EMMANUEL WIRSENYUY",
+        "agence": "Mbouda",
+        "region": "Ouest",
+        "ca_s1_m": 31.7,
+        "jour_moy": 15.5,
+        "nb_achats": 13
+      },
+      {
+        "client": "PROVOCAM COOP-CA.",
+        "agence": "Ndobo",
+        "region": "Littoral",
+        "ca_s1_m": 23.9,
+        "jour_moy": 15.7,
+        "nb_achats": 18
+      },
+      {
+        "client": "CU2606-14516 -  SIGHELO SARL",
+        "agence": "Ndobo",
+        "region": "Littoral",
+        "ca_s1_m": 23.7,
+        "jour_moy": 13.3,
+        "nb_achats": 3
+      },
+      {
+        "client": "CU2502-01233 -  NOUATONG ROSTAND (CBF010)",
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "ca_s1_m": 22.5,
+        "jour_moy": 15.9,
+        "nb_achats": 90
+      },
+      {
+        "client": "CU2506-13395 -  TEKOH MARTIN",
+        "agence": "Buea",
+        "region": "Littoral",
+        "ca_s1_m": 22.2,
+        "jour_moy": 17.7,
+        "nb_achats": 98
+      },
+      {
+        "client": "M. FONKOU ROSTIN ALBERT (ZDCL00010)",
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "ca_s1_m": 21.2,
+        "jour_moy": 15.2,
+        "nb_achats": 71
+      },
+      {
+        "client": "CU2508-13684 -  Dongmo Mboguia Ursule Florent",
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "ca_s1_m": 20.4,
+        "jour_moy": 16.8,
+        "nb_achats": 16
+      }
+    ]
+  },
+  "concentres": {
+    "clients_s1": 1020,
+    "clients_sept": 793,
+    "maintenus": 620,
+    "maintenus_pct": 60.8,
+    "churned": 400,
+    "nouveaux": 73,
+    "volume_sept_t": 1713.3,
+    "obj_sept_t": 1601.3,
+    "pct_obj": 107.0
+  },
+  "cross_sell": {
+    "clients_soja_sept": 791,
+    "soja_conc": 762,
+    "soja_conc_pct": 96.3,
+    "soja_only": 29,
+    "clients_booster_sept": 253,
+    "booster_conc": 183,
+    "booster_conc_pct": 72.3,
+    "cmd_soja": 2384,
+    "cmd_bundle": 2229,
+    "pct_bundle": 93.5,
+    "ratio_soja_conc_t": 2.6
+  },
+  "prix_soja_sac": 23879.0,
+  "ca_sept_total_m": 3765.2,
+  "coherence_perf": {
+    "sept_t_perf": {
+      "TOURTEAUX": 4925.8,
+      "CONCENTRES": 1849.1,
+      "ALIMENT_COMPLET": 124.6,
+      "INGREDIENTS": 88.6,
+      "PREMIX": 5.9,
+      "COMPLEMENT_ALIMENTAIRE": 0.7,
+      "ALVEOLES": 0.0,
+      "MATERIEL_ELEVAGE": 0.0
+    },
+    "sept_t_dataset": {
+      "TOURTEAUX": 4464.8,
+      "CONCENTRES": 1713.3,
+      "ALIMENT_COMPLET": 93.4,
+      "INGREDIENTS": 74.7,
+      "PREMIX": 5.6,
+      "COMPLEMENT_ALIMENTAIRE": 0.5,
+      "MATERIEL_ELEVAGE": 0.0,
+      "MAIS": 0.0,
+      "INGREDIENTS_HORS_MAIS": 74.7,
+      "TOTAL": 6352.4
+    }
+  }
+}

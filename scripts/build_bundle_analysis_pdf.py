@@ -7,7 +7,7 @@ Réutilise les mêmes polices, couleurs et fonctions utilitaires que build_zero_
 (même package graphique corporate BELGOCAM navy + gold).
 
 Auteur/rédacteur : William Francis Fohom, Data Analyst, Administrateur National de Ventes
-Date : Juillet 2026
+Date : Mise à jour Septembre 2026 (analyse initiale Juillet 2026)
 """
 import os
 from reportlab.lib import colors
@@ -28,7 +28,7 @@ from reportlab.platypus.flowables import HRFlowable
 FONT_DIR = '/usr/share/fonts'
 pdfmetrics.registerFont(TTFont('NotoSerifSC', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Regular.ttf'))
 pdfmetrics.registerFont(TTFont('NotoSerifSC-Bold', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Bold.ttf'))
-pdfmetrics.registerFont(TTFont('NotoSerifSC-Light', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Light.ttf'))
+pdfmetrics.registerFont(TTFont('NotoSerifSC-Light', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Regular.ttf'))
 registerFontFamily('NotoSerifSC', normal='NotoSerifSC', bold='NotoSerifSC-Bold')
 
 # ===== COLORS (BELGOCAM corporate: navy + gold) =====
@@ -110,7 +110,7 @@ def draw_cover(canv, doc):
 
     # Date (top right)
     canv.setFont('NotoSerifSC', 10)
-    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Juillet 2026")
+    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Mise à jour : Septembre 2026")
     canv.setFont('NotoSerifSC-Light', 9)
     canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 3.2*cm, "Période analysée : S1 2026 vs Juillet 2026 (au 27/07)")
 
@@ -198,7 +198,7 @@ def draw_cover(canv, doc):
     canv.setFont('NotoSerifSC', 9)
     canv.drawString(MARGIN_L, 0.55*cm, "BELGOCAM SA — Document confidentiel — Usage interne")
     canv.setFont('NotoSerifSC-Light', 8)
-    canv.drawRightString(PAGE_W - MARGIN_R, 0.55*cm, "Analyse Bundle Soja-Concentrés — Juillet 2026")
+    canv.drawRightString(PAGE_W - MARGIN_R, 0.55*cm, "Analyse Bundle Soja-Concentrés — Mise à jour : Septembre 2026")
 
     canv.restoreState()
 
@@ -1119,12 +1119,73 @@ def build_story():
 
     story.append(Spacer(1, 0.4*cm))
 
+    # =====================================================================
+    # SECTION 9 — POINT DE SUIVI SEPTEMBRE 2026 (BILAN DÉFINITIF AU 30/09)
+    # =====================================================================
+    story.append(PageBreak())
+    story.append(Paragraph("9. Point de suivi — Septembre 2026 (BILAN DÉFINITIF AU 30/09)", H1))
+    story.append(section_divider())
+
+    story.append(Paragraph(
+        "<b>Données définitives au 30 septembre 2026</b> — mois complet (100% des jours ouvrables). "
+        "Comparaison vs bilan août définitif (au 31/08) et vs moyenne S1. Les volumes sont ceux du livrable "
+        "performance mensuelle de septembre (Livrée + Validée + En cours) ; les métriques commandes sont "
+        "calculées sur les clients externes (même source que l'analyse zéro-achat).",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph("9.1 Tableau de bord — Septembre final vs Août final vs S1", H2))
+    sept_global_data = [
+        ["Indicateur", "Moyenne S1", "Août final", "Sept final", "Lecture"],
+        ["Ratio soja/conc", "2,7:1", "2,3:1", "2,7:1", "✅ Cible ≤ 3:1 respectée"],
+        ["Bundle soja→conc (%)", "79%", "96%", "93,5%", "✅ Amélioration structurelle"],
+        ["Commandes soja total", "—", "2 050", "2 384", "Mois complet"],
+        ["dont Bundle (soja+conc)", "—", "1 964 (96%)", "2 229 (93,5%)", "Plan d'action produit ses effets"],
+        ["dont Soja-only", "—", "86 (4%)", "155 (6,5%)", "✅ Faible — objectif atteint"],
+        ["Volume TOURTEAUX (t)", "4 844/mois", "3 819", "4 926", "130% obj ✅ (+1 145 t)"],
+        ["Volume CONCENTRES (t)", "1 513/mois", "1 653", "1 849", "115% obj ✅ (3e mois consécutif)"],
+        ["Prix soja/sac", "16 198", "21 162", "23 879", "+2 717 vs août (+12,8%)"],
+    ]
+    story.append(make_table(sept_global_data, col_widths=[3.5*cm, 2.3*cm, 2.3*cm, 2.3*cm, 6.4*cm], font_size=7.5))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("9.2 Distribution des ratios bundle — Septembre final (au 30/09)", H2))
+    dist_data = [
+        ["Ratio soja:conc", "Nb commandes", "% du total", "Lecture"],
+        ["≤ 3:1 (cible)", "1 661", "74,5%", "✅ Objectif atteint pour 3 commandes sur 4"],
+        ["3-5:1 (acceptable)", "468", "21,0%", "À surveiller — proche de la cible"],
+        ["5-10:1 (à corriger)", "84", "3,8%", "Action commerciale requise"],
+        ["10-20:1 (critique)", "10", "0,4%", "Cas isolés — recontact individuel"],
+        ["> 20:1 (urgent)", "6", "0,3%", "Action immédiate — appliquer règle prémix"],
+        ["TOTAL BUNDLE", "2 229", "100%", "93,5% des commandes soja sont en bundle"],
+    ]
+    story.append(make_table(dist_data, col_widths=[3.5*cm, 2.5*cm, 2*cm, 8.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph(
+        "<b>Lecture Septembre (bilan définitif au 30/09) :</b><br/>"
+        "• <b>TOURTEAUX — REBOND CONFIRMÉ ✅</b> : 4 926 t vendues (130% de l'objectif, +29% vs août). La dynamique de rupture concurrente s'est maintenue "
+        "et <b>la hausse +2 700 FCFA/sac du mois n'a pas ralenti la consommation</b>.<br/>"
+        "• <b>CONCENTRES — 3e MOIS CONSÉCUTIF AU-DESSUS DE L'OBJECTIF ✅</b> : 1 849 t (115%, +248 t d'avance). La dynamique bundle est structurelle.<br/>"
+        "• <b>Cross-sell record</b> : 96,3% des clients soja achètent aussi des concentrés ; <b>93,5% des commandes soja sont en bundle</b> "
+        "(2 229/2 384) ; seuls 155 commandes soja-only (6,5%).<br/>"
+        "• <b>Distribution des ratios</b> : 74,5% des commandes bundle sont ≤ 3:1 (cible, +2,5 pts vs août), 21,0% en 3-5:1 (acceptable). "
+        "4,5% dépassent 5:1 (100 commandes) — cas à traiter individuellement (règle prémix).<br/>"
+        "• <b>Prix soja</b> : 23 879 FCFA/sac en moyenne septembre (vs 21 162 en août, +12,8% — hausse du 23/07 et du mois répercutée).<br/><br/>"
+        "<b>✅ Conclusion septembre :</b> <b>le plan d'action bundle est pleinement déployé et efficace</b> — ratio 2,7:1 ≤ cible, 93,5% de bundle, "
+        "96,3% de cross-sell, CONCENTRES au-dessus de l'objectif pour le 3e mois consécutif. "
+        "Le chantier prioritaire d'octobre devient le <b>churn élevé (467 clients / 1 712 M de CA S1)</b> et la conversion des clients Booster-only.",
+        BODY_BOLD
+    ))
+
+    story.append(Spacer(1, 0.4*cm))
+
     # ---------- Final footer ----------
     story.append(Spacer(1, 1*cm))
     story.append(HRFlowable(width="100%", thickness=0.8, color=NAVY, spaceBefore=10, spaceAfter=10))
     story.append(Paragraph(
         "<i>Document rédigé par William Francis Fohom, Data Analyst, Administrateur National de Ventes — "
-        "BELGOCAM SA — Juillet 2026.</i>",
+        "BELGOCAM SA — Mise à jour : Septembre 2026.</i>",
         CAPTION
     ))
     story.append(Paragraph(
@@ -1151,7 +1212,7 @@ class MyDocTemplate(BaseDocTemplate):
 
 
 # ===== BUILD PDF =====
-OUT = '/home/z/my-project/download/analyse_bundle_soja_concentres.pdf'
+OUT = '/home/z/my-project/download/analyse_bundle_soja_concentres_upd.pdf'
 
 doc = MyDocTemplate(OUT, pagesize=A4)
 doc.title = "BELGOCAM SA — Analyse Bundle Soja-Concentrés (Juillet 2026)"

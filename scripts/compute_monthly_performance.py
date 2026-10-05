@@ -57,7 +57,8 @@ MONTH_LABEL = f"{MOIS_FR[MONTH_NUM - 1]} 2026"
 
 # Source ERP du mois : (fichier, feuille, (col État, col StatutFacture, col agence))
 # Extractions globales BELGOCAM (17 colonnes, dates en chaînes dd/mm/yyyy) :
-# (54) Jan-Mar, (55) Avr-Jun, (56) Jul-Sep.
+# (54) Jan-Mar, (55) Avr-Jun, (56) Jul-Sep, (61) Septembre final (01-30/09),
+# (60) Octobre MTD (01-05/10).
 ERP_SOURCES = {
     1: ("NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", "Sheet 1", (14, 15, 16)),
     2: ("NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", "Sheet 1", (14, 15, 16)),
@@ -67,7 +68,8 @@ ERP_SOURCES = {
     6: ("NJS GROUP ERP - Lignes de commandes + multicompany (55).xlsx", "Sheet 1", (14, 15, 16)),
     7: ("NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", "Sheet 1", (14, 15, 16)),
     8: ("NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", "Sheet 1", (14, 15, 16)),
-    9: ("NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", "Sheet 1", (14, 15, 16)),
+    9: ("NJS GROUP ERP - Lignes de commandes + multicompany (61).xlsx", "Sheet 1", (14, 15, 16)),
+    10: ("NJS GROUP ERP - Lignes de commandes + multicompany (60).xlsx", "Sheet 1", (14, 15, 16)),
 }
 ERP_FILE, ERP_SHEET, (IDX_ETAT, IDX_STATUT, IDX_AGENCE) = ERP_SOURCES.get(MONTH_NUM, ERP_SOURCES[9])
 ERP_FILE = f"/home/z/my-project/upload/{ERP_FILE}"
@@ -96,16 +98,19 @@ MATERIEL_REFS = {f'MAT{i:03d}': 1 for i in range(1, 100)}
 MATERIEL_REFS.update({'MAT014-80010003': 1, 'MAT011-80010002': 1})
 COMPLEMENT_REFS = {'V300': 1, 'CA003.1': 1, 'CA004.1': 1, 'CA006.1': 1, 'CA001.1': 1,
                    'CA002.1': 1, 'CA005.1': 1, 'CA007.1': 1, 'CA008.1': 1}
+# MAIS : visible dans la monthly performance, EXCLU des forecasts (get_family_q4 ne connaît pas ces refs)
+MAIS_REFS = {'M1051': 50, 'M1052': 50}  # sacs 50 kg
 ALVEOLES_REFS = {'MAT011-80010002', 'MAT014-80010003', 'MAT015', 'MAT017'}
 
 ALL_REFS = {**SOJA_REFS, **CONC_REFS, **ALIMENT_REFS, **INGREDIENT_REFS,
-            **PREMIX_REFS, **MATERIEL_REFS, **COMPLEMENT_REFS}
+            **PREMIX_REFS, **MATERIEL_REFS, **COMPLEMENT_REFS, **MAIS_REFS}
 
 def get_family(ref):
     if ref in SOJA_REFS: return 'TOURTEAUX'
     if ref in CONC_REFS: return 'CONCENTRES'
     if ref in ALIMENT_REFS: return 'ALIMENT_COMPLET'
     if ref in INGREDIENT_REFS: return 'INGREDIENTS'
+    if ref in MAIS_REFS: return 'MAIS'
     if ref in PREMIX_REFS: return 'PREMIX'
     if ref in ALVEOLES_REFS: return 'ALVEOLES'
     if ref in MATERIEL_REFS or ref.startswith('MAT') or ref.startswith('ME'): return 'MATERIEL_ELEVAGE'
@@ -138,7 +143,7 @@ FAM_OBJ_TO_ACT = {
     'MATERIEL ELEVAGE': 'MATERIEL_ELEVAGE',
     'ALVEOLE': 'ALVEOLES',
 }
-MAIN_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS',
+MAIN_FAMILIES = ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'MAIS',
                  'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE']
 REGIONS = ['Ouest', 'Centre', 'Littoral']
 
@@ -566,7 +571,7 @@ weeks_cur = sorted(df_cur['week'].unique())
 weeks_m1 = sorted(df_m1['week'].unique())
 weeks_cur_set = set(weeks_cur)
 weeks_m1_set = set(weeks_m1)
-MOIS_M1_LABEL = ['Déc', 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août'][MONTH_NUM - 1]
+MOIS_M1_LABEL = ['Déc', 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov'][MONTH_NUM - 1]
 
 # Bornes du mois courant et du mois précédent (affichage des semaines de bord)
 month_start = pd.Timestamp(2026, MONTH_NUM, 1)
@@ -640,7 +645,8 @@ for s in semaines:
 out = {
     'meta': {
         'month_num': MONTH_NUM, 'label': MONTH_LABEL,
-        'update_date': f"{calendar.monthrange(2026, MONTH_NUM)[1]:02d}/{MONTH_NUM:02d}/2026",
+        'update_date': sep_df['date'].max().strftime('%d/%m/%Y'),
+        'complet': sep_df['date'].max() == pd.Timestamp(2026, MONTH_NUM, calendar.monthrange(2026, MONTH_NUM)[1]),
         'jours_ouvres': 26 if MONTH_NUM == 9 else None,
         'source_erp': os.path.basename(ERP_FILE),
     },

@@ -41,9 +41,9 @@ df = pd.read_csv(os.path.join(WORK, 'booster_consolidated.csv'))
 df['Date de commande'] = pd.to_datetime(df['Date de commande'])
 
 months_order = ['2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03',
-                '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09']
+                '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09', '2026-10']
 month_labels_fr = ['Oct 25', 'Nov 25', 'Déc 25', 'Jan 26', 'Fév 26', 'Mar 26',
-                   'Avr 26', 'Mai 26', 'Juin 26', 'Juil 26', 'Août 26', 'Sep 26']
+                   'Avr 26', 'Mai 26', 'Juin 26', 'Juil 26', 'Août 26', 'Sep 26', 'Oct 26*']
 
 # ============================================================
 # Chart 1: Évolution mensuelle globale - Stacked bar Chick + Piglet
@@ -149,7 +149,7 @@ ax.set_yticks(y)
 ax.set_yticklabels(agence_totals.index, fontsize=10)
 ax.invert_yaxis()
 ax.set_xlabel('Volume (tonnes)', fontsize=10, color=COLOR_PRIMARY)
-ax.set_title('Top 10 agences par volume cumulé (Oct 25 - Sep 26)',
+ax.set_title('Top 10 agences par volume cumulé (Oct 25 - Oct 26)',
              fontsize=13, color=COLOR_PRIMARY, fontweight='bold', pad=12)
 ax.xaxis.grid(True, linestyle='--', alpha=0.4, color=COLOR_GREY)
 ax.set_axisbelow(True)
@@ -299,7 +299,7 @@ for bar, v in zip(bars, region_tot.values):
             ha='center', va='bottom', fontsize=10, color=COLOR_PRIMARY, fontweight='bold')
 
 ax.set_ylabel('Volume (tonnes)', fontsize=10, color=COLOR_PRIMARY)
-ax.set_title('Volume cumulé par région (Oct 25 - Sep 26)',
+ax.set_title('Volume cumulé par région (Oct 25 - Oct 26)',
              fontsize=13, color=COLOR_PRIMARY, fontweight='bold', pad=12)
 ax.yaxis.grid(True, linestyle='--', alpha=0.4, color=COLOR_GREY)
 ax.set_axisbelow(True)

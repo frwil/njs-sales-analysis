@@ -202,7 +202,10 @@ story.append(Paragraph("NJS GROUP — Direction Générale", ParagraphStyle('Sub
 story.append(Paragraph("Auteur : William Francis Fohom, Data analyst", ParagraphStyle('Auth', parent=BODY, fontSize=11, textColor=NAVY, spaceAfter=24)))
 story.append(HRFlowable(width='100%', thickness=2, color=GOLD, spaceAfter=20))
 story.append(Paragraph("Rapport de Performance Mensuelle", H1))
-story.append(Paragraph(f"{MONTH_LABEL} — données complètes du mois (ERP — Livrée + Validée + En cours)", ParagraphStyle('S2', parent=BODY, fontSize=13, textColor=NAVY, spaceAfter=24)))
+story.append(Paragraph(
+    f"{MONTH_LABEL} — données complètes du mois (ERP — Livrée + Validée + En cours)" if DATA['meta'].get('complet', True)
+    else f"{MONTH_LABEL} — données au {DATA['meta']['update_date']} (mois en cours, ERP — Livrée + Validée + En cours)",
+    ParagraphStyle('S2', parent=BODY, fontSize=13, textColor=NAVY, spaceAfter=24)))
 
 kpi = DATA['sc_ytd']
 enc = DATA['encaissements']
@@ -254,11 +257,13 @@ else:
 story.append(Paragraph(intro_s1, BODY))
 
 rows = [["Famille", f"Réel {MONTH_SHORT} (t)", "Objectif (t)", "% Objectif", "Écart (t)", f"CA {MONTH_SHORT} (M FCFA)"]]
-for fam in ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE']:
+for fam in ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'MAIS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE', 'ALVEOLES', 'MATERIEL_ELEVAGE']:
     d = g[fam]
     statut = "✓" if (d['pct'] or 0) >= 100 else "✗"
-    rows.append([fam, fmt(d['t']), fmt(d['obj']), pct(d['pct']),
-                 f"+{fmt(d['ecart'])}" if d['ecart'] >= 0 else fmt(d['ecart']).replace('-', '- '), fmt(d['ca'])])
+    rows.append([fam, fmt(d['t']), fmt(d['obj']) if d['obj'] > 0 else "—", pct(d['pct']),
+                 ("+" + fmt(d['ecart'])) if d['ecart'] >= 0 and d['obj'] > 0
+                 else ("—" if d['obj'] == 0 else fmt(d['ecart']).replace('-', '- ')),
+                 fmt(d['ca'])])
 story.append(make_table(rows, col_widths=[3.6*cm, 2.4*cm, 2.3*cm, 2.0*cm, 2.2*cm, 3.0*cm], font_size=8.5, highlight_rows=[1, 2]))
 story.append(Spacer(1, 0.35*cm))
 story.append(img(f'{CHARTS_DIR}/perf_01_global_mois.png'))
@@ -378,7 +383,7 @@ story.append(make_table(rows, col_widths=[1.7*cm, 2.0*cm, 2.0*cm, 1.6*cm, 2.0*cm
 
 story.append(Spacer(1, 0.3*cm))
 rows2 = [["Famille"] + MONTHS + ["YTD"]]
-for fam in ['ALIMENT_COMPLET', 'INGREDIENTS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']:
+for fam in ['ALIMENT_COMPLET', 'INGREDIENTS', 'MAIS', 'PREMIX', 'COMPLEMENT_ALIMENTAIRE']:
     row = [fam]
     for m in range(1, MONTH_NUM + 1):
         d = fm[fam][str(m)]

@@ -43,10 +43,12 @@ import os
 FILE_LY_24 = "/home/z/my-project/upload/21_24.xlsx"  # LY_24 sheet (Jul-Dec 2024)
 FILE_2025 = "/home/z/my-project/upload/86d96135-9db7-45bc-bba6-a69efa2c5ee3.xlsx"
 # Extractions globales BELGOCAM 2026 : (fichier, (mois min, mois max)) — 17 colonnes, dates en chaînes
+# Septembre : (61) = extraction finale 01-30/09 (remplace le volet septembre de (56))
 FILE_2026 = [
     ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", (1, 3)),
     ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (55).xlsx", (4, 6)),
-    ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", (7, 9)),
+    ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", (7, 8)),
+    ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (61).xlsx", (9, 9)),
 ]
 
 # === Product refs and weights (kg per unit) ===
@@ -100,8 +102,12 @@ MATERIEL_REFS = {
 }
 PREMIX_REFS = {'P102N2': 25, 'P104N2': 25, 'P109': 25, 'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25}
 
+# MAIS : visible dans la monthly performance (famille MAIS, sacs 50 kg).
+# Exclu des forecasts via get_family_q4 (pace_11) qui ne connaît pas ces refs.
+MAIS_REFS = {'M1051': 50, 'M1052': 50}
+
 # Products to EXCLUDE
-EXCLUDED_REFS = {'M1051', 'M1052'}  # MAIS
+EXCLUDED_REFS = set()  # (M1051/M1052 désormais classés en famille MAIS)
 
 # Internal clients
 INTERNAL_CLIENT_PATTERNS = ['SPC', 'PDC', 'COMPTOIR', 'EMANA']
@@ -147,12 +153,13 @@ def get_family(ref):
     if ref in SOJA_REFS: return 'TOURTEAUX'
     if ref in CONC_REFS: return 'CONCENTRES'
     if ref in INGREDIENT_REFS: return 'INGREDIENTS'
+    if ref in MAIS_REFS: return 'MAIS'
     if ref in ALIMENT_REFS: return 'ALIMENT_COMPLET'
     if ref in COMPLEMENT_REFS: return 'COMPLEMENT_ALIMENTAIRE'
     if ref in MATERIEL_REFS: return 'MATERIEL_ELEVAGE'
     if ref in PREMIX_REFS: return 'PREMIX'
     if ref.startswith('MAT'): return 'MATERIEL_ELEVAGE'
-    if ref.startswith('M'): return 'EXCLUDED'  # MAIS et autres
+    if ref.startswith('M'): return 'EXCLUDED'  # autres refs M
     return 'AUTRES'
 
 
@@ -160,6 +167,7 @@ def get_weight(ref):
     if ref in SOJA_REFS: return SOJA_REFS[ref]
     if ref in CONC_REFS: return CONC_REFS[ref]
     if ref in INGREDIENT_REFS: return INGREDIENT_REFS[ref]
+    if ref in MAIS_REFS: return MAIS_REFS[ref]
     if ref in ALIMENT_REFS: return ALIMENT_REFS[ref]
     if ref in COMPLEMENT_REFS: return COMPLEMENT_REFS[ref]
     if ref in MATERIEL_REFS: return MATERIEL_REFS[ref]

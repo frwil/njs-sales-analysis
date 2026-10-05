@@ -26,7 +26,7 @@ from reportlab.platypus.flowables import HRFlowable
 FONT_DIR = '/usr/share/fonts'
 pdfmetrics.registerFont(TTFont('NotoSerifSC', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Regular.ttf'))
 pdfmetrics.registerFont(TTFont('NotoSerifSC-Bold', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Bold.ttf'))
-pdfmetrics.registerFont(TTFont('NotoSerifSC-Light', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Light.ttf'))
+pdfmetrics.registerFont(TTFont('NotoSerifSC-Light', f'{FONT_DIR}/truetype/noto-serif-sc/NotoSerifSC-Regular.ttf'))
 registerFontFamily('NotoSerifSC', normal='NotoSerifSC', bold='NotoSerifSC-Bold')
 
 # ===== COLORS (BELGOCAM corporate: navy + gold) — same as build_pdf_report_v3.py =====
@@ -113,7 +113,7 @@ def draw_cover(canv, doc):
 
     # Date (top right)
     canv.setFont('NotoSerifSC', 10)
-    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Juillet 2026")
+    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Mise à jour : Septembre 2026")
     canv.setFont('NotoSerifSC-Light', 9)
     canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 3.2*cm, "Période analysée : Janvier - Décembre 2026")
 
@@ -200,7 +200,7 @@ def draw_cover(canv, doc):
     canv.setFont('NotoSerifSC', 9)
     canv.drawString(MARGIN_L, 0.55*cm, "BELGOCAM SA — Document confidentiel — Usage interne")
     canv.setFont('NotoSerifSC-Light', 8)
-    canv.drawRightString(PAGE_W - MARGIN_R, 0.55*cm, "Analyse Zéro Achat — Juillet 2026")
+    canv.drawRightString(PAGE_W - MARGIN_R, 0.55*cm, "Analyse Zéro Achat — Mise à jour : Septembre 2026")
 
     canv.restoreState()
 
@@ -1108,9 +1108,190 @@ def build_story():
     ))
 
     story.append(PageBreak())
-    story.append(Paragraph("5.3 Tableau de bord — Efficacité du plan d'action", H2))
+# ===== 5.3 Point de suivi — Septembre 2026 (BILAN DÉFINITIF AU 30/09) =====
+    story.append(Paragraph("5.3 Point de suivi — Septembre 2026 (BILAN DÉFINITIF AU 30/09)", H2))
     story.append(Paragraph(
-        "Ce tableau sera enrichi à chaque mise à jour mensuelle. Les colonnes 'Août', 'Septembre', etc. seront remplies "
+        "<b>Bilan définitif au 30 septembre 2026</b> — mois complet : 26 jours ouvrables (lun-sam) sur 26 (100% du mois). "
+        "Ce bilan n'est plus une projection : les chiffres ci-dessous sont le réel définitif du mois.",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph("5.3.1 Évolution des ventes par catégorie — S1 vs Juillet vs Août vs Septembre", H3))
+    evol_sept_data = [
+        ["Catégorie", "Moy. S1 (t)", "Juil (t)", "Août (t)", "Sept (t)", "Obj Sept (t)", "% atteinte"],
+        ["TOURTEAUX", "4 844", "7 512", "3 819", "4 926", "3 781", "130%"],
+        ["CONCENTRES", "1 513", "1 820", "1 654", "1 849", "1 601", "115%"],
+        ["ALIMENT COMPLET", "102", "92", "70", "125", "73", "170%"],
+        ["INGREDIENTS (hors Maïs)", "84", "81", "71", "89", "64", "138%"],
+        ["MAÏS*", "315", "0", "0", "0", "—", "—"],
+        ["PREMIX", "12", "11", "7", "6", "9", "63%"],
+        ["TOTAL", "6 870", "9 516", "5 621", "6 995", "5 528", "127%"],
+    ]
+    story.append(make_table(evol_sept_data, col_widths=[3*cm, 1.8*cm, 1.7*cm, 1.7*cm, 1.7*cm, 1.9*cm, 1.7*cm], font_size=7.5))
+    story.append(Paragraph(
+        "<i>* MAÏS (M1051/M1052, sacs 50 kg) désormais intégré au dataset — 315 t/mois en moyenne S1. "
+        "Produit opportuniste sans objectif : vendu uniquement sur disponibilité (0 t depuis juillet).</i>",
+        ParagraphStyle('fn_sept', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
+    ))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Lecture bilan septembre 2026 (au 30/09) :</b><br/>"
+        "• <b>TOURTEAUX à 130% ✅</b> — 4 926 t (vs 3 781 t d'objectif, +1 145 t). Fort rebond vs août (3 819 t, +29%) : "
+        "2e meilleur mois de l'année après juillet. La hausse du prix soja (+2 700 FCFA/sac août → septembre) n'a pas cassé la demande.<br/>"
+        "• <b>CONCENTRES à 115% ✅ — 3e mois consécutif au-dessus de l'objectif</b> — 1 849 t (vs 1 601 t, +248 t). "
+        "Juillet 102%, août 108%, septembre 115% : la dynamique s'accélère et devient structurelle.<br/>"
+        "• <b>ALIMENT COMPLET à 170% ✅</b> — 125 t (vs 73 t) : record S2, porté par les Booster Chick/Piglet.<br/>"
+        "• <b>INGREDIENTS à 138% ✅</b> — 89 t (vs 64 t).<br/>"
+        "• <b>PREMIX à 63% ⚠️</b> — 6 t (vs 9 t) : seule famille sous l'objectif ce mois-ci.<br/>"
+        "• <b>MAÏS à 0 t</b> — aucun achat depuis juillet (produit opportuniste).",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("5.3.2 Évolution du portefeuille client — Analyse par habitudes d'achat", H3))
+    story.append(Paragraph(
+        "Bilan au 30 septembre — <b>fin du mois</b>. Les clients à risque élevé sont considérés comme "
+        "<b>churned septembre</b> (perte sèche sauf s'ils commandent en octobre).",
+        BODY
+    ))
+    habitudes_sept_data = [
+        ["Catégorie", "Définition", "Nb clients", "CA S1 (M)", "Action"],
+        ["✅ Maintenus", "Clients S1 ayant acheté en septembre", "796", "14 058", "Base fidèle — 58,5%"],
+        ["🔴 Churned risque élevé", "Jour d'achat habituel ≤ 21, pas d'achat septembre", "467", "1 712", "Recontact immédiat — perte probable"],
+        ["🟡 Churned à surveiller", "Jour d'achat habituel 22-25, pas d'achat septembre", "51", "81", "Recontact immédiat"],
+        ["🟢 Pas inquiétant", "Jour d'achat habituel > 25, pas d'achat septembre", "47", "57", "Possible report début octobre"],
+        ["TOTAL", "", "1 361", "15 908", ""],
+    ]
+    story.append(make_table(habitudes_sept_data, col_widths=[3*cm, 5*cm, 1.8*cm, 2*cm, 4*cm], font_size=7.5))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Lecture par habitudes d'achat (bilan au 30/09) :</b><br/>"
+        "• <b>796 clients maintenus (58,5%)</b> — ont acheté en septembre. Base fidèle, CA S1 = 14 058 M.<br/>"
+        "• <b>467 clients churned à risque élevé</b> — <b>1 712 M FCFA de CA S1</b> sont perdus en septembre (vs 430 clients / 1 476 M en juillet). "
+        "Le churn s'est aggravé : recontact immédiat et campagne de reconquête pour octobre.<br/>"
+        "• <b>51 clients churned à surveiller</b> — 81 M FCFA perdus.<br/>"
+        "• <b>47 clients pas inquiétants</b> — 57 M FCFA — possible report début octobre.<br/>"
+        "• <b>66 nouveaux clients</b> en septembre (CA gagné : 94 M) et <b>66 clients réactivés</b> (achat en septembre après une pause).",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("5.3.3 Top 10 clients churned — recontact immédiat", H3))
+    story.append(Paragraph(
+        "Ces clients achetaient habituellement avant le 21 du mois mais n'ont pas commandé en septembre (au 30/09). "
+        "Ils représentent un CA S1 cumulé de 379 M FCFA pour les 10 premiers.",
+        BODY
+    ))
+    top_risque_sept_data = [
+        ["#", "Client", "Agence", "Région", "CA S1 (M)", "Jour moy.", "Nb achats"],
+        ["1", "TIMENE JEAN (ZDCL00125)", "DJELENG", "Ouest", "78,5", "14,6", "16"],
+        ["2", "FECAM", "FAMLA", "Ouest", "72,0", "16,5", "27"],
+        ["3", "GIC ESPOIR KELENG (POKAM MERLINE)", "FAMLA", "Ouest", "63,3", "15,0", "26"],
+        ["4", "EMMANUEL WIRSENYUY", "MBOUDA", "Ouest", "31,7", "15,5", "13"],
+        ["5", "PROVOCAM COOP-CA.", "NDOBO", "Littoral", "23,9", "15,7", "18"],
+        ["6", "SIGHELO SARL", "NDOBO", "Littoral", "23,7", "13,3", "3"],
+        ["7", "NOUATONG ROSTAND (CBF010)", "DJELENG", "Ouest", "22,5", "15,9", "90"],
+        ["8", "TEKOH MARTIN", "BUEA", "Littoral", "22,2", "17,7", "98"],
+        ["9", "M. FONKOU ROSTIN ALBERT (ZDCL00010)", "DJELENG", "Ouest", "21,2", "15,2", "71"],
+        ["10", "Dongmo Mboguia Ursule Florent", "DJELENG", "Ouest", "20,4", "16,8", "16"],
+    ]
+    story.append(make_table(top_risque_sept_data, col_widths=[0.8*cm, 4.5*cm, 1.8*cm, 1.5*cm, 1.5*cm, 1.5*cm, 1.5*cm], font_size=7.5))
+    story.append(Paragraph(
+        "<b>Action :</b> ces 10 clients doivent être recontactés <b>cette semaine</b> par leur commercial. "
+        "TIMENE JEAN (78,5 M de CA S1) et FECAM (72,0 M) sont des comptes majeurs — leur silence en septembre est anormal. "
+        "L'Ouest concentre 7 des 10 clients (FAMLA/DJELENG/MBOUDA) : priorité aux agences de l'Ouest. "
+        "GIC ESPOIR KELENG figurait déjà au top des churned de juillet (11 M) — son CA S1 a été réévalué à 63,3 M avec le dataset consolidé.",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.4*cm))
+
+    story.append(Paragraph("5.3.4 Bilan CA — gagné vs perdu (bilan septembre complet)", H3))
+    bilan_ca_sept_data = [
+        ["Indicateur", "Septembre complet", "Lecture"],
+        ["CA clients maintenus (actifs septembre)", "14 058 M (S1)", "✅ Base fidèle — 58,5% des clients S1"],
+        ["CA churned à risque élevé", "1 712 M (S1)", "🔴 Perte sèche — reconquête prioritaire"],
+        ["CA churned à surveiller", "81 M (S1)", "🔴 Perte sèche — recontact"],
+        ["CA pas inquiétant", "57 M (S1)", "🟢 Possible report début octobre"],
+        ["CA gagné (nouveaux clients)", "94 M (septembre)", "✅ 66 nouveaux clients — CA réel du mois"],
+    ]
+    story.append(make_table(bilan_ca_sept_data, col_widths=[6*cm, 2.8*cm, 6.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("5.3.5 Évolution spécifique concentrés — Bilan vs Objectif", H3))
+    conc_sept_data = [
+        ["Indicateur", "S1 2026", "Septembre complet", "Objectif Sept", "% atteinte"],
+        ["Volume CONCENTRES (t)", "1 513", "1 849", "1 601", "115% ✅"],
+        ["Clients acheteurs concentrés", "1 020", "793", "—", "—"],
+        ["Clients concentrés maintenus", "—", "620 (61%)", "—", "—"],
+        ["Clients concentrés churned", "—", "400", "—", "Recontact immédiat"],
+        ["Nouveaux clients concentrés", "—", "73", "—", "—"],
+    ]
+    story.append(make_table(conc_sept_data, col_widths=[5.5*cm, 2.5*cm, 2.8*cm, 2.5*cm, 2.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Lecture concentrés — BILAN VICTORIEUX :</b> le volume septembre atteint <b>1 849 t vs 1 601 t objectif (115%)</b> — "
+        "<b>3e mois consécutif au-dessus de l'objectif</b> (juillet 102%, août 108%, septembre 115%). "
+        "Sur 1 020 clients concentrés S1, 620 (61%) ont acheté en septembre. Les 400 clients concentrés churned doivent être "
+        "recontactés en priorité pour octobre ; 73 nouveaux clients concentrés ont été gagnés ce mois-ci.",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.4*cm))
+
+    story.append(Paragraph("5.3.6 Évolution des prix — Septembre 2026", H3))
+    story.append(Paragraph(
+        "<b>Soja (tourteaux)</b> : le prix moyen pondéré est passé de <b>21 198 FCFA/sac</b> (août) à <b>23 879 FCFA/sac</b> "
+        "en septembre (+2 681, soit +12,6%) — la hausse annoncée fin août s'est pleinement répercutée.<br/>"
+        "<b>Pas d'effet visible sur la consommation :</b> le volume TOURTEAUX septembre est de 4 926 t (130% de l'objectif, +29% vs août). "
+        "La fenêtre d'opportunité (rupture concurrente) prime toujours sur l'effet prix.<br/>"
+        "<b>Risque octobre :</b> si le concurrent reconstitue ses stocks, l'effet prix cumulé (+3 000 en juillet puis +2 700 en septembre) "
+        "pourrait devenir dominant — surveiller le churn élevé (467 clients) en lien avec le prix.",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.4*cm))
+
+    story.append(Paragraph("5.3.7 Corrélation Chick/Piglet Booster × Concentrés — Septembre 2026", H3))
+    booster_sept_data = [
+        ["Indicateur", "S1 2026", "Septembre complet", "Évolution"],
+        ["Clients Booster (ALIMENT COMPLET)", "494", "253", "—"],
+        ["Booster + Concentrés (cross-sell)", "357 (72%)", "183 (72,3%)", "✅ stable"],
+        ["Booster ONLY (pas de concentrés)", "137 (28%)", "70 (27,7%)", "✅ stable"],
+    ]
+    story.append(make_table(booster_sept_data, col_widths=[6*cm, 2.8*cm, 2.8*cm, 4*cm], font_size=7.5))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Lecture Booster × Concentrés :</b> le taux de cross-sell Booster→Concentrés se maintient à <b>72,3%</b> (vs 72% en S1) — "
+        "la cible ≥ 72% est tenue. Les 70 clients Booster-only restants sont les cibles immédiates de conversion pour octobre.",
+        BODY_BOLD
+    ))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("5.3.8 Clients soja sans concentrés — Évolution du cross-sell", H3))
+    soja_sept_data = [
+        ["Indicateur", "S1 2026", "Septembre complet", "Évolution"],
+        ["Clients acheteurs soja", "1 215", "791", "—"],
+        ["Soja + Concentrés (cross-sell)", "958 (79%)", "762 (96,3%)", "✅ +17 points"],
+        ["Soja ONLY (pas de concentrés)", "257 (21%)", "29 (3,7%)", "✅ -17 points"],
+        ["Commandes soja", "—", "2 384", "—"],
+        ["Commandes en bundle (soja + conc le même jour)", "—", "2 229 (93,5%)", "✅"],
+        ["Ratio tonnes soja:concentrés", "2,7:1", "2,6:1", "✅ ≤ cible 3:1"],
+    ]
+    story.append(make_table(soja_sept_data, col_widths=[6*cm, 2.8*cm, 2.8*cm, 4*cm], font_size=7.5))
+    story.append(Spacer(1, 0.2*cm))
+    story.append(Paragraph(
+        "<b>Lecture soja → concentrés — BILAN RECORD :</b><br/>"
+        "• Le taux de cross-sell soja→concentrés atteint <b>96,3%</b> (+17 pts vs S1) — <b>record absolu</b> : seuls 29 clients achètent du soja sans concentrés.<br/>"
+        "• <b>93,5% des commandes soja sont en bundle</b> (2 229/2 384) — le bundle 3:1 est devenu la norme.<br/>"
+        "• Le ratio tonnes <b>2,6:1</b> respecte la cible ≤ 3:1 pour le 2e mois consécutif (2,4:1 en août).<br/>"
+        "• <b>Conclusion comportement client (bilan septembre) :</b> le plan d'action bundle et cross-sell est <b>pleinement déployé et efficace</b>. "
+        "Le chantier prioritaire d'octobre devient le <b>churn élevé (467 clients / 1 712 M)</b> et la conversion des 70 Booster-only.",
+        BODY_BOLD
+    ))
+
+    story.append(PageBreak())
+
+    story.append(Paragraph("5.4 Tableau de bord — Efficacité du plan d'action", H2))
+    story.append(Paragraph(
+        "Ce tableau est enrichi à chaque mise à jour mensuelle. Les colonnes 'Octobre', 'Novembre' et 'Décembre' seront remplies "
         "au fur et à mesure de la disponibilité des données. L'objectif est de visualiser immédiatement si les actions "
         "produisent les résultats attendus.",
         BODY
@@ -1118,27 +1299,29 @@ def build_story():
 
     dashboard_data = [
         ["KPI", "Réf S1", "Cible S2", "Juil (bilan)", "Août (26j - bilan définitif)", "Sept", "Oct", "Nov", "Déc"],
-        ["Clients maintenus (S1 → actifs)", "1 369", "Maximiser", "853 (62%)", "655 (45%)", "—", "—", "—", "—"],
-        ["Nouveaux clients", "—", "Maximiser", "66", "171", "—", "—", "—", "—"],
-        ["Clients churned (habitude ≤21j)", "—", "Réduire", "430", "264*", "—", "—", "—", "—"],
-        ["Top 14 clients 20/80 réactivés", "0/14", "≥ 8/14", "À suivre", "À suivre", "—", "—", "—", "—"],
-        ["192 churned Q1→Q2 reconquis", "0", "≥ 58", "À suivre", "À suivre", "—", "—", "—", "—"],
-        ["CA gagné nouveaux clients (M)", "—", "Maximiser", "—", "—", "—", "—", "—", "—"],
-        ["CA churned à risque élevé (M)", "—", "Récupérer", "1 476", "—", "—", "—", "—", "—"],
-        ["Bundle soja-concentrés (%)", "79%", "≥ 80%", "82%", "96%", "—", "—", "—", "—"],
-        ["Volume CONCENTRES (t)", "1 513/mois", "≥ 1 534", "1 820", "1 679 (proj.)", "—", "—", "—", "—"],
-        ["Atteinte obj. CONCENTRES", "72%", "≥ 100%", "102%", "108% (ajusté)", "—", "—", "—", "—"],
-        ["Nouveaux clients concentrés", "—", "Maximiser", "≈ 55", "—", "—", "—", "—", "—"],
-        ["Cross-sell Booster→Conc (%)", "72%", "≥ 72%", "74%", "—", "—", "—", "—", "—"],
-        ["Ratio soja:conc (bundle)", "2,7:1", "≤ 3:1", "3,5:1", "2,4:1", "—", "—", "—", "—"],
+        ["Clients maintenus (S1 → actifs)", "1 369", "Maximiser", "853 (62%)", "655 (45%)", "796 (58%)", "—", "—", "—"],
+        ["Nouveaux clients", "—", "Maximiser", "66", "171", "66", "—", "—", "—"],
+        ["Clients churned (habitude ≤21j)", "—", "Réduire", "430", "264*", "467", "—", "—", "—"],
+        ["Top 14 clients 20/80 réactivés", "0/14", "≥ 8/14", "À suivre", "À suivre", "À suivre", "—", "—", "—"],
+        ["192 churned Q1→Q2 reconquis", "0", "≥ 58", "À suivre", "À suivre", "À suivre", "—", "—", "—"],
+        ["CA gagné nouveaux clients (M)", "—", "Maximiser", "—", "—", "94", "—", "—", "—"],
+        ["CA churned à risque élevé (M)", "—", "Récupérer", "1 476", "—", "1 712", "—", "—", "—"],
+        ["Bundle soja-concentrés (%)", "79%", "≥ 80%", "82%", "96%", "93,5%", "—", "—", "—"],
+        ["Volume CONCENTRES (t)", "1 513/mois", "≥ 1 534", "1 820", "1 679 (proj.)", "1 849", "—", "—", "—"],
+        ["Atteinte obj. CONCENTRES", "72%", "≥ 100%", "102%", "108% (ajusté)", "115%", "—", "—", "—"],
+        ["Nouveaux clients concentrés", "—", "Maximiser", "≈ 55", "—", "73", "—", "—", "—"],
+        ["Cross-sell Booster→Conc (%)", "72%", "≥ 72%", "74%", "—", "72,3%", "—", "—", "—"],
+        ["Ratio soja:conc (bundle)", "2,7:1", "≤ 3:1", "3,5:1", "2,4:1", "2,6:1", "—", "—", "—"],
         ["Stock soja net (sacs)", "—", "—", "—", "71 230 (08/08)", "—", "—", "—", "—"],
         ["Date rupture soja probable", "—", "—", "—", "18/09/2026", "—", "—", "—", "—"],
-        ["Prix soja (FCFA/sac)", "Stable", "—", "+3 000 cumulé", "+3 000 cumulé", "—", "—", "—", "—"],
+        ["Prix soja (FCFA/sac)", "Stable", "—", "+3 000 cumulé", "+3 000 cumulé", "23 879 (moy.)", "—", "—", "—"],
         ["Prix PREMIX (FCFA/sac)", "Stable", "—", "+3 000", "+3 000", "—", "—", "—", "—"],
     ]
     story.append(make_table(dashboard_data, col_widths=[4*cm, 2*cm, 2*cm, 2.6*cm, 1.8*cm, 1.3*cm, 1.3*cm, 1.3*cm, 1.3*cm], font_size=7))
     story.append(Paragraph(
-        "<i>* 430 clients churned en juillet (bilan définitif). En août, 248 clients S1 n'ont pas encore commandé au 28/08 (24j) — chiffre en baisse vs 271 au 25/08 et 993 au 04/08, le churn continue de se résorber. À surveiller en fin de mois.</i>",
+        "<i>* 430 clients churned en juillet (bilan définitif) et 467 en septembre (bilan définitif au 30/09). "
+        "En août, 248 clients S1 n'avaient pas encore commandé au 28/08 (24j). La hausse du churn à risque élevé en septembre "
+        "(467 vs 430) coïncide avec la hausse du prix soja (+2 700 FCFA/sac) — à qualifier par les commerciaux.</i>",
         ParagraphStyle('fn2', parent=SMALL, fontName='NotoSerifSC-Light', fontSize=7, textColor=GRAY, spaceBefore=2)
     ))
 
@@ -1154,10 +1337,22 @@ def build_story():
         BODY_BOLD
     ))
 
+    story.append(Spacer(1, 0.3*cm))
+    story.append(Paragraph(
+        "<b>Bilan septembre 2026 (définitif au 30/09) :</b><br/>"
+        "• <b>CONCENTRES — 3e MOIS CONSÉCUTIF AU-DESSUS DE L'OBJECTIF ✅</b> : 1 849 t (115%, +248 t d'avance). La dynamique bundle est structurelle.<br/>"
+        "• <b>TOURTEAUX — REBOND CONFIRMÉ ✅</b> : 4 926 t (130% de l'objectif, +29% vs août).<br/>"
+        "• <b>Cross-sell record</b> : 96,3% des clients soja achètent aussi des concentrés ; 93,5% des commandes soja en bundle ; ratio 2,6:1 ≤ cible 3:1.<br/>"
+        "• <b>Point de vigilance — churn élevé</b> : 467 clients churned à risque élevé (1 712 M de CA S1) — priorité de reconquête pour octobre, "
+        "en lien avec la hausse du prix soja (+2 700 FCFA/sac en septembre).<br/>"
+        "• <b>Nouveaux clients</b> : 66 en septembre (94 M de CA) — dynamique d'acquisition à maintenir.",
+        BODY_BOLD
+    ))
+
     story.append(PageBreak())
 
-    # ===== 5.3 Calendrier de suivi =====
-    story.append(Paragraph("5.3 Calendrier de suivi et modalités", H2))
+    # ===== 5.5 Calendrier de suivi =====
+    story.append(Paragraph("5.5 Calendrier de suivi et modalités", H2))
     story.append(Paragraph(
         "<b>Modalités de suivi :</b> revue mensuelle en comité de direction le 1er lundi de chaque mois. "
         "Le tableau de bord est alimenté par le contrôle de gestion à partir des données de ventes journalières. "
@@ -1192,7 +1387,7 @@ def build_story():
     story.append(HRFlowable(width="100%", thickness=0.8, color=NAVY, spaceBefore=10, spaceAfter=10))
     story.append(Paragraph(
         "<i>Document rédigé par William Francis Fohom, Data Analyst, Administrateur National de Ventes — "
-        "BELGOCAM SA — Juillet 2026.</i>",
+        "BELGOCAM SA — Mise à jour : Septembre 2026.</i>",
         CAPTION
     ))
     story.append(Paragraph(
@@ -1219,7 +1414,7 @@ class MyDocTemplate(BaseDocTemplate):
 
 
 # ===== BUILD PDF =====
-OUT = '/home/z/my-project/download/analyse_zero_achat.pdf'
+OUT = '/home/z/my-project/download/analyse_zero_achat_upd.pdf'
 
 doc = MyDocTemplate(OUT, pagesize=A4)
 doc.title = "BELGOCAM SA - Analyse Zéro Achat (Suivi continu Janvier-Décembre 2026)"

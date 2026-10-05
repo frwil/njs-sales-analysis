@@ -45,19 +45,24 @@ print(df['family'].value_counts())
 print("\n=== Loading En cours + Validées from latest extraction (septembre) ===")
 import openpyxl
 
-FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (51).xlsx"
+# Extraction finale septembre (01-30/09) — format 17 colonnes (54)/(56)/(61) : état=14, agence=16
+FILE_AOUT = "/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (61).xlsx"
 wb = openpyxl.load_workbook(FILE_AOUT, read_only=True, data_only=True)
 ws = wb['Sheet 1']
 
 SOJA_REFS = {'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25}
 CONC_REFS = {'C101': 50, 'C102': 50, 'C103': 50, 'C104': 50, 'C1042': 1, 'C1043': 5, 'C1044': 25,
              'C105': 50, 'C1053': 1, 'C1054': 5, 'C1055': 25, 'C108': 50, 'C1022': 5}
-ALIMENT_REFS = {'CB100': 25, 'CB200': 25, 'CB101': 5, 'CB201': 5, 'PB100': 25, 'PB200': 25, 
-                'DB100': 25, 'DB200': 25, 'ALAP25': 25}
+ALIMENT_REFS = {'CB100': 25, 'CB200': 25, 'CB101': 5, 'CB201': 5, 'PB100': 25, 'PB200': 25,
+                'DB100': 25, 'DB200': 25, 'ALAP25': 25,
+                'APCL2': 15, 'APCL25': 5, 'APCL3': 15, 'APCL30': 1, 'APCL35': 5,
+                'APCL4.5': 15, 'APCL4.55': 5, 'APCL450': 1, 'APCL6': 15, 'APCL65': 5,
+                'APCL8': 15, 'APCL80': 1, 'APCL85': 5}  # BELGOFISH intégrés aux ALIMENTS COMPLETS
 INGREDIENT_REFS = {'B100': 25, 'E101': 25, 'I105': 25, 'B1001': 1, 'B1003': 5, 'B1004': 25,
                    'E1011': 1, 'E1013': 5, 'E1014': 0.2, 'I1051': 1, 'I1053': 5, 'I1054': 25,
                    'I106': 25, 'I1061': 1, 'I107': 25, 'I1071': 1, 'P105': 25, 'P1051': 1, 'P1053': 5,
-                   'F114': 50, 'F1145': 50, 'F1146': 25, 'F1147': 1}
+                   'F114': 50, 'F1145': 50, 'F1146': 25, 'F1147': 1,
+                   'F1143': 25, 'I1063': 5}  # farine de poisson 25 kg + méthionine 5 kg
 PREMIX_REFS = {'P102N2': 25, 'P104N2': 25, 'P109': 25, 'PX101': 25, 'PX102': 25, 'PX103': 25, 'PX104': 25, 'PX105': 25}
 MATERIEL_REFS = {f'MAT{i:03d}': 1 for i in range(1, 100)}
 MATERIEL_REFS.update({'MAT014-80010003': 1, 'MAT011-80010002': 1})
@@ -102,22 +107,26 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     ref = str(r[0])
     family = get_family_q4(ref)
     if family is None: continue
-    etat = str(r[13]).strip() if r[13] else ''
+    etat = str(r[14]).strip() if r[14] else ''
     if etat not in ('En cours', 'Validée'): continue
     date_str = str(r[6])[:10] if r[6] else ''
     if '/09/2026' not in date_str: continue
-    agence_raw = r[15] if r[15] else ''
+    agence_raw = r[16] if r[16] else ''
     if agence_raw not in AGENCE_MAP: continue
     agence, region = AGENCE_MAP[agence_raw]
     qte = r[2] or 0
     weight = ALL_REFS.get(ref, 1)
     kg = qte * weight
     montant_ttc = r[9] or 0
+    montant_ht = r[8] or 0
+    # Règle : une vente dont le montant HT ou TTC est à 0 n'est pas intégrée
+    if not isinstance(montant_ht, (int, float)) or montant_ht <= 0 \
+       or not isinstance(montant_ttc, (int, float)) or montant_ttc == 0: continue
     try:
         date = pd.to_datetime(date_str, format='%d/%m/%Y')
     except:
         continue
-    
+
     # For MATERIEL_ELEVAGE, ALVEOLES, PREMIX: tonnes=0 (CA only)
     if family in ('MATERIEL_ELEVAGE', 'ALVEOLES'):
         tonnes_val = 0
@@ -147,11 +156,11 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     ref = str(r[0])
     family = get_family_q4(ref)
     if family is None: continue
-    etat = str(r[13]).strip() if r[13] else ''
+    etat = str(r[14]).strip() if r[14] else ''
     if etat != 'Livrée': continue
     date_str = str(r[6])[:10] if r[6] else ''
     if '/09/2026' not in date_str: continue
-    agence_raw = r[15] if r[15] else ''
+    agence_raw = r[16] if r[16] else ''
     if agence_raw not in AGENCE_MAP: continue
     agence, region = AGENCE_MAP[agence_raw]
     qte = r[2] or 0
@@ -159,6 +168,9 @@ for r in ws.iter_rows(min_row=3, values_only=True):
     kg = qte * weight
     montant_ttc = r[9] or 0
     montant_ht = r[8] or 0
+    # Règle : une vente dont le montant HT ou TTC est à 0 n'est pas intégrée
+    if not isinstance(montant_ht, (int, float)) or montant_ht <= 0 \
+       or not isinstance(montant_ttc, (int, float)) or montant_ttc == 0: continue
     try:
         date = pd.to_datetime(date_str, format='%d/%m/%Y')
     except:
@@ -224,8 +236,8 @@ prix_forecast = json.load(open("/home/z/my-project/scripts/prix_forecast.json"))
 prix_q4 = prix_forecast['stable_Q4'].copy()
 # Override with real 2026 prices (per unit) for non-50kg products
 prix_q4.update(prix_reels)
-# Update soja T102 price to 17 678 FCFA/sac (moyenne pondérée YTD Jan-Sep, incl. baisse 22/09)
-prix_q4['T102'] = 17678  # Moyenne ponderee YTD 2026 (Jan-Sept, reel ERP)
+# Update soja T102 price to 17 869 FCFA/sac (moyenne pondérée YTD Jan-Sep, réel ERP (61), incl. hausse septembre)
+prix_q4['T102'] = 17869  # Moyenne ponderee YTD 2026 (Jan-Sep, reel ERP (61) 01-30/09)
 # === Weight per unit (kg per sac/piece/bidon) — for converting tonnes to units ===
 WEIGHT_MAP = {
     'T102': 50, 'T1021': 1, 'T1023': 5, 'T1024': 25,
@@ -599,8 +611,8 @@ print(f"    - SPC PK15 forfait réaliste: 0.5 M ALV + 0.5 M MAT")
 fcst_df = pd.concat([fcst_df, spc_df], ignore_index=True)
 print(f"  Total forecast après forfait: {len(fcst_df)} records, CA = {fcst_df['ca_m_fcfa'].sum():.1f} M FCFA")
 
-# Save
-output_path = "/home/z/my-project/scripts/forecast_q4_2026_S3.csv"
+# Save (version _upd : les fichiers originaux S3 restent intacts)
+output_path = "/home/z/my-project/scripts/forecast_q4_2026_S3_upd.csv"
 fcst_df.to_csv(output_path, index=False)
 print(f"Saved: {output_path}")
 
@@ -651,6 +663,6 @@ synth_json = {
     'by_region': synth_reg.reset_index().to_dict(orient='records'),
     'by_month': synth_month.reset_index().to_dict(orient='records'),
 }
-with open('/home/z/my-project/scripts/forecast_q4_2026_synth.json', 'w') as f:
+with open('/home/z/my-project/scripts/forecast_q4_2026_synth_upd.json', 'w') as f:
     json.dump(synth_json, f, indent=2, default=str)
-print(f"\nSynthèse sauvée: /home/z/my-project/scripts/forecast_q4_2026_synth.json")
+print(f"\nSynthèse sauvée: /home/z/my-project/scripts/forecast_q4_2026_synth_upd.json")

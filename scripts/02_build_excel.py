@@ -39,6 +39,7 @@ month_labels_fr = {
     '2026-01': 'Jan 26', '2026-02': 'Fév 26', '2026-03': 'Mar 26',
     '2026-04': 'Avr 26', '2026-05': 'Mai 26', '2026-06': 'Juin 26',
     '2026-07': 'Juil 26', '2026-08': 'Août 26', '2026-09': 'Sep 26',
+    '2026-10': 'Oct 26*',
 }
 
 # ============================================================
@@ -125,8 +126,9 @@ def write_title_block(ws, title, subtitle, end_col):
 # ============================================================
 wb = Workbook()
 wb.remove(wb.active)
-wb.properties.creator = "Z.ai"
-wb.properties.title = "Analyse Chick & Piglet Booster - Oct 25 à Sep 26"
+wb.properties.creator = "William Francis Fohom, Data Analyst"
+wb.properties.lastModifiedBy = "William Francis Fohom, Data Analyst"
+wb.properties.title = "Analyse Chick & Piglet Booster - Oct 25 à Oct 26"
 wb.properties.subject = "Évolution des ventes en volume (tonnes)"
 
 # ============================================================
@@ -138,7 +140,7 @@ ws.sheet_view.showGridLines = False
 end_col = 6
 
 write_title_block(ws, "Analyse des ventes Chick & Piglet Booster",
-                  "Période : Octobre 2025 - Septembre 2026 | Métrique : Volume (tonnes) | Source : ERP NJS Group", end_col)
+                  "Période : Octobre 2025 - Octobre 2026 | Métrique : Volume (tonnes) | Source : ERP NJS Group", end_col)
 
 # KPIs
 total_vol = df['qte_tonnes'].sum()
@@ -803,7 +805,7 @@ for col, w in col_widths.items():
 # ============================================================
 # Save workbook
 # ============================================================
-output_path = os.path.join(DOWNLOAD, "Analyse_Booster_Oct2025-Sep2026.xlsx")
+output_path = os.path.join(DOWNLOAD, "Analyse_Booster_Oct2025-Oct2026.xlsx")
 wb.save(output_path)
 print(f"\n✅ Excel file saved: {output_path}")
 print(f"   Size: {os.path.getsize(output_path) / 1024:.1f} KB")
