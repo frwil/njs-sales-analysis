@@ -7,7 +7,7 @@ Réutilise les mêmes polices, couleurs et fonctions utilitaires que build_zero_
 (même package graphique corporate BELGOCAM navy + gold).
 
 Auteur/rédacteur : William Francis Fohom, Data Analyst, Administrateur National de Ventes
-Date : Mise à jour Septembre 2026 (analyse initiale Juillet 2026)
+Date : Mise à jour Octobre 2026 (analyse initiale Juillet 2026)
 """
 import os
 from reportlab.lib import colors
@@ -110,7 +110,7 @@ def draw_cover(canv, doc):
 
     # Date (top right)
     canv.setFont('NotoSerifSC', 10)
-    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Mise à jour : Septembre 2026")
+    canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 2.5*cm, "Mise à jour : Octobre 2026")
     canv.setFont('NotoSerifSC-Light', 9)
     canv.drawRightString(PAGE_W - MARGIN_R, PAGE_H - 3.2*cm, "Période analysée : S1 2026 vs Juillet 2026 (au 27/07)")
 
@@ -198,7 +198,7 @@ def draw_cover(canv, doc):
     canv.setFont('NotoSerifSC', 9)
     canv.drawString(MARGIN_L, 0.55*cm, "BELGOCAM SA — Document confidentiel — Usage interne")
     canv.setFont('NotoSerifSC-Light', 8)
-    canv.drawRightString(PAGE_W - MARGIN_R, 0.55*cm, "Analyse Bundle Soja-Concentrés — Mise à jour : Septembre 2026")
+    canv.drawRightString(PAGE_W - MARGIN_R, 0.55*cm, "Analyse Bundle Soja-Concentrés — Mise à jour : Octobre 2026")
 
     canv.restoreState()
 
@@ -1180,12 +1180,82 @@ def build_story():
 
     story.append(Spacer(1, 0.4*cm))
 
+    # SECTION 10 — POINT DE SUIVI OCTOBRE 2026 (MTD AU 10/10)
+    # =====================================================================
+    story.append(PageBreak())
+    story.append(Paragraph("10. Point de suivi — Octobre 2026 (MTD au 10/10)", H1))
+    story.append(section_divider())
+
+    story.append(Paragraph(
+        "<b>Données au 10 octobre 2026</b> — 9 jours ouvrables sur 26 (extraction ERP du 12/10, commandes jusqu'au 10/10). "
+        "Contexte : <b>deux baisses de prix soja</b> — 22/09 (~27 000 → ~21 000 FCFA/sac) puis <b>07/10 (20 500 → 17 600 FCFA/sac, −14%)</b>, "
+        "ramenant le prix au niveau budgété Q4 (17 678). Les volumes octobre sont ceux du livrable performance mensuelle "
+        "(Livrée + Validée + En cours) ; les métriques commandes et la distribution des ratios sont calculées sur les "
+        "clients externes, commandes Livrées (même source que l'analyse zéro-achat). Comparaison : Septembre MTD "
+        "(01-10/09, commandes Livrées) et Septembre final (définitif au 30/09).",
+        BODY_BOLD
+    ))
+
+    story.append(Paragraph("10.1 Tableau de bord — Octobre MTD vs Septembre MTD vs Septembre final", H2))
+    octo_data = [
+        ["Indicateur", "Oct MTD (10/10)", "Sept MTD (10/09)", "Sept final (30/09)", "Lecture"],
+        ["Ratio soja/conc", "3,7:1", "2,0:1", "2,7:1", "⚠️ Cible ≤ 3:1 dépassée — soja reparti avant conc"],
+        ["Bundle soja→conc (%)", "87,1%", "97,9%", "93,5%", "⚠️ Recul à surveiller (12,9% soja-only)"],
+        ["Commandes soja total", "1 044", "708", "2 384", "9 jours de ventes"],
+        ["dont Bundle (soja+conc)", "909 (87,1%)", "693 (97,9%)", "2 229 (93,5%)", "Dynamique bundle toujours majoritaire"],
+        ["dont Soja-only", "135 (12,9%)", "15 (2,1%)", "155 (6,5%)", "⚠️ Presque le total du mois entier de sept."],
+        ["Volume TOURTEAUX (t)", "2 792,8 (56% obj)", "1 036*", "4 926", "✅ Forte reprise post-baisse 07/10"],
+        ["Volume CONCENTRES (t)", "764,0 (36% obj)", "529*", "1 849", "Rythme normal — mais +21,8% seulement"],
+        ["Prix soja/sac (FCFA)", "19 318", "26 751", "23 879", "✅ Rejoint le niveau budgété Q4 (17 678)"],
+    ]
+    story.append(make_table(octo_data, col_widths=[3.2*cm, 2.8*cm, 2.6*cm, 2.8*cm, 5.6*cm], font_size=7.5))
+    story.append(Paragraph(
+        "* Septembre MTD = commandes Livrées 01-10/09 (dataset, internes inclus) — source la plus comparable au 10/10 ; "
+        "les volumes octobre officiels (Livrée + Validée + En cours) en dataset Livrée sont 2 351,3 t soja / 644,3 t conc.",
+        SMALL
+    ))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph("10.2 Distribution des ratios bundle — Octobre MTD (au 10/10)", H2))
+    dist_octo = [
+        ["Ratio soja:conc", "Nb commandes", "% du total", "Lecture"],
+        ["≤ 3:1 (cible)", "541", "59,5%", "⚠️ En recul vs sept final (74,5%)"],
+        ["3-5:1 (acceptable)", "295", "32,5%", "Hausse marquée — paniers soja dopés par la baisse"],
+        ["5-10:1 (à corriger)", "65", "7,2%", "Action commerciale requise"],
+        ["10-20:1 (critique)", "6", "0,7%", "Cas isolés — recontact individuel"],
+        ["> 20:1 (urgent)", "2", "0,2%", "Action immédiate — appliquer règle prémix"],
+        ["TOTAL BUNDLE", "909", "100%", "87,1% des commandes soja sont en bundle"],
+    ]
+    story.append(make_table(dist_octo, col_widths=[3.5*cm, 2.5*cm, 2*cm, 8.5*cm], font_size=8))
+    story.append(Spacer(1, 0.3*cm))
+
+    story.append(Paragraph(
+        "<b>Lecture Octobre (MTD au 10/10) :</b><br/>"
+        "• <b>La baisse du 07/10 relance fortement le soja ✅</b> : 2 792,8 t officielles en 9 jours (56% de l'objectif du mois), "
+        "soit <b>+127% vs septembre MTD</b> en commandes Livrées (2 351,3 t vs 1 036,0 t). Le prix moyen octobre (19 318 FCFA/sac) "
+        "a rejoint le niveau budgété Q4 — la demande revient dès que le prix redevient soutenable.<br/>"
+        "• <b>Les concentrés suivent, mais avec retard ⚠️</b> : 764,0 t (36% de l'objectif — rythme normal pour 1/3 du mois), "
+        "mais seulement +21,8% vs septembre MTD contre +127% pour le soja. Le ratio se dégrade à <b>3,7:1</b> (cible ≤ 3:1).<br/>"
+        "• <b>Bundle en léger recul ⚠️</b> : 87,1% des commandes soja sont en bundle (vs 93,5% en septembre). "
+        "Les <b>135 commandes soja-only</b> (12,9%) approchent déjà le total du mois entier de septembre (155) — "
+        "nouveaux clients et réactivés achètent d'abord le soja avant de s'équiper en concentrés.<br/>"
+        "• <b>Distribution des ratios</b> : 59,5% des commandes bundle ≤ 3:1 (vs 74,5% en septembre final) ; "
+        "32,5% en 3-5:1. <b>8,1% dépassent 5:1</b> (73 commandes) — appliquer la règle prémix sur ces cas.<br/><br/>"
+        "<b>⚠️ Point de vigilance :</b> la baisse du 07/10 est une opportunité volume mais crée un <b>risque de décrochage "
+        "du bundle</b> — les clients arbitrent en faveur du soja moins cher. <b>Le suivi hebdomadaire du ratio et "
+        "l'application stricte de la règle bundle sur les soja-only</b> sont les leviers pour convertir cette reprise "
+        "en concentrés d'ici fin octobre.",
+        BODY_BOLD
+    ))
+
+    story.append(Spacer(1, 0.4*cm))
+
     # ---------- Final footer ----------
     story.append(Spacer(1, 1*cm))
     story.append(HRFlowable(width="100%", thickness=0.8, color=NAVY, spaceBefore=10, spaceAfter=10))
     story.append(Paragraph(
         "<i>Document rédigé par William Francis Fohom, Data Analyst, Administrateur National de Ventes — "
-        "BELGOCAM SA — Mise à jour : Septembre 2026.</i>",
+        "BELGOCAM SA — Mise à jour : Octobre 2026.</i>",
         CAPTION
     ))
     story.append(Paragraph(
@@ -1215,10 +1285,10 @@ class MyDocTemplate(BaseDocTemplate):
 OUT = '/home/z/my-project/download/analyse_bundle_soja_concentres_upd.pdf'
 
 doc = MyDocTemplate(OUT, pagesize=A4)
-doc.title = "BELGOCAM SA — Analyse Bundle Soja-Concentrés (Juillet 2026)"
-doc.author = "William Francis Fohom — Data Analyst, Administrateur National de Ventes"
-doc.subject = "Impact de la hausse du prix du soja sur le comportement d'achat client (bundle soja-concentrés)"
-doc.creator = "BELGOCAM SA — Direction Commerciale"
+doc.title = "BELGOCAM SA — Analyse Bundle Soja-Concentrés (Mise à jour Octobre 2026)"
+doc.author = "William Francis Fohom, Data analyst"
+doc.subject = "Impact des variations du prix du soja sur le comportement d'achat client (bundle soja-concentrés)"
+doc.creator = "William Francis Fohom, Data analyst"
 
 story = build_story()
 

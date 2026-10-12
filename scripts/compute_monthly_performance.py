@@ -58,7 +58,7 @@ MONTH_LABEL = f"{MOIS_FR[MONTH_NUM - 1]} 2026"
 # Source ERP du mois : (fichier, feuille, (col État, col StatutFacture, col agence))
 # Extractions globales BELGOCAM (17 colonnes, dates en chaînes dd/mm/yyyy) :
 # (54) Jan-Mar, (55) Avr-Jun, (56) Jul-Sep, (61) Septembre final (01-30/09),
-# (60) Octobre MTD (01-05/10).
+# (60) Octobre MTD (01-05/10), (65) Octobre MTD (01-10/10).
 ERP_SOURCES = {
     1: ("NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", "Sheet 1", (14, 15, 16)),
     2: ("NJS GROUP ERP - Lignes de commandes + multicompany (54).xlsx", "Sheet 1", (14, 15, 16)),
@@ -69,7 +69,7 @@ ERP_SOURCES = {
     7: ("NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", "Sheet 1", (14, 15, 16)),
     8: ("NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", "Sheet 1", (14, 15, 16)),
     9: ("NJS GROUP ERP - Lignes de commandes + multicompany (61).xlsx", "Sheet 1", (14, 15, 16)),
-    10: ("NJS GROUP ERP - Lignes de commandes + multicompany (60).xlsx", "Sheet 1", (14, 15, 16)),
+    10: ("NJS GROUP ERP - Lignes de commandes + multicompany (65).xlsx", "Sheet 1", (14, 15, 16)),
 }
 ERP_FILE, ERP_SHEET, (IDX_ETAT, IDX_STATUT, IDX_AGENCE) = ERP_SOURCES.get(MONTH_NUM, ERP_SOURCES[9])
 ERP_FILE = f"/home/z/my-project/upload/{ERP_FILE}"

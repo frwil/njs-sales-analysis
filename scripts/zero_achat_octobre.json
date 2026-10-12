@@ -1,0 +1,185 @@
+{
+  "ventes": {
+    "s1_moy": {
+      "TOURTEAUX": 4674.8,
+      "CONCENTRES": 1435.3,
+      "ALIMENT_COMPLET": 70.2,
+      "INGREDIENTS": 65.9,
+      "PREMIX": 7.4,
+      "COMPLEMENT_ALIMENTAIRE": 0.4,
+      "MATERIEL_ELEVAGE": 0,
+      "MAIS": 0,
+      "INGREDIENTS_HORS_MAIS": 65.9,
+      "TOTAL": 6254.0
+    },
+    "septembre": {
+      "TOURTEAUX": 4464.8,
+      "CONCENTRES": 1713.3,
+      "ALIMENT_COMPLET": 93.4,
+      "INGREDIENTS": 74.7,
+      "PREMIX": 5.6,
+      "COMPLEMENT_ALIMENTAIRE": 0.5,
+      "MATERIEL_ELEVAGE": 0.0,
+      "MAIS": 0.0,
+      "INGREDIENTS_HORS_MAIS": 74.7,
+      "TOTAL": 6352.4
+    },
+    "septembre_mtd": {
+      "TOURTEAUX": 1036.0,
+      "CONCENTRES": 529.0,
+      "ALIMENT_COMPLET": 38.2,
+      "INGREDIENTS": 23.9,
+      "PREMIX": 2.3,
+      "COMPLEMENT_ALIMENTAIRE": 0.2,
+      "MATERIEL_ELEVAGE": 0.0,
+      "MAIS": 0.0,
+      "INGREDIENTS_HORS_MAIS": 23.9,
+      "TOTAL": 1629.5
+    },
+    "octobre_mtd": {
+      "TOURTEAUX": 2351.3,
+      "CONCENTRES": 644.3,
+      "ALIMENT_COMPLET": 37.1,
+      "INGREDIENTS": 28.5,
+      "PREMIX": 1.2,
+      "COMPLEMENT_ALIMENTAIRE": 0.2,
+      "MATERIEL_ELEVAGE": 0.0,
+      "MAIS": 0.0,
+      "INGREDIENTS_HORS_MAIS": 28.5,
+      "TOTAL": 3062.5
+    },
+    "obj_octobre": {
+      "TOURTEAUX": 4941.8,
+      "CONCENTRES": 2092.6,
+      "ALIMENT_COMPLET": 95.6,
+      "INGREDIENTS": 83.8,
+      "PREMIX": 12.3,
+      "COMPLEMENT_ALIMENTAIRE": 0.5,
+      "MATERIEL_ELEVAGE": null
+    }
+  },
+  "clients": {
+    "s1_total": 1361,
+    "venus": 594,
+    "venus_pct": 43.6,
+    "pas_encore_total": 767,
+    "pas_encore_depasse": 140,
+    "pas_encore_normal": 584,
+    "pas_encore_fin_mois": 43,
+    "ca_depasse_m": 269.4,
+    "ca_normal_m": 3556.1,
+    "ca_fin_mois_m": 55.0,
+    "ca_s1_venus_m": 12027.3,
+    "nouveaux": 30,
+    "ca_gagne_nouveaux_m": 19.8,
+    "reactives": 56,
+    "top10_depasse": [
+      {
+        "client": "CU2508-13440 -  SODIPE SARL",
+        "agence": "Ndobo",
+        "region": "Littoral",
+        "ca_s1_m": 19.5,
+        "jour_moy": 9.7,
+        "nb_achats": 26
+      },
+      {
+        "client": "CU2407-00299 -  MOHAMAED DJALLO",
+        "agence": "Ndobo",
+        "region": "Littoral",
+        "ca_s1_m": 16.8,
+        "jour_moy": 8.4,
+        "nb_achats": 17
+      },
+      {
+        "client": "MAKUETE Epse MANFOUO EDITH (ZDCL00103)",
+        "agence": "Ndobo",
+        "region": "Littoral",
+        "ca_s1_m": 15.4,
+        "jour_moy": 9.4,
+        "nb_achats": 5
+      },
+      {
+        "client": "CU2509-13966 -  ADAM MAHAMAT ABDOULAYE",
+        "agence": "Village",
+        "region": "Littoral",
+        "ca_s1_m": 11.2,
+        "jour_moy": 9.3,
+        "nb_achats": 11
+      },
+      {
+        "client": "CU2507-13406 -  STE IPACAM & FILS",
+        "agence": "Messassi",
+        "region": "Centre",
+        "ca_s1_m": 10.8,
+        "jour_moy": 6.4,
+        "nb_achats": 9
+      },
+      {
+        "client": "CU2412-01174 -  TSANGA YVES VINCENT",
+        "agence": "Messassi",
+        "region": "Centre",
+        "ca_s1_m": 9.2,
+        "jour_moy": 5.2,
+        "nb_achats": 9
+      },
+      {
+        "client": "CU2408-01064 -  Tchemenack Djinte Yves Gaël",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 8.2,
+        "jour_moy": 9.0,
+        "nb_achats": 16
+      },
+      {
+        "client": "CU2407-00559 -  DZEKENG",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 8.0,
+        "jour_moy": 4.2,
+        "nb_achats": 4
+      },
+      {
+        "client": "CU2407-00585 -  FERME FAMILIALE",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 8.0,
+        "jour_moy": 10.0,
+        "nb_achats": 3
+      },
+      {
+        "client": "CU2407-00523 -  DJOKO Charles",
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "ca_s1_m": 7.5,
+        "jour_moy": 7.0,
+        "nb_achats": 1
+      }
+    ]
+  },
+  "concentres": {
+    "clients_s1": 1020,
+    "clients_octo": 549,
+    "venus": 437,
+    "venus_pct": 42.8,
+    "pas_encore": 583,
+    "nouveaux": 35,
+    "volume_octo_t": 644.3,
+    "obj_octo_t": 2092.6,
+    "pct_obj": 30.8
+  },
+  "cross_sell": {
+    "clients_soja_octo": 594,
+    "soja_conc": 528,
+    "soja_conc_pct": 88.9,
+    "soja_only": 66,
+    "clients_booster_octo": 142,
+    "booster_conc": 97,
+    "booster_conc_pct": 68.3,
+    "cmd_soja": 1044,
+    "cmd_bundle": 909,
+    "pct_bundle": 87.1,
+    "ratio_soja_conc_t": 3.6
+  },
+  "prix_soja_sac": 19318.0,
+  "ca_octo_total_m": 1517.8
+}

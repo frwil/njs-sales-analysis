@@ -1,14 +1,14 @@
 """
-Update analyse_soja_octobre.xlsx — point soja au 05/10/2026 (mois en cours).
+Update analyse_soja_octobre.xlsx — point soja au 10/10/2026 (mois en cours).
 
-Source: /home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (60).xlsx (octobre MTD 01-05/10)
+Source: /home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (65).xlsx (octobre MTD 01-10/10)
 Comparaison: (61).xlsx (septembre 2026, bilan définitif au 30/09)
 Output: /home/z/my-project/download/analyse_soja_octobre.xlsx
 
 5 sheets:
-  T1 - Moy jour soja par agence (01/10 au 03/10, MTD, Livree — dernier jour avec Livrée)
-  T2 - Commandes soja 03/10 (avec evolution vs 30/09)
-  T3 - Soja-only 03/10 (liste detaillee)
+  T1 - Moy jour soja par agence (01/10 au 10/10, MTD, Livree — dernier jour avec Livrée)
+  T2 - Commandes soja 10/10 (avec evolution vs 30/09)
+  T3 - Soja-only 10/10 (liste detaillee)
   T4 - Stock soja (derniere mesure connue + ventes octobre)
   T5 - Tendance journalière soja/concentrés octobre
 """
@@ -20,7 +20,7 @@ import datetime
 import copy
 import json
 
-SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (60).xlsx'
+SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (65).xlsx'
 # Octobre = mois en cours — on compare vs septembre complet (bilan définitif au 30/09)
 PREV_SRC = '/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (61).xlsx'
 OUT = '/home/z/my-project/download/analyse_soja_octobre.xlsx'
@@ -797,11 +797,11 @@ def write_t5(ws, t5):
     ws.cell(row=row_note, column=1).font = Font(bold=True, size=11, color='1F4E78')
     row_note += 1
     notes = [
-        '• La ligne "Soja" (bleu) montre la consommation journalière de tourteaux de soja (prix de référence: 23 879 FCFA/sac en septembre 2026).',
+        '• La ligne "Soja" (bleu) montre la consommation journalière de tourteaux de soja (prix de référence: 23 879 FCFA/sac en septembre 2026 ; 19 318 FCFA/sac en moyenne octobre MTD).',
         '• La ligne "Concentrés" (or) montre la consommation journalière de concentrés (BELGO Chair/Ponte/Porc).',
         '• Le ratio soja:conc cible est 3:1 (objectif bundle). Un ratio supérieur signifie que les clients achètent plus de soja que de concentrés — dégradation du bundle.',
-        '• Les dimanches sont grisés (pas de ventes). Octobre est un mois en cours (MTD au 05/10).',
-        '• À observer: la tendance soja/concentrés en début octobre vs septembre — le ratio doit rester proche de 3:1.',
+        '• Les dimanches sont grisés (pas de ventes). Octobre est un mois en cours (MTD au 10/10).',
+        '• À observer: après la baisse du 07/10 (20 500 → 17 600 FCFA/sac, −14%), la reprise soja se confirme-t-elle sans dégrader le ratio 3:1 ?',
     ]
     for note in notes:
         ws.cell(row=row_note, column=1, value=note)
@@ -853,7 +853,7 @@ def style_total_row(ws, row, n_cols):
 def write_t1(ws, t1, t1_prev):
     ws['A1'] = 'TABLEAU 1 - Moyenne journaliere SOJA octobre par agence/region'
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
-    ws['A2'] = f"01/10 au {t1['end_date']} ({t1['days_elapsed']}j). Livree. lun-sam. Mise a jour 05/10/2026."
+    ws['A2'] = f"01/10 au {t1['end_date']} ({t1['days_elapsed']}j). Livree. lun-sam. Mise a jour 10/10/2026."
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
     headers = ['Agence', 'Region', 'Total soja (t)', 'Moy/jour (t)', 'Evolution vs 30/09']
@@ -927,7 +927,7 @@ def write_t1(ws, t1, t1_prev):
     ws.cell(row=row, column=1, value=f"Precedent (30/09): {prev_total_moy:.1f} t/j ({int(t1_prev['moy_jour_sacs'])} sacs) sur {t1_prev['days_elapsed']}j.")
     ws.cell(row=row, column=1).font = Font(italic=True, size=10, color='595959')
     row += 1
-    ws.cell(row=row, column=1, value="Note: extraction du 05/10 — aucune commande Livrée le 04/10 (dimanche) ni le 05/10 (commandes encore Validées/En cours).")
+    ws.cell(row=row, column=1, value="Note: extraction du 12/10 — commandes Livrées jusqu'au 10/10 (le 11/10 est un dimanche).")
     ws.cell(row=row, column=1).font = Font(italic=True, size=10, color='595959')
 
     # Column widths
@@ -941,7 +941,7 @@ def write_t1(ws, t1, t1_prev):
 def write_t2(ws, t2, t2_prev):
     ws['A1'] = f"TABLEAU 2 - Commandes SOJA le {t2['date']} par agence"
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
-    ws['A2'] = 'Livree. Ratio en sacs 50kg-equivalent. Mise a jour 05/10/2026.'
+    ws['A2'] = 'Livree. Ratio en sacs 50kg-equivalent. Mise a jour 10/10/2026.'
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
     headers = ['Agence', 'Region', 'Cmds', 'Bundle', 'Soja-only', 'Ratio moy', 'Evolution cmdes vs 30/09']
@@ -1011,13 +1011,13 @@ def write_t2(ws, t2, t2_prev):
         row += 1
 
     row += 2
-    ws.cell(row=row, column=1, value=f"NOTE: Prix du soja en septembre 2026: 23 879 FCFA/sac (hausse de +2 000 XAF/sac depuis le 23/07/2026).")
+    ws.cell(row=row, column=1, value=f"NOTE: Prix du soja: 23 879 FCFA/sac en moyenne septembre 2026 ; octobre MTD 19 318 FCFA/sac — baisse du 07/10 (20 500 → 17 600 FCFA/sac, −14%), au niveau du prix budgété Q4 (17 678).")
     ws.cell(row=row, column=1).font = Font(italic=True, color='C00000', size=10)
     row += 1
     ws.cell(row=row, column=1, value=f"Ratio global: {t2['total']['ratio_str']} (vs {t2_prev['total']['ratio_str']} le 30/09).")
     ws.cell(row=row, column=1).font = Font(bold=True, size=10)
     row += 2
-    ws.cell(row=row, column=1, value="Note: T2/T3 portent sur le 03/10 (dernier jour avec commandes Livrées; le 04/10 est un dimanche et le 05/10 n'a pas encore de commandes Livrées à l'extraction). Comparaison vs 30/09 (bilan septembre complet).")
+    ws.cell(row=row, column=1, value="Note: T2/T3 portent sur le 10/10 (dernier jour avec commandes Livrées; le 11/10 est un dimanche). Comparaison vs 30/09 (bilan septembre complet).")
     ws.cell(row=row, column=1).font = Font(italic=True, size=9, color='595959')
 
     ws.column_dimensions['A'].width = 30
@@ -1188,7 +1188,7 @@ def write_t4_stock_note(ws, rows_new):
     ws['A1'] = 'TABLEAU 4 - Stock SOJA et date rupture'
     ws['A1'].font = Font(bold=True, size=14, color='1F4E78')
     ws['A2'] = ('Aucune mesure de stock physique fournie depuis le 08/08/2026 (magasins centraux BEKOKO). '
-                'La date de rupture ne peut pas etre recalculee. Mise a jour 05/10/2026.')
+                'La date de rupture ne peut pas etre recalculee. Mise a jour 10/10/2026.')
     ws['A2'].font = Font(italic=True, size=10, color='595959')
 
     headers = ['Element', 'Valeur', 'Detail']
@@ -1204,8 +1204,8 @@ def write_t4_stock_note(ws, rows_new):
         ('Sacs 5 kg (T1023)', f"{STOCK_BEKOKO['5kg']:,}".replace(',', ' '), 'Stock physique mesure'),
         ('Sacs 25 kg (T1024)', f"{STOCK_BEKOKO['25kg']:,}".replace(',', ' '), 'Stock physique mesure'),
         ('Exclusion SPC', f"{SPC_ALLOCATION:,} sacs eq 50kg".replace(',', ' '), "Allocation a l'entite soeur"),
-        ('Ventes soja octobre (MTD, Livree)', f"{soja_kg/1000:.1f} t", '01-03/10 (rien de Livré le 04-05/10)'),
-        ('Ventes concentres octobre (MTD, Livree)', f"{conc_kg/1000:.1f} t", '01-03/10 (rien de Livré le 04-05/10)'),
+        ('Ventes soja octobre (MTD, Livree)', f"{soja_kg/1000:.1f} t", '01-10/10 (Livrée)'),
+        ('Ventes concentres octobre (MTD, Livree)', f"{conc_kg/1000:.1f} t", '01-10/10 (Livrée)'),
     ]
     for label, v1, v2 in rows_tbl:
         ws.cell(row=row, column=1, value=label)
@@ -1229,44 +1229,43 @@ def write_t4_stock_note(ws, rows_new):
 
 
 def main():
-    print('Loading nouvelle extraction (au 05/10, octobre MTD)...')
+    print('Loading nouvelle extraction (au 10/10, octobre MTD)...')
     rows_new, col_idx_new = load_livree(SRC)
     print(f'  {len(rows_new)} Livree rows (cols: etat={col_idx_new["etat"]}, agence={col_idx_new["agence"]})')
     print('Loading extraction precedente (septembre, bilan definitif au 30/09)...')
     rows_prev, col_idx_prev = load_livree(PREV_SRC)
     print(f'  {len(rows_prev)} Livree rows (cols: etat={col_idx_prev["etat"]}, agence={col_idx_prev["agence"]})')
 
-    # Tables nouvelles (octobre MTD — dernier jour avec Livrée = 03/10; le 04/10 est un dimanche,
-    # le 05/10 n'a pas encore de commandes Livrées à l'extraction du matin)
-    t1_new = compute_t1(rows_new, '03/10/2026', col_idx=col_idx_new)
-    t2_new = compute_t2(rows_new, '03/10/2026', col_idx=col_idx_new)
-    t3_new = compute_t3(rows_new, '03/10/2026', col_idx=col_idx_new)
+    # Tables nouvelles (octobre MTD — dernier jour avec Livrée = 10/10; le 11/10 est un dimanche)
+    t1_new = compute_t1(rows_new, '10/10/2026', col_idx=col_idx_new)
+    t2_new = compute_t2(rows_new, '10/10/2026', col_idx=col_idx_new)
+    t3_new = compute_t3(rows_new, '10/10/2026', col_idx=col_idx_new)
 
     # Tables precedentes (septembre complet, 30/09)
     t1_prev = compute_t1(rows_prev, '30/09/2026', col_idx=col_idx_prev)
     t2_prev = compute_t2(rows_prev, '30/09/2026', col_idx=col_idx_prev)
     t3_prev = compute_t3(rows_prev, '30/09/2026', col_idx=col_idx_prev)
 
-    print(f"\nT1 (03/10): {t1_new['total_t']:.1f} t, moy/jour {t1_new['moy_jour_t']:.1f} t ({t1_new['days_elapsed']}j)")
+    print(f"\nT1 (10/10): {t1_new['total_t']:.1f} t, moy/jour {t1_new['moy_jour_t']:.1f} t ({t1_new['days_elapsed']}j)")
     print(f"T1 (30/09): {t1_prev['total_t']:.1f} t, moy/jour {t1_prev['moy_jour_t']:.1f} t ({t1_prev['days_elapsed']}j)")
-    print(f"\nT2 (03/10): {t2_new['total']['cmds']} cmdes, ratio {t2_new['total']['ratio_str']}")
+    print(f"\nT2 (10/10): {t2_new['total']['cmds']} cmdes, ratio {t2_new['total']['ratio_str']}")
     print(f"T2 (30/09): {t2_prev['total']['cmds']} cmdes, ratio {t2_prev['total']['ratio_str']}")
-    print(f"\nT3 (03/10): {len(t3_new['items'])} cmdes soja-only, {t3_new['total_kg']/1000:.1f} t")
+    print(f"\nT3 (10/10): {len(t3_new['items'])} cmdes soja-only, {t3_new['total_kg']/1000:.1f} t")
     print(f"T3 (30/09): {len(t3_prev['items'])} cmdes soja-only, {t3_prev['total_kg']/1000:.1f} t")
 
     # Write Excel
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
-    wb.properties.creator = 'William Francis Fohom, Data Analyst'
-    wb.properties.lastModifiedBy = 'William Francis Fohom, Data Analyst'
+    wb.properties.creator = 'William Francis Fohom, Data analyst'
+    wb.properties.lastModifiedBy = 'William Francis Fohom, Data analyst'
 
     ws1 = wb.create_sheet('T1 - Moy jour soja par agence')
     write_t1(ws1, t1_new, t1_prev)
 
-    ws2 = wb.create_sheet('T2 - Commandes soja 03-10')
+    ws2 = wb.create_sheet('T2 - Commandes soja 10-10')
     write_t2(ws2, t2_new, t2_prev)
 
-    ws3 = wb.create_sheet('T3 - Soja-only 03-10')
+    ws3 = wb.create_sheet('T3 - Soja-only 10-10')
     write_t3(ws3, t3_new, t3_prev)
 
     # T4: pas de nouvelle mesure physique depuis le 08/08 — note stock (rupture non recalculable)
@@ -1274,7 +1273,7 @@ def main():
     write_t4_stock_note(ws4, rows_new)
 
     # T5: tendance journalière soja + concentrés avec graphiques
-    t5_new = compute_t5_trend(rows_new, end_date_str='05/10/2026', col_idx=col_idx_new)
+    t5_new = compute_t5_trend(rows_new, end_date_str='10/10/2026', col_idx=col_idx_new)
     ws5 = wb.create_sheet('T5 - Tendance Octobre')
     write_t5(ws5, t5_new)
 
@@ -1283,7 +1282,7 @@ def main():
 
     # Also save a summary JSON for traceability
     summary = {
-        'update_date': '05/10/2026',
+        'update_date': '12/10/2026',
         'source_file': SRC.split('/')[-1],
         'prev_file': PREV_SRC.split('/')[-1],
         'rows_livree_new': len(rows_new),
@@ -1295,11 +1294,11 @@ def main():
         't3_new': {'count': len(t3_new['items']), 'total_t': t3_new['total_kg'] / 1000},
         't3_prev': {'count': len(t3_prev['items']), 'total_t': t3_prev['total_kg'] / 1000},
         't4': {'note': 'Aucune mesure physique depuis le 08/08/2026 (BEKOKO) — rupture non recalculable.'},
-        'price': {'prix_soja_septembre': '23 879 FCFA/sac', 'hausse': '+2 000 XAF/sac le 23/07/2026'},
+        'price': {'prix_soja_septembre': '23 879 FCFA/sac', 'prix_soja_octobre_mtd': '19 318 FCFA/sac', 'baisse': '20 500 → 17 600 FCFA/sac le 07/10/2026 (−14%)'},
     }
-    with open('/home/z/my-project/scripts/soja_octobre_05.json', 'w', encoding='utf-8') as f:
+    with open('/home/z/my-project/scripts/soja_octobre_10.json', 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
-    print('Summary saved: /home/z/my-project/scripts/soja_octobre_05.json')
+    print('Summary saved: /home/z/my-project/scripts/soja_octobre_10.json')
 
 
 if __name__ == '__main__':

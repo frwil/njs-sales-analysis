@@ -126,8 +126,8 @@ def write_title_block(ws, title, subtitle, end_col):
 # ============================================================
 wb = Workbook()
 wb.remove(wb.active)
-wb.properties.creator = "William Francis Fohom, Data Analyst"
-wb.properties.lastModifiedBy = "William Francis Fohom, Data Analyst"
+wb.properties.creator = "William Francis Fohom, Data analyst"
+wb.properties.lastModifiedBy = "William Francis Fohom, Data analyst"
 wb.properties.title = "Analyse Chick & Piglet Booster - Oct 25 à Oct 26"
 wb.properties.subject = "Évolution des ventes en volume (tonnes)"
 
