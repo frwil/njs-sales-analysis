@@ -1,14 +1,15 @@
-"""Analyse Soja/Concentrés : P1 (05-10/10) vs 3 semaines individuelles précédentes (W-1, W-2, W-3).
+"""Analyse Soja/Concentrés : P1 (05-10/10) et P2 (12-17/10) vs 3 semaines individuelles précédentes (W-1, W-2, W-3).
 Chaque période = 6 jours calendaire (lun-sam) = 6 jours ouvrés.
 Permet de voir la TENDANCE (évolution semaine par semaine).
 
 P1   : 05-10/10/2026 (post-baisse prix 07/10 : 20 500 → 17 600 F/sac)
+P2   : 12-17/10/2026 (première semaine complète post-baisse)
 W-1 : 28/09-03/10/2026
 W-2 : 21-26/09/2026
 W-3 : 14-19/09/2026
 
 Source données : dataset_2023_2026.csv (Livrée historique, reconstruit avec
-l'extraction (65) Octobre 01-10/10). Les périodes de septembre proviennent du
+l'extraction (67) Octobre 01-17/10). Les périodes de septembre proviennent du
 bilan définitif (61) — cohérent avec les autres livrables d'octobre.
 """
 import pandas as pd
@@ -47,6 +48,7 @@ def is_internal(c):
 # === Periods (each = 6 calendar days, lun-sam = 6 jours ouvrés) ===
 PERIODS = [
     {'name': 'P1', 'start': date(2026, 10, 5), 'end': date(2026, 10, 10), 'label': '05-10/10 (post-baisse 07/10)'},
+    {'name': 'P2', 'start': date(2026, 10, 12), 'end': date(2026, 10, 17), 'label': '12-17/10'},
     {'name': 'W-1', 'start': date(2026, 9, 28), 'end': date(2026, 10, 3), 'label': '28/09-03/10'},
     {'name': 'W-2', 'start': date(2026, 9, 21), 'end': date(2026, 9, 26), 'label': '21-26/09'},
     {'name': 'W-3', 'start': date(2026, 9, 14), 'end': date(2026, 9, 19), 'label': '14-19/09'},
@@ -66,7 +68,7 @@ for p in PERIODS:
     p['work_days'] = count_working_days(p['start'], p['end'])
     print(f"{p['name']}: {p['start'].strftime('%d/%m/%Y')} - {p['end'].strftime('%d/%m/%Y')} = {p['cal_days']}j cal / {p['work_days']}j ouvrés ({p['label']})")
 
-# === Data loading (dataset seul : couvre 14/09 → 10/10) ===
+# === Data loading (dataset seul : couvre 14/09 → 17/10) ===
 hist_df = pd.read_csv('/home/z/my-project/scripts/dataset_2023_2026.csv', parse_dates=['date'], low_memory=False)
 print(f"\nLoaded dataset: {len(hist_df)} records")
 
@@ -142,7 +144,7 @@ for p in PERIODS:
     print(f"{p['name']:<8} {p['label']:<24} {fmt(n['soja_t']):<10} {fmt(n['conc_t']):<10} {n['ratio']:.2f}:1   {fmt(n['soja_moy_j']):<12} {fmt(n['conc_moy_j']):<12} {n['prix_soja_sac']:,.0f} F")
 
 print("\n--- VARIATION % vs PÉRIODE PRÉCÉDENTE ---")
-transitions = [('W-3 → W-2', 'W-3', 'W-2'), ('W-2 → W-1', 'W-2', 'W-1'), ('W-1 → P1', 'W-1', 'P1')]
+transitions = [('W-3 → W-2', 'W-3', 'W-2'), ('W-2 → W-1', 'W-2', 'W-1'), ('W-1 → P1', 'W-1', 'P1'), ('P1 → P2', 'P1', 'P2')]
 print(f"{'Transition':<16} {'Δ Soja':<10} {'Δ Conc':<10} {'Δ Total':<10} {'Δ Soja moy/j':<14} {'Δ Conc moy/j':<14}")
 for label, prev, curr in transitions:
     n_prev = results[prev]['nationwide']
@@ -154,13 +156,13 @@ for label, prev, curr in transitions:
     var_cm = (n_curr['conc_moy_j']/n_prev['conc_moy_j'] - 1)*100 if n_prev['conc_moy_j'] > 0 else 0
     print(f"{label:<16} {fmt_signed(var_s):<10} {fmt_signed(var_c):<10} {fmt_signed(var_t):<10} {fmt_signed(var_sm):<14} {fmt_signed(var_cm):<14}")
 
-print("\n--- VARIATION % vs P1 (actuel) ---")
-n_p1 = results['P1']['nationwide']
-for prev in ['W-3', 'W-2', 'W-1']:
+print("\n--- VARIATION % vs P2 (actuel) ---")
+n_p2 = results['P2']['nationwide']
+for prev in ['W-3', 'W-2', 'W-1', 'P1']:
     n_prev = results[prev]['nationwide']
-    var_s = (n_p1['soja_t']/n_prev['soja_t'] - 1)*100 if n_prev['soja_t'] > 0 else 0
-    var_c = (n_p1['conc_t']/n_prev['conc_t'] - 1)*100 if n_prev['conc_t'] > 0 else 0
-    print(f"{prev+' → P1':<14} {fmt_signed(var_s):<10} {fmt_signed(var_c):<10}")
+    var_s = (n_p2['soja_t']/n_prev['soja_t'] - 1)*100 if n_prev['soja_t'] > 0 else 0
+    var_c = (n_p2['conc_t']/n_prev['conc_t'] - 1)*100 if n_prev['conc_t'] > 0 else 0
+    print(f"{prev+' → P2':<14} {fmt_signed(var_s):<10} {fmt_signed(var_c):<10}")
 
 print("\n--- PAR RÉGION ---")
 for region in ['Ouest', 'Centre', 'Littoral']:
@@ -171,14 +173,14 @@ for region in ['Ouest', 'Centre', 'Littoral']:
         ratio = n['soja_t']/n['conc_t'] if n['conc_t'] > 0 else 0
         print(f"{p['name']:<8} {fmt(n['soja_t']):<10} {fmt(n['conc_t']):<10} {ratio:.2f}:1")
 
-print("\n--- PAR AGENCE — TOP 15 (tri par volume P1) ---")
-agences_sorted = sorted(results['P1']['agences'].keys(),
-                       key=lambda a: -(results['P1']['agences'][a]['soja_t'] + results['P1']['agences'][a]['conc_t']))
+print("\n--- PAR AGENCE — TOP 15 (tri par volume P2) ---")
+agences_sorted = sorted(results['P2']['agences'].keys(),
+                       key=lambda a: -(results['P2']['agences'][a]['soja_t'] + results['P2']['agences'][a]['conc_t']))
 for ag in agences_sorted[:15]:
-    region = results['P1']['agences'][ag]['region']
+    region = results['P2']['agences'][ag]['region']
     soja_vals = [results[p['name']]['agences'].get(ag, {'soja_t': 0})['soja_t'] for p in PERIODS]
     conc_vals = [results[p['name']]['agences'].get(ag, {'conc_t': 0})['conc_t'] for p in PERIODS]
-    print(f"{ag:<15} {region:<10} | P1 {fmt(soja_vals[0])}/{fmt(conc_vals[0])} | W-1 {fmt(soja_vals[1])}/{fmt(conc_vals[1])} | W-2 {fmt(soja_vals[2])}/{fmt(conc_vals[2])} | W-3 {fmt(soja_vals[3])}/{fmt(conc_vals[3])}")
+    print(f"{ag:<15} {region:<10} | P2 {fmt(soja_vals[1])}/{fmt(conc_vals[1])} | P1 {fmt(soja_vals[0])}/{fmt(conc_vals[0])} | W-1 {fmt(soja_vals[2])}/{fmt(conc_vals[2])} | W-2 {fmt(soja_vals[3])}/{fmt(conc_vals[3])} | W-3 {fmt(soja_vals[4])}/{fmt(conc_vals[4])}")
 
 # === Save summary as JSON ===
 summary = {
@@ -189,17 +191,17 @@ summary = {
 }
 summary['agences'] = {}
 for ag in agences_sorted[:20]:
-    summary['agences'][ag] = {'region': results['P1']['agences'][ag]['region']}
+    summary['agences'][ag] = {'region': results['P2']['agences'][ag]['region']}
     for p in PERIODS:
         summary['agences'][ag][p['name']] = {
             'soja_t': results[p['name']]['agences'].get(ag, {'soja_t': 0})['soja_t'],
             'conc_t': results[p['name']]['agences'].get(ag, {'conc_t': 0})['conc_t'],
         }
-summary['variations_vs_p1'] = {
+summary['variations_vs_p2'] = {
     'global': {prev: {
-        'soja': (results['P1']['nationwide']['soja_t']/results[prev]['nationwide']['soja_t'] - 1)*100 if results[prev]['nationwide']['soja_t'] > 0 else 0,
-        'conc': (results['P1']['nationwide']['conc_t']/results[prev]['nationwide']['conc_t'] - 1)*100 if results[prev]['nationwide']['conc_t'] > 0 else 0,
-    } for prev in ['W-3', 'W-2', 'W-1']},
+        'soja': (results['P2']['nationwide']['soja_t']/results[prev]['nationwide']['soja_t'] - 1)*100 if results[prev]['nationwide']['soja_t'] > 0 else 0,
+        'conc': (results['P2']['nationwide']['conc_t']/results[prev]['nationwide']['conc_t'] - 1)*100 if results[prev]['nationwide']['conc_t'] > 0 else 0,
+    } for prev in ['W-3', 'W-2', 'W-1', 'P1']},
 }
 summary['trend_week_over_week'] = {}
 for label, prev, curr in transitions:

@@ -49,7 +49,7 @@ FILE_2026 = [
     ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (55).xlsx", (4, 6)),
     ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (56).xlsx", (7, 8)),
     ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (61).xlsx", (9, 9)),
-    ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (65).xlsx", (10, 10)),
+    ("/home/z/my-project/upload/NJS GROUP ERP - Lignes de commandes + multicompany (67).xlsx", (10, 10)),
 ]
 
 # === Product refs and weights (kg per unit) ===

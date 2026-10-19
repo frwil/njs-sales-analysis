@@ -1,0 +1,45 @@
+{
+  "update_date": "19/10/2026",
+  "source_file": "NJS GROUP ERP - Lignes de commandes + multicompany (67).xlsx",
+  "prev_file": "NJS GROUP ERP - Lignes de commandes + multicompany (61).xlsx",
+  "rows_livree_new": 10042,
+  "rows_livree_prev": 13710,
+  "t1_new": {
+    "total_t": 4110.93,
+    "moy_jour_t": 274.062,
+    "days_elapsed": 15
+  },
+  "t1_prev": {
+    "total_t": 4661.04,
+    "moy_jour_t": 179.27076923076922,
+    "days_elapsed": 26
+  },
+  "t2_new": {
+    "cmds": 86,
+    "bundle": 66,
+    "soja_only": 20,
+    "ratio": "2.8:1"
+  },
+  "t2_prev": {
+    "cmds": 195,
+    "bundle": 157,
+    "soja_only": 38,
+    "ratio": "3.3:1"
+  },
+  "t3_new": {
+    "count": 20,
+    "total_t": 14.525
+  },
+  "t3_prev": {
+    "count": 38,
+    "total_t": 79.31
+  },
+  "t4": {
+    "note": "Aucune mesure physique depuis le 08/08/2026 (BEKOKO) — rupture non recalculable."
+  },
+  "price": {
+    "prix_soja_septembre": "23 879 FCFA/sac",
+    "prix_soja_octobre_mtd": "18 654 FCFA/sac",
+    "baisse": "20 500 → 17 600 FCFA/sac le 07/10/2026 (−14%)"
+  }
+}

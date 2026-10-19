@@ -25,28 +25,28 @@
       "TOTAL": 6352.4
     },
     "septembre_mtd": {
-      "TOURTEAUX": 1036.0,
-      "CONCENTRES": 529.0,
-      "ALIMENT_COMPLET": 38.2,
-      "INGREDIENTS": 23.9,
-      "PREMIX": 2.3,
-      "COMPLEMENT_ALIMENTAIRE": 0.2,
+      "TOURTEAUX": 1901.1,
+      "CONCENTRES": 897.1,
+      "ALIMENT_COMPLET": 58.0,
+      "INGREDIENTS": 42.0,
+      "PREMIX": 2.8,
+      "COMPLEMENT_ALIMENTAIRE": 0.4,
       "MATERIEL_ELEVAGE": 0.0,
       "MAIS": 0.0,
-      "INGREDIENTS_HORS_MAIS": 23.9,
-      "TOTAL": 1629.5
+      "INGREDIENTS_HORS_MAIS": 42.0,
+      "TOTAL": 2901.4
     },
     "octobre_mtd": {
-      "TOURTEAUX": 2351.3,
-      "CONCENTRES": 644.3,
-      "ALIMENT_COMPLET": 37.1,
-      "INGREDIENTS": 28.5,
-      "PREMIX": 1.2,
-      "COMPLEMENT_ALIMENTAIRE": 0.2,
+      "TOURTEAUX": 3939.1,
+      "CONCENTRES": 1165.9,
+      "ALIMENT_COMPLET": 69.2,
+      "INGREDIENTS": 50.9,
+      "PREMIX": 2.2,
+      "COMPLEMENT_ALIMENTAIRE": 0.3,
       "MATERIEL_ELEVAGE": 0.0,
       "MAIS": 0.0,
-      "INGREDIENTS_HORS_MAIS": 28.5,
-      "TOTAL": 3062.5
+      "INGREDIENTS_HORS_MAIS": 50.9,
+      "TOTAL": 5227.5
     },
     "obj_octobre": {
       "TOURTEAUX": 4941.8,
@@ -60,126 +60,126 @@
   },
   "clients": {
     "s1_total": 1361,
-    "venus": 594,
-    "venus_pct": 43.6,
-    "pas_encore_total": 767,
-    "pas_encore_depasse": 140,
-    "pas_encore_normal": 584,
-    "pas_encore_fin_mois": 43,
-    "ca_depasse_m": 269.4,
-    "ca_normal_m": 3556.1,
-    "ca_fin_mois_m": 55.0,
-    "ca_s1_venus_m": 12027.3,
-    "nouveaux": 30,
-    "ca_gagne_nouveaux_m": 19.8,
-    "reactives": 56,
+    "venus": 745,
+    "venus_pct": 54.7,
+    "pas_encore_total": 616,
+    "pas_encore_depasse": 392,
+    "pas_encore_normal": 183,
+    "pas_encore_fin_mois": 41,
+    "ca_depasse_m": 1919.9,
+    "ca_normal_m": 571.5,
+    "ca_fin_mois_m": 54.4,
+    "ca_s1_venus_m": 13362.1,
+    "nouveaux": 56,
+    "ca_gagne_nouveaux_m": 56.7,
+    "reactives": 78,
     "top10_depasse": [
       {
-        "client": "CU2508-13440 -  SODIPE SARL",
-        "agence": "Ndobo",
-        "region": "Littoral",
-        "ca_s1_m": 19.5,
-        "jour_moy": 9.7,
+        "client": "CU2407-00581 -  FECAM",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 72.0,
+        "jour_moy": 16.5,
+        "nb_achats": 27
+      },
+      {
+        "client": "CU2407-00281 -  GIC ESPOIR KELENG (POKAM MERLINE)",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 63.3,
+        "jour_moy": 15.0,
         "nb_achats": 26
       },
       {
-        "client": "CU2407-00299 -  MOHAMAED DJALLO",
-        "agence": "Ndobo",
-        "region": "Littoral",
-        "ca_s1_m": 16.8,
-        "jour_moy": 8.4,
-        "nb_achats": 17
-      },
-      {
-        "client": "MAKUETE Epse MANFOUO EDITH (ZDCL00103)",
-        "agence": "Ndobo",
-        "region": "Littoral",
-        "ca_s1_m": 15.4,
-        "jour_moy": 9.4,
-        "nb_achats": 5
-      },
-      {
-        "client": "CU2509-13966 -  ADAM MAHAMAT ABDOULAYE",
-        "agence": "Village",
-        "region": "Littoral",
-        "ca_s1_m": 11.2,
-        "jour_moy": 9.3,
-        "nb_achats": 11
-      },
-      {
-        "client": "CU2507-13406 -  STE IPACAM & FILS",
-        "agence": "Messassi",
-        "region": "Centre",
-        "ca_s1_m": 10.8,
-        "jour_moy": 6.4,
-        "nb_achats": 9
-      },
-      {
-        "client": "CU2412-01174 -  TSANGA YVES VINCENT",
-        "agence": "Messassi",
-        "region": "Centre",
-        "ca_s1_m": 9.2,
-        "jour_moy": 5.2,
-        "nb_achats": 9
-      },
-      {
-        "client": "CU2408-01064 -  Tchemenack Djinte Yves Gaël",
-        "agence": "Famla",
-        "region": "Ouest",
-        "ca_s1_m": 8.2,
-        "jour_moy": 9.0,
-        "nb_achats": 16
-      },
-      {
-        "client": "CU2407-00559 -  DZEKENG",
-        "agence": "Famla",
-        "region": "Ouest",
-        "ca_s1_m": 8.0,
-        "jour_moy": 4.2,
-        "nb_achats": 4
-      },
-      {
-        "client": "CU2407-00585 -  FERME FAMILIALE",
-        "agence": "Famla",
-        "region": "Ouest",
-        "ca_s1_m": 8.0,
-        "jour_moy": 10.0,
-        "nb_achats": 3
-      },
-      {
-        "client": "CU2407-00523 -  DJOKO Charles",
+        "client": "CU2407-00288 -  LIDEL SARL",
         "agence": "Djeleng",
         "region": "Ouest",
-        "ca_s1_m": 7.5,
-        "jour_moy": 7.0,
-        "nb_achats": 1
+        "ca_s1_m": 49.5,
+        "jour_moy": 15.9,
+        "nb_achats": 60
+      },
+      {
+        "client": "CU2407-00774 -  MEKESSE SUZANNE",
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "ca_s1_m": 48.7,
+        "jour_moy": 15.4,
+        "nb_achats": 192
+      },
+      {
+        "client": "CU2502-01234 -  TCHOUATA TANDA HERLIN (ZDCL00104)",
+        "agence": "Djeleng",
+        "region": "Ouest",
+        "ca_s1_m": 47.5,
+        "jour_moy": 15.1,
+        "nb_achats": 212
+      },
+      {
+        "client": "CU2410-01132 -  MALENDOMA DORIS TATIANA FLORE",
+        "agence": "Ndobo",
+        "region": "Littoral",
+        "ca_s1_m": 45.7,
+        "jour_moy": 15.5,
+        "nb_achats": 24
+      },
+      {
+        "client": "CU2407-00662 -  JEUGO ALICE",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 44.6,
+        "jour_moy": 15.6,
+        "nb_achats": 62
+      },
+      {
+        "client": "CU2410-01126 -  SOCIETE COOPÉRATIVE SIMPLIFIÉE DES PRODUCTEURS DE CACAO MARCHAND DE BALAMBA (SCOOPS_PROCAMB)",
+        "agence": "Ahala",
+        "region": "Centre",
+        "ca_s1_m": 43.5,
+        "jour_moy": 16.2,
+        "nb_achats": 56
+      },
+      {
+        "client": "CU2407-00801 -  NANA",
+        "agence": "Famla",
+        "region": "Ouest",
+        "ca_s1_m": 42.9,
+        "jour_moy": 15.9,
+        "nb_achats": 100
+      },
+      {
+        "client": "CU2407-00333 -  SOCIETE SAVIC SARL",
+        "agence": "Nkongsamba",
+        "region": "Littoral",
+        "ca_s1_m": 38.7,
+        "jour_moy": 14.0,
+        "nb_achats": 21
       }
     ]
   },
   "concentres": {
     "clients_s1": 1020,
-    "clients_octo": 549,
-    "venus": 437,
-    "venus_pct": 42.8,
-    "pas_encore": 583,
-    "nouveaux": 35,
-    "volume_octo_t": 644.3,
+    "clients_octo": 735,
+    "venus": 564,
+    "venus_pct": 55.3,
+    "pas_encore": 456,
+    "nouveaux": 65,
+    "volume_octo_t": 1165.9,
     "obj_octo_t": 2092.6,
-    "pct_obj": 30.8
+    "pct_obj": 55.7
   },
   "cross_sell": {
-    "clients_soja_octo": 594,
-    "soja_conc": 528,
-    "soja_conc_pct": 88.9,
-    "soja_only": 66,
-    "clients_booster_octo": 142,
-    "booster_conc": 97,
-    "booster_conc_pct": 68.3,
-    "cmd_soja": 1044,
-    "cmd_bundle": 909,
-    "pct_bundle": 87.1,
-    "ratio_soja_conc_t": 3.6
+    "clients_soja_octo": 778,
+    "soja_conc": 713,
+    "soja_conc_pct": 91.6,
+    "soja_only": 65,
+    "clients_booster_octo": 197,
+    "booster_conc": 146,
+    "booster_conc_pct": 74.1,
+    "cmd_soja": 1814,
+    "cmd_bundle": 1584,
+    "pct_bundle": 87.3,
+    "ratio_soja_conc_t": 3.4
   },
-  "prix_soja_sac": 19318.0,
-  "ca_octo_total_m": 1517.8
+  "prix_soja_sac": 18654.0,
+  "ca_octo_total_m": 2566.9
 }

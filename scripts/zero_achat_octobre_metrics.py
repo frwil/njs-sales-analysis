@@ -1,15 +1,15 @@
 """
-Métriques zéro-achat — Octobre 2026 (MTD au 10/10).
+Métriques zéro-achat — Octobre 2026 (MTD au 17/10).
 
 Calcule depuis dataset_2023_2026.csv toutes les valeurs nécessaires à la
-section 5.4 « Point de suivi — Octobre 2026 (MTD au 10/10) » de
+section 5.4 « Point de suivi — Octobre 2026 (MTD au 17/10) » de
 build_zero_achat_pdf.py.
 
-Cadre MTD : au 10/10, la plupart des clients S1 n'ont pas encore atteint leur
+Cadre MTD : au 17/10, la plupart des clients S1 n'ont pas encore atteint leur
 jour d'achat habituel. On ne parle donc pas de « churn » mais de
 « pas encore venus », segmenté par rapport à leur jour moyen d'achat S1 :
-- jour moyen ≤ 10 : auraient dû acheter avant le 10/10 → suivi (risque) ;
-- jour moyen 11-25 : jour habituel pas encore atteint → normal ;
+- jour moyen ≤ 17 : auraient dû acheter avant le 17/10 → suivi (risque) ;
+- jour moyen 18-25 : jour habituel pas encore atteint → normal ;
 - jour moyen > 25 : acheteurs de fin de mois → normal.
 
 Règles métier :
@@ -35,8 +35,8 @@ ext['mois'] = ext['date'].dt.month
 s1 = ext[ext['mois'].between(1, 6)]
 sept = ext[ext['mois'] == 9]
 octo = ext[ext['mois'] == 10]
-# Septembre MTD (01-10/09) pour comparaison équitable avec octobre MTD
-sept_mtd = ext[(ext['mois'] == 9) & (ext['jour'] <= 10)]
+# Septembre MTD (01-17/09) pour comparaison équitable avec octobre MTD
+sept_mtd = ext[(ext['mois'] == 9) & (ext['jour'] <= 17)]
 
 clients_s1 = set(s1['client'].dropna())
 clients_octo = set(octo['client'].dropna())
@@ -77,8 +77,8 @@ dernier_s1 = s1.sort_values('date').groupby('client').tail(1).set_index('client'
 # S1 pas encore venus en octobre, segmentés par jour moyen d'achat
 pas_encore = clients_s1 - clients_octo
 def segment(jm):
-    if jm <= 10:
-        return 'depasse'    # auraient dû acheter avant le 10/10
+    if jm <= 17:
+        return 'depasse'    # auraient dû acheter avant le 17/10
     if jm <= 25:
         return 'normal'     # jour habituel pas encore atteint
     return 'fin_mois'       # acheteurs de fin de mois
@@ -99,7 +99,7 @@ reactives_vrais = reactives - nouveaux
 ca_octo_client = octo.groupby('client')['montant_ttc'].sum() / 1e6
 ca_gagne_nouveaux = round(float(sum(ca_octo_client.get(c, 0) for c in nouveaux)), 1)
 
-# Top 10 S1 à jour moyen ≤ 10 pas encore venus (CA S1 desc) — suivi prioritaire
+# Top 10 S1 à jour moyen ≤ 17 pas encore venus (CA S1 desc) — suivi prioritaire
 top10 = []
 for c in pas_encore:
     if segment(jour_moy.get(c, 0)) == 'depasse':

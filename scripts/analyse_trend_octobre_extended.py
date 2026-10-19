@@ -6,11 +6,12 @@ Question : la baisse de prix du 07/10 (20 500 → 17 600 F/sac) a-t-elle déjà
 
 Périodes (6 jours lun-sam chacune) :
 P1   : 05-10/10/2026 (post-baisse 07/10)
+P2   : 12-17/10/2026 (première semaine complète post-baisse)
 W-1 : 28/09-03/10/2026
 W-2 : 21-26/09/2026
 W-3 : 14-19/09/2026
 
-Source : dataset_2023_2026.csv (reconstruit avec extraction (65), Livrée,
+Source : dataset_2023_2026.csv (reconstruit avec extraction (67), Livrée,
 clients externes ; COMPTOIR inclus comme dans l'analyse trend de septembre).
 """
 import pandas as pd
@@ -36,6 +37,7 @@ PERIODS = [
     {'name': 'W-2', 'start': date(2026, 9, 21), 'end': date(2026, 9, 26), 'label': '21-26/09'},
     {'name': 'W-1', 'start': date(2026, 9, 28), 'end': date(2026, 10, 3), 'label': '28/09-03/10'},
     {'name': 'P1', 'start': date(2026, 10, 5), 'end': date(2026, 10, 10), 'label': '05-10/10 (post-baisse 07/10)'},
+    {'name': 'P2', 'start': date(2026, 10, 12), 'end': date(2026, 10, 17), 'label': '12-17/10'},
 ]
 
 def count_working_days(d_start, d_end):
@@ -133,7 +135,7 @@ for p in PERIODS:
     m = results[p['name']]
     print(f"{p['name']:<8} {fmt(m['conc_t']):<12} {m['n_conc_clients']:<10} {m['n_conc_orders']:<12} {fmt(m['conc_panier_client_kg']):<20} {fmt(m['conc_panier_order_kg']):<18} {fmt(m['conc_moy_j']):<15}")
 
-transitions = [('W-3 → W-2', 'W-3', 'W-2'), ('W-2 → W-1', 'W-2', 'W-1'), ('W-1 → P1', 'W-1', 'P1')]
+transitions = [('W-3 → W-2', 'W-3', 'W-2'), ('W-2 → W-1', 'W-2', 'W-1'), ('W-1 → P1', 'W-1', 'P1'), ('P1 → P2', 'P1', 'P2')]
 print("\n--- VARIATIONS % vs SEMAINE PRÉCÉDENTE ---")
 for fam in ['soja', 'conc']:
     print(f"\n[{fam.upper()}]")
@@ -147,15 +149,15 @@ for fam in ['soja', 'conc']:
         var_po = (m_curr[f'{fam}_panier_order_kg']/m_prev[f'{fam}_panier_order_kg'] - 1)*100 if m_prev[f'{fam}_panier_order_kg'] > 0 else 0
         print(f"{label:<15} {fmt_signed(var_vol):<10} {fmt_signed(var_cli):<12} {fmt_signed(var_cmd):<10} {fmt_signed(var_pc):<14} {fmt_signed(var_po):<14}")
 
-m_w3, m_p1 = results['W-3'], results['P1']
-print("\n--- VARIATIONS CUMULÉES W-3 → P1 ---")
+m_w3, m_p2 = results['W-3'], results['P2']
+print("\n--- VARIATIONS CUMULÉES W-3 → P2 ---")
 for fam in ['soja', 'conc']:
     print(f"[{fam.upper()}]")
-    print(f"  Volume:        {fmt_signed((m_p1[f'{fam}_t']/m_w3[f'{fam}_t']-1)*100):<10} ({fmt(m_w3[f'{fam}_t'])} → {fmt(m_p1[f'{fam}_t'])} t)")
-    print(f"  Clients:       {fmt_signed((m_p1[f'n_{fam}_clients']/m_w3[f'n_{fam}_clients']-1)*100):<10} ({m_w3[f'n_{fam}_clients']} → {m_p1[f'n_{fam}_clients']} clients)")
-    print(f"  Commandes:     {fmt_signed((m_p1[f'n_{fam}_orders']/m_w3[f'n_{fam}_orders']-1)*100):<10} ({m_w3[f'n_{fam}_orders']} → {m_p1[f'n_{fam}_orders']} cmd)")
-    print(f"  Panier/client: {fmt_signed((m_p1[f'{fam}_panier_client_kg']/m_w3[f'{fam}_panier_client_kg']-1)*100):<10}")
-    print(f"  Panier/cmd:    {fmt_signed((m_p1[f'{fam}_panier_order_kg']/m_w3[f'{fam}_panier_order_kg']-1)*100):<10}")
+    print(f"  Volume:        {fmt_signed((m_p2[f'{fam}_t']/m_w3[f'{fam}_t']-1)*100):<10} ({fmt(m_w3[f'{fam}_t'])} → {fmt(m_p2[f'{fam}_t'])} t)")
+    print(f"  Clients:       {fmt_signed((m_p2[f'n_{fam}_clients']/m_w3[f'n_{fam}_clients']-1)*100):<10} ({m_w3[f'n_{fam}_clients']} → {m_p2[f'n_{fam}_clients']} clients)")
+    print(f"  Commandes:     {fmt_signed((m_p2[f'n_{fam}_orders']/m_w3[f'n_{fam}_orders']-1)*100):<10} ({m_w3[f'n_{fam}_orders']} → {m_p2[f'n_{fam}_orders']} cmd)")
+    print(f"  Panier/client: {fmt_signed((m_p2[f'{fam}_panier_client_kg']/m_w3[f'{fam}_panier_client_kg']-1)*100):<10}")
+    print(f"  Panier/cmd:    {fmt_signed((m_p2[f'{fam}_panier_order_kg']/m_w3[f'{fam}_panier_order_kg']-1)*100):<10}")
 
 def trend_direction(values):
     if len(values) < 2: return 'unknown'
@@ -184,20 +186,20 @@ out = {
         'panier_order_kg': results[p['name']]['conc_panier_order_kg'],
         'vol_moy_j': results[p['name']]['conc_moy_j'],
     } for p in PERIODS},
-    'cumul_w3_to_p1': {
+    'cumul_w3_to_p2': {
         'soja': {
-            'volume': (m_p1['soja_t']/m_w3['soja_t']-1)*100,
-            'clients': (m_p1['n_soja_clients']/m_w3['n_soja_clients']-1)*100,
-            'orders': (m_p1['n_soja_orders']/m_w3['n_soja_orders']-1)*100,
-            'panier_client': (m_p1['soja_panier_client_kg']/m_w3['soja_panier_client_kg']-1)*100,
-            'panier_order': (m_p1['soja_panier_order_kg']/m_w3['soja_panier_order_kg']-1)*100,
+            'volume': (m_p2['soja_t']/m_w3['soja_t']-1)*100,
+            'clients': (m_p2['n_soja_clients']/m_w3['n_soja_clients']-1)*100,
+            'orders': (m_p2['n_soja_orders']/m_w3['n_soja_orders']-1)*100,
+            'panier_client': (m_p2['soja_panier_client_kg']/m_w3['soja_panier_client_kg']-1)*100,
+            'panier_order': (m_p2['soja_panier_order_kg']/m_w3['soja_panier_order_kg']-1)*100,
         },
         'conc': {
-            'volume': (m_p1['conc_t']/m_w3['conc_t']-1)*100,
-            'clients': (m_p1['n_conc_clients']/m_w3['n_conc_clients']-1)*100,
-            'orders': (m_p1['n_conc_orders']/m_w3['n_conc_orders']-1)*100,
-            'panier_client': (m_p1['conc_panier_client_kg']/m_w3['conc_panier_client_kg']-1)*100,
-            'panier_order': (m_p1['conc_panier_order_kg']/m_w3['conc_panier_order_kg']-1)*100,
+            'volume': (m_p2['conc_t']/m_w3['conc_t']-1)*100,
+            'clients': (m_p2['n_conc_clients']/m_w3['n_conc_clients']-1)*100,
+            'orders': (m_p2['n_conc_orders']/m_w3['n_conc_orders']-1)*100,
+            'panier_client': (m_p2['conc_panier_client_kg']/m_w3['conc_panier_client_kg']-1)*100,
+            'panier_order': (m_p2['conc_panier_order_kg']/m_w3['conc_panier_order_kg']-1)*100,
         },
     },
 }

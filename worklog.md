@@ -1213,3 +1213,23 @@ Stage Summary:
 - YTD: soja 46 018 t vs 38 140 t (120,7%) ; concentres 14 498 t vs 17 393 t (83,4%) — retard concentres de 2 895 t, ratio YTD 3,17:1 vs cible bundle 2,5.
 - Q4 2026: 31 734 t / 15 451,5 M FCFA ; 2027: 98 201 t / 44 339,1 M FCFA (prix 17 678 / 16 550).
 - Tous les fichiers _upd regeneres (Excel + 2 dossiers de 5 PDFs).
+
+---
+Task ID: oct-update-17
+Agent: main
+Task: Mise a jour de tous les livrables octobre MTD au 17/10/2026 (extraction (67).xlsx, 10 042 lignes Livrees, 15 jours ouvrables).
+
+Work Log:
+- Source: upload/NJS GROUP ERP - Lignes de commandes + multicompany (67).xlsx (commandes 01-19/10, Livrees jusqu'au 17/10 ; le 18/10 est un dimanche). Scripts build_dataset_2024_2026.py, compute_monthly_performance.py, 01_consolidate_booster.py, update_soja_octobre.py repointes sur (67).
+- Datasets regeneres: dataset_2024_2026.csv (280 755) / dataset_2023_2026.csv (286 770) ; perf_mensuelle_2026_10.json (soja 4 626,4 t = 93,6% obj ; conc 1 351,0 t = 64,6% obj ; CA 2 825,7 M FCFA) ; booster 13 mois (octobre 76,97 t) -> Excel + 10 charts + PDF 12 pages.
+- Analyse tendance: nouvelle periode P2 (12-17/10, 1re semaine complete au prix 17 600 F/sac) ajoutee a analyse_trend_octobre.py + _extended.py + build_trend_charts_octobre.py (12 charts sur 5 semaines) + build_trend_pdf.py (analyse_trend_upd.pdf). P2: soja 231,3 t/j (vs pic P1 315,6), ratio 2,86:1 (vs P1 3,44:1), prix 17 645 F/sac — la cadence se stabilise au-dessus du pre-baisse (159,0 t/j) : effet de la 2e baisse confirme.
+- Zero achat (zero_achat_octobre.json + PDF section 5.4/5.5): seuil "depasse" porte a jour moyen <= 17 (15 jours ouvrables) ; Sept MTD = 01-17/09 pour equite. 745 clients venus (54,7%), 392 depasses (CA S1 1 919,9 M), 56 nouveaux, 78 reactives ; conc 1 165,9 t Livrees (55,7% obj) ; cross-sell 91,6% clients / 87,3% commandes ; prix 18 654 F/sac.
+- Bundle (bundle_octobre.json + PDF section 10): ratio 3,4:1, 1 584/1 814 commandes en bundle, 230 soja-only (deja > total septembre 155), distribution 59,8% <= 3:1 / 9,9% > 5:1 (157 cmdes).
+- update_soja_octobre.py: notes de prix 19 318 -> 18 654 F/sac ; xlsx + soja_octobre_17.json regeneres.
+
+Stage Summary:
+- Octobre MTD au 17/10: soja 4 626,4 t officielles (94% obj) / 3 939,1 t Livrees (+107% vs sept MTD) ; conc 1 351,0 t (65% obj) / 1 165,9 t Livrees (+30,0%).
+- P2 confirme la reprise: 231,3 t/j au prix 17 645 F/sac (+45,4% vs W-3), ratio redresse a 2,86:1 ; le pic P1 (315,6 t/j) etait un rattrapage post-baisse.
+- Point de vigilance: le concentre ne suit pas (2,9x plus lent) — ratio mensuel 3,4:1, bundle 87,3% ; 392 clients S1 "depasses" a relancer (CA S1 1 919,9 M).
+- Livrables regeneres: performance_mensuelle_octobre_2026.pdf, analyse_zero_achat_upd.pdf, analyse_bundle_soja_concentres_upd.pdf, analyse_trend_upd.pdf, analyse_soja_octobre.xlsx, Analyse_Booster (xlsx+pdf), 12 charts trend + 10 charts booster/perf.
+

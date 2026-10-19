@@ -1,8 +1,8 @@
 """
-Métriques bundle soja→concentrés — Octobre 2026 (MTD au 10/10).
+Métriques bundle soja→concentrés — Octobre 2026 (MTD au 17/10).
 
 Calcule toutes les valeurs de la section 10 « Point de suivi — Octobre 2026
-(MTD au 10/10) » de build_bundle_analysis_pdf.py, avec des sources cohérentes
+(MTD au 17/10) » de build_bundle_analysis_pdf.py, avec des sources cohérentes
 avec les livrables déjà publiés :
 
 - Volumes officiels octobre = perf_mensuelle_2026_10.json (Livrée+Validée+
@@ -11,7 +11,7 @@ avec les livrables déjà publiés :
 - Métriques commandes (bundle %, ratio) = dataset Livrée, clients externes —
   identiques à la section 5.4 zéro-achat (source unique).
 - Distribution des ratios par commande bundle = dataset Livrée, clients externes.
-- Colonnes de comparaison : Septembre définitif et Septembre MTD (01-10/09)
+- Colonnes de comparaison : Septembre définitif et Septembre MTD (01-17/09)
   = même méthode.
 
 Output : scripts/bundle_octobre.json
@@ -69,7 +69,7 @@ def mois_metrics(mois, jour_max=None):
 
 
 sept_final = mois_metrics(9)
-sept_mtd = mois_metrics(9, jour_max=10)
+sept_mtd = mois_metrics(9, jour_max=17)
 octo_dist = mois_metrics(10)['ratio_dist']
 
 out = {

@@ -388,7 +388,7 @@ story.append(Paragraph("Par agence &amp; par région", style_subtitle_cover))
 story.append(Spacer(1, 5 * cm))
 
 # Summary block
-summary_text = """Ce rapport présente une analyse détaillée de l'évolution des ventes des gammes Chick Booster et Piglet Booster sur la période d'octobre 2025 à octobre 2026. Les données consolidées couvrent 12 mois pleins d'activité commerciale plus le début du mois d'octobre 2026 (du 1er au 10), issues du système ERP NJS Group, et portent sur le volume écoulé en tonnes à travers les agences et régions du réseau BELGOCAM. L'analyse met en évidence les tendances mensuelles, la performance relative des différentes agences et régions, ainsi que la répartition par produit et format."""
+summary_text = """Ce rapport présente une analyse détaillée de l'évolution des ventes des gammes Chick Booster et Piglet Booster sur la période d'octobre 2025 à octobre 2026. Les données consolidées couvrent 12 mois pleins d'activité commerciale plus le début du mois d'octobre 2026 (du 1er au 17), issues du système ERP NJS Group, et portent sur le volume écoulé en tonnes à travers les agences et régions du réseau BELGOCAM. L'analyse met en évidence les tendances mensuelles, la performance relative des différentes agences et régions, ainsi que la répartition par produit et format."""
 story.append(Paragraph(summary_text, style_summary_cover))
 
 story.append(Spacer(1, 1.2 * cm))
@@ -396,7 +396,7 @@ story.append(Spacer(1, 1.2 * cm))
 # Meta block
 meta_data = [
     [Paragraph("<b>Période analysée</b>", style_meta_cover),
-     Paragraph("Octobre 2025 - Octobre 2026 (13 mois, octobre partiel au 10/10)", style_meta_cover)],
+     Paragraph("Octobre 2025 - Octobre 2026 (13 mois, octobre partiel au 17/10)", style_meta_cover)],
     [Paragraph("<b>Source des données</b>", style_meta_cover),
      Paragraph("ERP NJS Group - Lignes de commandes multicompany", style_meta_cover)],
     [Paragraph("<b>Périmètre</b>", style_meta_cover),
@@ -404,7 +404,7 @@ meta_data = [
     [Paragraph("<b>Métrique principale</b>", style_meta_cover),
      Paragraph("Volume en tonnes (t)", style_meta_cover)],
     [Paragraph("<b>Date d'édition</b>", style_meta_cover),
-     Paragraph("10 octobre 2026", style_meta_cover)],
+     Paragraph("17 octobre 2026", style_meta_cover)],
 ]
 meta_table = Table(meta_data, colWidths=[5 * cm, 11 * cm])
 meta_table.setStyle(TableStyle([
@@ -470,7 +470,7 @@ kpi_table_2.setStyle(TableStyle([
 story.append(kpi_table_2)
 story.append(Spacer(1, 0.15 * cm))
 story.append(Paragraph(
-    "* Octobre 2026 = du 1er au 10 octobre (mois en cours). La moyenne mensuelle est calculée sur les 12 mois pleins "
+    "* Octobre 2026 = du 1er au 17 octobre (mois en cours). La moyenne mensuelle est calculée sur les 12 mois pleins "
     "(octobre 2025 à septembre 2026).",
     style_caption
 ))
@@ -549,7 +549,7 @@ story.append(Paragraph("Figure 1 - Évolution mensuelle des ventes Booster (tonn
 
 # Commentary
 commentary1 = f"""
-L'évolution mensuelle des ventes sur les 13 derniers mois (dont octobre 2026 partiel, du 1er au 10) révèle une <b>activité globale dynamique mais irrégulière</b>. Le volume total écoulé atteint <b>{total_vol:.1f} tonnes</b> sur la période, avec une moyenne mensuelle de {avg_month:.1f} t sur les 12 mois pleins. La courbe totale (en bleu marine) met en évidence plusieurs pics et creux marquants qui méritent une attention particulière.
+L'évolution mensuelle des ventes sur les 13 derniers mois (dont octobre 2026 partiel, du 1er au 17) révèle une <b>activité globale dynamique mais irrégulière</b>. Le volume total écoulé atteint <b>{total_vol:.1f} tonnes</b> sur la période, avec une moyenne mensuelle de {avg_month:.1f} t sur les 12 mois pleins. La courbe totale (en bleu marine) met en évidence plusieurs pics et creux marquants qui méritent une attention particulière.
 
 Le <b>pic d'activité est observé en {peak_label} avec {peak_value:.1f} t</b>, soit près de {(peak_value/avg_month - 1)*100:.0f}% au-dessus de la moyenne mensuelle. Cette performance s'explique par la conjonction d'une forte dynamique sur les deux gammes produits et d'un mois complet d'activité (31 jours). À l'inverse, le <b>point bas de {low_value:.1f} t est atteint en {low_label}</b>, traduisant le ralentissement saisonnier classique de fin d'année civile.
 
@@ -795,7 +795,7 @@ prod_data = [
      Paragraph("<b>% du total</b>", style_table_header),
      Paragraph("<b>Moy. mensuelle (12 mois pleins)</b>", style_table_header)]
 ]
-# Volume octobre 2026 (MTD 01-10/10) exclu des moyennes mensuelles
+# Volume octobre 2026 (MTD 01-17/10) exclu des moyennes mensuelles
 oct_mask = df['mois'] == '2026-10'
 oct_vol_by_prod = df[oct_mask].groupby('Description du produit')['qte_tonnes'].sum()
 oct_total = float(df[oct_mask]['qte_tonnes'].sum())
@@ -924,7 +924,7 @@ story.append(Paragraph(findings, style_body))
 
 story.append(Paragraph("Limites et précautions de lecture", style_h2))
 limits = """
-Cette analyse porte exclusivement sur les volumes écoulés (en tonnes) et ne prend pas en compte le chiffre d'affaires, les marges, ni la rentabilité par produit. Le mois de septembre 2026 est couvert en intégralité (bilan définitif au 30/09, extraction (61)) ; le mois d'octobre 2026 couvre uniquement la période du 1er au 10 octobre (mois en cours, extraction (65)), ce qui peut sous-estimer le volume du dernier mois. Par ailleurs, certaines lignes de commande ne renseignent pas l'agence d'origine (4,9 t sur la période, soit moins de 1% du volume), ce qui n'affecte pas significativement les conclusions mais mérite d'être noté pour la qualité des données en amont.
+Cette analyse porte exclusivement sur les volumes écoulés (en tonnes) et ne prend pas en compte le chiffre d'affaires, les marges, ni la rentabilité par produit. Le mois de septembre 2026 est couvert en intégralité (bilan définitif au 30/09, extraction (61)) ; le mois d'octobre 2026 couvre uniquement la période du 1er au 17 octobre (mois en cours, extraction (67)), ce qui peut sous-estimer le volume du dernier mois. Par ailleurs, certaines lignes de commande ne renseignent pas l'agence d'origine (4,9 t sur la période, soit moins de 1% du volume), ce qui n'affecte pas significativement les conclusions mais mérite d'être noté pour la qualité des données en amont.
 """
 story.append(Paragraph(limits, style_body))
 

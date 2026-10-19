@@ -1,10 +1,11 @@
-"""Generate charts for the October trend analysis (4 periods: W-3, W-2, W-1, P1).
+"""Generate charts for the October trend analysis (5 periods: W-3, W-2, W-1, P1, P2).
 Régénère les 12 graphiques (chart1-6, chartA-F) avec les annotations
 spécifiques à octobre : baisse de prix du 22/09 puis du 07/10, reprise soja,
 tassement concentrés, dégradation du ratio.
 
 Périodes (6 jours lun-sam chacune) :
 P1   : 05-10/10/2026 (post-baisse 07/10 : 20 500 → 17 600 F/sac)
+P2   : 12-17/10/2026 (première semaine complète post-baisse)
 W-1 : 28/09-03/10/2026
 W-2 : 21-26/09/2026
 W-3 : 14-19/09/2026
@@ -35,8 +36,8 @@ LIGHT_BLUE = '#5B9BD5'
 # === Load data ===
 DATA = json.load(open('/home/z/my-project/scripts/oct_trend_analysis.json'))
 EXT = json.load(open('/home/z/my-project/scripts/oct_trend_extended.json'))
-PERIODS_ORDER = ['W-3', 'W-2', 'W-1', 'P1']
-PERIOD_LABELS = ['W-3\n(14-19/09)', 'W-2\n(21-26/09)', 'W-1\n(28/09-03/10)', 'P1\n(05-10/10)']
+PERIODS_ORDER = ['W-3', 'W-2', 'W-1', 'P1', 'P2']
+PERIOD_LABELS = ['W-3\n(14-19/09)', 'W-2\n(21-26/09)', 'W-1\n(28/09-03/10)', 'P1\n(05-10/10)', 'P2\n(12-17/10)']
 WORK_DAYS = 6
 
 OUT_DIR = '/home/z/my-project/scripts/charts'
@@ -65,7 +66,7 @@ for bar in bars2:
 ax.set_xticks(x)
 ax.set_xticklabels(PERIOD_LABELS, fontsize=9)
 ax.set_ylabel('Volume (tonnes)', fontsize=10)
-ax.set_title('Évolution des volumes Soja vs Concentrés sur 4 semaines\n(chaque période = 6 jours lun-sam)',
+ax.set_title('Évolution des volumes Soja vs Concentrés sur 5 semaines\n(chaque période = 6 jours lun-sam)',
              fontsize=12, fontweight='bold', color=NAVY, pad=10)
 ax.legend(loc='upper right', fontsize=9)
 ax.grid(True, alpha=0.3, axis='y')
@@ -73,10 +74,10 @@ ax.set_axisbelow(True)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 # Annotate price cuts
-ax.annotate('Baisse prix 22/09\n(→ ~21 000 F/sac)', xy=(1, 1572), xytext=(0.55, 1900),
+ax.annotate('Baisse prix 22/09\n(→ ~21 000 F/sac)', xy=(1, soja_vals[1]), xytext=(0.45, max(soja_vals) * 1.22),
             fontsize=8, color=GREEN, ha='center',
             arrowprops=dict(arrowstyle='->', color=GREEN, lw=1.5))
-ax.annotate('Baisse prix 07/10\n(20 500 → 17 600 F/sac)', xy=(3, 1667), xytext=(2.6, 2000),
+ax.annotate('Baisse prix 07/10\n(20 500 → 17 600 F/sac)', xy=(3, soja_vals[3]), xytext=(2.7, max(soja_vals) * 1.22),
             fontsize=8, color=RED, ha='center',
             arrowprops=dict(arrowstyle='->', color=RED, lw=1.5))
 ax.set_ylim(0, max(max(soja_vals), max(conc_vals)) * 1.35)
@@ -143,14 +144,16 @@ for i, (region, color) in enumerate(zip(regions, colors_reg)):
 ax.set_xticks(x_reg)
 ax.set_xticklabels(PERIOD_LABELS, fontsize=9)
 ax.set_ylabel('Volume total (tonnes)', fontsize=10)
-ax.set_title('Volume total (Soja + Conc) par région sur 4 semaines\n(chaque période = 6 jours lun-sam)',
+ax.set_title('Volume total (Soja + Conc) par région sur 5 semaines\n(chaque période = 6 jours lun-sam)',
              fontsize=12, fontweight='bold', color=NAVY, pad=10)
 ax.legend(loc='upper right', fontsize=9)
 ax.grid(True, alpha=0.3, axis='y')
 ax.set_axisbelow(True)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
-ax.set_ylim(0, 1200)
+max_total = max(DATA['regions'][r][p]['soja_t'] + DATA['regions'][r][p]['conc_t']
+                for r in regions for p in PERIODS_ORDER)
+ax.set_ylim(0, max_total * 1.25)
 
 plt.savefig(f'{OUT_DIR}/chart3_regional_stacked.png', dpi=120, bbox_inches='tight')
 plt.close()
@@ -169,7 +172,7 @@ for i, (region, color) in enumerate(zip(regions, colors_reg)):
     bars2 = ax.bar(x_local + 0.2, conc_vals, 0.4, label='Conc', color=GOLD)
 
     ax.set_xticks(x_local)
-    ax.set_xticklabels(['W-3', 'W-2', 'W-1', 'P1'], fontsize=9)
+    ax.set_xticklabels(['W-3', 'W-2', 'W-1', 'P1', 'P2'], fontsize=9)
     ax.set_title(region, fontsize=11, fontweight='bold', color=color)
     ax.grid(True, alpha=0.3, axis='y')
     ax.set_axisbelow(True)
@@ -183,7 +186,7 @@ for i, (region, color) in enumerate(zip(regions, colors_reg)):
     ax.set_ylim(0, max_val * 1.25)
 
     if region == 'Ouest':
-        ax.annotate('Pic Famla P1\n(554 t soja)', xy=(3, soja_vals[3]), xytext=(2.2, soja_vals[3]*1.02),
+        ax.annotate(f'Pic Famla P1\n({soja_vals[3]:.0f} t soja)', xy=(3, soja_vals[3]), xytext=(2.2, soja_vals[3]*1.02),
                     fontsize=7, color=RED, ha='center', fontweight='bold',
                     arrowprops=dict(arrowstyle='->', color=RED, lw=1.2))
     if region == 'Littoral':
@@ -191,7 +194,7 @@ for i, (region, color) in enumerate(zip(regions, colors_reg)):
                     fontsize=7, color=RED, ha='center', fontweight='bold',
                     arrowprops=dict(arrowstyle='->', color=RED, lw=1.2))
 
-fig.suptitle('Évolution par région — Soja vs Concentrés sur 4 semaines (octobre)',
+fig.suptitle('Évolution par région — Soja vs Concentrés sur 5 semaines (octobre)',
              fontsize=13, fontweight='bold', color=NAVY, y=1.02)
 
 plt.savefig(f'{OUT_DIR}/chart4_region_multiples.png', dpi=120, bbox_inches='tight')
@@ -203,23 +206,25 @@ fig, ax = plt.subplots(figsize=(12, 6), constrained_layout=True)
 
 top_agences = list(DATA['agences'].items())[:10]
 ag_names = [ag[0] for ag in top_agences]
+p2_soja = [ag[1]['P2']['soja_t'] for ag in top_agences]
 p1_soja = [ag[1]['P1']['soja_t'] for ag in top_agences]
 w1_soja = [ag[1]['W-1']['soja_t'] for ag in top_agences]
 w2_soja = [ag[1]['W-2']['soja_t'] for ag in top_agences]
 w3_soja = [ag[1]['W-3']['soja_t'] for ag in top_agences]
 
 x_ag = np.arange(len(ag_names))
-width_ag = 0.2
+width_ag = 0.16
 
-ax.bar(x_ag - 1.5*width_ag, w3_soja, width_ag, label='W-3 (14-19/09)', color='#A8C5E2')
-ax.bar(x_ag - 0.5*width_ag, w2_soja, width_ag, label='W-2 (21-26/09)', color=LIGHT_BLUE)
-ax.bar(x_ag + 0.5*width_ag, w1_soja, width_ag, label='W-1 (28/09-03/10)', color=NAVY)
-ax.bar(x_ag + 1.5*width_ag, p1_soja, width_ag, label='P1 (05-10/10)', color=GOLD)
+ax.bar(x_ag - 2*width_ag, w3_soja, width_ag, label='W-3 (14-19/09)', color='#A8C5E2')
+ax.bar(x_ag - 1*width_ag, w2_soja, width_ag, label='W-2 (21-26/09)', color=LIGHT_BLUE)
+ax.bar(x_ag, w1_soja, width_ag, label='W-1 (28/09-03/10)', color=NAVY)
+ax.bar(x_ag + 1*width_ag, p1_soja, width_ag, label='P1 (05-10/10)', color=GOLD)
+ax.bar(x_ag + 2*width_ag, p2_soja, width_ag, label='P2 (12-17/10)', color=RED)
 
 ax.set_xticks(x_ag)
 ax.set_xticklabels(ag_names, fontsize=9, rotation=30, ha='right')
 ax.set_ylabel('Volume Soja (tonnes)', fontsize=10)
-ax.set_title('Top 10 agences — Évolution du volume SOJA sur 4 semaines',
+ax.set_title('Top 10 agences — Évolution du volume SOJA sur 5 semaines',
              fontsize=12, fontweight='bold', color=NAVY, pad=10)
 ax.legend(loc='upper right', fontsize=8, ncol=2)
 ax.grid(True, alpha=0.3, axis='y')
@@ -229,9 +234,9 @@ ax.spines['right'].set_visible(False)
 
 famla_idx = ag_names.index('Famla') if 'Famla' in ag_names else -1
 if famla_idx >= 0:
-    ax.annotate(f'Famla: {w3_soja[famla_idx]:.0f} → {p1_soja[famla_idx]:.0f} t\n({(p1_soja[famla_idx]/w3_soja[famla_idx]-1)*100:+.0f}%)',
-                xy=(famla_idx + 1.5*width_ag, p1_soja[famla_idx]),
-                xytext=(famla_idx, p1_soja[famla_idx] * 1.08),
+    ax.annotate(f'Famla: {w3_soja[famla_idx]:.0f} → {p2_soja[famla_idx]:.0f} t\n({(p2_soja[famla_idx]/w3_soja[famla_idx]-1)*100:+.0f}%)',
+                xy=(famla_idx + 2*width_ag, p2_soja[famla_idx]),
+                xytext=(famla_idx, p2_soja[famla_idx] * 1.08),
                 fontsize=8, color=RED, ha='center', fontweight='bold',
                 arrowprops=dict(arrowstyle='->', color=RED, lw=1.2))
 
@@ -258,8 +263,8 @@ for i, r in enumerate(ratios_global):
     ax.annotate(f'{r:.2f}', xy=(i, r), xytext=(0, 12), textcoords='offset points',
                 ha='center', fontsize=9, fontweight='bold', color=NAVY)
 
-ax.annotate('Dégradation du ratio :\nle soja repart, pas les conc', xy=(3, ratios_global[3]),
-            xytext=(1.6, 4.9), fontsize=8, color=RED, ha='center',
+ax.annotate('Dégradation du ratio :\nle soja repart, pas les conc', xy=(4, ratios_global[4]),
+            xytext=(1.8, max(ratios_littoral) * 1.08), fontsize=8, color=RED, ha='center',
             arrowprops=dict(arrowstyle='->', color=RED, lw=1.2))
 
 ax.set_xticks(x)
@@ -305,7 +310,8 @@ for i in range(1, len(conc_trend)):
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor=color, alpha=0.9))
 
 total_var = (conc_trend[-1]/conc_trend[0] - 1)*100
-ax.text(0.02, 0.95, f'Reprise cumulée\nW-3 → P1: +{total_var:.1f}%\n(soja : +74,7 %)',
+soja_var_cumul = (DATA['global']['P2']['soja_t']/DATA['global']['W-3']['soja_t'] - 1)*100
+ax.text(0.02, 0.95, f'Reprise cumulée\nW-3 → P2: +{total_var:.1f}%\n(soja : +{soja_var_cumul:.0f} %)',
         transform=ax.transAxes, fontsize=10, fontweight='bold', color=GREEN,
         bbox=dict(boxstyle='round,pad=0.5', facecolor='#EAF3E0', edgecolor=GREEN, alpha=0.9),
         verticalalignment='top')
@@ -313,7 +319,7 @@ ax.text(0.02, 0.95, f'Reprise cumulée\nW-3 → P1: +{total_var:.1f}%\n(soja : +
 ax.set_xticks(x)
 ax.set_xticklabels(PERIOD_LABELS, fontsize=9)
 ax.set_ylabel('Volume Concentrés (tonnes)', fontsize=10)
-ax.set_title('CONCENTRÉS — Reprise modérée (+16 %) puis plateau depuis W-2\n(le concentré ne suit pas la reprise du soja)',
+ax.set_title(f'CONCENTRÉS — Reprise modérée (+{total_var:.0f} %) puis plateau depuis W-2\n(le concentré ne suit pas la reprise du soja)',
              fontsize=12, fontweight='bold', color=RED, pad=10)
 ax.grid(True, alpha=0.3, axis='y')
 ax.set_axisbelow(True)
@@ -337,7 +343,7 @@ ax.plot(x, soja_index, marker='o', linewidth=3, markersize=12, color=NAVY, label
 ax.plot(x, conc_index, marker='s', linewidth=3, markersize=12, color=GOLD, label='Concentrés moy/j', linestyle='--')
 
 ax.axhline(y=100, color=GRAY, linestyle=':', alpha=0.6, linewidth=1)
-ax.text(3.1, 100, 'Base W-3 = 100', fontsize=8, color=GRAY, va='center')
+ax.text(4.1, 100, 'Base W-3 = 100', fontsize=8, color=GRAY, va='center')
 
 for i, (s, c) in enumerate(zip(soja_index, conc_index)):
     ax.annotate(f'{s:.0f}', xy=(i, s), xytext=(0, 12), textcoords='offset points',
@@ -348,26 +354,29 @@ for i, (s, c) in enumerate(zip(soja_index, conc_index)):
 ax.fill_between(x, soja_index, conc_index, where=[s >= c for s, c in zip(soja_index, conc_index)],
                 color=RED, alpha=0.1, label='Divergence (Soja > Conc)')
 
-ax.annotate('Soja: +75 % cumulé\n(2 baisses de prix)',
-            xy=(3, soja_index[3]), xytext=(2.1, 155),
+soja_var_b = (soja_moy_trend[-1]/soja_moy_trend[0] - 1)*100
+conc_var_b = (conc_moy_trend[-1]/conc_moy_trend[0] - 1)*100
+ax.annotate(f'Soja: +{soja_var_b:.0f} % cumulé\n(2 baisses de prix)',
+            xy=(4, soja_index[4]), xytext=(2.3, soja_index[4] * 1.1),
             fontsize=9, color=NAVY, ha='center',
             arrowprops=dict(arrowstyle='->', color=NAVY, lw=1.2))
-ax.annotate('Conc: +16 % seulement\n(paniers en baisse)',
-            xy=(3, conc_index[3]), xytext=(2.4, 70),
+ax.annotate(f'Conc: +{conc_var_b:.0f} % seulement\n(paniers en baisse)',
+            xy=(4, conc_index[4]), xytext=(2.6, conc_index[2] * 0.8),
             fontsize=9, color=RED, ha='center', fontweight='bold',
             arrowprops=dict(arrowstyle='->', color=RED, lw=1.5))
 
 ax.set_xticks(x)
 ax.set_xticklabels(PERIOD_LABELS, fontsize=9)
 ax.set_ylabel('Indice (base W-3 = 100)', fontsize=10)
-ax.set_title('Dynamiques divergentes : SOJA (+75 %) vs CONCENTRÉS (+16 %)\nCadence quotidienne indexée à 100 en W-3',
+ax.set_title(f'Dynamiques divergentes : SOJA (+{soja_var_b:.0f} %) vs CONCENTRÉS (+{conc_var_b:.0f} %)\nCadence quotidienne indexée à 100 en W-3',
              fontsize=12, fontweight='bold', color=NAVY, pad=10)
 ax.legend(loc='upper right', fontsize=9)
 ax.grid(True, alpha=0.3)
 ax.set_axisbelow(True)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
-ax.set_ylim(40, 200)
+ax.set_ylim(min(min(soja_index), min(conc_index), 60) * 0.8,
+            max(max(soja_index), max(conc_index)) * 1.25)
 
 plt.savefig(f'{OUT_DIR}/chartB_divergence.png', dpi=120, bbox_inches='tight')
 plt.close()
@@ -386,7 +395,7 @@ for i, (region, color, marker) in enumerate(zip(regions, colors_reg, markers)):
 
     ax.plot(x, conc_moy, marker=marker, linewidth=2.5, markersize=10, color=color, label=region)
 
-    ax.annotate(f'{conc_moy[-1]:.1f}', xy=(3, conc_moy[-1]), xytext=(8, 0),
+    ax.annotate(f'{conc_moy[-1]:.1f}', xy=(4, conc_moy[-1]), xytext=(8, 0),
                 textcoords='offset points', fontsize=9, color=color, fontweight='bold')
     ax.annotate(f'{conc_moy[0]:.1f}', xy=(0, conc_moy[0]), xytext=(-15, 0),
                 textcoords='offset points', fontsize=9, color=color, fontweight='bold',
@@ -395,14 +404,15 @@ for i, (region, color, marker) in enumerate(zip(regions, colors_reg, markers)):
 ax.set_xticks(x)
 ax.set_xticklabels(PERIOD_LABELS, fontsize=9)
 ax.set_ylabel('Cadence Conc moy/j (tonnes)', fontsize=10)
-ax.set_title('CONCENTRÉS par région — Reprise inégale\n(Centre et Ouest en hausse, Littoral instable)',
+ax.set_title('CONCENTRÉS par région — Reprise inégale\n(pic P1 post-baisse non prolongé : repli généralisé en P2)',
              fontsize=12, fontweight='bold', color=NAVY, pad=10)
 ax.legend(loc='upper right', fontsize=9)
 ax.grid(True, alpha=0.3)
 ax.set_axisbelow(True)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
-ax.set_ylim(0, 40)
+max_conc_moy = max(max(DATA['regions'][r][p]['conc_t'] for p in PERIODS_ORDER) / WORK_DAYS for r in regions)
+ax.set_ylim(0, max_conc_moy * 1.3)
 
 plt.savefig(f'{OUT_DIR}/chartC_conc_regional.png', dpi=120, bbox_inches='tight')
 plt.close()
@@ -413,23 +423,25 @@ fig, ax = plt.subplots(figsize=(12, 6), constrained_layout=True)
 
 top_agences = list(DATA['agences'].items())[:10]
 ag_names = [ag[0] for ag in top_agences]
+p2_conc = [ag[1]['P2']['conc_t'] for ag in top_agences]
 p1_conc = [ag[1]['P1']['conc_t'] for ag in top_agences]
 w1_conc = [ag[1]['W-1']['conc_t'] for ag in top_agences]
 w2_conc = [ag[1]['W-2']['conc_t'] for ag in top_agences]
 w3_conc = [ag[1]['W-3']['conc_t'] for ag in top_agences]
 
 x_ag = np.arange(len(ag_names))
-width_ag = 0.2
+width_ag = 0.16
 
-ax.bar(x_ag - 1.5*width_ag, w3_conc, width_ag, label='W-3 (14-19/09)', color='#A8C5E2')
-ax.bar(x_ag - 0.5*width_ag, w2_conc, width_ag, label='W-2 (21-26/09)', color=LIGHT_BLUE)
-ax.bar(x_ag + 0.5*width_ag, w1_conc, width_ag, label='W-1 (28/09-03/10)', color=NAVY)
-ax.bar(x_ag + 1.5*width_ag, p1_conc, width_ag, label='P1 (05-10/10)', color=GOLD)
+ax.bar(x_ag - 2*width_ag, w3_conc, width_ag, label='W-3 (14-19/09)', color='#A8C5E2')
+ax.bar(x_ag - 1*width_ag, w2_conc, width_ag, label='W-2 (21-26/09)', color=LIGHT_BLUE)
+ax.bar(x_ag, w1_conc, width_ag, label='W-1 (28/09-03/10)', color=NAVY)
+ax.bar(x_ag + 1*width_ag, p1_conc, width_ag, label='P1 (05-10/10)', color=GOLD)
+ax.bar(x_ag + 2*width_ag, p2_conc, width_ag, label='P2 (12-17/10)', color=RED)
 
 ax.set_xticks(x_ag)
 ax.set_xticklabels(ag_names, fontsize=9, rotation=30, ha='right')
 ax.set_ylabel('Volume Concentrés (tonnes)', fontsize=10)
-ax.set_title('Top 10 agences — Évolution du volume CONCENTRÉS sur 4 semaines\n(le concentré ne suit pas la reprise soja, surtout à Famla)',
+ax.set_title('Top 10 agences — Évolution du volume CONCENTRÉS sur 5 semaines\n(le concentré ne suit pas la reprise soja, surtout à Famla)',
              fontsize=12, fontweight='bold', color=RED, pad=10)
 ax.legend(loc='upper right', fontsize=8, ncol=2)
 ax.grid(True, alpha=0.3, axis='y')
@@ -439,9 +451,9 @@ ax.spines['right'].set_visible(False)
 
 famla_idx = ag_names.index('Famla') if 'Famla' in ag_names else -1
 if famla_idx >= 0:
-    ax.annotate(f'FAMLA: soja x{1 + (p1_soja[famla_idx]/w3_soja[famla_idx] - 1):+.0%}\nmais conc {w3_conc[famla_idx]:.0f} → {p1_conc[famla_idx]:.0f} t ({(p1_conc[famla_idx]/w3_conc[famla_idx]-1)*100:+.0f}%)',
-                xy=(famla_idx + 1.5*width_ag, p1_conc[famla_idx]),
-                xytext=(famla_idx, max(p1_conc)*0.85),
+    ax.annotate(f'FAMLA: soja x{1 + (p2_soja[famla_idx]/w3_soja[famla_idx] - 1):+.0%}\nmais conc {w3_conc[famla_idx]:.0f} → {p2_conc[famla_idx]:.0f} t ({(p2_conc[famla_idx]/w3_conc[famla_idx]-1)*100:+.0f}%)',
+                xy=(famla_idx + 2*width_ag, p2_conc[famla_idx]),
+                xytext=(famla_idx, max(p2_conc)*0.85),
                 fontsize=8, color=RED, ha='center', fontweight='bold',
                 arrowprops=dict(arrowstyle='->', color=RED, lw=1.2))
 
@@ -517,21 +529,21 @@ ax.legend(fontsize=8, loc='upper right')
 ax.grid(True, alpha=0.3); ax.set_axisbelow(True)
 ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
 
-fig.suptitle('Comparaison SOJA vs CONCENTRÉS — 4 métriques sur 4 semaines (octobre)\n(La reprise soja = + clients ET + paniers ; le conc = + clients mais paniers en baisse)',
+fig.suptitle('Comparaison SOJA vs CONCENTRÉS — 4 métriques sur 5 semaines (octobre)\n(Cumul W-3 → P2 : soja = + clients ET + paniers ; conc = + clients mais paniers en baisse)',
              fontsize=13, fontweight='bold', color=NAVY, y=1.02)
 
 plt.savefig(f'{OUT_DIR}/chartE_4metrics.png', dpi=120, bbox_inches='tight')
 plt.close()
 print('✓ Chart E: 4 metrics comparison')
 
-# === CHART F: Cumul variations W-3 → P1 — by metric and family ===
+# === CHART F: Cumul variations W-3 → P2 — by metric and family ===
 fig, ax = plt.subplots(figsize=(11, 6), constrained_layout=True)
 
 metrics_list = ['volume', 'clients', 'orders', 'panier_client', 'panier_order']
 metric_labels = ['Volume', 'Nb clients', 'Nb commandes', 'Panier/client', 'Panier/cmd']
 
-soja_cumul = [EXT['cumul_w3_to_p1']['soja'][m] for m in metrics_list]
-conc_cumul = [EXT['cumul_w3_to_p1']['conc'][m] for m in metrics_list]
+soja_cumul = [EXT['cumul_w3_to_p2']['soja'][m] for m in metrics_list]
+conc_cumul = [EXT['cumul_w3_to_p2']['conc'][m] for m in metrics_list]
 
 x_pos = np.arange(len(metrics_list))
 width = 0.35
@@ -552,15 +564,19 @@ for bar in bars2:
 
 ax.axhline(y=0, color='black', linewidth=0.8)
 ax.set_xticks(x_pos); ax.set_xticklabels(metric_labels, fontsize=10)
-ax.set_ylabel('Variation cumulée W-3 → P1 (%)', fontsize=10)
-ax.set_title('Variation cumulée W-3 → P1 par métrique\n(SOJA vs CONCENTRÉS — octobre)',
+ax.set_ylabel('Variation cumulée W-3 → P2 (%)', fontsize=10)
+ax.set_title('Variation cumulée W-3 → P2 par métrique\n(SOJA vs CONCENTRÉS — octobre)',
              fontsize=12, fontweight='bold', color=NAVY, pad=10)
 ax.legend(loc='lower right', fontsize=10)
 ax.grid(True, alpha=0.3, axis='y')
 ax.set_axisbelow(True)
 ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
 
-ax.text(0.02, 0.95, 'Soja: tout en hausse\n(+39 % clients, +26 % paniers)\nConc: volumes +16 % mais\npaniers en baisse (-10 %)',
+cum_soja_cli = EXT['cumul_w3_to_p2']['soja']['clients']
+cum_soja_pc = EXT['cumul_w3_to_p2']['soja']['panier_client']
+cum_conc_vol = EXT['cumul_w3_to_p2']['conc']['volume']
+cum_conc_po = EXT['cumul_w3_to_p2']['conc']['panier_order']
+ax.text(0.02, 0.95, f'Soja: tout en hausse\n(+{cum_soja_cli:+.0f} % clients, +{cum_soja_pc:+.0f} % paniers)\nConc: volumes +{cum_conc_vol:+.0f} % mais\npaniers en baisse ({cum_conc_po:+.0f} %)',
         transform=ax.transAxes, fontsize=9, color=RED, fontweight='bold',
         bbox=dict(boxstyle='round,pad=0.5', facecolor='#FCE4EC', edgecolor=RED, alpha=0.9),
         verticalalignment='top')

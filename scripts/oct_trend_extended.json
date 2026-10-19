@@ -19,6 +19,11 @@
       "name": "P1",
       "dates": "05-10/10 (post-baisse 07/10)",
       "work_days": 6
+    },
+    {
+      "name": "P2",
+      "dates": "12-17/10",
+      "work_days": 6
     }
   ],
   "soja": {
@@ -39,20 +44,28 @@
       "vol_moy_j": 262.0344999999991
     },
     "W-1": {
-      "volume_t": 1643.2149999999945,
-      "n_clients": 480,
-      "n_orders": 785,
-      "panier_client_kg": 3423.3645833333335,
-      "panier_order_kg": 2093.267515923567,
-      "vol_moy_j": 273.86916666666576
+      "volume_t": 1687.7149999999945,
+      "n_clients": 483,
+      "n_orders": 790,
+      "panier_client_kg": 3494.2339544513457,
+      "panier_order_kg": 2136.3481012658226,
+      "vol_moy_j": 281.2858333333324
     },
     "P1": {
-      "volume_t": 1667.1509999999946,
-      "n_clients": 511,
-      "n_orders": 791,
-      "panier_client_kg": 3262.526418786693,
-      "panier_order_kg": 2107.6498103666245,
-      "vol_moy_j": 277.8584999999991
+      "volume_t": 1893.6729999999943,
+      "n_clients": 554,
+      "n_orders": 866,
+      "panier_client_kg": 3418.182310469314,
+      "panier_order_kg": 2186.689376443418,
+      "vol_moy_j": 315.6121666666657
+    },
+    "P2": {
+      "volume_t": 1387.8269999999934,
+      "n_clients": 481,
+      "n_orders": 757,
+      "panier_client_kg": 2885.295218295218,
+      "panier_order_kg": 1833.324966974901,
+      "vol_moy_j": 231.3044999999989
     }
   },
   "conc": {
@@ -73,36 +86,44 @@
       "vol_moy_j": 81.40516666666707
     },
     "W-1": {
-      "volume_t": 469.8080000000022,
-      "n_clients": 430,
-      "n_orders": 716,
-      "panier_client_kg": 1092.5767441860464,
-      "panier_order_kg": 656.1564245810056,
-      "vol_moy_j": 78.3013333333337
+      "volume_t": 476.90800000000223,
+      "n_clients": 433,
+      "n_orders": 721,
+      "panier_client_kg": 1101.4041570438799,
+      "panier_order_kg": 661.4535367545076,
+      "vol_moy_j": 79.48466666666704
     },
     "P1": {
-      "volume_t": 487.1360000000032,
-      "n_clients": 489,
-      "n_orders": 745,
-      "panier_client_kg": 996.1881390593047,
-      "panier_order_kg": 653.8738255033558,
-      "vol_moy_j": 81.18933333333386
+      "volume_t": 550.5610000000013,
+      "n_clients": 525,
+      "n_orders": 810,
+      "panier_client_kg": 1048.6876190476191,
+      "panier_order_kg": 679.704938271605,
+      "vol_moy_j": 91.76016666666688
+    },
+    "P2": {
+      "volume_t": 485.91800000000336,
+      "n_clients": 461,
+      "n_orders": 723,
+      "panier_client_kg": 1054.0520607375272,
+      "panier_order_kg": 672.0857538035962,
+      "vol_moy_j": 80.98633333333389
     }
   },
-  "cumul_w3_to_p1": {
+  "cumul_w3_to_p2": {
     "soja": {
-      "volume": 74.70030137526011,
-      "clients": 38.8586956521739,
-      "orders": 36.851211072664356,
-      "panier_client": 25.81156733091161,
-      "panier_order": 27.65711023375539
+      "volume": 45.4300151316364,
+      "clients": 30.706521739130444,
+      "orders": 30.968858131487885,
+      "panier_client": 11.264543801335481,
+      "panier_order": 11.041676018607793
     },
     "conc": {
-      "volume": 16.11193211612769,
-      "clients": 29.36507936507937,
-      "orders": 25.42087542087541,
-      "panier_client": -10.244764131091866,
-      "panier_order": -7.422164191973756
+      "volume": 15.82161414883021,
+      "clients": 21.957671957671955,
+      "orders": 21.717171717171713,
+      "panier_client": -5.031301196838134,
+      "panier_order": -4.84365310594076
     }
   }
 }
