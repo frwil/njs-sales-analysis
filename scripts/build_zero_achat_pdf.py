@@ -1292,7 +1292,7 @@ def build_story():
     # ===== 5.4 Point de suivi — Octobre 2026 (MTD au 17/10) =====
     story.append(Paragraph("5.4 Point de suivi — Octobre 2026 (MTD au 17/10)", H2))
     story.append(Paragraph(
-        "<b>Données au 17 octobre 2026</b> — extraction ERP du 19/10 (15 jours ouvrables sur 26). "
+        "<b>Données au 17 octobre 2026</b> — extraction ERP du 19/10 (15 jours ouvrables sur 27). "
         "<b>Cadre MTD :</b> au 17/10, la majorité des clients S1 n'ont pas encore atteint leur jour d'achat habituel — "
         "on ne parle donc pas de « churn » mais de « pas encore venus », segmenté selon leur jour moyen d'achat S1 "
         "(≤ 17 : auraient dû acheter — suivi ; 18-25 : normal ; > 25 : acheteurs de fin de mois). "

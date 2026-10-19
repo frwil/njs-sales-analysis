@@ -1187,7 +1187,7 @@ def build_story():
     story.append(section_divider())
 
     story.append(Paragraph(
-        "<b>Données au 17 octobre 2026</b> — 15 jours ouvrables sur 26 (extraction ERP du 19/10, commandes Livrées jusqu'au 17/10). "
+        "<b>Données au 17 octobre 2026</b> — 15 jours ouvrables sur 27 (extraction ERP du 19/10, commandes Livrées jusqu'au 17/10). "
         "Contexte : <b>deux baisses de prix soja</b> — 22/09 (~27 000 → ~21 000 FCFA/sac) puis <b>07/10 (20 500 → 17 600 FCFA/sac, −14%)</b>, "
         "ramenant le prix au niveau budgété Q4 (17 678). Les volumes octobre sont ceux du livrable performance mensuelle "
         "(Livrée + Validée + En cours) ; les métriques commandes et la distribution des ratios sont calculées sur les "
