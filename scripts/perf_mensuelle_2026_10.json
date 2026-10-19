@@ -4,7 +4,8 @@
     "label": "Octobre 2026",
     "update_date": "19/10/2026",
     "complet": false,
-    "jours_ouvres": null,
+    "jours_total": 27,
+    "jours_ecoules": 15,
     "source_erp": "NJS GROUP ERP - Lignes de commandes + multicompany (67).xlsx"
   },
   "global_sept": {

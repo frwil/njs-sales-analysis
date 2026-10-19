@@ -642,12 +642,21 @@ for s in semaines:
 # ============================================================
 # 8. Sauvegarde JSON
 # ============================================================
+# Jours de vente (lun-sam) : total du mois et écoulés (base : dernière commande Livrée)
+_month_start = pd.Timestamp(2026, MONTH_NUM, 1)
+_month_end = pd.Timestamp(2026, MONTH_NUM, calendar.monthrange(2026, MONTH_NUM)[1])
+_month_days = pd.date_range(_month_start, _month_end)
+jours_total = int((_month_days.dayofweek < 6).sum())
+_livree_max = sep_df.loc[sep_df['etat'] == 'Livrée', 'date'].max()
+_elapsed_days = pd.date_range(_month_start, min(_livree_max, _month_end))
+jours_ecoules = int((_elapsed_days.dayofweek < 6).sum())
 out = {
     'meta': {
         'month_num': MONTH_NUM, 'label': MONTH_LABEL,
         'update_date': sep_df['date'].max().strftime('%d/%m/%Y'),
         'complet': sep_df['date'].max() == pd.Timestamp(2026, MONTH_NUM, calendar.monthrange(2026, MONTH_NUM)[1]),
-        'jours_ouvres': 26 if MONTH_NUM == 9 else None,
+        'jours_total': jours_total,
+        'jours_ecoules': jours_ecoules,
         'source_erp': os.path.basename(ERP_FILE),
     },
     'global_sept': global_sept,

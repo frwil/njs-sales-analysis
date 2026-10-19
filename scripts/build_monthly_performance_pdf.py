@@ -264,8 +264,27 @@ for fam in ['TOURTEAUX', 'CONCENTRES', 'ALIMENT_COMPLET', 'INGREDIENTS', 'MAIS',
                  ("+" + fmt(d['ecart'])) if d['ecart'] >= 0 and d['obj'] > 0
                  else ("—" if d['obj'] == 0 else fmt(d['ecart']).replace('-', '- ')),
                  fmt(d['ca'])])
-story.append(make_table(rows, col_widths=[3.6*cm, 2.4*cm, 2.3*cm, 2.0*cm, 2.2*cm, 3.0*cm], font_size=8.5, highlight_rows=[1, 2]))
+# Ligne TOTAL — performance globale tous produits confondus (volumes des familles avec
+# objectif/volume ; CA toutes familles, y compris matériel/alvéoles qui n'ont pas de volume)
+tot_t = sum(d['t'] for d in g.values())
+tot_obj = sum(d['obj'] for d in g.values() if d['obj'] > 0)
+tot_ca = sum(d['ca'] for d in g.values())
+tot_pct = (tot_t / tot_obj * 100) if tot_obj > 0 else None
+tot_ecart = (tot_t - tot_obj) if tot_obj > 0 else None
+rows.append(["TOTAL (tout produits confondus)", fmt(tot_t), fmt(tot_obj), pct(tot_pct),
+             ("+" + fmt(tot_ecart)) if (tot_ecart or 0) >= 0 else fmt(tot_ecart).replace('-', '- '),
+             fmt(tot_ca)])
+story.append(make_table(rows, col_widths=[3.6*cm, 2.4*cm, 2.3*cm, 2.0*cm, 2.2*cm, 3.0*cm], font_size=8.5, highlight_rows=[1, 2, 10]))
 story.append(Spacer(1, 0.35*cm))
+# Temps écoulé : jours de vente passés / jours de vente totaux du mois (lun-sam)
+jt = DATA['meta'].get('jours_total')
+je = DATA['meta'].get('jours_ecoules')
+if jt and je:
+    temps_txt = f"{je} jours de vente écoulés sur {jt} ({pct(je / jt * 100)} du mois)"
+else:
+    temps_txt = "—"
+story.append(Paragraph(f"⏱ <b>Temps écoulé</b> : {temps_txt}.", BODY))
+story.append(Spacer(1, 0.2*cm))
 story.append(img(f'{CHARTS_DIR}/perf_01_global_mois.png'))
 story.append(Spacer(1, 0.3*cm))
 ratio_mois = g['TOURTEAUX']['t'] / g['CONCENTRES']['t'] if g['CONCENTRES']['t'] > 0 else None
@@ -273,6 +292,7 @@ ratio_mois_txt = f"<b>{ratio_mois:.1f}:1</b> (cible bundle ≤ 2,5:1)" if ratio_
 story.append(Paragraph(
     f"<b>Points clés</b> : Soja à <b>{pct(g['TOURTEAUX']['pct'])}</b> de l'objectif ({fmt(g['TOURTEAUX']['t'])} t vs {fmt(g['TOURTEAUX']['obj'])} t) "
     f"et Concentrés à <b>{pct(g['CONCENTRES']['pct'])}</b> ({fmt(g['CONCENTRES']['t'])} t vs {fmt(g['CONCENTRES']['obj'])} t). "
+    f"Tous produits confondus, le mois est à <b>{pct(tot_pct)}</b> de l'objectif ({fmt(tot_t)} t vs {fmt(tot_obj)} t). "
     f"Le ratio soja:concentrés du mois est de "
     f"{ratio_mois_txt}.",
     BODY))
